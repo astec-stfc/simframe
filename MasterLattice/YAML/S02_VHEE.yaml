@@ -1,0 +1,79 @@
+elements:
+  CLA-S02-MAG-QUAD-05:
+    type: quadrupole
+    length: 0.1007
+    k1l: 0.0738042
+    sr_enable: true
+    isr_enable: true
+    Controller_Name: S02-QUAD5
+    PV: CLA-S02-MAG-QUAD-05
+    buffer_start: [0, 0, 6.36123]
+    buffer_start_length: 0.02872
+    buffer_end_length: 0
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 6.49065]
+    position_start: [0, 0, 6.38995]
+  CLA-S02-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.05135
+    Controller_Name: BPM02
+    PV: CLA-S02-DIA-BPM-02
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 6.542]
+    position_start: [0, 0, 6.49065]
+  CLA-S02-DIA-SCR-03-W:
+    type: screen
+    output_filename: CLA-S02-DIA-SCR-03.SDDS
+    camera_PV: CLA-S02-DIA-CAM-03
+    buffer_start: [0, 0, 6.5501]
+    buffer_start_length: 0.033333
+    buffer_end_length: 0.076667
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 6.58343]
+    position_start: [0, 0, 6.58343]
+  CLA-S02-APER-03:
+    type: marker
+    length: 0.0
+    Controller_Name: COR4
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 6.63]
+    position_start: [0, 0, 6.63]
+  # CLA-VHEE-DIA-ICT-01:
+  #   type: marker
+  #   length: 0.0
+  #   global_rotation: [0, 0, 0]
+  #   buffer_start: [0, 0, 6.9]
+  #   buffer_start_length: 0.04
+  #   buffer_end_length: 0.04
+  #   position_end: [0, 0, 6.94]
+  #   position_start: [0, 0, 6.94]
+  CLA-VHEE-DIA-SCR-01:
+    type: screen
+    buffer_start: [0, 0, 6.98]
+    buffer_start_length: 0.025
+    buffer_end_length: 0.025
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 7.005]
+    position_start: [0, 0, 7.005]
+  CLA-VHEE-PHANTOM-01:
+    type: marker
+    buffer_start_length: 0.0
+    buffer_end_length: 0.3
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 7.1]
+    position_start: [0, 0, 7.1]
+    buffer_start: [0, 0, 7.1]
+  CLA-VHEE-DIA-SCR-02:
+    type: screen
+    buffer_start: [0, 0, 7.35]
+    buffer_start_length: 0.025
+    buffer_end_length: 0.025
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 7.375]
+    position_start: [0, 0, 7.4]
+  CLA-VHEE-END-01:
+    type: marker
+    length: 0.0
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 7.5]
+    position_start: [0, 0, 7.5]
