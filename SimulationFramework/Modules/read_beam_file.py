@@ -379,6 +379,7 @@ class beam(munch.Munch):
         self.reset_dicts()
         if gdfbeam is None and not file is None:
             gdfbeam = self.read_gdf_beam_file_object(file)
+            self.gdfbeam = gdfbeam
         elif gdfbeam is None and file is None:
             return None
 
@@ -393,9 +394,9 @@ class beam(munch.Munch):
             else:
                 print('GDF DID NOT find position ', position)
                 position = None
-        elif position is None and time is not None and block is not None:
-            # print 'Assuming time over block!'
-            self.beam['longitudinal_reference'] = 'p'
+        elif position is None and time is not None and block is None:
+            # print('Assuming time over block!')
+            self.beam['longitudinal_reference'] = 'z'
             gdfbeamdata = gdfbeam.get_time(time)
             if gdfbeamdata is not None:
                 block = None
@@ -419,6 +420,12 @@ class beam(munch.Munch):
             # print( 't!')
             self.beam['t'] = gdfbeamdata.t
             self.beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
+        else:
+            pass
+            # print('not z and not t !!')
+            # print('z = ', hasattr(gdfbeamdata,'z'))
+            # print('t = ', hasattr(gdfbeamdata,'t'))
+            # print('longitudinal_reference = ', longitudinal_reference)
         self.beam['gamma'] = gdfbeamdata.G
         if hasattr(gdfbeamdata,'q') and  hasattr(gdfbeamdata,'nmacro'):
             self.beam['charge'] = gdfbeamdata.q * gdfbeamdata.nmacro

@@ -30,7 +30,9 @@ class Framework(Munch):
     def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0):
         super(Framework, self).__init__()
         # global master_lattice_location
-        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': os.environ['GPTLICENSE']}
+        gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
+        print('gptlicense = ', gptlicense)
+        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense}
         self.verbose = verbose
         self.subdir = directory
         self.clean = clean
@@ -332,7 +334,7 @@ class Framework(Munch):
 
     def add_Generator(self, default=None, **kwargs):
         if 'code' in generator_keywords:
-            if generator_keywords['code'].lower() = "gpt":
+            if generator_keywords['code'].lower() == "gpt":
                 code = GPTGenerator
             else:
                 code = ASTRAGenerator
@@ -343,6 +345,14 @@ class Framework(Munch):
         else:
             self.generator = code(self.executables, self.global_parameters, **kwargs)
         self.latticeObjects['generator'] = self.generator
+
+    def change_generator(self, generator):
+        old_kwargs = self.generator.kwargs
+        if generator.lower() == "gpt":
+            generator = GPTGenerator(self.executables, self.global_parameters, **old_kwargs)
+        else:
+            generator = ASTRAGenerator(self.executables, self.global_parameters, **old_kwargs)
+        self.latticeObjects['generator'] = generator
 
     def loadParametersFile(self, file):
         pass
@@ -422,7 +432,7 @@ class Framework(Munch):
                     if track:
                         self.generator.run()
                     if postprocess:
-                        self.generator.astra_to_hdf5()
+                        self.generator.postProcess()
                 else:
                     if i == (len(files) - 1):
                         format_custom_text.update_mapping(running='Finished')
