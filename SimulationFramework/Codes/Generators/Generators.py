@@ -2,7 +2,7 @@ import os
 import subprocess
 from collections import OrderedDict
 from SimulationFramework.FrameworkHelperFunctions import *
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
+from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts 
 
 astra_generator_keywords = {
     'keywords':[
