@@ -295,8 +295,8 @@ class GPTGenerator(frameworkGenerator):
     def generate_particles(self):
         return """#--Basic beam parameters--
 E0 = """ + str(self.thermal_kinetic_energy) + """;
-G = 1-qe*E0/(me*c*c);
-GB = sqrt(G^2-1);
+G = 1-qe*E0/(me * c * c);
+GB = sqrt(G^2 - 1);
 Qtot = """ + str(-1e12*self.charge) + """e-12;
 npart = """ + str(self.particles) + """;
 setparticles( "beam", npart, me, qe, Qtot ) ;
@@ -329,7 +329,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         if True:#(self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
             output =  "radius = " + str(self.sigma_x) + ";\n"
             output += self._distribution('distribution_type_x', 'setrxydist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
-            output += 'setphidist("beam","u",0,2*pi) ;\n'
+            output += 'setphidist("beam", "u", 0, 2*pi) ;\n'
             return output
         else:
             return ''
@@ -337,14 +337,14 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
     def generate_phase_space_distribution(self):
         return '''#--Initial Phase-Space--
 setGBzdist( "beam", "u", GB, 0 ) ;
-setGBthetadist("beam","u",pi/4,pi/2);
-setGBphidist("beam","u",0,2*pi);
+setGBthetadist("beam","u", pi/4, pi/2);
+setGBphidist("beam","u", 0, 2*pi);
 '''
 
     def generate_thermal_emittance(self):
         thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
-        return '''setGBxemittance("beam",(''' + str(thermal_emittance) + '''*radius)) ;
-setGByemittance("beam",(''' + str(thermal_emittance) + '''*radius)) ;
+        return '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
+setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
 '''
 
     def generate_longitudinal_distribution(self):
