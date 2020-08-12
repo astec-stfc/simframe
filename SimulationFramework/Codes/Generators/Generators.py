@@ -26,7 +26,7 @@ astra_generator_keywords = {
         'bunch_length': ['lz', 1e3],
         'plateau_rise_distance': ['rz', 1e3],
         'distribution_type_pz': 'dist_pz',
-        'thermal_emittance': ['le', 1],
+        'thermal_emittance': 'le',
         'distribution_type_x': 'dist_x',
         'sigma_x': ['sig_x', 1e3],
         'distribution_type_y': 'dist_y',
