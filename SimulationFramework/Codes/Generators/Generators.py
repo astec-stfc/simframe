@@ -318,7 +318,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         return distname + '( "beam", "g", 0, ' + variable + ', '+ str(left_cutoff) +', '+ str(right_cutoff) +') ;'
 
     def _distribution(self, param, distname, variable, **kwargs):
-        if getattr(self,param).lower() in ["g","guassian","2dgaussian"]:
+        if getattr(self,param).lower() in ["g","gaussian","2dgaussian"]:
             return self._gaussian_distribution(distname, variable, **kwargs)
         else:# self.distribution_type_x.lower() in ["u","uniform"]:
             return self._uniform_distribution(distname, variable, **kwargs)
@@ -352,12 +352,15 @@ setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
             output = '''tlen = ''' + str(1e12*self.sigma_t) + '''e-12;\n'''
         else:
             output = '''tlen = ''' + str(1e12*self.plateau_bunch_length) + '''e-12;\n'''
-        output += self._distribution('distribution_type_z', 'settdist', 'tlen', left_cutoff=12, right_cutoff=12, left_multiplier=0, right_multiplier=1) + "\n"
+        output += self._distribution('distribution_type_z', 'settdist', 'tlen', left_cutoff=self.guassian_cutoff_z, right_cutoff=self.guassian_cutoff_z, left_multiplier=0, right_multiplier=1) + "\n"
         return output
 
     def generate_output(self):
         return '''screen( "wcs", "I", 0) ;
 '''
+
+    def generate_offset_transform(self):
+        return 'settransform("wcs", ' + str(self.offset_x) + ', ' + str(self.offset_y) + ', ' + '0, 1, 0, 0, 0, 1, 0, "beam");\n'
 
     def write(self):
         # try:
@@ -372,16 +375,16 @@ setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
         output += self.generate_phase_space_distribution()
         output += self.generate_thermal_emittance()
         output += self.generate_longitudinal_distribution()
+        output += self.generate_offset_transform()
         output += self.generate_output()
         # print('output = ', output)
         saveFile(self.global_parameters['master_subdir']+'/'+self.objectname+'.in', output)
 
     def postProcess(self):
         gptbeamfilename = self.filename.replace('.in', '.gdf')
-        print(gptbeamfilename)
         self.global_parameters['beam'].read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=0, longitudinal_reference='t')
         # Set the Z component to be zero
         self.global_parameters['beam']['beam']['z'] = 0 * self.global_parameters['beam']['beam']['z']
         HDF5filename = self.filename.replace('.in','.hdf5')
-        print(HDF5filename)
+        self.global_parameters['beam']['beam']['status'] = np.full(len(self.global_parameters['beam']['beam']['x']), -1)
         self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename)
