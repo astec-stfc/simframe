@@ -29,6 +29,8 @@ class beam(munch.Munch):
     def __init__(self, sddsindex=0):
         self.beam = {}
         self.sddsindex = sddsindex
+        self._slice_length = 0
+        self._slices = 0
 
     def set_particle_mass(self, mass=constants.m_e):
         self.particle_mass = mass
@@ -781,20 +783,28 @@ class beam(munch.Munch):
 
     @slices.setter
     def slices(self, slices):
+        self.set_slices(slices)
+
+    def set_slices(self, slices):
         twidth = (max(self.t) - min(self.t))
+        # print('twidth = ', twidth)
         if twidth == 0:
             t = self.z / (-1 * self.Bz * constants.speed_of_light)
             twidth = (max(t) - min(t))
         if slices == 0:
             slices = int(twidth / 0.1e-12)
+        # print('slices = ', slices)
         self._slices = slices
-        self._slicelength = twidth / self._slices
+        self._slicelength = twidth / slices
+        # if not hasattr(self,'_slicelength'):
+        #     print('no slicelength even though I just set it')
 
     def bin_time(self):
         if not hasattr(self,'slice'):
             self.slice = {}
-        if not hasattr(self,'_slicelength'):
-            self.slice_length = 0
+        if not self.slice_length > 0:
+            # print('no slicelength', self.slice_length)
+            self._slice_length = 0
             # print("Assuming slice length is 100 fs")
         twidth = (max(self.t) - min(self.t))
         if twidth == 0:
@@ -804,6 +814,7 @@ class beam(munch.Munch):
             t = self.t
         if not self.slice_length > 0.0:
             self.slice_length = twidth / 20.0
+        # print('slicelength =', self.slice_length)
         nbins = max([1,int(np.ceil(twidth / self.slice_length))])+2
         self._hist, binst =  np.histogram(t, bins=nbins, range=(min(t)-self.slice_length, max(t)+self.slice_length))
         self.slice['t_Bins'] = binst
