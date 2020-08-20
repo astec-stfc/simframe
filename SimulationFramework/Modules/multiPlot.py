@@ -47,7 +47,7 @@ class multiPlotWidget(QWidget):
     highlightCurveSignal = pyqtSignal(str)
     unHighlightCurveSignal = pyqtSignal(str)
 
-    def __init__(self, xmin=None, ymin=None, **kwargs):
+    def __init__(self, xmin=None, ymin=None, xlabel=None, xlabelunits=None, **kwargs):
         super(multiPlotWidget, self).__init__(**kwargs)
         ''' multiPlotWidget - main pyQtGraph display widgets '''
         self.multiPlotView = pg.GraphicsView(useOpenGL=True)
@@ -71,6 +71,8 @@ class multiPlotWidget(QWidget):
                     p.setXLink(self.linkAxis)
                 p.showGrid(x=True, y=True)
                 p.setLabel('left', text=param['name'], units=param['units'])
+                if xlabel is not None and xlabelunits is not None:
+                    p.setLabel('bottom', text=xlabel, units=xlabelunits)
                 ''' set lower plot limit for all plots '''
                 if xmin is not None:
                     p.vb.setLimits(xMin=xmin)
@@ -95,6 +97,16 @@ class multiPlotWidget(QWidget):
         ''' used for style cycling '''
         self.plotColor = 0
         self.shadowCurves = []
+
+    def set_horizontal_axis_label(self, label, units=None):
+        for n, param in enumerate(self.plotParams):
+            if not param == 'next_row':
+                ''' p - the relevant plotWidget for each param in plotParams '''
+                p = self.multiPlotWidgets[param['label']]
+                if units is not None:
+                    p.setLabel('bottom', text=label, units=units)
+                else:
+                    p.setLabel('bottom', text=label)
 
     def addCurve(self, x, y, name, label, pen):
         ''' adds a curve to the main plot '''

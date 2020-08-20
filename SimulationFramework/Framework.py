@@ -144,6 +144,7 @@ class Framework(Munch):
             return v
 
     def detect_changes(self, elementtype=None, elements=None, function=None):
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
         start = time.time()
         changedict = {}
         if elementtype is not None:
@@ -175,8 +176,8 @@ class Framework(Munch):
                     orig = self.original_elementObjects[e]
                     new = unmunchify(self.elementObjects[e])
                     try:
-                        changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k]}
-                        changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig})
+                        changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
+                        changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
                     except:
                         print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                         pass
@@ -203,7 +204,7 @@ class Framework(Munch):
                 return
             elements = list(self.latticeObjects[lattice].elements.keys())
             filename =  pre + '_' + lattice + '_lattice.yaml'
-        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults','global_parameters']
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
         for e in elements:
             new = unmunchify(self.elementObjects[e])
             if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
