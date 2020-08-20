@@ -602,9 +602,10 @@ class beam(munch.Munch):
         return abs(X[indexes][-1] - X[indexes][0]), indexes
 
     def covariance(self, u, up):
-        u2 = u - np.mean(u)
-        up2 = up - np.mean(up)
-        return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
+        # u2 = u - np.mean(u)
+        # up2 = up - np.mean(up)
+        # return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
+        return float(np.cov([u,up])[0,1])
 
     def emittance(self, x, xp, p=None):
         cov_x = self.covariance(x, x)
@@ -1144,6 +1145,7 @@ class beam(munch.Munch):
 
     @property
     def eta_x(self):
+        # print('etax = ', self.calculate_etax()[0])
         return self.calculate_etax()[0]
 
     @property
@@ -1151,23 +1153,20 @@ class beam(munch.Munch):
         return self.calculate_etax()[1]
 
     def calculate_etax(self):
-        p = self.cp
+        p = self.cpz
         pAve = np.mean(p)
-        p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = -pAve * S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = -pAve * S26/S66 if S66 else 0
+        p = [(a / pAve) - 1 for a in p]
+        S16, S66 = self.covariance(self.x, p), self.covariance(p, p)
+        eta1 = S16/S66 if S66 else 0
+        S26 = self.covariance(self.xp, p)
+        etap1 = S26/S66 if S66 else 0
         return eta1, etap1, np.mean(self.t)
 
     def performTransformation(self, x, xp, beta=False, alpha=False, nEmit=False):
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = S26/S66 if S66 else 0
+        eta1, etap1, _ = self.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1
@@ -1223,10 +1222,7 @@ class beam(munch.Munch):
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = S26/S66 if S66 else 0
+        eta1, etap1, _ = self.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1
