@@ -64,6 +64,16 @@ class twiss(munch.Munch):
         self['element_name'] = []
         self['x'] = []
         self['y'] = []
+        self['ecnx'] = []
+        self['ecny'] = []
+        self['eta_x_beam'] = []
+        self['eta_xp_beam'] = []
+        self['eta_y_beam'] = []
+        self['eta_yp_beam'] = []
+        self['beta_x_beam'] = []
+        self['beta_y_beam'] = []
+        self['alpha_x_beam'] = []
+        self['alpha_y_beam'] = []
         self.elegant = {}
 
     def read_sdds_file(self, fileName, charge=None, ascii=False):
@@ -149,6 +159,17 @@ class twiss(munch.Munch):
             self['eta_x'] = np.concatenate([self['eta_x'], self.elegant['etax']])
             self['eta_xp'] = np.concatenate([self['eta_xp'], self.elegant['etaxp']])
             self['element_name'] = np.concatenate([self['element_name'], self.elegant['ElementName']])
+            ### BEAM parameters
+            self['ecnx'] = np.concatenate([self['ecnx'], self.elegant['ecnx']])
+            self['ecny'] = np.concatenate([self['ecny'], self.elegant['ecny']])
+            self['eta_x_beam'] = np.concatenate([self['eta_x_beam'], self.elegant['s16']/(self.elegant['s6']**2)])
+            self['eta_xp_beam'] = np.concatenate([self['eta_xp_beam'], self.elegant['s26']/(self.elegant['s6']**2)])
+            self['eta_y_beam'] = np.concatenate([self['eta_y_beam'], self.elegant['s36']/(self.elegant['s6']**2)])
+            self['eta_yp_beam'] = np.concatenate([self['eta_yp_beam'], self.elegant['s46']/(self.elegant['s6']**2)])
+            self['beta_x_beam'] = np.concatenate([self['beta_x_beam'], self.elegant['betaxBeam']])
+            self['beta_y_beam'] = np.concatenate([self['beta_y_beam'], self.elegant['betayBeam']])
+            self['alpha_x_beam'] = np.concatenate([self['alpha_x_beam'], self.elegant['alphaxBeam']])
+            self['alpha_y_beam'] = np.concatenate([self['alpha_y_beam'], self.elegant['alphayBeam']])
 
     def read_astra_emit_files(self, filename, reset=True):
         if reset:
@@ -231,8 +252,19 @@ class twiss(munch.Munch):
             self['eta_x'] = np.concatenate([self['eta_x'], np.zeros(len(z))])
             self['eta_xp'] = np.concatenate([self['eta_xp'], np.zeros(len(z))])
 
+            self['ecnx'] = np.concatenate([self['ecnx'], exn])
+            self['ecny'] = np.concatenate([self['ecny'], eyn])
+            self['eta_x_beam'] = np.concatenate([self['eta_x_beam'], np.zeros(len(z))])
+            self['eta_xp_beam'] = np.concatenate([self['eta_xp_beam'], np.zeros(len(z))])
+            self['eta_y_beam'] = np.concatenate([self['eta_y_beam'], np.zeros(len(z))])
+            self['eta_yp_beam'] = np.concatenate([self['eta_yp_beam'], np.zeros(len(z))])
+            self['beta_x_beam'] = np.concatenate([self['beta_x_beam'], rms_x**2 / ex])
+            self['beta_y_beam'] = np.concatenate([self['beta_y_beam'], rms_y**2 / ey])
+            self['alpha_x_beam'] = np.concatenate([self['alpha_x_beam'], (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex])
+            self['alpha_y_beam'] = np.concatenate([self['alpha_y_beam'], (-1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey])
+
     def interpolate(self, z=None, value='z', index='z'):
-        f = interpolate.interp1d(self[index], self[value], kind='linear')
+        f = interpolate.interp1d(self[index], self[value], kind='linear', fill_value="extrapolate")
         if z is None:
             return f
         else:

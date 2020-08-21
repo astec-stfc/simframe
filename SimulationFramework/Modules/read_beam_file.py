@@ -721,8 +721,10 @@ class beam(munch.Munch):
 
     def eta_correlation(self, u):
         return self.covariance(u,self.p) / self.covariance(self.p, self.p)
+
     def eta_corrected(self, u):
         return u - self.eta_correlation(u)*self.p
+        
     @property
     def horizontal_emittance_corrected(self):
         xc = self.eta_corrected(self.x)
