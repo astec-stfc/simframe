@@ -47,7 +47,7 @@ class multiPlotWidget(QWidget):
     highlightCurveSignal = pyqtSignal(str)
     unHighlightCurveSignal = pyqtSignal(str)
 
-    def __init__(self, xmin=None, ymin=None, xlabel=None, xlabelunits=None, **kwargs):
+    def __init__(self, xmin=None, ymin=None, xlabel=None, xlabelunits=None, setTitles=True, **kwargs):
         super(multiPlotWidget, self).__init__(**kwargs)
         ''' multiPlotWidget - main pyQtGraph display widgets '''
         self.multiPlotView = pg.GraphicsView(useOpenGL=True)
@@ -62,7 +62,10 @@ class multiPlotWidget(QWidget):
                 self.multiPlotWidget.nextRow()
             else:
                 ''' p - the relevant plotWidget for each param in plotParams '''
-                p = self.multiPlotWidget.addPlot(title=param['label'])
+                if setTitles:
+                    p = self.multiPlotWidget.addPlot(title=param['label'])
+                else:
+                    p = self.multiPlotWidget.addPlot()
                 ''' this just links the horizontal axis for all plots.
                     The first plot is selected to be the master axis '''
                 if n == 0:
@@ -70,9 +73,11 @@ class multiPlotWidget(QWidget):
                 else:
                     p.setXLink(self.linkAxis)
                 p.showGrid(x=True, y=True)
-                p.setLabel('left', text=param['name'], units=param['units'])
-                if xlabel is not None and xlabelunits is not None:
-                    p.setLabel('bottom', text=xlabel, units=xlabelunits)
+                p.setLabel('left', text=param['name'], units=param['units'], **{'font-size': '12pt', 'font-family': 'Arial'})
+                p.setLabel('bottom', text=xlabel, units=xlabelunits)
+                if 'xlabel' in param and param['xlabel'] is not None:
+                    xlu = param['xlabelunits'] if 'xlabelunits' in param else None
+                    p.setLabel('bottom', text=param['xlabel'], units=xlu)
                 ''' set lower plot limit for all plots '''
                 if xmin is not None:
                     p.vb.setLimits(xMin=xmin)
@@ -98,15 +103,17 @@ class multiPlotWidget(QWidget):
         self.plotColor = 0
         self.shadowCurves = []
 
-    def set_horizontal_axis_label(self, label, units=None):
+    def set_horizontal_axis_label(self, label=None, units=None):
         for n, param in enumerate(self.plotParams):
             if not param == 'next_row':
                 ''' p - the relevant plotWidget for each param in plotParams '''
                 p = self.multiPlotWidgets[param['label']]
-                if units is not None:
+                if label is not None and units is not None:
                     p.setLabel('bottom', text=label, units=units)
-                else:
+                elif label is not None and units is not None:
                     p.setLabel('bottom', text=label)
+                elif units is not None:
+                    p.setLabel('bottom', units=label)
 
     def addCurve(self, x, y, name, label, pen):
         ''' adds a curve to the main plot '''
