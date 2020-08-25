@@ -200,7 +200,7 @@ class astra_output(astra_header):
         self.end_element.starting_rotation = self.starting_rotation
         # print self.end_element.objectname, self.end_element.end, self.start_element.objectname, self.start_element.end
         keyworddict = OrderedDict([
-            ['zemit', {'value': int((self.end_element.start[2] - self.start_element.start[2])/0.05)}],
+            ['zemit', {'value': int((self.end_element.start[2] - self.start_element.start[2])/0.01)}],
             ['zstart', {'value': self.start_element.start[2]}],
             ['zstop', {'value': self.end_element.end[2]}],
             ['Lsub_cor', {'value': True}],

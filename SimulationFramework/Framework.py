@@ -382,6 +382,10 @@ class Framework(Munch):
         # elem = self.getelement(k, v)
         # outputfile.write(k+' '+v+' ')
 
+    def set_lattice_prefix(self, lattice, prefix):
+        if lattice in self.latticeObjects:
+            self.latticeObjects[lattice].prefix = prefix
+
     def __getitem__(self,key):
         if key in super(Framework, self).__getitem__('elementObjects'):
             return self.elementObjects.get(key)
