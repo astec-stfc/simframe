@@ -48,7 +48,7 @@ class multiPlotWidget(QWidget):
     unHighlightCurveSignal = pyqtSignal(str)
 
     def __init__(self, xmin=None, ymin=None, xlabel=None, xlabelunits=None, setTitles=True, **kwargs):
-        super(multiPlotWidget, self).__init__(**kwargs)
+        super(multiPlotWidget, self).__init__()
         ''' multiPlotWidget - main pyQtGraph display widgets '''
         self.multiPlotView = pg.GraphicsView(useOpenGL=True)
         self.multiPlotWidget = pg.GraphicsLayout()
