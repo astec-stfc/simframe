@@ -26,7 +26,7 @@ scaling = 5
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
 lattice.generator.number_of_particles = 2**(3*scaling)
 # Track the whole lattice
-# lattice.track()
+lattice.track()
 
 # This time we will use CSRTrack for the VBC
 lattice = fw.Framework('example_ASTRA_CSRTrack', clean=False, verbose=True)
