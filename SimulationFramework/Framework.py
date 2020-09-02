@@ -463,7 +463,7 @@ class Framework(Munch):
                         self.generator.run()
                     self.progress = 100. * (i+0.66)/len(files)
                     if postprocess:
-                        self.generator.astra_to_hdf5()
+                        self.generator.postProcess()
                 else:
                     if preprocess:
                         self.latticeObjects[l].preProcess()
