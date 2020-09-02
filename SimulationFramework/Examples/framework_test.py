@@ -5,9 +5,9 @@ import SimulationFramework.Modules.read_twiss_file as rtf
 import SimulationFramework.Modules.read_beam_file as rbf
 import numpy as np
 
-# Define a new framework instance, in directory 'C2V'.
+# Define a new framework instance, in directory 'example_ASTRA'.
 #       "clean" will empty (delete everything!) the directory if true
-#       "verbose" will print a progressbar is true
+#       "verbose" will print a progressbar if true
 lattice = fw.Framework('example_ASTRA', clean=False, verbose=True)
 # Load a lattice definition file. These can be found in Masterlattice/Lattices by default.
 lattice.loadSettings('Lattices/clara400_v12_v3.def')

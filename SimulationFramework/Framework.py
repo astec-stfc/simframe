@@ -31,7 +31,6 @@ class Framework(Munch):
         super(Framework, self).__init__()
         # global master_lattice_location
         gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
-        print('gptlicense = ', gptlicense)
         self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense}
         self.verbose = verbose
         self.subdir = directory
