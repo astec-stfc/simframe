@@ -29,8 +29,8 @@ class Framework(Munch):
 
     def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0):
         super(Framework, self).__init__()
-        # global master_lattice_location
-        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': os.environ['GPTLICENSE']}
+        gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
+        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense}
         self.verbose = verbose
         self.subdir = directory
         self.clean = clean
