@@ -218,10 +218,10 @@ class elegantTrackFile(elegantCommandFile):
         self.elegantbeamfilename = elegantbeamfilename
         self.sample_interval = kwargs['sample_interval'] if 'sample_interval' in kwargs else 1
         self.trackBeam = trackBeam
-        self.betax = betax if betax is not None else self.global_parameters['beam'].beta_x
-        self.betay = betay if betay is not None else self.global_parameters['beam'].beta_y
-        self.alphax = alphax if alphax is not None else self.global_parameters['beam'].alpha_x
-        self.alphay = alphay if alphay is not None else self.global_parameters['beam'].alpha_y
+        self.betax = betax if betax is not None else self.global_parameters['beam'].beta_x_corrected
+        self.betay = betay if betay is not None else self.global_parameters['beam'].beta_y_corrected
+        self.alphax = alphax if alphax is not None else self.global_parameters['beam'].alpha_x_corrected
+        self.alphay = alphay if alphay is not None else self.global_parameters['beam'].alpha_y_corrected
         self.etax = etax if etax is not None else self.global_parameters['beam'].eta_x
         self.etaxp = etaxp if etaxp is not None else self.global_parameters['beam'].eta_xp
         self.addCommand(type='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)

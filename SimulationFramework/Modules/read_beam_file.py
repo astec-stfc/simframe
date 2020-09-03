@@ -29,6 +29,8 @@ class beam(munch.Munch):
     def __init__(self, sddsindex=0):
         self.beam = {}
         self.sddsindex = sddsindex
+        self._slice_length = 0
+        self._slices = 0
 
     def set_particle_mass(self, mass=constants.m_e):
         self.particle_mass = mass
@@ -379,6 +381,7 @@ class beam(munch.Munch):
         self.reset_dicts()
         if gdfbeam is None and not file is None:
             gdfbeam = self.read_gdf_beam_file_object(file)
+            self.gdfbeam = gdfbeam
         elif gdfbeam is None and file is None:
             return None
 
@@ -393,9 +396,9 @@ class beam(munch.Munch):
             else:
                 print('GDF DID NOT find position ', position)
                 position = None
-        elif position is None and time is not None and block is not None:
-            # print 'Assuming time over block!'
-            self.beam['longitudinal_reference'] = 'p'
+        elif position is None and time is not None and block is None:
+            # print('Assuming time over block!')
+            self.beam['longitudinal_reference'] = 'z'
             gdfbeamdata = gdfbeam.get_time(time)
             if gdfbeamdata is not None:
                 block = None
@@ -419,6 +422,12 @@ class beam(munch.Munch):
             # print( 't!')
             self.beam['t'] = gdfbeamdata.t
             self.beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
+        else:
+            pass
+            # print('not z and not t !!')
+            # print('z = ', hasattr(gdfbeamdata,'z'))
+            # print('t = ', hasattr(gdfbeamdata,'t'))
+            # print('longitudinal_reference = ', longitudinal_reference)
         self.beam['gamma'] = gdfbeamdata.G
         if hasattr(gdfbeamdata,'q') and  hasattr(gdfbeamdata,'nmacro'):
             self.beam['charge'] = gdfbeamdata.q * gdfbeamdata.nmacro
@@ -593,9 +602,10 @@ class beam(munch.Munch):
         return abs(X[indexes][-1] - X[indexes][0]), indexes
 
     def covariance(self, u, up):
-        u2 = u - np.mean(u)
-        up2 = up - np.mean(up)
-        return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
+        # u2 = u - np.mean(u)
+        # up2 = up - np.mean(up)
+        # return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
+        return float(np.cov([u,up])[0,1])
 
     def emittance(self, x, xp, p=None):
         cov_x = self.covariance(x, x)
@@ -711,8 +721,10 @@ class beam(munch.Munch):
 
     def eta_correlation(self, u):
         return self.covariance(u,self.p) / self.covariance(self.p, self.p)
+
     def eta_corrected(self, u):
         return u - self.eta_correlation(u)*self.p
+        
     @property
     def horizontal_emittance_corrected(self):
         xc = self.eta_corrected(self.x)
@@ -774,20 +786,28 @@ class beam(munch.Munch):
 
     @slices.setter
     def slices(self, slices):
+        self.set_slices(slices)
+
+    def set_slices(self, slices):
         twidth = (max(self.t) - min(self.t))
+        # print('twidth = ', twidth)
         if twidth == 0:
             t = self.z / (-1 * self.Bz * constants.speed_of_light)
             twidth = (max(t) - min(t))
         if slices == 0:
             slices = int(twidth / 0.1e-12)
+        # print('slices = ', slices)
         self._slices = slices
-        self._slicelength = twidth / self._slices
+        self._slicelength = twidth / slices
+        # if not hasattr(self,'_slicelength'):
+        #     print('no slicelength even though I just set it')
 
     def bin_time(self):
         if not hasattr(self,'slice'):
             self.slice = {}
-        if not hasattr(self,'_slicelength'):
-            self.slice_length = 0
+        if not self.slice_length > 0:
+            # print('no slicelength', self.slice_length)
+            self._slice_length = 0
             # print("Assuming slice length is 100 fs")
         twidth = (max(self.t) - min(self.t))
         if twidth == 0:
@@ -797,6 +817,7 @@ class beam(munch.Munch):
             t = self.t
         if not self.slice_length > 0.0:
             self.slice_length = twidth / 20.0
+        # print('slicelength =', self.slice_length)
         nbins = max([1,int(np.ceil(twidth / self.slice_length))])+2
         self._hist, binst =  np.histogram(t, bins=nbins, range=(min(t)-self.slice_length, max(t)+self.slice_length))
         self.slice['t_Bins'] = binst
@@ -1126,6 +1147,7 @@ class beam(munch.Munch):
 
     @property
     def eta_x(self):
+        # print('etax = ', self.calculate_etax()[0])
         return self.calculate_etax()[0]
 
     @property
@@ -1133,23 +1155,20 @@ class beam(munch.Munch):
         return self.calculate_etax()[1]
 
     def calculate_etax(self):
-        p = self.cp
+        p = self.cpz
         pAve = np.mean(p)
-        p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = -pAve * S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = -pAve * S26/S66 if S66 else 0
+        p = [(a / pAve) - 1 for a in p]
+        S16, S66 = self.covariance(self.x, p), self.covariance(p, p)
+        eta1 = S16/S66 if S66 else 0
+        S26 = self.covariance(self.xp, p)
+        etap1 = S26/S66 if S66 else 0
         return eta1, etap1, np.mean(self.t)
 
     def performTransformation(self, x, xp, beta=False, alpha=False, nEmit=False):
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = S26/S66 if S66 else 0
+        eta1, etap1, _ = self.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1
@@ -1205,10 +1224,7 @@ class beam(munch.Munch):
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
-        S11, S16, S66 = self.computeCorrelations(self.x, self.cp)
-        eta1 = S16/S66 if S66 else 0
-        S22, S26, S66 = self.computeCorrelations(self.xp, self.cp)
-        etap1 = S26/S66 if S66 else 0
+        eta1, etap1, _ = self.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1

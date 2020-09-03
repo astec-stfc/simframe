@@ -142,6 +142,7 @@ class Framework(Munch):
             return v
 
     def detect_changes(self, elementtype=None, elements=None, function=None):
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
         start = time.time()
         changedict = {}
         if elementtype is not None:
@@ -173,8 +174,8 @@ class Framework(Munch):
                     orig = self.original_elementObjects[e]
                     new = unmunchify(self.elementObjects[e])
                     try:
-                        changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k]}
-                        changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig})
+                        changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
+                        changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
                     except:
                         print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                         pass
@@ -201,7 +202,7 @@ class Framework(Munch):
                 return
             elements = list(self.latticeObjects[lattice].elements.keys())
             filename =  pre + '_' + lattice + '_lattice.yaml'
-        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults','global_parameters']
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
         for e in elements:
             new = unmunchify(self.elementObjects[e])
             if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
@@ -331,11 +332,26 @@ class Framework(Munch):
         # set(getattr(self.elementObjects[elementName], parameter), value)
 
     def add_Generator(self, default=None, **kwargs):
-        if default in astra_generator_keywords['defaults']:
-            self.generator = ASTRAGenerator(self.executables, self.global_parameters, **merge_two_dicts(kwargs,astra_generator_keywords['defaults'][default]))
+        if 'code' in generator_keywords:
+            if generator_keywords['code'].lower() == "gpt":
+                code = GPTGenerator
+            else:
+                code = ASTRAGenerator
         else:
-            self.generator = ASTRAGenerator(self.executables, self.global_parameters, **kwargs)
+            code = ASTRAGenerator
+        if default in generator_keywords['defaults']:
+            self.generator = code(self.executables, self.global_parameters, **merge_two_dicts(kwargs, generator_keywords['defaults'][default]))
+        else:
+            self.generator = code(self.executables, self.global_parameters, **kwargs)
         self.latticeObjects['generator'] = self.generator
+
+    def change_generator(self, generator):
+        old_kwargs = self.generator.kwargs
+        if generator.lower() == "gpt":
+            generator = GPTGenerator(self.executables, self.global_parameters, **old_kwargs)
+        else:
+            generator = ASTRAGenerator(self.executables, self.global_parameters, **old_kwargs)
+        self.latticeObjects['generator'] = generator
 
     def loadParametersFile(self, file):
         pass
@@ -363,6 +379,10 @@ class Framework(Munch):
         # try:
         # elem = self.getelement(k, v)
         # outputfile.write(k+' '+v+' ')
+
+    def set_lattice_prefix(self, lattice, prefix):
+        if lattice in self.latticeObjects:
+            self.latticeObjects[lattice].prefix = prefix
 
     def __getitem__(self,key):
         if key in super(Framework, self).__getitem__('elementObjects'):
@@ -415,7 +435,7 @@ class Framework(Munch):
                     if track:
                         self.generator.run()
                     if postprocess:
-                        self.generator.astra_to_hdf5()
+                        self.generator.postProcess()
                 else:
                     if i == (len(files) - 1):
                         format_custom_text.update_mapping(running='Finished')
@@ -441,7 +461,7 @@ class Framework(Munch):
                         self.generator.run()
                     self.progress = 100. * (i+0.66)/len(files)
                     if postprocess:
-                        self.generator.astra_to_hdf5()
+                        self.generator.postProcess()
                 else:
                     if preprocess:
                         self.latticeObjects[l].preProcess()
