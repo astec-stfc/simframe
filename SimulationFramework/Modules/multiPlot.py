@@ -143,7 +143,11 @@ class multiPlotWidget(QWidget):
                         except:
                             pass
                 del self.curves[n]
+                self.removeData(n)
         self.updateCurveHighlights()
+
+    def removeData(self, name):
+        pass
 
     def clearCurves(self):
         self.removeCurve(self.curves.keys())

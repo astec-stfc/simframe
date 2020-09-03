@@ -16,13 +16,15 @@ lattice.change_Lattice_Code('All','ASTRA', exclude=['injector400','VBC'])
 # Again, but put the VBC in Elegant for CSR
 lattice.change_Lattice_Code('VBC','elegant')
 # This is the code that generates the laser distribution (ASTRA or GPT)
-lattice.change_generator('ASTRA')
+lattice.change_generator('GPT')
+print(lattice.generator.parameters)
+exit()
 # Load a starting laser distribution setting
 lattice.generator.load_defaults('clara_400_2ps_Gaussian')
 # Set the thermal emittance for the generator
 lattice.generator.thermal_emittance = 0.0005
 # This is a scaling parameter
-scaling = 5
+scaling = 3
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
 lattice.generator.number_of_particles = 2**(3*scaling)
 # Track the whole lattice

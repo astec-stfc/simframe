@@ -167,7 +167,7 @@ class frameworkGenerator(Munch):
 
     @property
     def parameters(self):
-        return self.values()
+        return self.toDict()
 
     def __getattr__(self, a):
         if a in self.keys():
