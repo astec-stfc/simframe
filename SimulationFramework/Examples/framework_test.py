@@ -17,8 +17,6 @@ lattice.change_Lattice_Code('All','ASTRA', exclude=['injector400','VBC'])
 lattice.change_Lattice_Code('VBC','elegant')
 # This is the code that generates the laser distribution (ASTRA or GPT)
 lattice.change_generator('GPT')
-print(lattice.generator.parameters)
-exit()
 # Load a starting laser distribution setting
 lattice.generator.load_defaults('clara_400_2ps_Gaussian')
 # Set the thermal emittance for the generator
