@@ -254,6 +254,7 @@ class twiss(munch.Munch):
 
             self['ecnx'] = np.concatenate([self['ecnx'], exn])
             self['ecny'] = np.concatenate([self['ecny'], eyn])
+            self['element_name'] = np.concatenate([self['element_name'], np.zeros(len(z))])
             self['eta_x_beam'] = np.concatenate([self['eta_x_beam'], np.zeros(len(z))])
             self['eta_xp_beam'] = np.concatenate([self['eta_xp_beam'], np.zeros(len(z))])
             self['eta_y_beam'] = np.concatenate([self['eta_y_beam'], np.zeros(len(z))])
