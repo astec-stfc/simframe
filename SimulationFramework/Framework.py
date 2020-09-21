@@ -27,10 +27,10 @@ yaml.add_constructor(_mapping_tag, dict_constructor)
 
 class Framework(Munch):
 
-    def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0):
+    def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
         super(Framework, self).__init__()
         gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
-        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense}
+        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense, 'delete_tracking_files': delete_output_files}
         self.verbose = verbose
         self.subdir = directory
         self.clean = clean

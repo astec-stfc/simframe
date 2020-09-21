@@ -167,9 +167,11 @@ class frameworkGenerator(Munch):
 
     @property
     def parameters(self):
+        """ This returns a dictionary of parameter keys and values"""
         return self.toDict()
 
     def __getattr__(self, a):
+        """ If key does not exist return None """
         if a in self.keys():
             return self[a]
         return None

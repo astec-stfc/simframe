@@ -689,12 +689,16 @@ class screen(frameworkElement):
             self.global_parameters['beam'].rotate_beamXZ(-1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
             HDF5filename = (self.objectname+'.hdf5').strip('\"')
             self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle)
+            if self.global_parameters['delete_tracking_files']:
+                os.remove((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'))
 
     def sdds_to_hdf5(self):
         elegantbeamfilename = self.output_filename.replace('.sdds','.SDDS').strip('\"')
         self.global_parameters['beam'].read_SDDS_beam_file(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
         HDF5filename = self.output_filename.replace('.sdds','.hdf5').replace('.SDDS','.hdf5').strip('\"')
         self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end)
+        if self.global_parameters['delete_tracking_files']:
+            os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
 
     def gdf_to_hdf5(self, gptbeamfilename):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
