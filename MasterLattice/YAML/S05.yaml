@@ -19,6 +19,12 @@ elements:
     global_rotation: [0, 0, 0]
     position_end: [0, 0, 24.8152]
     position_start: [0, 0, 24.6532]
+  CLA-S05-DIA-ICT-01:
+    type: integrated_current_transformer
+    length: 0.05
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 24.9119]
+    position_start: [0, 0, 24.8619]
   CLA-S05-MAG-HVCOR-01:
     type: kicker
     length: 0.05

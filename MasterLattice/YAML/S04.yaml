@@ -36,6 +36,12 @@ elements:
     global_rotation: [0, 0, 0]
     position_end: [0, 0, 16.5802]
     position_start: [0, 0, 16.4182]
+  CLA-S04-DIA-ICT-01:
+    type: integrated_current_transformer
+    length: 0.05
+    global_rotation: [0, 0, 0]
+    position_end: [0, 0, 16.6807]
+    position_start: [0, 0, 16.6307]
   CLA-S04-DIA-BPM-01:
     type: beam_position_monitor
     length: 0.21
