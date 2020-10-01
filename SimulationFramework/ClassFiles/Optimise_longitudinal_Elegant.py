@@ -1,4 +1,4 @@
-import os, errno, sys
+import os, errno, sys, shutil
 import numpy as np
 import random
 sys.path.append(os.path.abspath(__file__+'/../../../../../'))
@@ -64,6 +64,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.changes = None
         self.lattice = None
         self.resultsDict = {}
+        self.deleteFolders = True
         # ******************************************************************************
         self.CLARA_dir = os.path.relpath(__file__+'/../../CLARA')
         self.POST_INJECTOR = True
@@ -143,6 +144,9 @@ class Optimise_Elegant(runEle.fitnessFunc):
             copyfile(dir+'/changes.yaml', self.best_changes)
             self.bestfit = fitvalue
             self.framework.save_lattice()
+        else:
+            if self.deleteFolders:
+                shutil.rmtree(dir, ignore_errors=True)
         return fitvalue
 
     def Nelder_Mead(self, best=None, step=0.1, best_changes='./nelder_mead_best_changes.yaml', subdir='nelder_mead'):

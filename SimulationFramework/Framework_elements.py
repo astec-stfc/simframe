@@ -11,7 +11,7 @@ class dipole(frameworkElement):
         self.add_default('deltaL', 0)
         self.add_default('csr_enable', 1)
         self.add_default('isr_enable', True)
-        self.add_default('n_kicks', 10)
+        self.add_default('n_kicks', 30)
         self.add_default('sr_enable', True)
         self.add_default('integration_order', 4)
         self.add_default('nonlinear', 1)

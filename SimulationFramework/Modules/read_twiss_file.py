@@ -76,7 +76,7 @@ class twiss(munch.Munch):
         self['alpha_y_beam'] = []
         self.elegant = {}
 
-    def read_sdds_file(self, fileName, charge=None, ascii=False):
+    def read_sdds_file(self, fileName, ascii=False):
         # self.reset_dicts()
         self.sdds = sdds.SDDS(0)
         self.sdds.load(fileName)
