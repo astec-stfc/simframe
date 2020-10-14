@@ -29,6 +29,7 @@ class twiss(munch.Munch):
 
     def reset_dicts(self):
         self.clear()
+        self.sddsindex = 0
         self['z'] = []
         self['t'] = []
         self['kinetic_energy'] = []
