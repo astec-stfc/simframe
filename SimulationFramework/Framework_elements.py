@@ -103,6 +103,19 @@ class dipole(frameworkElement):
             return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=-1*self.y_rot)
 
     @property
+    def astra_end(self):
+        start = self.position_start
+        angle = -self.angle
+        if abs(self.angle) > 1e-9:
+            ex = -1 * (self.length * (np.cos(angle) - 1)) / angle
+            ey = 0
+            ez = (self.length * (np.sin(angle))) / angle
+            return np.array(self.position_start) + self.rotated_position(np.array([ex, ey, ez]), offset=self.starting_offset, theta=0)
+        else:
+            return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=0)
+
+
+    @property
     def width(self):
         if 'width' in self.objectproperties:
             return self.objectproperties['width']
@@ -188,10 +201,11 @@ class dipole(frameworkElement):
         theta = self.e1+rotation
         corners[0] = np.array(list(map(add, np.transpose(self.position_start), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
         corners[3] = np.array(list(map(add, np.transpose(self.position_start), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
-        theta = self.angle-self.e2+rotation
-        corners[1] = np.array(list(map(add, np.transpose(self.end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
-        corners[2] = np.array(list(map(add, np.transpose(self.end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
-        corners = [self.rotated_position(x, offset=self.starting_offset, theta=self.starting_rotation) for x in corners]
+        theta = self.angle+self.e2+rotation
+        corners[1] = np.array(list(map(add, np.transpose(self.position_end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
+        corners[2] = np.array(list(map(add, np.transpose(self.position_end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
+        # print('rotation = ', rotation)
+        # corners = [self.rotated_position(x, offset=self.starting_offset, theta=rotation) for x in corners]
         return corners
 
     def write_CSRTrack(self, n):
@@ -200,6 +214,10 @@ class dipole(frameworkElement):
         return """dipole{\nposition{rho="""+str(z1)+""", psi="""+str(chop(self.theta+self.e1))+""", marker=d"""+str(n)+"""a}\nproperties{r="""+str(self.rho)+"""}\nposition{rho="""+str(z2)+""", psi="""+str(chop(self.theta+self.angle-self.e2))+""", marker=d"""+str(n)+"""b}\n}\n"""
 
     def write_ASTRA(self, n):
+        # print('self.start = ', self.position_start)
+        # print('self.end = ', self.position_end)
+        # print('self.rotation = ', self.global_rotation[2])
+        # print('self.astra_end = ', self.astra_end)
         if abs(checkValue(self, 'strength', default=0)) > 0 or abs(self.rho) > 0:
             corners = self.corners
             if self.plane is None:
@@ -221,7 +239,7 @@ class dipole(frameworkElement):
             if abs(checkValue(self, 'strength', default=0)) > 0 or not abs(self.rho) > 0:
                 params['D_strength'] = {'value': checkValue(self, 'strength', 0), 'default': 1e6}
             else:
-                params['D_radius'] =  {'value': self.rho, 'default': 1e6}
+                params['D_radius'] =  {'value': -1*self.rho, 'default': 1e6}
             return self._write_ASTRA(params, n)
         else:
             return None
@@ -395,9 +413,17 @@ class cavity(frameworkElement):
         return cells
 
     def write_ASTRA(self, n):
+        print('wsl astra = ', self.global_parameters['astra_use_wsl'])
+        if int(self.global_parameters['astra_use_wsl']) > 1:
+            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
+            efield_def = ['FILE_EFieLD', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
+        else:
+            efield_def = ['FILE_EFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['C_pos', {'value': self.start[2] + self.dz, 'default': 0}],
-            ['FILE_EFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': 0}],
+            efield_def,
             ['C_numb', {'value': self.cells}],
             ['Nue', {'value': self.frequency / 1e9, 'default': 2998.5}],
             ['MaxE', {'value': self.field_amplitude / 1e6, 'default': 0}],
@@ -476,9 +502,16 @@ class solenoid(frameworkElement):
         super(solenoid, self).__init__(name, type, **kwargs)
 
     def write_ASTRA(self, n):
+        if int(self.global_parameters['astra_use_wsl']) > 1:
+            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
+            efield_def = ['FILE_BFieLD', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
+        else:
+            efield_def = ['FILE_BFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
-            ['FILE_BFieLD', {'value': (''+expand_substitution(self, '\''+self.field_definition+'\'')+'').replace('\\','/')}],
+            efield_def,
             ['MaxB', {'value': self.field_amplitude, 'default': 0}],
             ['S_smooth', {'value': self.smooth, 'default': 10}],
             ['S_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
@@ -938,30 +971,57 @@ class longitudinal_wakefield(cavity):
 
     def write_ASTRA(self, startn):
         self.update_field_definition()
-        current_bins = self.current_bins if self.current_bins > 0 else 11
+        if int(self.global_parameters['astra_use_wsl']) > 1:
+            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
+            efield_def = ['Wk_filename', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
+        else:
+            efield_def = ['Wk_filename', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
+        current_bins = self.lsc_bins if self.lsc_bins > 0 else 100
         output = ''
         if self.scale_kick > 0:
             for n in range(startn, startn+self.cells):
                 output += self._write_ASTRA(OrderedDict([
                     ['Wk_Type', {'value': self.waketype, 'default': '\'Taylor_Method_F\''}],
-                    ['Wk_filename', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': 0}],
+                    efield_def,
                     ['Wk_x', {'value': self.x_offset, 'default': 0}],
                     ['Wk_y', {'value': self.y_offset, 'default': 0}],
-                    ['Wk_z', {'value': self.start[2] + self.coupling_cell_length + (n-1)*self.cell_length}],
+                    ['Wk_z', {'value': self.start[2] + self.coupling_cell_length + (0.5+n-1)*self.cell_length}],
                     ['Wk_ex', {'value': self.scale_field_ex, 'default': 0}],
                     ['Wk_ey', {'value': self.scale_field_ey, 'default': 0}],
                     ['Wk_ez', {'value': self.scale_field_ez, 'default': 1}],
                     ['Wk_hx', {'value': self.scale_field_hx, 'default': 1}],
                     ['Wk_hy', {'value': self.scale_field_hy, 'default': 0}],
                     ['Wk_hz', {'value': self.scale_field_hz, 'default': 0}],
-                    ['Wk_equi_grid', {'value': self.equal_grid, 'default': 0}],
-                    ['Wk_N_bin', {'value': current_bins, 'default': 11}],
+                    ['Wk_equi_grid', {'value': self.equal_grid, 'default': 0.5}],
+                    ['Wk_N_bin', {'value': 4, 'default': 100}],
                     ['Wk_ip_method', {'value': self.interpolation_method, 'default': 2}],
                     ['Wk_smooth', {'value': self.smooth, 'default': 0.5}],
-                    ['Wk_sub', {'value': self.subbins, 'default': 4}],
-                    ['Wk_scaling', {'value': self.scale_kick, 'default': 1}],
+                    ['Wk_sub', {'value': self.subbins, 'default': 3}],
+                    ['Wk_scaling', {'value': 1*self.scale_kick, 'default': 1}],
                 ]), n)
                 output += '\n'
+            # output += self._write_ASTRA(OrderedDict([
+            #     ['Wk_Type', {'value': self.waketype, 'default': '\'Taylor_Method_F\''}],
+            #     efield_def,
+            #     ['Wk_x', {'value': self.x_offset, 'default': 0}],
+            #     ['Wk_y', {'value': self.y_offset, 'default': 0}],
+            #     ['Wk_z', {'value': self.end[2]}],
+            #     ['Wk_ex', {'value': self.scale_field_ex, 'default': 0}],
+            #     ['Wk_ey', {'value': self.scale_field_ey, 'default': 0}],
+            #     ['Wk_ez', {'value': self.scale_field_ez, 'default': 1}],
+            #     ['Wk_hx', {'value': self.scale_field_hx, 'default': 1}],
+            #     ['Wk_hy', {'value': self.scale_field_hy, 'default': 0}],
+            #     ['Wk_hz', {'value': self.scale_field_hz, 'default': 0}],
+            #     ['Wk_equi_grid', {'value': self.equal_grid, 'default': 0.5}],
+            #     ['Wk_N_bin', {'value': current_bins, 'default': 100}],
+            #     ['Wk_ip_method', {'value': self.interpolation_method, 'default': 2}],
+            #     ['Wk_smooth', {'value': self.smooth, 'default': 0.5}],
+            #     ['Wk_sub', {'value': self.subbins, 'default': 10}],
+            #     ['Wk_scaling', {'value': self.cells*self.scale_kick, 'default': self.cells*self.scale_kick}],
+            # ]), 1)
+            output += '\n'
         return output
 
     def _write_Elegant(self):

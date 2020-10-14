@@ -38,7 +38,7 @@ class elegantLattice(frameworkLattice):
         lscbins = self.lsc_bins if self.lscDrifts is True else 0
         csr = 1 if self.csrDrifts is True else 0
         lsc = 1 if self.lscDrifts is True else 0
-        drifttype = csrdrift if self.csrDrifts else lscdrift
+        drifttype = lscdrift
 
         for e, d in driftdata:
             if e[1]['objecttype'] == 'screen' and e[1]['length'] > 0:
@@ -71,6 +71,8 @@ class elegantLattice(frameworkLattice):
                 newelements[name] = newdrift
             else:
                 newelements[e[0]] = e[1]
+            if e[1]['objecttype'] == 'dipole':
+                drifttype = csrdrift if self.csrDrifts else lscdrift
             if len(d) > 1:
                 x1, y1, z1 = d[0]
                 x2, y2, z2 = d[1]

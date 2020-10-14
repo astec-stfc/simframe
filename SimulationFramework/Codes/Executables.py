@@ -3,10 +3,12 @@ import os
 
 class Executables(object):
 
-    def __init__(self, master_lattice):
+    def __init__(self, global_parameters):
         super(Executables, self).__init__()
         self.osname = os.name
         self.hostname = socket.gethostname()
+        self.global_parameters = global_parameters
+        master_lattice = self.global_parameters['master_lattice_location']
         if master_lattice is None:
             self.master_lattice_location = (os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/').replace('\\','/')
         else:
@@ -57,7 +59,13 @@ class Executables(object):
             elif 'apclara3' in self.hostname:
                 self.astra =  ['salloc','-n',str(ncpu),'/usr/lib64/compat-openmpi16/bin/mpirun','/opt/ASTRA/astra_r62_Linux_x86_64_OpenMPI_sld6']
         else:
-            self.astra =  [self.master_lattice_location+'Codes/astra']
+            if int(self.global_parameters['astra_use_wsl']) > 1:
+                # print('WSL ASTRA in use! ncpu = ', self.global_parameters['astra_use_wsl'])
+                wsl_cpu = int(self.global_parameters['astra_use_wsl'])
+                self.astra =  ['wsl','mpiexec','-np',str(wsl_cpu),'/opt/ASTRA/astra_MPICH2.sh']
+            else:
+                # print('Serial ASTRA in use!')
+                self.astra =  [self.master_lattice_location+'Codes/astra']
 
     def define_elegant_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)

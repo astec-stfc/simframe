@@ -118,9 +118,9 @@ class multiPlotWidget(QWidget):
     def addCurve(self, x, y, name, label, pen):
         ''' adds a curve to the main plot '''
         self.curves[name][label] = self.multiPlotWidgets[label].plot(x=x, y=y, pen=pen)
-        self.curves[name][label].curve.setClickable(True)
-        self.curves[name][label].sigClicked.connect(lambda: self.curveClicked(name))
-        self.updateCurveHighlights()
+        # self.curves[name][label].curve.setClickable(True)
+        # self.curves[name][label].sigClicked.connect(lambda: self.curveClicked(name))
+        # self.updateCurveHighlights()
 
     def updateCurve(self, x, y, name, label):
         ''' updates a curve to the main plot '''
@@ -144,7 +144,7 @@ class multiPlotWidget(QWidget):
                             pass
                 del self.curves[n]
                 self.removeData(n)
-        self.updateCurveHighlights()
+        # self.updateCurveHighlights()
 
     def removeData(self, name):
         pass

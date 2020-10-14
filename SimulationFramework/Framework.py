@@ -30,7 +30,8 @@ class Framework(Munch):
     def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
         super(Framework, self).__init__()
         gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
-        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense, 'delete_tracking_files': delete_output_files}
+        astra_use_wsl = os.environ['WSL_ASTRA'] if 'WSL_ASTRA' in os.environ else 1
+        self.global_parameters = {'beam': rbf.beam(sddsindex=sddsindex), 'GPTLICENSE': gptlicense, 'delete_tracking_files': delete_output_files, 'astra_use_wsl': astra_use_wsl}
         self.verbose = verbose
         self.subdir = directory
         self.clean = clean
@@ -47,7 +48,7 @@ class Framework(Munch):
             self.setSubDirectory(self.subdir)
         self.setMasterLatticeLocation(master_lattice)
 
-        self.executables = exes.Executables(self.global_parameters['master_lattice_location'])
+        self.executables = exes.Executables(self.global_parameters)
         self.defineASTRACommand = self.executables.define_astra_command
         self.defineElegantCommand = self.executables.define_elegant_command
         self.defineASTRAGeneratorCommand = self.executables.define_ASTRAgenerator_command

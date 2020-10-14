@@ -51,17 +51,17 @@ class beam(munch.Munch):
 
     def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
         self.reset_dicts()
-        self.sdds = sdds.SDDS(self.sddsindex)
-        self.sdds.load(fileName)
-        for col in range(len(self.sdds.columnName)):
-            if len(self.sdds.columnData[col]) == 1:
-                self.beam[self.sdds.columnName[col]] = np.array(self.sdds.columnData[col][0])
+        self.sddsindex + 1
+        sddsref = sdds.SDDS(self.sddsindex%15)
+        sddsref.load(fileName)
+        for col in range(len(sddsref.columnName)):
+            if len(sddsref.columnData[col]) == 1:
+                self.beam[sddsref.columnName[col]] = np.array(sddsref.columnData[col][0])
             else:
-                self.beam[self.sdds.columnName[col]] = np.array(self.sdds.columnData[col])
-        self.SDDSparameters = dict()
-        for param in range(len(self.sdds.parameterName)):
-            self.SDDSparameters[self.sdds.parameterName[param]] = self.sdds.parameterData[param]
-        # print 'self.SDDSparameterNames = ', self.SDDSparameterNames
+                self.beam[sddsref.columnName[col]] = np.array(sddsref.columnData[col])
+        SDDSparameters = dict()
+        for param in range(len(sddsref.parameterName)):
+            SDDSparameters[sddsref.parameterName[param]] = sddsref.parameterData[param]
         self.beam['code'] = "SDDS"
         cp = self.beam['p'] * self.E0_eV
         cpz = cp / np.sqrt(self.beam['xp']**2 + self.beam['yp']**2 + 1)
@@ -72,8 +72,8 @@ class beam(munch.Munch):
         self.beam['pz'] = cpz * self.q_over_c
         self.beam['t'] = self.beam['t']
         self.beam['z'] = (-1*self.Bz * constants.speed_of_light) * (self.t-np.mean(self.t)) #np.full(len(self.t), 0)
-        if 'Charge' in self.SDDSparameters and len(self.SDDSparameters['Charge']) > 0:
-            self.beam['total_charge'] = self.SDDSparameters['Charge'][0]
+        if 'Charge' in SDDSparameters and len(SDDSparameters['Charge']) > 0:
+            self.beam['total_charge'] = SDDSparameters['Charge'][0]
         elif charge is None:
             self.beam['total_charge'] = 0
         else:
@@ -85,7 +85,8 @@ class beam(munch.Munch):
         xoffset = xyzoffset[0]
         yoffset = xyzoffset[1]
         zoffset = xyzoffset[2] # Don't think I need this because we are using t anyway...
-        x = sdds.SDDS(self.sddsindex)
+        self.sddsindex += 1
+        x = sdds.SDDS(self.sddsindex%15)
         if ascii:
             x.mode = x.SDDS_ASCII
         else:
@@ -724,7 +725,7 @@ class beam(munch.Munch):
 
     def eta_corrected(self, u):
         return u - self.eta_correlation(u)*self.p
-        
+
     @property
     def horizontal_emittance_corrected(self):
         xc = self.eta_corrected(self.x)

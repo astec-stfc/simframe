@@ -252,7 +252,7 @@ class astra_charge(astra_header):
             sc_n_dict = OrderedDict([
                 ['nxf', {'value': self.grid_size, 'default': 8}],
                 ['nyf', {'value': self.grid_size, 'default': 8}],
-                ['nzf', {'value': 2*self.grid_size, 'default': 8}],
+                ['nzf', {'value': self.grid_size, 'default': 8}],
             ])
         else:
             sc_n_dict = OrderedDict([])

@@ -180,13 +180,13 @@ class twiss(munch.Munch):
         else:
             if 'xemit' not in filename.lower():
                 filename = filename.replace('Yemit','Xemit').replace('Zemit','Xemit')
-            xemit = np.loadtxt(filename, unpack=False)
+            xemit = np.loadtxt(filename, unpack=False) if os.path.isfile(filename) else False
             if 'yemit' not in filename.lower():
                 filename = filename.replace('Xemit','Yemit').replace('Zemit','Yemit')
-            yemit = np.loadtxt(filename, unpack=False)
+            yemit = np.loadtxt(filename, unpack=False) if os.path.isfile(filename) else False
             if 'zemit' not in filename.lower():
                 filename = filename.replace('Xemit','Zemit').replace('Yemit','Zemit')
-            zemit = np.loadtxt(filename, unpack=False)
+            zemit = np.loadtxt(filename, unpack=False) if os.path.isfile(filename) else False
             self.interpret_astra_data(xemit, yemit, zemit)
 
     def read_hdf_summary(self, filename, reset=True):
