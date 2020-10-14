@@ -51,8 +51,8 @@ class beam(munch.Munch):
 
     def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
         self.reset_dicts()
-        self.sddsindex + 1
-        sddsref = sdds.SDDS(self.sddsindex%15)
+        self.sddsindex += 1
+        sddsref = sdds.SDDS(self.sddsindex%20)
         sddsref.load(fileName)
         for col in range(len(sddsref.columnName)):
             if len(sddsref.columnData[col]) == 1:
@@ -86,7 +86,7 @@ class beam(munch.Munch):
         yoffset = xyzoffset[1]
         zoffset = xyzoffset[2] # Don't think I need this because we are using t anyway...
         self.sddsindex += 1
-        x = sdds.SDDS(self.sddsindex%15)
+        x = sdds.SDDS(self.sddsindex%20)
         if ascii:
             x.mode = x.SDDS_ASCII
         else:

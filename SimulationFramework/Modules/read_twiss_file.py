@@ -18,6 +18,7 @@ class twiss(munch.Munch):
     def __init__(self):
         super(twiss, self).__init__()
         self.reset_dicts()
+        self.sddsindex = 0
 
     def find_nearest(self, array, value):
         idx = np.searchsorted(array, value, side="left")
@@ -77,19 +78,19 @@ class twiss(munch.Munch):
         self.elegant = {}
 
     def read_sdds_file(self, fileName, ascii=False):
-        # self.reset_dicts()
-        self.sdds = sdds.SDDS(0)
-        self.sdds.load(fileName)
-        for col in range(len(self.sdds.columnName)):
-            # print 'col = ', self.sdds.columnName[col]
-            if len(self.sdds.columnData[col]) == 1:
-                self.elegant[self.sdds.columnName[col]] = np.array(self.sdds.columnData[col][0])
+        self.sddsindex += 1
+        sddsref = sdds.SDDS(self.sddsindex%20)
+        sddsref.load(fileName)
+        for col in range(len(sddsref.columnName)):
+            # print 'col = ', sddsref.columnName[col]
+            if len(sddsref.columnData[col]) == 1:
+                self.elegant[sddsref.columnName[col]] = np.array(sddsref.columnData[col][0])
             else:
-                self.elegant[self.sdds.columnName[col]] = np.array(self.sdds.columnData[col])
+                self.elegant[sddsref.columnName[col]] = np.array(sddsref.columnData[col])
         self.SDDSparameterNames = list()
-        for i, param in enumerate(self.sdds.parameterName):
+        for i, param in enumerate(sddsref.parameterName):
             # print 'param = ', param
-            self.elegant[param] = self.sdds.parameterData[i]
+            self.elegant[param] = sddsref.parameterData[i]
             # if isinstance(self[param][0], (float, long)):
             #     self.SDDSparameterNames.append(param)
 
