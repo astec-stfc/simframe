@@ -14,20 +14,28 @@ lattice.loadSettings('Lattices/clara400_v12_v3.def')
 # Change all lattice codes to ASTRA/Elegant/GPT with exclusions (injector can not be done in Elegant)
 lattice.change_Lattice_Code('All','ASTRA', exclude=['injector400','VBC'])
 # Again, but put the VBC in Elegant for CSR
-lattice.change_Lattice_Code('VBC','elegant')
+lattice.change_Lattice_Code('VBC','ASTRA')
 # This is the code that generates the laser distribution (ASTRA or GPT)
-lattice.change_generator('GPT')
+# lattice.change_generator('GPT')
 # Load a starting laser distribution setting
 lattice.generator.load_defaults('clara_400_2ps_Gaussian')
 # Set the thermal emittance for the generator
-lattice.generator.thermal_emittance = 0.0005
+# lattice.generator.thermal_emittance = 0.0005
 # This is a scaling parameter
 scaling = 3
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
 lattice.generator.number_of_particles = 2**(3*scaling)
 # Track the whole lattice
-lattice.track()
+lattice.track(files=['VBC'])
 
+lattice = fw.Framework('example_ASTRA_OM', clean=False, verbose=True)
+lattice.loadSettings('Lattices/CLA10-BA1_OM.def')
+lattice.change_Lattice_Code('CLA-C2V','ASTRA')
+lattice.generator.load_defaults('clara_400_2ps_Gaussian')
+scaling = 3
+lattice.generator.number_of_particles = 2**(3*scaling)
+lattice.track(files=['CLA-C2V'])
+exit()
 # This time we will use CSRTrack for the VBC
 lattice = fw.Framework('example_ASTRA_CSRTrack', clean=False, verbose=True)
 lattice.loadSettings('Lattices/clara400_v12_v3.def')
@@ -38,7 +46,7 @@ lattice.change_Lattice_Code('VBC','csrtrack')
 # Here we tell SimFrame where to look for the starting files (the "prefix" parameter) for the lattice we want to run
 lattice.set_lattice_prefix('S02', '../example_ASTRA/')
 # Here we ony run from the VBC
-lattice.track(startfile='VBC',endfile='S07')
+# lattice.track(startfile='VBC',endfile='S07')
 
 # This time we will use Elegant for everything except the injector
 lattice = fw.Framework('example_Elegant', clean=False, verbose=True)
@@ -48,7 +56,7 @@ lattice.change_Lattice_Code('All','elegant', exclude=['injector400'])
 # Set the prefix for S02 (where we will start)
 lattice.set_lattice_prefix('S02', '../example_ASTRA/')
 # Run from S02 onwards
-lattice.track(startfile='S02', endfile='S07')
+# lattice.track(startfile='S02', endfile='S07')
 
 # Unless you have GPT installed, don't run this.
 lattice = fw.Framework('example_GPT', clean=False, verbose=True)

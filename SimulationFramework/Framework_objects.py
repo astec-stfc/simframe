@@ -394,6 +394,7 @@ class chicane(frameworkGroup):
         indices = list(sorted([list(self.allElementObjects).index(e) for e in self.elements]))
         dipole_objs = [self.allElementObjects[e] for e in self.elements]
         obj = [self.allElementObjects[list(self.allElementObjects)[e]] for e in range(indices[0],indices[-1]+1)]
+        # ratios = [np.sign(dip.angle) for dip in dipole_objs]
         starting_angle = obj[0].theta
         dipole_number = 0
         for i in range(len(obj)):
@@ -410,8 +411,9 @@ class chicane(frameworkGroup):
             if i < len(obj)-1:
                 xend, yend, zend = obj[i+1].position_start
                 angle = starting_angle + elem_angle
+                # print('angle = ', angle, starting_angle, obj[i+1].objectname)
                 length = float((-zstart + zend))
-                endx = chop(float(xstart + np.tan(angle)*length))
+                endx = chop(float(xstart - np.tan(angle)*length))
                 obj[i+1].position_start[0] =  endx
                 obj[i+1].global_rotation[2] =  angle
                 starting_angle += elem_angle

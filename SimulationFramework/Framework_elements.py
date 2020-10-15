@@ -94,18 +94,19 @@ class dipole(frameworkElement):
     @property
     def end(self):
         start = self.position_start
-        if abs(self.angle) > 1e-9:
-            ex = -1. * (self.length * (np.cos(self.angle) - 1)) / self.angle
+        angle = self.angle
+        if abs(angle) > 1e-9:
+            ex = (self.length * (np.cos(angle) - 1)) / angle
             ey = 0
-            ez = (self.length * (np.sin(self.angle))) / self.angle
-            return np.array(self.position_start) + self.rotated_position(np.array([ex, ey, ez]), offset=self.starting_offset, theta=-1*self.y_rot)
+            ez = (self.length * (np.sin(angle))) / angle
+            return np.array(self.position_start) + self.rotated_position(np.array([ex, ey, ez]), offset=self.starting_offset, theta=self.y_rot)
         else:
-            return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=-1*self.y_rot)
+            return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=self.y_rot)
 
     @property
     def astra_end(self):
         start = self.position_start
-        angle = -self.angle
+        angle = self.angle
         if abs(self.angle) > 1e-9:
             ex = -1 * (self.length * (np.cos(angle) - 1)) / angle
             ey = 0
@@ -201,9 +202,9 @@ class dipole(frameworkElement):
         theta = self.e1+rotation
         corners[0] = np.array(list(map(add, np.transpose(self.position_start), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
         corners[3] = np.array(list(map(add, np.transpose(self.position_start), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
-        theta = self.angle+self.e2+rotation
-        corners[1] = np.array(list(map(add, np.transpose(self.position_end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
-        corners[2] = np.array(list(map(add, np.transpose(self.position_end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
+        theta = self.angle-self.e2+rotation
+        corners[1] = np.array(list(map(add, np.transpose(self.end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
+        corners[2] = np.array(list(map(add, np.transpose(self.end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
         # print('rotation = ', rotation)
         # corners = [self.rotated_position(x, offset=self.starting_offset, theta=rotation) for x in corners]
         return corners
