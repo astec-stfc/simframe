@@ -413,7 +413,7 @@ class cavity(frameworkElement):
         return cells
 
     def write_ASTRA(self, n):
-        print('wsl astra = ', self.global_parameters['astra_use_wsl'])
+        # print('wsl astra = ', self.global_parameters['astra_use_wsl'])
         if int(self.global_parameters['astra_use_wsl']) > 1:
             efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
             efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
