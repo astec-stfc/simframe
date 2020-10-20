@@ -177,6 +177,8 @@ class Framework(Munch):
                     try:
                         changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
                         changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
+                        if changedict[e] == {}:
+                            del changedict[e]
                     except:
                         print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                         pass
@@ -193,6 +195,8 @@ class Framework(Munch):
     def save_lattice(self, lattice=None, filename=None, directory='.'):
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
+        else:
+            pre, ext = os.path.splitext(os.path.basename(filename))
         dict = OrderedDict({'elements': OrderedDict()})
         latticedict = dict['elements']
         if lattice is None:
