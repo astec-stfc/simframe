@@ -20,6 +20,7 @@ class gptLattice(frameworkLattice):
         # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=250e-12)
         start = self.allElementObjects[self.start].start[2]
         end = self.allElementObjects[self.end].end[2]
+        self.ignore_start_screen = None
 
         # self.headers['tout'] = gpt_tout(startpos=0, endpos=self.allElementObjects[self.end].end[2], step=0.1)
 
@@ -41,23 +42,26 @@ class gptLattice(frameworkLattice):
             if i ==0:
                 screen0pos = element.start[2]
                 ccs = element.gpt_ccs(ccs)
-            if i == 0 and element.objecttype == "screen":
-                pass
+            if i == 0 and isinstance(element, screen):
+                self.ignore_start_screen = element
             else:
                 fulltext += element.write_GPT(self.Brho, ccs=ccs)
                 new_ccs = element.gpt_ccs(ccs)
                 if not new_ccs == ccs:
                     # print('ccs = ', ccs, '  new_ccs = ', new_ccs)
                     relpos, relrot = ccs.relative_position(element.end, element.global_rotation)
+                    # fulltext += '#' + ccs.name + str(relpos) + str(relrot)+'\n'
                     fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos) + ', ' + str(relpos[2]) + ', 0.1);\n'
                     screen0pos = 0
                 ccs = new_ccs
-        if not element.objecttype == "screen":
-            self.endScreenObject = self.endScreen()
+        if not isinstance(element, screen):
+            element = self.endScreenObject = self.endScreen()
             fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs)
         else:
+            # print('End screen', element.objectname)
             self.endScreenObject = None
         relpos, relrot = ccs.relative_position(element.position_end, element.global_rotation)
+        # fulltext += '#' + ccs.name + str(relpos) + str(relrot)+'\n'
         fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos) + ', ' + str(relpos[2]) + ', 0.1);\n'
         return fulltext
 
@@ -90,7 +94,10 @@ class gptLattice(frameworkLattice):
 
     def postProcess(self):
         for e in self.screens_and_bpms:
-            e.gdf_to_hdf5(self.objectname + '_out.gdf')
+            if not e == self.ignore_start_screen:
+                e.gdf_to_hdf5(self.objectname + '_out.gdf')
+            # else:
+                # print('Ignoring', self.ignore_start_screen.objectname)
         if self.endScreenObject is not None:
             self.endScreenObject.gdf_to_hdf5(self.objectname + '_out.gdf')
 
@@ -104,9 +111,10 @@ class gptLattice(frameworkLattice):
         meanBz = np.mean(self.global_parameters['beam'].Bz)
         if meanBz < 0.5:
             meanBz = 0.75
-        self.headers['tout'] = gpt_tout(starttime=min(self.global_parameters['beam'].t), endpos=self.allElementObjects[self.end].end[2]/meanBz, step=0.1)
+        # print(self.findS(self.end), self.findS(self.start))
+        self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step='0.1/c')
         gdfbeamfilename = self.particle_definition+'.gdf'
-        self.global_parameters['beam'].write_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt')
+        self.global_parameters['beam'].write_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0])
         subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.particle_definition+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho
 
@@ -171,11 +179,11 @@ class gpt_spacecharge(gpt_element):
 
     def write_GPT(self, *args, **kwargs):
         output = 'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
-        if self.space_charge_mode.lower() == 'cathode':
+        if isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == 'cathode':
             output += 'spacecharge3Dmesh("Cathode","BeamScale",1e-2,1e+2,"MeshBoxAccuracy",0.02,"MeshNtotal",32,32,32,"MeshNbunch",16,16,16);\n'
-        elif self.space_charge_mode.lower() == '3d':
+        elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '3d':
             output += 'Spacecharge3Dmesh();\n'
-        elif self.space_charge_mode.lower() == '2d':
+        elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '2d':
             output += 'sc3dmesh();\n'
         else:
             output = ''
@@ -193,8 +201,8 @@ class gpt_tout(gpt_element):
             output += str(self.starttime) + ','
         else:
             output += str(self.startpos) + '/c,'
-        output += str(self.endpos) + '/c,'
-        output += str(self.step) + '/c);\n'
+        output += str(self.endpos) + ','
+        output += str(self.step) + ');\n'
         return output
 
 class gpt_csr1d(gpt_element):

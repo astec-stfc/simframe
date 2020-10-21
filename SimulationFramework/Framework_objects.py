@@ -16,7 +16,7 @@ with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/type_conversion_ru
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/commands_Elegant.yaml', 'r') as infile:
     commandkeywords = yaml.load(infile, Loader=yaml.UnsafeLoader)
 
-with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elementkeywords.yaml', 'r') as infile:
+with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/elementkeywords.yaml', 'r') as infile:
     elementkeywords = yaml.load(infile, Loader=yaml.UnsafeLoader)
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/keyword_conversion_rules_elegant.yaml', 'r') as infile:
@@ -224,6 +224,113 @@ class frameworkLattice(Munch):
                 str += '&\n'
             str += e+', '
         return str + ')'
+
+    def createDrifts(self):
+        """Insert drifts into a sequence of 'elements'"""
+        positions = []
+        originalelements = OrderedDict()
+        elementno = 0
+        newelements = OrderedDict()
+        for name in list(self.elements.keys()):
+            if not self.elements[name].subelement:
+                originalelements[name] = self.elements[name]
+                pos = np.array(self.allElementObjects[name].position_start)
+                positions.append(pos)
+                positions.append(self.allElementObjects[name].position_end)
+        positions = positions[1:]
+        positions.append(positions[-1])
+        driftdata = list(zip(iter(list(originalelements.items())), list(chunks(positions, 2))))
+
+        lscbins = self.lsc_bins if self.lscDrifts is True else 0
+        csr = 1 if self.csrDrifts is True else 0
+        lsc = 1 if self.lscDrifts is True else 0
+        drifttype = lscdrift
+
+        for e, d in driftdata:
+            if e[1]['objecttype'] == 'screen' and e[1]['length'] > 0:
+                name = e[0]+'-drift-01'
+                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': e[1]['length']/2,
+                 'csr_enable': csr,
+                 'lsc_enable': lsc,
+                 'use_stupakov': 1,
+                 'csrdz': 0.01,
+                 'lsc_bins': lscbins,
+                 'lsc_high_frequency_cutoff_start': self.lsc_high_frequency_cutoff_start,
+                 'lsc_high_frequency_cutoff_end': self.lsc_high_frequency_cutoff_end,
+                 'lsc_low_frequency_cutoff_start': self.lsc_low_frequency_cutoff_start,
+                 'lsc_low_frequency_cutoff_end': self.lsc_low_frequency_cutoff_end,
+                })
+                newelements[name] = newdrift
+                newelements[e[0]] = e[1]
+                name = e[0]+'-drift-02'
+                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': e[1]['length']/2,
+                 'csr_enable': csr,
+                 'lsc_enable': lsc,
+                 'use_stupakov': 1,
+                 'csrdz': 0.01,
+                 'lsc_bins': lscbins,
+                 'lsc_high_frequency_cutoff_start': self.lsc_high_frequency_cutoff_start,
+                 'lsc_high_frequency_cutoff_end': self.lsc_high_frequency_cutoff_end,
+                 'lsc_low_frequency_cutoff_start': self.lsc_low_frequency_cutoff_start,
+                 'lsc_low_frequency_cutoff_end': self.lsc_low_frequency_cutoff_end,
+                })
+                newelements[name] = newdrift
+            else:
+                newelements[e[0]] = e[1]
+            if e[1]['objecttype'] == 'dipole':
+                drifttype = csrdrift if self.csrDrifts else lscdrift
+            if len(d) > 1:
+                x1, y1, z1 = d[0]
+                x2, y2, z2 = d[1]
+                try:
+                    length = np.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
+                except Exception as exc:
+                    print('Element with error = ', e[0])
+                    print(d)
+                    raise exc
+                if length > 0:
+                    elementno += 1
+                    name = 'drift'+str(elementno)
+                    newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': length,
+                     'position_start': list(d[0]),
+                     'position_end': list(d[1]),
+                     'csr_enable': csr,
+                     'lsc_enable': lsc,
+                     'use_stupakov': 1,
+                     'csrdz': 0.01,
+                     'lsc_bins': lscbins,
+                     'lsc_high_frequency_cutoff_start': self.lsc_high_frequency_cutoff_start,
+                     'lsc_high_frequency_cutoff_end': self.lsc_high_frequency_cutoff_end,
+                     'lsc_low_frequency_cutoff_start': self.lsc_low_frequency_cutoff_start,
+                     'lsc_low_frequency_cutoff_end': self.lsc_low_frequency_cutoff_end,
+                    })
+                    newelements[name] = newdrift
+                elif length < 0:
+                    raise Exception('Lattice has negative drifts!', name, length)
+                    exit()
+        return newelements
+
+    def getSValues(self):
+        elems = self.createDrifts()
+        s = [0]
+        for e in list(elems.values()):
+            s.append(s[-1]+e.length)
+        return s[1:]
+
+    def getNames(self):
+        elems = self.createDrifts()
+        return [e.objectname for e in list(elems.values())]
+
+    def getSNames(self):
+        s = self.getSValues()
+        names = self.getNames()
+        return list(zip(names, s))
+
+    def findS(self, elem):
+        if elem in self.allElements:
+            sNames = self.getSNames()
+            return [a for a in sNames if a[0] == elem]
+
 
 class frameworkObject(Munch):
 
@@ -694,7 +801,6 @@ class frameworkElement(frameworkObject):
     def gpt_ccs(self, ccs):
         return ccs
 
-
 class getGrids(object):
 
     def __init__(self):
@@ -710,3 +816,54 @@ class getGrids(object):
         self.value = value
         self.idx = (np.abs(self.array - self.value)).argmin()
         return self.array[self.idx]
+
+class csrdrift(frameworkElement):
+
+    def __init__(self, name=None, type='csrdrift', **kwargs):
+        super(csrdrift, self).__init__(name, type, **kwargs)
+        self.add_default('lsc_interpolate', 1)
+
+    def _write_Elegant(self):
+        wholestring=''
+        etype = self._convertType_Elegant(self.objecttype)
+        string = self.objectname+': '+ etype
+        for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
+            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                key = self._convertKeword_Elegant(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                tmpstring = ', '+key+' = '+str(value)
+                if len(string+tmpstring) > 76:
+                    wholestring+=string+',&\n'
+                    string=''
+                    string+=tmpstring[2::]
+                else:
+                    string+= tmpstring
+        wholestring+=string+';\n'
+        return wholestring
+
+class lscdrift(frameworkElement):
+
+    def __init__(self, name=None, type='lscdrift', **kwargs):
+        super(lscdrift, self).__init__(name, type, **kwargs)
+
+    def _write_Elegant(self):
+        wholestring=''
+        etype = self._convertType_Elegant(self.objecttype)
+        string = self.objectname+': '+ etype
+        for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
+            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                key = self._convertKeword_Elegant(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                tmpstring = ', '+key+' = '+str(value)
+                if len(string+tmpstring) > 76:
+                    wholestring+=string+',&\n'
+                    string=''
+                    string+=tmpstring[2::]
+                else:
+                    string+= tmpstring
+        wholestring+=string+';\n'
+        return wholestring

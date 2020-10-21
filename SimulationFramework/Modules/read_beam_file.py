@@ -321,13 +321,14 @@ class beam(munch.Munch):
         ''' take the rms - if the rms is 0 set it to 1, so we don't get a divide by error '''
         np.savetxt(file, array, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'))
 
-    def write_gdf_beam_file(self, filename, normaliseZ=False):
+    def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False):
         q = np.full(len(self.x), -1 * constants.elementary_charge)
         m = np.full(len(self.x), constants.electron_mass)
         nmacro = np.full(len(self.x), abs(self.beam['total_charge'] / constants.elementary_charge / len(self.x)))
         toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
+        x = self.x if not normaliseX else (self.x - normaliseX) if isinstance(normaliseX,(int, float)) else (self.x - np.mean(self.x))
         z = self.z if not normaliseZ else (self.z - np.mean(self.z))
-        dataarray = np.array([self.x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz]).transpose()
+        dataarray = np.array([x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz]).transpose()
         namearray = 'x y z q m nmacro GBx GBy GBz'
         np.savetxt(filename, dataarray, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'), header=namearray, comments='')
 
@@ -474,15 +475,15 @@ class beam(munch.Munch):
         if 'rotation' in self.beam or abs(self.beam['rotation']) > 0:
             self.rotate_beamXZ(-1*self.beam['rotation'], -1*offset)
 
-    def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', zoffset=0):
+    def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0):
         # print('zoffset = ', zoffset, type(zoffset))
         if isinstance(zoffset,(list, np.ndarray)) and len(zoffset) == 3:
             xoffset = zoffset[0]
             yoffset = zoffset[1]
             zoffset = zoffset[2]
-        else:
-            xoffset = 0
-            yoffset = 0
+        # else:
+        #     xoffset = 0 if xoffset is None else xoffset
+        #     yoffset = 0 if yoffset is None else yoffset
         # print('xoffset = ', xoffset)
         # print('yoffset = ', yoffset)
         # print('zoffset = ', zoffset)

@@ -15,8 +15,9 @@ elements:
     field_amplitude: 120000000.0
     frequency: 2998500000.0
     phase: -9
+    crest: 136.9
     field_definition: $master_lattice_location$Data_Files/HRRG_1D_RF.dat
-    field_definition_gdf: $master_lattice_location$Data_Files/2.5cell_mapgun.gdf
+    field_definition_gdf: $master_lattice_location$Data_Files/bas_gun_norm.gdf
     lsc_cutoff_high: [0, 0]
     position_end: [0, 0, 0.15]
     position_start: [0, 0, 0]
@@ -27,6 +28,7 @@ elements:
         length: 0.15
         field_amplitude: 0.345
         field_definition: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/bas_sol_norm.gdf
         position_end: [0, 0, 0.15]
         position_start: [0, 0, 0]
   CLA-S01-APER:
@@ -100,6 +102,7 @@ elements:
     field_amplitude: 21000000.0
     frequency: 2998500000.0
     phase: -16
+    crest: 155
     longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
     field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
@@ -131,6 +134,7 @@ elements:
         length: 0.5
         field_amplitude: 0.05
         field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/SwissFEL_linac_sols.gdf
         position_end: [0, 0, 2.2]
         position_start: [0, 0, 1.70]
       CLA-L01-CAV-SOL-02:
@@ -138,5 +142,6 @@ elements:
         length: 0.5
         field_amplitude: -0.05
         field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/SwissFEL_linac_sols.gdf
         position_end: [0, 0, 3.2]
         position_start: [0, 0, 2.70]

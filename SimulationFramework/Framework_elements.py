@@ -246,20 +246,21 @@ class dipole(frameworkElement):
             return None
 
     def gpt_coordinates(self, position, rotation):
+        angle = -1*self.angle
         x,y,z = chop(position, 1e-6)
         psi, phi, theta = rotation
         output =''
         for c in [0, 0, z]:
             output += str(c)+', '
-        output += 'cos('+str(self.angle)+'), 0, -sin('+str(self.angle)+'), 0, 1 ,0'
+        output += 'cos('+str(angle)+'), 0, -sin('+str(angle)+'), 0, 1 ,0'
         return output
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         # field = Brho/self.rho if abs(self.rho) > 0 else 0
-        field = self.angle * Brho / self.length
+        field = -1*self.angle * Brho / self.length
         if abs(field) > 0 and abs(self.rho) < 100:
             relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
-            relpos = relpos + [0, 0, self.intersect]
+            relpos = relpos + [0, 0, -self.intersect]
             coord = self.gpt_coordinates(relpos, relrot)
             new_ccs = self.gpt_ccs(ccs).name
             b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.02) * self.check_value(self.edge_field_integral, default=0.4))
@@ -271,7 +272,7 @@ class dipole(frameworkElement):
             sectormagnet( "wcs", "bend1", rho, field, e1, e2, 0., 100., 0 ) ;
             '''
             output = 'ccs( ' + ccs.name + ', '+ coord + ', ' + new_ccs + ');\n'
-            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(abs(self.e1)) + ', ' + str(abs(self.e2)) + ', ' + str(abs(dl)) + ', ' + str(b1) + ', 0);\n'
+            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(self.e1) + ', ' + str(self.e2) + ', ' + str(abs(dl)) + ', ' + str(b1) + ', 0);\n'
         else:
             output = ''
         return output
@@ -482,13 +483,20 @@ class cavity(frameworkElement):
         '''
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
         '''
-        if self.gpt_phase_offset is None:
-            self.gpt_phase_offset = 0
-        output = 'f = ' + str(self.frequency) +';\n' + \
-        'w = 2*pi*f;\n' + \
-        'phi = ' + str(self.gpt_phase_offset + self.phase) + '/deg;\n' + \
-        'ffac = ' + str(self.field_amplitude)+';\n' + \
-        'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(expand_substitution(self,self.field_definition_gdf).strip('\'"')).replace('\\','/')+'", "Z","Ez", ffac, phi, w);\n'
+        if self.crest is None:
+            self.crest = 0
+        subname = str(relpos[2]).replace('.','')
+        if expand_substitution(self,self.field_definition_gdf) is not None:
+            output = 'f = ' + str(self.frequency) +';\n' + \
+            'w'+subname+' = 2*pi*f;\n' + \
+            'phi'+subname+' = ' + str(self.crest + self.phase) + '/deg;\n'
+            if self.Structure_Type == 'TravellingWave' and self.cells is not None and self.cell_length is not None:
+                output += 'ffac'+subname+' = ' + str((self.cells+4.7) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
+            else:
+                output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
+            output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(expand_substitution(self,self.field_definition_gdf).strip('\'"')).replace('\\','/')+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
+        else:
+            output = ""
         return output
 
 class rf_deflecting_cavity(cavity):
@@ -528,11 +536,9 @@ class solenoid(frameworkElement):
         '''
         map1D_B("wcs",xOffset,0,zOffset+0.,cos(angle),0,-sin(angle),0,1,0,"bas_sol_norm.gdf","Z","Bz",gunSolField);
         '''
-        if self.gpt_phase_offset is None:
-            self.gpt_phase_offset = 0
         output = 'map1D_B' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) + \
         ', \"'+str(expand_substitution(self, self.field_definition_gdf).strip('\'"')).replace('\\','/') + \
-        '", "Z","Bz", '+ str(self.field_amplitude) + ');\n'
+        '", "Z","Bz", '+ str(expand_substitution(self, self.field_amplitude)) + ');\n'
         return output
 
 class aperture(frameworkElement):
@@ -740,7 +746,7 @@ class screen(frameworkElement):
             # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
             self.global_parameters['beam'].read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
             HDF5filename = self.objectname+'.hdf5'
-            self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename)
+            self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0])
         except:
             print('Error with screen', self.objectname,'at', self.gpt_screen_position)
 
@@ -811,57 +817,6 @@ class drift(frameworkElement):
     #                 string+= tmpstring
     #     wholestring+=string+';\n'
     #     return wholestring
-
-class csrdrift(frameworkElement):
-
-    def __init__(self, name=None, type='csrdrift', **kwargs):
-        super(csrdrift, self).__init__(name, type, **kwargs)
-        self.add_default('lsc_interpolate', 1)
-
-    def _write_Elegant(self):
-        wholestring=''
-        etype = self._convertType_Elegant(self.objecttype)
-        string = self.objectname+': '+ etype
-        for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
-                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                key = self._convertKeword_Elegant(key)
-                value = 1 if value is True else value
-                value = 0 if value is False else value
-                tmpstring = ', '+key+' = '+str(value)
-                if len(string+tmpstring) > 76:
-                    wholestring+=string+',&\n'
-                    string=''
-                    string+=tmpstring[2::]
-                else:
-                    string+= tmpstring
-        wholestring+=string+';\n'
-        return wholestring
-
-class lscdrift(frameworkElement):
-
-    def __init__(self, name=None, type='lscdrift', **kwargs):
-        super(lscdrift, self).__init__(name, type, **kwargs)
-
-    def _write_Elegant(self):
-        wholestring=''
-        etype = self._convertType_Elegant(self.objecttype)
-        string = self.objectname+': '+ etype
-        for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
-                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                key = self._convertKeword_Elegant(key)
-                value = 1 if value is True else value
-                value = 0 if value is False else value
-                tmpstring = ', '+key+' = '+str(value)
-                if len(string+tmpstring) > 76:
-                    wholestring+=string+',&\n'
-                    string=''
-                    string+=tmpstring[2::]
-                else:
-                    string+= tmpstring
-        wholestring+=string+';\n'
-        return wholestring
 
 class shutter(csrdrift):
 
@@ -1053,6 +1008,7 @@ class gpt_ccs(Munch):
         super(gpt_ccs, self).__init__()
         self._name = name
         self.intersect = intersect
+        # print(self._name, self.intersect)
         self.x, self.y, self.z = position
         self.psi, self.phi, self.theta = rotation
 
@@ -1064,7 +1020,7 @@ class gpt_ccs(Munch):
         newpos = [x - self.x, y - self.y, z - self.z]
         # print('newpos = ', self.name,  x, self.x, y, self.y, z, self.z)
         finalrot = [psi - self.psi, phi - self.phi, theta - self.theta]
-        finalpos = np.array([0,0,self.intersect]) + np.dot(np.array(newpos), _rotation_matrix(-self.theta))
+        finalpos = np.array([0,0, -self.intersect]) + np.dot(np.array(newpos), _rotation_matrix(-self.theta))
         return finalpos, finalrot
 
     @property

@@ -43,7 +43,7 @@ cavity:
     n_kicks,
     longitudinal_wakefield_enable,
     transverse_wakefield_enable,
-    gpt_phase_offset,
+    crest,
   }
 longitudinal_wakefield:
   keywords: {
