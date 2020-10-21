@@ -7,8 +7,19 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from SimulationFramework.Modules.constraints import *
 import numpy as np
 from scipy.optimize import minimize
+import signal
 
+def signal_handler(sig, frame):
+    """ Catch Ctrl-C signal and exit """
+    # print('You pressed Ctrl+C!')
+    os._exit(1)
+signal.signal(signal.SIGINT, signal_handler)
+
+# Instantiate a constraints object
+cons = constraintsClass()
+# Instantiate a readbeamfile object
 beam = rbf.beam()
+# Instantiate a readtwissfile object
 twiss = rtf.twiss()
 
 #####################  Set-up base files for the injector  #####################
@@ -80,8 +91,6 @@ def optFuncVELA(names, values):
             'dump_betay': {'type': 'lessthan', 'value': twiss['beta_y_beam'][-1], 'limit': 80, 'weight': 1.5},
         }
         constraintsList = constraintsListBA1
-        # Instantiate a constraints object
-        cons = constraintsClass()
         # Calculate the fitness
         delta = cons.constraints(constraintsList)
         # print some data - updateOutput() makes prettier output
@@ -128,7 +137,8 @@ if __name__ == '__main__':
     global YAMLFILE
     # Define and load the SimFrame changes file we use as a starting point
     YAMLFILE = 'example_optimisation/changes_optimise_10pC_Hector.yaml'
-    lattice.load_changes_file(filename=YAMLFILE)
+    if os.path.isfile(YAMLFILE):
+        lattice.load_changes_file(filename=YAMLFILE)
     # Quadrupole names that will be used in the optimisation
     quad_names = [
         'CLA-S02-MAG-QUAD-01',
