@@ -11,7 +11,8 @@ from scipy.optimize import minimize
 beam = rbf.beam()
 twiss = rtf.twiss()
 
-# Define a new framework instance, in directory 'example_ASTRA'.
+#####################  Set-up base files for the injector  #####################
+# Define a new framework instance, in directory 'example_optimisation'.
 #       "clean" will empty (delete everything!) the directory if true
 #       "verbose" will print a progressbar if true
 lattice = fw.Framework('example_optimisation', clean=False, verbose=False)
@@ -21,70 +22,37 @@ lattice.loadSettings('Lattices/CLA10-BA1_OM.def')
 scaling = 3
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
 lattice.generator.number_of_particles = 2**(3*scaling)
-# Track the whole lattice
+# Track the whole lattice - if this has already been run once, you do not need to run again!
 # lattice.track()
 
-def optFuncChicane(args):
-    lattice.modifyElement('CLA-S02-MAG-QUAD-01','k1l', args[0])
-    lattice.modifyElement('CLA-S02-MAG-QUAD-02','k1l', args[1])
-    lattice.modifyElement('CLA-S02-MAG-QUAD-03','k1l', args[2])
-    lattice.modifyElement('CLA-S02-MAG-QUAD-04','k1l', args[3])
-    lattice.modifyElement('CLA-C2V-MAG-QUAD-01','k1l', args[4])
-    lattice.modifyElement('CLA-C2V-MAG-QUAD-02','k1l', args[5])
-    lattice.modifyElement('CLA-C2V-MAG-QUAD-03','k1l', args[6])
-    lattice.track(startfile='CLA-S02')
-    beam.read_HDF5_beam_file(lattice.subdirectory+'/'+'CLA-C2V-MARK-01.hdf5')
-    emitStart = beam.normalized_horizontal_emittance
-    betaXStart = beam.beta_x
-    betaYStart = beam.beta_y
-    beam.read_HDF5_beam_file(lattice.subdirectory+'/'+'CLA-C2V-MARK-02.hdf5')
-    emitEnd = beam.normalized_horizontal_emittance
-    betaXEnd = beam.beta_x
-    betaYEnd = beam.beta_y
-    betaYPenalty = betaYStart - 50 if betaYStart > 50 else 0
-    etaXEnd = beam.eta_x
-    etaXEnd = etaXEnd if abs(etaXEnd) > 1e-3 else 0
-    etaXPEnd = beam.eta_xp
-    etaXPEnd = etaXEnd if abs(etaXEnd) > 1e-3 else 0
-    delta = np.sqrt((1e6*abs(emitStart-emitEnd))**2 + 1*abs(betaXStart-betaXEnd)**2 + 1*abs(betaYStart-betaYEnd)**2 + 10*abs(betaYPenalty)**2 + 100*abs(etaXEnd)**2 + 100*abs(etaXPEnd)**2)
-    if delta < 0.4:
-        delta = 0.4
-    updateOutput('Chicane delta = ' + str(delta), args)
-    evaluation_solutions[str(args)] = delta
-    return delta
-
-def setChicane(quads=None):
-    evaluation_solutions = {}
-    best = [lattice.getElement('CLA-S02-MAG-QUAD-01','k1l'),
-            lattice.getElement('CLA-S02-MAG-QUAD-02','k1l'),
-            lattice.getElement('CLA-S02-MAG-QUAD-03','k1l'),
-            lattice.getElement('CLA-S02-MAG-QUAD-04','k1l'),
-            lattice.getElement('CLA-C2V-MAG-QUAD-01','k1l'),
-            lattice.getElement('CLA-C2V-MAG-QUAD-02','k1l'),
-            lattice.getElement('CLA-C2V-MAG-QUAD-03','k1l'),
-    ]
-    if quads is not None:
-        best = quads
-    res = minimize(optFuncChicane, best, method='nelder-mead', options={'disp': False, 'adaptive': True, 'maxiter': 10, 'xatol': 1e-3})
-    return res.x
-
 def optFuncVELA(names, values):
+    """ Evaluate the fitness of a set of quadrupole values """
     global bestdelta
     try:
+        # Assign k1l values according to the input values - names is the list of quad names
         [lattice.modifyElement(name, 'k1l', val) for name, val in list(zip(names, values))]
-        run_id = lattice.track(startfile='CLA-S02')
-        time.sleep(0.1)
+        # Track the lattice, starting from S02 - i.e. do not re-run the injector!
+        lattice.track(startfile='CLA-S02')
+        # There is a small bug to do with file access in elegant - you may need a sleep command!
+        time.sleep(0.01)
+        # re-initialise the data objects
         constraintsList = {}
         twiss.reset_dicts()
+        # Read in the twiss files for the different lattices
         twiss.read_elegant_twiss_files([lattice.subdirectory+'/'+l for l in  ['CLA-S02.twi','CLA-C2V.twi','EBT-INJ.twi','EBT-BA1.twi']])
+        # These are position indices within the Twiss data object
         c2v1index = list(twiss['element_name']).index('CLA-C2V-MARK-01')
         c2v2index = list(twiss['element_name']).index('CLA-C2V-MARK-02')
         ipindex = list(twiss['element_name']).index('EBT-BA1-COFFIN-FOC')
+        # Read the HDF5 beam file for the coffin focus
         beam.read_HDF5_beam_file(lattice.subdirectory+'/'+'EBT-BA1-COFFIN-FOC.hdf5')
+        # Slice the beam into 25 slices
         beam.slices = 25
         beam.bin_time()
+        # Get the peak current of the beam (at the coffin focus)
         current = beam.slice_peak_current
         peakI = max(current)
+        # Here we define our constraints - each constraint must have a unique name!
         constraintsListBA1 = {
             'C2V_max_betax2': {'type': 'lessthan', 'value': twiss['beta_x'][:c2v2index], 'limit': 100, 'weight': 150},
             'C2V_max_betay2': {'type': 'lessthan', 'value': twiss['beta_y'][:c2v2index], 'limit': 100, 'weight': 150},
@@ -112,21 +80,28 @@ def optFuncVELA(names, values):
             'dump_betay': {'type': 'lessthan', 'value': twiss['beta_y_beam'][-1], 'limit': 80, 'weight': 1.5},
         }
         constraintsList = constraintsListBA1
+        # Instantiate a constraints object
         cons = constraintsClass()
+        # Calculate the fitness
         delta = cons.constraints(constraintsList)
+        # print some data - updateOutput() makes prettier output
         updateOutput('VELA delta = ' + str(delta))
+        # if we have a new best solution
         if delta < bestdelta:
             bestdelta = delta
-            # print(*args, sep = ", ")
+            # print some data, just in case
             print ('[',', '.join(map(str,values)),']')
             print(cons.constraintsList(constraintsList))
+            # Save a new, best, changes file
             lattice.save_changes_file(filename=YAMLFILE)
             print('### New Best: ', delta)
         return delta
     except:
+        # If something goes wrong, return a large fitness value
         return 1e18
 
 def setVELA(quads):
+    """ Optimise VELA lattice """
     global bestdelta
     bestdelta = 1e10
     names, best = list(zip(*quads))
@@ -134,28 +109,27 @@ def setVELA(quads):
     return res
 
 def optimise_Lattice(q=100, do_optimisation=False, quads=None):
-    # if quadnamevalues is None:
-    #     quads = np.array([
-    #         1.775, -1.648, 2.219, -1.387, 5.797,-4.95, 5.714, 1.725, -1.587, 0.376, -0.39, 0.171, 0.123, -0.264, -0.959, 1.225, 1.15, 0.039, -1.334, 1.361
-    #     ])
-    # OM.modify_widget('generator:charge:value', q)
+    """ Perform lattice optimisation """
     if do_optimisation:
         output = setVELA(quads)
-    # optFuncVELA(output.x)
     return output
 
 def get_quads(names):
+    """ return quadrupole values """
     return [[name, lattice.getElement(name,'k1l')] for name in names]
 
 def updateOutput(output):
+    """ Write to stdout and flush """
     sys.stdout.write(output + '\r')
     sys.stdout.flush()
     # print(*output)
 
 if __name__ == '__main__':
     global YAMLFILE
+    # Define and load the SimFrame changes file we use as a starting point
     YAMLFILE = 'example_optimisation/changes_optimise_10pC_Hector.yaml'
     lattice.load_changes_file(filename=YAMLFILE)
+    # Quadrupole names that will be used in the optimisation
     quad_names = [
         'CLA-S02-MAG-QUAD-01',
         'CLA-S02-MAG-QUAD-02',
@@ -178,8 +152,12 @@ if __name__ == '__main__':
         'EBT-BA1-MAG-QUAD-06',
         'EBT-BA1-MAG-QUAD-07',
     ]
+    # Get quadrupole starting values
     best = get_quads(quad_names)
-    fitness = 1000
+    # Optimise!
     output = optimise_Lattice(do_optimisation=True, quads=best)
+    # This is the final fitness value
     fitness = output.fun
+    # This is the final solution in [[quad, value]...] format
+    # (which can be used as input to optimise_Lattice)
     best = list(zip(quad_names, output.x))
