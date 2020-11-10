@@ -222,7 +222,7 @@ class astra_charge(astra_header):
 
     @property
     def space_charge(self):
-        return False if self.space_charge_mode == 'False' or self.space_charge_mode == False else True
+        return False if self.space_charge_mode == 'False' or self.space_charge_mode == False or self.space_charge_mode == None else True
 
     @property
     def space_charge_2D(self):

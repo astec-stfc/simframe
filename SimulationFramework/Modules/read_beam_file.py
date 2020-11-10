@@ -321,16 +321,21 @@ class beam(munch.Munch):
         ''' take the rms - if the rms is 0 set it to 1, so we don't get a divide by error '''
         np.savetxt(file, array, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'))
 
-    def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False):
+    def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cathode=False):
         q = np.full(len(self.x), -1 * constants.elementary_charge)
         m = np.full(len(self.x), constants.electron_mass)
         nmacro = np.full(len(self.x), abs(self.beam['total_charge'] / constants.elementary_charge / len(self.x)))
         toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
         x = self.x if not normaliseX else (self.x - normaliseX) if isinstance(normaliseX,(int, float)) else (self.x - np.mean(self.x))
-        z = self.z if not normaliseZ else (self.z - np.mean(self.z))
-        dataarray = np.array([x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz]).transpose()
-        namearray = 'x y z q m nmacro GBx GBy GBz'
-        np.savetxt(filename, dataarray, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'), header=namearray, comments='')
+        z = self.z if not normaliseZ else (self.z - normaliseZ) if isinstance(normaliseZ,(int, float)) else (self.z - np.mean(self.z))
+        if cathode:
+            dataarray = np.array([x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz, self.t]).transpose()
+            namearray = 'x y z q m nmacro GBx GBy GBz t'
+            np.savetxt(filename, dataarray, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'), header=namearray, comments='')
+        else:
+            dataarray = np.array([x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz]).transpose()
+            namearray = 'x y z q m nmacro GBx GBy GBz'
+            np.savetxt(filename, dataarray, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'), header=namearray, comments='')
 
     def read_gdf_beam_file_object(self, file):
         if isinstance(file, (str)):

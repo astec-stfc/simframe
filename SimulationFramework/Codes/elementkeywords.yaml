@@ -156,6 +156,8 @@ solenoid:
     field_amplitude,
     field_definition,
     field_definition_gdf,
+    scale_field,
+    field_scale,
   }
 undulator:
   keywords: {
@@ -305,7 +307,10 @@ gpt_setreduce:
   }
 gpt_spacecharge:
   keywords: {
-    space_charge_mode
+    grids,
+    space_charge_mode,
+    accuracy,
+    ngrids
   }
 gpt_csr1d:
   keywords: {
@@ -313,6 +318,31 @@ gpt_csr1d:
 gpt_writefloorplan:
   keywords: {
     filename,
+  }
+gpt_Zminmax:
+  keywords: {
+    ECS,
+    zmin,
+    zmax,
+  }
+gpt_forwardscatter:
+  keywords: {
+    ECS,
+    name,
+    probability,
+  }
+gpt_scatterplate:
+  keywords: {
+    ECS,
+    a,
+    b,
+    model,
+  }
+gpt_dtmaxt:
+  keywords: {
+    tstart,
+    tend,
+    dtmax,
   }
 global_error:
   keywords: {

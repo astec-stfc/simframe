@@ -13,6 +13,9 @@ global:
     PhaseS: True
     TrackS: True
     RefS: True
+    CathodeS: True
+    LarmorS: True
+    LandFS: True
     Track_All: True
     Phase_Scan: False
     Auto_Phase: True
@@ -34,7 +37,7 @@ global:
     Lmagnetized: False
 generator:
   default: clara_400_2ps_Gaussian
-  charge: 70e-12
+  charge: 100e-12
 files:
   Gun:
     code: ASTRA

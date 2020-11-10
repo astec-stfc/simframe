@@ -16,7 +16,7 @@ elements:
     Controller_Name: GUN10
     Structure_Type: 'StandingWave'
     phase: 5
-    crest: 149
+    crest: 140.47
     PV_suffixes:
       phase: vm:dsp:sp_ph:phase
       field_amplitude: ad1:ch3:power_remote_s.POWER
@@ -30,7 +30,7 @@ elements:
     sub_elements:
       CLA-LRG1-MAG-SOL-01:
         type: solenoid
-        length: 0.13950
+        length: 0.17
         field_amplitude: 0.255
         field_definition: $master_lattice_location$Data_Files/Measured_Main_Solenoid_2019.txt
         field_definition_gdf: $master_lattice_location$Data_Files/Measured_Main_Solenoid_2019.gdf
@@ -41,10 +41,11 @@ elements:
                      1.53138e-05, 0.167819191, 0.0]
       CLA-LRG1-MAG-BSOL-01:
         type: solenoid
-        length: 0.0125
-        field_amplitude: $-0.3462 * 0.9 * 0.255$
+        length: 0.17
+        field_amplitude: $0.9 * 0.255$
         field_definition: $master_lattice_location$Data_Files/Measured_Bucking_Solenoid_2019.txt
         field_definition_gdf: $master_lattice_location$Data_Files/Measured_Bucking_Solenoid_2019.gdf
+        field_scale: -0.3462
         global_rotation: [0, 0, 0]
         position_end: [0, 0, 0]
         position_start: [0, 0, 0]
@@ -140,11 +141,11 @@ elements:
     field_amplitude: 21000000.0
     frequency: 2998500000.0
     phase: 0
-    crest: 25
+    crest: 152.7
     longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
     field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
-    field_definition_gdf: $master_lattice_location$Data_Files/mockup2m.gdf
+    field_definition_gdf: $master_lattice_location$Data_Files/mockup2m_moved.gdf
     lsc_enable: true
     lsc_bins: 20.0
     lsc_cutoff_high: [0.2, 0.25]

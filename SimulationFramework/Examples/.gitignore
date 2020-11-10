@@ -35,6 +35,8 @@ Old/
 *.png
 *.in
 NORRAN
+example*/
+ASTRA_GPT/
 *.generator
 */nelder-mead*/*
 */nelder_mead*/*
@@ -54,3 +56,4 @@ simplex*/
 NORRAN
 iteration_*/
 basefiles_*/
+Hector/

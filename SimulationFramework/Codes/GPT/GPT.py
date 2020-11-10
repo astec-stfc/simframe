@@ -21,7 +21,8 @@ class gptLattice(frameworkLattice):
         start = self.allElementObjects[self.start].start[2]
         end = self.allElementObjects[self.end].end[2]
         self.ignore_start_screen = None
-
+        self.screen_step_size = 0.1
+        self.time_step_size = '0.1/c'
         # self.headers['tout'] = gpt_tout(startpos=0, endpos=self.allElementObjects[self.end].end[2], step=0.1)
 
     def endScreen(self, **kwargs):
@@ -30,14 +31,20 @@ class gptLattice(frameworkLattice):
     def writeElements(self):
         ccs = gpt_ccs("wcs", [0,0,0], [0,0,0])
         fulltext = ''
-        if self.particle_definition == 'laser':
-            self.headers['spacecharge'] = gpt_spacecharge(space_charge_mode='cathode')
+        if self.particle_definition == 'laser' and self.file_block['charge']['space_charge_mode'] is not None:
+            self.file_block['charge']['space_charge_mode'] = 'cathode'
+            self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
+            self.headers['spacecharge'].npart = len(self.global_parameters['beam'].x)
+            self.headers['spacecharge'].sample_interval = self.sample_interval
+            # self.headers['dtmaxt'] = gpt_dtmaxt(tstart=0, tend="0.25/c", dtmax="0.25/1000/c")
         else:
-            self.headers['spacecharge'] = gpt_spacecharge(space_charge_mode=self.file_block['charge']['space_charge_mode'])
+            self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
         if self.csr_enable and not os.name == 'nt':
             self.headers['csr1d'] = gpt_csr1d()
+        # self.headers['forwardscatter'] = gpt_forwardscatter(ECS='"wcs", "I"', name='cathode', probability=0)
+        # self.headers['scatterplate'] = gpt_scatterplate(ECS='"wcs", "z", -1e-6', model='cathode', a=1, b=1)
         for header in self.headers:
-            fulltext += self.headers[header].write_GPT()+'\n'
+            fulltext += self.headers[header].write_GPT()
         for i, element in enumerate(list(self.elements.values())):
             if i ==0:
                 screen0pos = element.start[2]
@@ -50,8 +57,10 @@ class gptLattice(frameworkLattice):
                 if not new_ccs == ccs:
                     # print('ccs = ', ccs, '  new_ccs = ', new_ccs)
                     relpos, relrot = ccs.relative_position(element.end, element.global_rotation)
-                    # fulltext += '#' + ccs.name + str(relpos) + str(relrot)+'\n'
-                    fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos) + ', ' + str(relpos[2]) + ', 0.1);\n'
+                    if self.particle_definition == 'laser':
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+                    else:
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
                     screen0pos = 0
                 ccs = new_ccs
         if not isinstance(element, screen):
@@ -61,8 +70,10 @@ class gptLattice(frameworkLattice):
             # print('End screen', element.objectname)
             self.endScreenObject = None
         relpos, relrot = ccs.relative_position(element.position_end, element.global_rotation)
-        # fulltext += '#' + ccs.name + str(relpos) + str(relrot)+'\n'
-        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos) + ', ' + str(relpos[2]) + ', 0.1);\n'
+        if self.particle_definition == 'laser':
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+        else:
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
         return fulltext
 
     def write(self):
@@ -83,7 +94,7 @@ class gptLattice(frameworkLattice):
         my_env["OMP_WAIT_POLICY"] = "PASSIVE"
         # post_command_t = [self.executables[self.code][0].replace('gpt.exe','gdfa.exe')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
         post_command = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['position','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
-        post_command_t = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emitt.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
+        post_command_t = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emitt.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay', 'avgfBx','avgfEx','avgfBy','avgfEy','avgfBz','avgfEz']
         post_command_traj = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'traj.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz']
         with open(os.path.relpath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log', '.'), "w") as f:
             # print('gpt command = ', command)
@@ -107,14 +118,15 @@ class gptLattice(frameworkLattice):
         # print('beam charge = ', self.global_parameters['beam'].charge)
         if self.sample_interval > 1:
             self.headers['setreduce'] = gpt_setreduce(set="\"beam\"", setreduce=len(self.global_parameters['beam'].x)/self.sample_interval)
-        self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
+        # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
         meanBz = np.mean(self.global_parameters['beam'].Bz)
         if meanBz < 0.5:
             meanBz = 0.75
         # print(self.findS(self.end), self.findS(self.start))
-        self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step='0.1/c')
+        self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
         gdfbeamfilename = self.particle_definition+'.gdf'
-        self.global_parameters['beam'].write_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0])
+        cathode = self.particle_definition == 'laser'
+        self.global_parameters['beam'].write_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
         subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.particle_definition+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho
 
@@ -176,11 +188,16 @@ class gpt_spacecharge(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_spacecharge, self).__init__(elementName='spacecharge', elementType='gpt_spacecharge', **kwargs)
+        self.grids = getGrids()
+        self.add_default('accuracy', 6)
+        self.add_default('ngrids', None)
 
     def write_GPT(self, *args, **kwargs):
-        output = 'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
+        output = 'accuracy(' + str(self.accuracy) + ');\n'#'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
         if isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == 'cathode':
-            output += 'spacecharge3Dmesh("Cathode","BeamScale",1e-2,1e+2,"MeshBoxAccuracy",0.02,"MeshNtotal",32,32,32,"MeshNbunch",16,16,16);\n'
+            if self.ngrids is None:
+                self.ngrids = self.grids.getGridSizes((self.npart/self.sample_interval))
+            output += 'spacecharge3Dmesh("Cathode","RestMaxGamma",1000);\n'
         elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '3d':
             output += 'Spacecharge3Dmesh();\n'
         elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '2d':
@@ -221,4 +238,40 @@ class gpt_writefloorplan(gpt_element):
 
     def write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + '(' + self.filename + ');\n'
+        return output
+
+class gpt_Zminmax(gpt_element):
+
+    def __init__(self, **kwargs):
+        super(gpt_Zminmax, self).__init__(elementName='Zminmax', elementType='gpt_Zminmax', **kwargs)
+
+    def write_GPT(self, *args, **kwargs):
+        output = str(self.objectname) + '(' + self.ECS + ', ' + str(self.zmin) + ', ' + str(self.zmax) + ');\n'
+        return output
+
+class gpt_forwardscatter(gpt_element):
+
+    def __init__(self, **kwargs):
+        super(gpt_forwardscatter, self).__init__(elementName='forwardscatter', elementType='gpt_forwardscatter', **kwargs)
+
+    def write_GPT(self, *args, **kwargs):
+        output = str(self.objectname) + '(' + self.ECS + ', \"' + str(self.name) + '\", ' + str(self.probability) + ');\n'
+        return output
+
+class gpt_scatterplate(gpt_element):
+
+    def __init__(self, **kwargs):
+        super(gpt_scatterplate, self).__init__(elementName='scatterplate', elementType='gpt_scatterplate', **kwargs)
+
+    def write_GPT(self, *args, **kwargs):
+        output = str(self.objectname) + '(' + self.ECS + ', ' + str(self.a) + ', ' + str(self.b) + ') scatter=\"' + str(self.model) + '\";\n'
+        return output
+
+class gpt_dtmaxt(gpt_element):
+
+    def __init__(self, **kwargs):
+        super(gpt_dtmaxt, self).__init__(elementName='dtmaxt', elementType='gpt_dtmaxt', **kwargs)
+
+    def write_GPT(self, *args, **kwargs):
+        output = str(self.objectname) + '(' + str(self.tstart) + ', ' + str(self.tend) + ', ' + str(self.dtmax) + ');\n'
         return output

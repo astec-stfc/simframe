@@ -79,11 +79,30 @@ generator_keywords = {
         },
         'clara_400_2ps_Gaussian':{
             'combine_distributions': False,'species': 'electrons', 'probe_particle': True,'noise_reduction': False, 'high_resolution': True, 'cathode': True,
-            'reference_position': 0, 'reference_time': 0, 'distribution_type_z': 'g',
-            'sigma_t': 0.85e-12,
+            'reference_position': 0, 'reference_time': 0,
+            'distribution_type_z': 'g', 'sigma_t': 0.85e-12,
             'inital_energy': 0, 'distribution_type_pz': 'i', 'thermal_emittance': 0.9e-3,
-            'distribution_type_x': '2DGaussian', 'sigma_x': 0.25e-3, 'distribution_type_y': '2DGaussian', 'sigma_y': 0.25e-3,
+            'distribution_type_x': '2DGaussian', 'sigma_x': 0.25e-3,
+            'distribution_type_y': '2DGaussian', 'sigma_y': 0.25e-3,
             'guassian_cutoff_x': 3, 'guassian_cutoff_y': 3, 'guassian_cutoff_z': 3,
+            'offset_x': 0, 'offset_y': 0,
+        },
+        'clara_400_2ps_flattop':{
+            'combine_distributions': False,'species': 'electrons', 'probe_particle': True,'noise_reduction': False, 'high_resolution': True, 'cathode': True,
+            'reference_position': 0, 'reference_time': 0,
+            'distribution_type_z': 'p', 'plateau_bunch_length': 2e-12, 'plateau_rise_time': 0.2e-12,
+            'distribution_type_pz': 'i', 'inital_energy': 0, 'distribution_type_pz': 'i', 'thermal_emittance': 0.9e-3,
+            'distribution_type_x': '2DGaussian', 'sigma_x': 0.25e-3,
+            'distribution_type_y': '2DGaussian', 'sigma_y': 0.25e-3,
+            'guassian_cutoff_x': 3, 'guassian_cutoff_y': 3, 'guassian_cutoff_z': 3,
+            'offset_x': 0, 'offset_y': 0,
+        },
+        'clara_400_2ps_flattop_radial':{
+            'combine_distributions': False,'species': 'electrons', 'probe_particle': True,'noise_reduction': False, 'high_resolution': True, 'cathode': True,
+            'reference_position': 0, 'reference_time': 0,
+            'distribution_type_z': 'p', 'plateau_bunch_length': 2e-12, 'plateau_rise_time': 0.2e-12,
+            'distribution_type_pz': 'i', 'inital_energy': 0, 'distribution_type_pz': 'i', 'thermal_emittance': 0.9e-3,
+            'distribution_type_x': 'radial', 'sigma_x': 0.25e-3, 'distribution_type_y': 'r', 'sigma_y': 0.25e-3,
             'offset_x': 0, 'offset_y': 0,
         },
     },
@@ -160,7 +179,7 @@ class frameworkGenerator(Munch):
 
     @property
     def objectname(self):
-        return self['name'] if 'name' in self.keys() and self['name'] is not None else 'laser'
+        return self['name'] if 'name' in self.keys() and self['name'] is not None else 'generator'
 
     def write(self):
         pass
@@ -223,7 +242,7 @@ class ASTRAGenerator(frameworkGenerator):
         except:
             npart = self.number_of_particles
         if self.filename is None:
-            self.filename = 'laser.generator'
+            self.filename = 'generator.txt'
         framework_dict = OrderedDict([
             ['q_total', {'value': self.charge*1e9, 'default': 0.25}],
             ['Lprompt', {'value': False}],
@@ -252,9 +271,9 @@ class ASTRAGenerator(frameworkGenerator):
         saveFile(self.global_parameters['master_subdir']+'/'+self.objectname+'.in', output)
 
     def postProcess(self):
-        astrabeamfilename = self.filename
+        astrabeamfilename = 'generator.txt'
         self.global_parameters['beam'].read_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
-        HDF5filename = self.filename.replace('.generator','.hdf5')
+        HDF5filename = 'laser.hdf5'
         self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename)
 
 class GPTGenerator(frameworkGenerator):
@@ -279,7 +298,7 @@ class GPTGenerator(frameworkGenerator):
 
     def run(self):
         """Run the code with input 'filename'"""
-        command = self.executables[self.code] + ['-o', self.objectname+'.gdf'] + ['GPTLICENSE='+self.global_parameters['GPTLICENSE']] + [self.objectname+'.in']
+        command = self.executables[self.code] + ['-o', 'generator.gdf'] + ['GPTLICENSE='+self.global_parameters['GPTLICENSE']] + [self.objectname+'.in']
         my_env = os.environ.copy()
         my_env["LD_LIBRARY_PATH"] = my_env["LD_LIBRARY_PATH"] + ":/opt/GPT3.3.6/lib/" if "LD_LIBRARY_PATH" in my_env else "/opt/GPT3.3.6/lib/"
         my_env["OMP_WAIT_POLICY"] = "PASSIVE"
@@ -383,10 +402,10 @@ setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
         saveFile(self.global_parameters['master_subdir']+'/'+self.objectname+'.in', output)
 
     def postProcess(self):
-        gptbeamfilename = self.filename.replace('.in', '.gdf')
+        gptbeamfilename = 'generator.gdf'
         self.global_parameters['beam'].read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=0, longitudinal_reference='t')
         # Set the Z component to be zero
         self.global_parameters['beam']['beam']['z'] = 0 * self.global_parameters['beam']['beam']['z']
-        HDF5filename = self.filename.replace('.in','.hdf5')
+        HDF5filename = 'laser.hdf5'
         self.global_parameters['beam']['beam']['status'] = np.full(len(self.global_parameters['beam']['beam']['x']), -1)
         self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename)

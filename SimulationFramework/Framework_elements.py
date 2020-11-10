@@ -489,9 +489,9 @@ class cavity(frameworkElement):
         if expand_substitution(self,self.field_definition_gdf) is not None:
             output = 'f = ' + str(self.frequency) +';\n' + \
             'w'+subname+' = 2*pi*f;\n' + \
-            'phi'+subname+' = ' + str(self.crest + self.phase) + '/deg;\n'
+            'phi'+subname+' = ' + str(self.crest - self.phase) + '/deg;\n'
             if self.Structure_Type == 'TravellingWave' and self.cells is not None and self.cell_length is not None:
-                output += 'ffac'+subname+' = ' + str((self.cells+4.7) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
+                output += 'ffac'+subname+' = ' + str((self.cells) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
             else:
                 output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
             output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(expand_substitution(self,self.field_definition_gdf).strip('\'"')).replace('\\','/')+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
@@ -509,6 +509,8 @@ class solenoid(frameworkElement):
 
     def __init__(self, name=None, type='solenoid', **kwargs):
         super(solenoid, self).__init__(name, type, **kwargs)
+        self.add_default('scale_field', True)
+        self.add_default('field_scale', 1)
 
     def write_ASTRA(self, n):
         if int(self.global_parameters['astra_use_wsl']) > 1:
@@ -521,12 +523,13 @@ class solenoid(frameworkElement):
         return self._write_ASTRA(OrderedDict([
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
-            ['MaxB', {'value': self.field_amplitude, 'default': 0}],
-            ['S_smooth', {'value': self.smooth, 'default': 10}],
+            ['MaxB', {'value': float(self.field_scale) * float(expand_substitution(self, self.field_amplitude)), 'default': 0}],
+            ['S_smooth', {'value': self.smooth, 'default': 0}],
             ['S_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
             ['S_yoff', {'value': self.start[1] + self.dy, 'default': 0}],
             ['S_xrot', {'value': self.y_rot + self.dy_rot, 'default': 0}],
             ['S_yrot', {'value': self.x_rot + self.dx_rot, 'default': 0}],
+            ['S_noscale', {'value': not self.scale_field, 'default': False}],
         ]), n)
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
