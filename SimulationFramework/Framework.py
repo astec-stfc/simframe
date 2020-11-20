@@ -217,7 +217,7 @@ class Framework(Munch):
                 except:
                     print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                     pass
-        print('#### Saving Lattice - ', filename)
+        # print('#### Saving Lattice - ', filename)
         with open(directory + '/' + filename,"w") as yaml_file:
             yaml.dump(dict, yaml_file, default_flow_style=False)
 
@@ -415,6 +415,7 @@ class Framework(Munch):
         return list(self.commandObjects.keys())
 
     def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True):
+        self.save_lattice(directory=self.subdirectory)
         self.progress = 0
         if files is None:
             files = ['generator'] + self.lines if hasattr(self, 'generator') else self.lines

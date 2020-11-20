@@ -27,14 +27,14 @@ scaling = 3
 framework.generator.number_of_particles = 2**(3*scaling)
 # Track the whole lattice
 # framework.track()
-for lattice in framework.latticesObjects.values():
-    lsc = False
-    elements = lattice.elements.values()
-    for e in elements:
-        e.lsc_enable = False
-        e.csr_enable = False
-    lattice.lscDrifts = False
-    lattice.csrDrifts = False
+# for lattice in framework.latticesObjects.values():
+#     lsc = False
+#     elements = lattice.elements.values()
+#     for e in elements:
+#         e.lsc_enable = False
+#         e.csr_enable = False
+#     lattice.lscDrifts = False
+#     lattice.csrDrifts = False
 
 # lattice = fw.Framework('example_ASTRA_OM', clean=False, verbose=True)
 # framework.loadSettings('Lattices/CLA10-BA1_OM.def')
@@ -71,4 +71,4 @@ framework = fw.Framework('example_GPT', clean=False, verbose=True)
 framework.loadSettings('Lattices/CLA10-BA1_OM.def')
 framework.generator.number_of_particles = 2**(3*scaling)
 framework.change_Lattice_Code('All','GPT', exclude=[])
-# framework.track()
+framework.track()

@@ -390,7 +390,7 @@ class cavity(frameworkElement):
 
     def update_field_definition(self):
         if hasattr(self, 'field_definition') and self.field_definition is not None:
-            self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'"'
+            self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"').strip('\'"').replace('\\','/')+'"'
         if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
             self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"')+'"'
         if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
@@ -512,6 +512,14 @@ class solenoid(frameworkElement):
         self.add_default('scale_field', True)
         self.add_default('field_scale', 1)
 
+    def update_field_definition(self):
+        if hasattr(self, 'field_definition') and self.field_definition is not None:
+            self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"').strip('\'"').replace('\\','/')+'"'
+        if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
+            self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"')+'"'
+        if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
+            self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
+
     def write_ASTRA(self, n):
         if int(self.global_parameters['astra_use_wsl']) > 1:
             efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
@@ -523,7 +531,7 @@ class solenoid(frameworkElement):
         return self._write_ASTRA(OrderedDict([
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
-            ['MaxB', {'value': float(self.field_scale) * float(expand_substitution(self, self.field_amplitude)), 'default': 0}],
+            ['MaxB', {'value': self.get_field_amplitude, 'default': 0}],
             ['S_smooth', {'value': self.smooth, 'default': 0}],
             ['S_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
             ['S_yoff', {'value': self.start[1] + self.dy, 'default': 0}],

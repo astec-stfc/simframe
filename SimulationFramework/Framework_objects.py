@@ -669,6 +669,13 @@ class frameworkElement(frameworkObject):
             return self.objectName
 
     @property
+    def get_field_amplitude(self):
+        if hasattr(self, 'field_scale') and isinstance(self.field_scale, (int, float)):
+            return float(self.field_scale) * float(expand_substitution(self, self.field_amplitude))
+        else:
+            return float(expand_substitution(self, self.field_amplitude))
+
+    @property
     def theta(self):
         if hasattr(self, 'global_rotation') and self.global_rotation is not None:
             rotation =  self.global_rotation[2] if len(self.global_rotation) is 3 else self.global_rotation

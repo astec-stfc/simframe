@@ -83,7 +83,7 @@ class Executables(object):
                 elif 'apclara3' in self.hostname:
                     self.elegant = ['salloc','-w','apclara3','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','Pelegant']
             else:
-                self.elegant = ['mpiexec','-np',str(ncpu),'Pelegant']
+                self.elegant = ['mpiexec','-np',str(int(ncpu/3)),'Pelegant']
         else:
             if not self.osname == 'nt':
                 if 'apclara1' in self.hostname:
