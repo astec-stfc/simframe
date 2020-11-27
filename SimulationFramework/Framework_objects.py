@@ -1,6 +1,7 @@
 import os
 import subprocess
-from ruamel import yaml
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
 from munch import Munch, unmunchify
 from collections import OrderedDict
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
@@ -9,21 +10,21 @@ from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/type_conversion_rules.yaml', 'r') as infile:
-    type_conversion_rules = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    type_conversion_rules = yaml.load(infile)
     type_conversion_rules_Elegant = type_conversion_rules['elegant']
     type_conversion_rules_Names = type_conversion_rules['name']
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/commands_Elegant.yaml', 'r') as infile:
-    commandkeywords = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    commandkeywords = yaml.load(infile)
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/elementkeywords.yaml', 'r') as infile:
-    elementkeywords = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    elementkeywords = yaml.load(infile)
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/keyword_conversion_rules_elegant.yaml', 'r') as infile:
-    keyword_conversion_rules_elegant = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    keyword_conversion_rules_elegant = yaml.load(infile)
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elements_Elegant.yaml', 'r') as infile:
-    elements_Elegant = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    elements_Elegant = yaml.load(infile)
 
 class frameworkLattice(Munch):
     def __init__(self, name, file_block, elementObjects, groupObjects, settings, executables, global_parameters):

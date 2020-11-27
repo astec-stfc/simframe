@@ -1,12 +1,13 @@
 import os
-from ruamel import yaml
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
 import SimulationFramework.Modules.Beams as rbf
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/csrtrack_defaults.yaml', 'r') as infile:
-    csrtrack_defaults = yaml.load(infile, Loader=yaml.UnsafeLoader)
+    csrtrack_defaults = yaml.load(infile)
 
 class csrtrackLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):

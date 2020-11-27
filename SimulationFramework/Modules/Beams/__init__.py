@@ -77,7 +77,7 @@ class beamGroup(munch.Munch):
     def emittance(self):
         return particlesGroup([b._beam.emittance for b in self.beams.values()])
 
-    def sort(self, key='t', function='mean', *args, **kwargs):
+    def sort(self, key='z', function='mean', *args, **kwargs):
         if isinstance(function,str) and hasattr(np, function):
             func = getattr(np, function)
         else:
@@ -185,13 +185,13 @@ class beam(munch.Munch):
                 else:
                     return None
 
-    def plot(self, keys=None, **kwargs):
-        if keys is not None:
-            kwargs['key1'] = keys[0]
-            if len(keys) > 1:
-                kwargs['key2'] = keys[1]
-            else:
-                kwargs['key2'] = None
+    def plot(self, **kwargs):
+        # if keys is not None:
+        #     kwargs['key1'] = keys[0]
+        #     if len(keys) > 1:
+        #         kwargs['key2'] = keys[1]
+        #     else:
+        #         kwargs['key2'] = None
         plot.plot(self, **kwargs)
 
     def slice_plot(self, *args, **kwargs):

@@ -1,5 +1,6 @@
 import time, os, subprocess, re
-from ruamel import yaml
+from ruamel.yaml import YAML
+yaml = YAML(typ='safe')
 import copy
 from collections import OrderedDict
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
@@ -16,7 +17,7 @@ import SimulationFramework.Modules.plotting as groupplot
 import progressbar
 from munch import Munch, unmunchify
 
-_mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+_mapping_tag = yaml.resolver.DEFAULT_MAPPING_TAG
 
 def dict_representer(dumper, data):
     return dumper.represent_dict(iter(list(data.items())))
@@ -24,8 +25,8 @@ def dict_representer(dumper, data):
 def dict_constructor(loader, node):
     return OrderedDict(loader.construct_pairs(node))
 
-yaml.add_representer(OrderedDict, dict_representer)
-yaml.add_constructor(_mapping_tag, dict_constructor)
+yaml.representer.add_representer(OrderedDict, dict_representer)
+yaml.constructor.add_constructor(_mapping_tag, dict_constructor)
 
 class Framework(Munch):
 
@@ -89,13 +90,13 @@ class Framework(Munch):
         for f in filename:
             if os.path.isfile(f):
                 with open(f, 'r') as stream:
-                    elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
+                    elements = yaml.load(stream)['elements']
             elif os.path.isfile(self.subdirectory+'/'+f):
                 with open(self.subdirectory+'/'+f, 'r') as stream:
-                    elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
+                    elements = yaml.load(stream)['elements']
             else:
                 with open(self.global_parameters['master_lattice_location'] + f, 'r') as stream:
-                    elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
+                    elements = yaml.load(stream)['elements']
             for name, elem in list(elements.items()):
                 self.read_Element(name, elem)
 
@@ -107,7 +108,7 @@ class Framework(Munch):
             stream = open(filename, 'r')
         else:
             stream = open(self.global_parameters['master_lattice_location']+filename, 'r')
-        self.settings = yaml.load(stream, Loader=yaml.UnsafeLoader)
+        self.settings = yaml.load(stream)
         self.globalSettings = self.settings['global']
         master_run_no = self.globalSettings['run_no'] if 'run_no' in self.globalSettings else 1
         if 'generator' in self.settings:
@@ -147,7 +148,8 @@ class Framework(Munch):
             settings = self.settings.copy()
             settings['elements'] = elements
         with open(directory + '/' + filename,"w") as yaml_file:
-            yaml.dump(settings, yaml_file, default_flow_style=False)
+            yaml.default_flow_style=False
+            yaml.dump(settings, yaml_file)
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'
@@ -211,7 +213,8 @@ class Framework(Munch):
             filename =  pre     + '_changes.yaml'
         changedict = self.detect_changes(elementtype=type, elements=elements, function=function)
         with open(filename,"w") as yaml_file:
-            yaml.dump(changedict, yaml_file, default_flow_style=False)
+            yaml.default_flow_style=False
+            yaml.dump(changedict, yaml_file)
 
     def save_lattice(self, lattice=None, filename=None, directory='.'):
         if filename is None:
@@ -240,7 +243,8 @@ class Framework(Munch):
                     pass
         # print('#### Saving Lattice - ', filename)
         with open(directory + '/' + filename,"w") as yaml_file:
-            yaml.dump(dict, yaml_file, default_flow_style=False)
+            yaml.default_flow_style = False
+            yaml.dump(dict, yaml_file)
 
     def load_changes_file(self, filename=None, apply=True):
         if isinstance(filename, (tuple, list)):
@@ -251,7 +255,7 @@ class Framework(Munch):
                 pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
                 filename =  pre     + '_changes.yaml'
             with open(filename,"r") as infile:
-                changes = dict(yaml.load(infile, Loader=yaml.UnsafeLoader))
+                changes = dict(yaml.load(infile))
             if apply:
                 self.apply_changes(changes)
             else:
@@ -401,7 +405,8 @@ class Framework(Munch):
                 else:
                     output[k][v] = getattr(self[k],v)
         with open(file,"w") as yaml_file:
-            yaml.dump(output, yaml_file, default_flow_style=False)
+            yaml.default_flow_style = False
+            yaml.dump(output, yaml_file)
         # try:
         # elem = self.getelement(k, v)
         # outputfile.write(k+' '+v+' ')
@@ -509,8 +514,9 @@ class frameworkDirectory(Munch):
 
     def __init__(self, directory='.', twiss=True, beams=False):
         super(frameworkDirectory, self).__init__()
+        directory = os.path.relpath(directory)
         self.framework = Framework(directory, clean=False, verbose=True)
-        self.framework.loadSettings('./'+directory+'/'+'settings.def')
+        self.framework.loadSettings(directory+'/'+'settings.def')
         if twiss:
             self.twiss = rtf.load_directory(directory)
         else:

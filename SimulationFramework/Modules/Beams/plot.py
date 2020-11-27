@@ -5,9 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from copy import copy
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..', 'openPMD')))
-
-from pmd_beamphysics.units import nice_array, nice_scale_prefix
+from ..units import nice_array, nice_scale_prefix
 
 CMAP0 = copy(plt.get_cmap('viridis'))
 CMAP0.set_under('white')
@@ -55,7 +53,7 @@ def density_plot(particle_group, key='x', bins=None, **kwargs):
 
     ax.set_xlabel(labelx)
 
-def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=True, include_legend=True, **kwargs):
+def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=True, include_legend=True, subtract_mean=True, bins=None, **kwargs):
     """
     slice plot. Also see: marginal_plot
 
@@ -70,7 +68,14 @@ def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=
     fig, all_axis = plt.subplots( **kwargs)
     ax_plot = [all_axis]
 
-    X = getattr(particle_group, 'slice_'+xkey)
+    if not bins:
+        n = len(particle_group)
+        bins = int(n/100)
+    P.slice.slices = bins
+
+    X = getattr(P, 'slice_'+xkey)
+    if subtract_mean:
+        X = X - np.mean(X)
 
     if isinstance(ykey, str):
         ykey = [ykey]
@@ -232,12 +237,15 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, **kwargs):
     ax_joint.set_xlabel(labelx)
     ax_joint.set_ylabel(labely)
 
-def plot(self, xkey=None, ykey=None, bins=None, type='density', **kwargs):
+def plot(self, keys=None, bins=None, type='density', **kwargs):
 
-    if not xkey:
+    if keys is not None and ((isinstance(keys, (list, tuple)) and len(keys) == 1) or isinstance(keys, str)):
+        if isinstance(keys, (list, tuple)):
+            ykey = keys[0]
         if type == 'slice' or 'slice_' in ykey:
-            return slice_plot(self, ykey=ykey, **kwargs)
+            return slice_plot(self, ykey=ykey, bins=bins, **kwargs)
         elif type == 'density':
             return density_plot(self, key=ykey, bins=bins, **kwargs)
     else:
+        xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)

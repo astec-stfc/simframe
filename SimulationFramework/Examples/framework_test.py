@@ -5,10 +5,6 @@ import SimulationFramework.Modules.Beams as rtf
 import SimulationFramework.Modules.Twiss as rbf
 import numpy as np
 
-fwd = fw.frameworkDirectory('example_elegant', beams=True)
-print(fwd.beams.data.x)
-exit()
-
 # Define a new framework instance, in directory 'example_ASTRA'.
 #       "clean" will empty (delete everything!) the directory if true
 #       "verbose" will print a progressbar if true
@@ -30,7 +26,8 @@ scaling = 3
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
 framework.generator.number_of_particles = 2**(3*scaling)
 # Track the whole lattice
-# framework.track()
+framework.track()
+exit()
 # for lattice in framework.latticesObjects.values():
 #     lsc = False
 #     elements = lattice.elements.values()
