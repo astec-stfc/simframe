@@ -2,6 +2,7 @@ import os
 from ruamel import yaml
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *
+import SimulationFramework.Modules.Beams as rbf
 
 class elegantLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
@@ -62,14 +63,14 @@ class elegantLattice(frameworkLattice):
 
     def hdf5_to_sdds(self, prefix=''):
         HDF5filename = prefix+self.particle_definition+'.hdf5'
-        self.global_parameters['beam'].read_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename)
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
         if self.bunch_charge is not None:
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.bunch_charge)})
         else:
-            self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.global_parameters['beam'].charge)})
+            self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.global_parameters['beam'].Q)})
         # print('mean cpz = ', np.mean(self.global_parameters['beam'].cpz), ' prefix = ', prefix)
         sddsbeamfilename = self.objectname+'.sdds'
-        self.global_parameters['beam'].write_SDDS_file(self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
+        rbf.sdds.write_SDDS_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
 
     def run(self):
         """Run the code with input 'filename'"""
@@ -114,12 +115,12 @@ class elegantTrackFile(elegantCommandFile):
         self.elegantbeamfilename = elegantbeamfilename
         self.sample_interval = kwargs['sample_interval'] if 'sample_interval' in kwargs else 1
         self.trackBeam = trackBeam
-        self.betax = betax if betax is not None else self.global_parameters['beam'].beta_x_corrected
-        self.betay = betay if betay is not None else self.global_parameters['beam'].beta_y_corrected
-        self.alphax = alphax if alphax is not None else self.global_parameters['beam'].alpha_x_corrected
-        self.alphay = alphay if alphay is not None else self.global_parameters['beam'].alpha_y_corrected
-        self.etax = etax if etax is not None else self.global_parameters['beam'].eta_x
-        self.etaxp = etaxp if etaxp is not None else self.global_parameters['beam'].eta_xp
+        self.betax = betax if betax is not None else self.global_parameters['beam'].twiss.beta_x_corrected
+        self.betay = betay if betay is not None else self.global_parameters['beam'].twiss.beta_y_corrected
+        self.alphax = alphax if alphax is not None else self.global_parameters['beam'].twiss.alpha_x_corrected
+        self.alphay = alphay if alphay is not None else self.global_parameters['beam'].twiss.alpha_y_corrected
+        self.etax = etax if etax is not None else self.global_parameters['beam'].twiss.eta_x
+        self.etaxp = etaxp if etaxp is not None else self.global_parameters['beam'].twiss.eta_xp
         self.addCommand(type='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
         self.addCommand(type='run_setup',lattice=self.lattice_filename, \
             use_beamline=lattice.objectname,p_central=np.mean(self.global_parameters['beam'].BetaGamma), \

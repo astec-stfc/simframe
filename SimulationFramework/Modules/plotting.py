@@ -1,18 +1,21 @@
 import sys
 import os
 from io import StringIO
-sys.path.append('../../')
-import SimulationFramework.Framework as fw
 import matplotlib.pyplot as plt
-# import SimulationFramework.Modules.read_twiss_file as rtf
-# import SimulationFramework.Modules.read_beam_file as rbf
+from matplotlib.gridspec import GridSpec
+from copy import copy
 import numpy as np
-sys.path.append('../../../')
-from openPMD.pmd_beamphysics.units import nice_array, nice_scale_prefix
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../', 'openPMD')))
 
-# beamobject = rbf.beam()
+from pmd_beamphysics.units import nice_array, nice_scale_prefix
 
-def fieldmap_data(element):
+# from units import nice_array, nice_scale_prefix
+
+CMAP0 = copy(plt.get_cmap('viridis'))
+CMAP0.set_under('white')
+CMAP1 = copy(plt.get_cmap('plasma'))
+
+def fieldmap_data(element, directory='.'):
     """
     Loads the fieldmap in absolute coordinates.
 
@@ -30,7 +33,7 @@ def fieldmap_data(element):
 
     # file
     element.update_field_definition()
-    file = element.field_definition.strip('"')
+    file = os.path.abspath(os.path.join(directory, element.field_definition.strip('"')))
 
     # print(f'loading from file {file}')
     with open(file) as f:
@@ -62,10 +65,12 @@ def fieldmap_data(element):
     else:
         dat = np.loadtxt(file)
     dat[:,0] += offset
-    dat[:,1] *= scale / max(abs(dat[:,1]))
+    x = dat[:,1]
+    normalise = max(x.min(), x.max(), key=abs)
+    dat[:,1] *= scale / normalise
     return dat
 
-def load_fieldmaps(lattice, sections='All', types=['cavity', 'solenoid'], verbose=False):
+def load_fieldmaps(lattice, bounds=None, sections='All', types=['cavity', 'solenoid'], verbose=False, scale=1):
     fmap = {}
     for t in types:
         fmap[t] = {}
@@ -75,8 +80,17 @@ def load_fieldmaps(lattice, sections='All', types=['cavity', 'solenoid'], verbos
             elements = []
             for s in sections:
                 elements += lattice[s].getElementType(t)
+        if bounds is not None:
+            elements = [e for e in elements if e.position_start[2] < bounds[1] and e.position_end[2] > bounds[0]]
         for e in elements:
-            fmap[t][e.objectname] = fieldmap_data(e)
+            if t == 'cavity' or t == 'solenoid':
+                fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
+            elif t == 'quadrupole':
+                strength = np.sign(e.k1l) * 0.5#e.k1l / e.length
+                fmap[t][e.objectname] = np.array([[e.position_start[2], 0], [e.position_start[2], strength], [e.position_end[2], strength], [e.position_end[2], 0]])
+            elif t == 'dipole':
+                strength = np.sign(e.angle)*0.25#e.angle
+                fmap[t][e.objectname] = np.array([[e.position_start[2], 0], [e.position_start[2], strength], [e.position_end[2], strength], [e.position_end[2], 0]])
     return fmap
 
 def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
@@ -87,29 +101,52 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
 
     """
 
-    fmaps = load_fieldmaps(lattice, sections=sections, verbose=verbose)
+    max_scale = 0
+
+    fmaps = load_fieldmaps(lattice, bounds=bounds, sections=sections, verbose=verbose, types=types)
     ax1 = axes
 
     ax1rhs = ax1.twinx()
     ax = [ax1, ax1rhs]
 
     ylabel = {'cavity': '$E_z$ (MV/m)', 'solenoid':'$B_z$ (T)'}
-    color = {'cavity': 'green', 'solenoid':'blue'}
+    color = {'cavity': 'green', 'solenoid':'blue', 'quadrupole':'red', 'dipole':'black'}
 
     for i, section in enumerate(types):
         a = ax[i]
         for name, data in fmaps[section].items():
             label = f'{section}_{name}'
             c = color[section]
-            a.plot(*data.T, label=label, color=c)
+            if section == 'cavity' and not section == 'solenoid':
+                if section == types[0]:
+                    max_scale = max(abs(data[:,1])) if max(abs(data[:,1])) > max_scale else max_scale
+                a.plot(*data.T, label=label, color=c)
         a.set_ylabel(ylabel[section])
     ax1.set_xlabel('$z$ (m)')
 
+    if len(types) < 1:
+        for a in ax:
+            a.set_yticks([])
+
+    max_scale = 1 if max_scale == 0 else max_scale
+    a = ax[0]
+    magnets = ['quadrupole', 'dipole']
+    fmaps = load_fieldmaps(lattice, bounds=bounds, sections=sections, verbose=verbose, types=magnets, scale=max_scale)
+    for section in magnets:
+        if len(fmaps[section].items()) > 0:
+            section_scale = max_scale #/ max([max(abs(d[:,1])) for d in fmaps[section].values()])
+        for name, data in fmaps[section].items():
+            c = color[section]
+            data[:,1] = data[:,1] * section_scale
+            a.fill(*data.T, color=c)
+
+    data = np.array([[0,0], [100,0]])
+    ax[0].plot(*data.T, color='black')
     if bounds:
         ax1.set_xlim(bounds[0], bounds[1])
 
 
-def plot_fieldmaps(lattice, sections='All', include_labels=True,  xlim=None, figsize=(12,4), **kwargs):
+def plot_fieldmaps(lattice, sections='All', include_labels=True,  xlim=None, figsize=(12,4), types=['cavity', 'solenoid'], **kwargs):
     """
     Simple fieldmap plot
     """
@@ -117,15 +154,18 @@ def plot_fieldmaps(lattice, sections='All', include_labels=True,  xlim=None, fig
     fig, axes = plt.subplots(figsize=figsize, **kwargs)
 
     add_fieldmaps_to_axes(lattice, axes, bounds=xlim, include_labels=include_labels,
-                          sections=sections, types=['cavity', 'solenoid'])
+                          sections=sections, types=types)
 
 
-def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
+def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
                            xkey='z', xlim=None,
                            nice=True,
                            include_layout=False,
                            include_labels=True,
-                           include_legend=True, **kwargs):
+                           include_legend=True,
+                           include_particles=False,
+                           types=['cavity', 'solenoid'],
+                           grid=False, **kwargs):
     """
     Plots stat output multiple keys.
 
@@ -142,8 +182,10 @@ def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
 
     Copied almost verbatim from lume-impact's Impact.plot.plot_stats_with_layout
     """
-    I = twiss_object # convenience
+    I = framework_object.twiss # convenience
     I.sort() # sort before plotting!
+    P = framework_object.beams
+
 
     if include_layout is not False:
         fig, all_axis = plt.subplots(2, gridspec_kw={'height_ratios': [4, 1]}, **kwargs)
@@ -152,6 +194,9 @@ def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
     else:
         fig, all_axis = plt.subplots( **kwargs)
         ax_plot = [all_axis]
+
+    if grid:
+        ax_plot[0].grid(b=True, which='major', color='#666666', linestyle='-')
 
     # collect axes
     if isinstance(ykeys, str):
@@ -171,10 +216,37 @@ def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
     # Only get the data we need
     if xlim:
         good = np.logical_and(X >= xlim[0], X <= xlim[1])
+        idx = list(np.where(good == True)[0])
+        if idx[0] > 0:
+            good[idx[0]-1] = True
+        if (idx[-1]+1) < len(good):
+            good[idx[-1]+1] = True
         X = X[good]
+        if X.min() > xlim[0]:
+            xlim[0] = X.min()
+        if X.max() < xlim[1]:
+            xlim[1] = X.max()
     else:
         xlim = X.min(), X.max()
         good = slice(None,None,None) # everything
+
+    # Try particles within these bounds
+    Pnames = []
+    X_particles = []
+
+    if include_particles:
+        # try:
+            for pname in range(len(P)): # Modified from Impact
+                xp = np.mean(np.array(P[pname][xkey]))
+                if xp >= xlim[0] and xp <= xlim[1]:
+                    Pnames.append(pname)
+                    X_particles.append(xp)
+            X_particles = np.array(X_particles)
+        # except:
+        #     Pnames = []
+    else:
+        Pnames = []
+
 
     # X axis scaling
     units_x = str(I.units(xkey))
@@ -227,6 +299,14 @@ def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
             color = 'C'+str(ii)
             ax.plot(X, dat/factor, label=f'{key} ({unit})', color=color, linestyle=linestyle)
 
+            # Particles
+            if Pnames:
+                # try:
+                    Y_particles = np.array([P[name][key] for name in Pnames])
+                    ax.scatter(X_particles/factor_x, Y_particles/factor, color=color)
+                # except:
+                #     pass
+
         ax.set_ylabel(', '.join(keys)+f' ({unit})')
 
     # Collect legend
@@ -251,4 +331,4 @@ def plot_stats_with_layout(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['
         # else:
         #     ax_layout.set_xlabel('mean_z')
         #     xlim = (0, I.stop)
-        add_fieldmaps_to_axes(include_layout,  ax_layout, bounds=xlim, include_labels=include_labels)
+        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=xlim, include_labels=include_labels, types=types)

@@ -5,6 +5,7 @@ from SimulationFramework.FrameworkHelperFunctions import *
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from munch import Munch
 import scipy.constants as constants
+import SimulationFramework.Modules.Beams as rbf
 
 astra_generator_keywords = {
     'keywords':{
@@ -272,9 +273,9 @@ class ASTRAGenerator(frameworkGenerator):
 
     def postProcess(self):
         astrabeamfilename = 'generator.txt'
-        self.global_parameters['beam'].read_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
+        rbf.astra.read_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
         HDF5filename = 'laser.hdf5'
-        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename)
 
 class GPTGenerator(frameworkGenerator):
     def __init__(self, executables, global_parameters, **kwargs):

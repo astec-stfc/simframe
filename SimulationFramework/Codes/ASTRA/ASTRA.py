@@ -1,6 +1,7 @@
 from SimulationFramework.Codes.ASTRA.ASTRARules import *
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *
+import SimulationFramework.Modules.Beams as rbf
 
 section_header_text_ASTRA = {'cavities': {'header': 'CAVITY', 'bool': 'LEField'},
                              'wakefields': {'header': 'WAKE', 'bool': 'LWAKE'},
@@ -136,10 +137,10 @@ class astraLattice(frameworkLattice):
             # print('Can\'t find ASTRA beam file: ', astrabeamfilename)
             astrabeamfilename = self.objectname + '.' + str(int(round((endpos[2]-startpos[2])*1000))).zfill(4) + '.' + str(master_run_no).zfill(3)
             # print('Trying relative naming convention: ', astrabeamfilename)
-        self.global_parameters['beam'].read_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
-        self.global_parameters['beam'].rotate_beamXZ(-1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
+        rbf.astra.read_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
+        rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
         HDF5filename = self.allElementObjects[self.end].objectname+'.hdf5'
-        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle)
 
 class astra_header(frameworkElement):
 
@@ -181,10 +182,10 @@ class astra_newrun(astra_header):
 
     def hdf5_to_astra(self, prefix=''):
         HDF5filename = prefix+self.particle_definition.replace('.astra','')+'.hdf5'
-        self.global_parameters['beam'].read_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename)
-        self.global_parameters['beam'].rotate_beamXZ(self.starting_rotation, preOffset=self.starting_offset)
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
+        rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], self.starting_rotation, preOffset=self.starting_offset)
         astrabeamfilename = self.particle_definition
-        self.global_parameters['beam'].write_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
+        rbf.astra.write_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
 
 class astra_output(astra_header):
     def __init__(self, screens, offset, rotation, **kwargs):

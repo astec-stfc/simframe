@@ -3,6 +3,7 @@ from ruamel import yaml
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
+import SimulationFramework.Modules.Beams as rbf
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/csrtrack_defaults.yaml', 'r') as infile:
     csrtrack_defaults = yaml.load(infile, Loader=yaml.UnsafeLoader)
@@ -134,10 +135,10 @@ class csrtrack_monitor(csrtrack_element):
     def csrtrack_to_hdf5(self):
         csrtrackbeamfilename = self.name
         astrabeamfilename = csrtrackbeamfilename.replace('.fmt2','.astra')
-        self.global_parameters['beam'].convert_csrtrackfile_to_astrafile(self.global_parameters['master_subdir'] + '/' + csrtrackbeamfilename, self.global_parameters['master_subdir'] + '/' + astrabeamfilename)
-        self.global_parameters['beam'].read_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
+        rbf.astra.convert_csrtrackfile_to_astrafile(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + csrtrackbeamfilename, self.global_parameters['master_subdir'] + '/' + astrabeamfilename)
+        rbf.astra.read_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
         HDF5filename = self.name.replace('.fmt2','.hdf5')
-        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, sourcefilename=csrtrackbeamfilename)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, sourcefilename=csrtrackbeamfilename)
 
 class csrtrack_particles(csrtrack_element):
 
@@ -147,6 +148,6 @@ class csrtrack_particles(csrtrack_element):
 
     def hdf5_to_astra(self, prefix=''):
         HDF5filename = prefix+self.particle_definition.replace('.astra','')+'.hdf5'
-        self.global_parameters['beam'].read_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename)
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
         astrabeamfilename = self.particle_definition+'.astra'
-        self.global_parameters['beam'].write_astra_beam_file(self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
+        rbf.astra.write_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)

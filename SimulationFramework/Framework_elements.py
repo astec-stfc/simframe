@@ -2,6 +2,7 @@ from operator import add
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.FrameworkHelperFunctions import *
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
+import SimulationFramework.Modules.Beams as rbf
 
 class dipole(frameworkElement):
 
@@ -736,18 +737,18 @@ class screen(frameworkElement):
         if astrabeamfilename is None:
             print(( 'Screen Error: ', lattice, self.middle[2], self.zstart[2]))
         else:
-            self.global_parameters['beam'].read_astra_beam_file((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'), normaliseZ=False)
-            self.global_parameters['beam'].rotate_beamXZ(-1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
+            rbf.astra.read_astra_beam_file(self.global_parameters['beam'], (self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'), normaliseZ=False)
+            rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
             HDF5filename = (self.objectname+'.hdf5').strip('\"')
-            self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle)
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle)
             if self.global_parameters['delete_tracking_files']:
                 os.remove((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'))
 
     def sdds_to_hdf5(self):
         elegantbeamfilename = self.output_filename.replace('.sdds','.SDDS').strip('\"')
-        self.global_parameters['beam'].read_SDDS_beam_file(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
+        rbf.sdds.read_SDDS_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
         HDF5filename = self.output_filename.replace('.sdds','.hdf5').replace('.SDDS','.hdf5').strip('\"')
-        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end)
         if self.global_parameters['delete_tracking_files']:
             os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
 
@@ -755,9 +756,9 @@ class screen(frameworkElement):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
         try:
             # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
-            self.global_parameters['beam'].read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
+            rbf.gdf.read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
             HDF5filename = self.objectname+'.hdf5'
-            self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0])
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0])
         except:
             print('Error with screen', self.objectname,'at', self.gpt_screen_position)
 

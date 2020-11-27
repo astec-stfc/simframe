@@ -37,7 +37,7 @@ class twiss(munch.Munch):
     'kinetic_energy': 'J',
     'gamma': '',
     'cp': 'J',
-    'cp_eV': 'eV',
+    'cp_eV': 'eV/c',
     'p': 'kg*m/s',
     'enx': 'm-radians',
     'ex': 'm-radians',
@@ -60,7 +60,7 @@ class twiss(munch.Munch):
     'sigma_t': 's',
     'sigma_p': 'kg * m/s',
     'sigma_cp': 'J',
-    'sigma_cp_eV': 'eV',
+    'sigma_cp_eV': 'eV/c',
     'mux': '2 pi',
     'muy': '2 pi',
     'eta_x': 'm',
@@ -96,16 +96,16 @@ class twiss(munch.Munch):
 
     def __getitem__(self, key):
         if key in super(twiss, self).__getitem__('data') and super(twiss, self).__getitem__('data') is not None:
-            return self.data.get(key)
+            return self._data.get(key)
         else:
             return super(twiss, self).__getitem__(key)
 
     def __repr__(self):
-        return repr([k for k,v in self.data.items() if len(v.data) > 0])
+        return repr([k for k,v in self._data.items() if len(v.data) > 0])
 
     def stat(self, key):
         if key in self.properties:
-            return self.data[key]
+            return self._data[key]
 
     def units(self, key):
         if key in self.properties:
@@ -119,38 +119,39 @@ class twiss(munch.Munch):
             return idx
 
     def reset_dicts(self):
-        self.data = {}
+        self._data = {}
         self.sddsindex = 0
         for k, v in self.properties.items():
-            self.data[k] = twissData(units=v)
+            self._data[k] = twissData(units=v)
         self.elegant = {}
 
     def sort(self, array='z', reverse=False):
-        index = self.data[array].argsort()
+        index = self._data[array].argsort()
         for k in self.properties:
-            if len(self.data[k]) > 0:
+            if len(self._data[k]) > 0:
                 if reverse:
-                    self.data[k] = self.data[k][index[::-1]]
+                    self._data[k] = self._data[k][index[::-1]]
                 else:
-                    self.data[k] = self.data[k][index[::1]]
+                    self._data[k] = self._data[k][index[::1]]
 
     def append(self, array, data):
-        self.data[array] = twissData(np.concatenate([self.data[array], data]), units=self.data[array].units)
+        self._data[array] = twissData(np.concatenate([self._data[array], data]), units=self._data[array].units)
 
     def _which_code(self, name):
         if name.lower() in self.codes.keys():
             return self.codes[name.lower()]
         return None
 
-    def read_twiss_files(self, directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}):
+    def read_twiss_files(self, directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, verbose=False):
         self.reset_dicts()
-        print('Directory:',directory)
+        if verbose:
+            print('Directory:',directory)
         for code, string in types.items():
             twiss_files = glob.glob(directory+'/*'+string)
-            print(code, [os.path.basename(t) for t in twiss_files])
+            if verbose:
+                print(code, [os.path.basename(t) for t in twiss_files])
             if self._which_code(code) is not None and len(twiss_files) > 0:
                 self._which_code(code)(twiss_files, reset=False)
-
 
     def read_sdds_file(self, fileName, ascii=False):
         self.sddsindex += 1

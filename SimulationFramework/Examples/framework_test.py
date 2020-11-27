@@ -1,9 +1,13 @@
 import sys, os
 sys.path.append('../../')
 import SimulationFramework.Framework as fw
-import SimulationFramework.Modules.read_twiss_file as rtf
-import SimulationFramework.Modules.read_beam_file as rbf
+import SimulationFramework.Modules.Beams as rtf
+import SimulationFramework.Modules.Twiss as rbf
 import numpy as np
+
+fwd = fw.frameworkDirectory('example_elegant', beams=True)
+print(fwd.beams.data.x)
+exit()
 
 # Define a new framework instance, in directory 'example_ASTRA'.
 #       "clean" will empty (delete everything!) the directory if true
@@ -42,7 +46,7 @@ framework.generator.number_of_particles = 2**(3*scaling)
 # framework.generator.load_defaults('clara_400_2ps_Gaussian')
 # scaling = 3
 # framework.generator.number_of_particles = 2**(3*scaling)
-# # framework.track(files=['CLA-C2V'])
+# framework.track(files=['CLA-C2V'])
 
 # This time we will use CSRTrack for the VBC
 framework = fw.Framework('example_ASTRA_CSRTrack', clean=False, verbose=True)

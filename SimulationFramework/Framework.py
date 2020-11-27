@@ -3,7 +3,8 @@ from ruamel import yaml
 import copy
 from collections import OrderedDict
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-import SimulationFramework.Modules.read_beam_file as rbf
+import SimulationFramework.Modules.Beams as rbf
+import SimulationFramework.Modules.Twiss as rtf
 import SimulationFramework.Codes.Executables as exes
 from SimulationFramework.Codes.ASTRA.ASTRA import *
 from SimulationFramework.Codes.CSRTrack.CSRTrack import *
@@ -11,6 +12,7 @@ from SimulationFramework.Codes.Elegant.Elegant import *
 from SimulationFramework.Codes.Generators.Generators import *
 from SimulationFramework.Codes.GPT.GPT import *
 from SimulationFramework.Codes.MAD8.MAD8 import *
+import SimulationFramework.Modules.plotting as groupplot
 import progressbar
 from munch import Munch, unmunchify
 
@@ -55,6 +57,9 @@ class Framework(Munch):
         self.defineCSRTrackCommand = self.executables.define_csrtrack_command
         self.define_gpt_command = self.executables.define_gpt_command
 
+    def __repr__(self):
+        return repr({'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
+
     def setSubDirectory(self, dir):
         # global self.global_parameters['master_subdir'], self.global_parameters['master_lattice_location']
         self.subdirectory = os.path.abspath(self.basedirectory+'/'+dir)
@@ -84,6 +89,9 @@ class Framework(Munch):
         for f in filename:
             if os.path.isfile(f):
                 with open(f, 'r') as stream:
+                    elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
+            elif os.path.isfile(self.subdirectory+'/'+f):
+                with open(self.subdirectory+'/'+f, 'r') as stream:
                     elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
             else:
                 with open(self.global_parameters['master_lattice_location'] + f, 'r') as stream:
@@ -127,6 +135,19 @@ class Framework(Munch):
         for e in self.elementObjects:
             self.original_elementObjects[e] = unmunchify(self.elementObjects[e])
 
+    def save_settings(self, filename=None, directory='.', elements=None):
+        if filename is None:
+            pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
+        else:
+            pre, ext = os.path.splitext(os.path.basename(filename))
+        if filename is None:
+            filename =  'settings.def'
+        settings = self.settings.copy()
+        if elements is not None:
+            settings = self.settings.copy()
+            settings['elements'] = elements
+        with open(directory + '/' + filename,"w") as yaml_file:
+            yaml.dump(settings, yaml_file, default_flow_style=False)
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'
@@ -201,13 +222,13 @@ class Framework(Munch):
         latticedict = dict['elements']
         if lattice is None:
             elements = list(self.elementObjects.keys())
-            filename =  pre     + '_lattice.yaml'
+            filename =  pre     + '.yaml'
         else:
             if self.latticeObjects[lattice].elements is None:
                 return
             elements = list(self.latticeObjects[lattice].elements.keys())
             filename =  pre + '_' + lattice + '_lattice.yaml'
-        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname']
         for e in elements:
             new = unmunchify(self.elementObjects[e])
             if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
@@ -415,7 +436,8 @@ class Framework(Munch):
         return list(self.commandObjects.keys())
 
     def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True):
-        self.save_lattice(directory=self.subdirectory)
+        self.save_lattice(directory=self.subdirectory, filename='lattice.yaml')
+        self.save_settings(directory=self.subdirectory, filename='settings.def', elements={'filename': 'lattice.yaml'})
         self.progress = 0
         if files is None:
             files = ['generator'] + self.lines if hasattr(self, 'generator') else self.lines
@@ -481,3 +503,29 @@ class Framework(Munch):
                     if postprocess:
                         self.latticeObjects[l].postProcess()
             self.progress = 100
+
+
+class frameworkDirectory(Munch):
+
+    def __init__(self, directory='.', twiss=True, beams=False):
+        super(frameworkDirectory, self).__init__()
+        self.framework = Framework(directory, clean=False, verbose=True)
+        self.framework.loadSettings('./'+directory+'/'+'settings.def')
+        if twiss:
+            self.twiss = rtf.load_directory(directory)
+        else:
+            self.twiss = None
+        if beams:
+            self.beams = rbf.load_directory(directory)
+        else:
+            self.beams = None
+
+    def plot(self, *args, **kwargs):
+        return groupplot.plot(self, *args, **kwargs)
+
+    def __repr__(self):
+        return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
+
+def load_directory(directory='.', twiss=True, beams=False, **kwargs):
+    fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, clean=False, verbose=True, **kwargs)
+    return fw

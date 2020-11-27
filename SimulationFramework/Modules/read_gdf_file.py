@@ -54,6 +54,14 @@ class grab_group(object):
             self.datasets.append(name)
             setattr(self,name, data)
 
+def is_gdf_file(filename):
+    with open(filename, 'rb') as f:   #Important to open in binary mode 'b' to work cross platform
+
+        #Read the GDF main header
+
+        gdf_id_check = struct.unpack('i', f.read(4))[0]
+        return  gdf_id_check == GDFID
+
 class read_gdf_file(object):
 ###############################################################################
 
@@ -74,7 +82,7 @@ class read_gdf_file(object):
             if hasattr(datagrab.groups['param'],'position'):
                 if datagrab.groups['param'].position == position:
                     return datagrab.groups['data']
-                    
+
     @property
     def times(self):
         times = []
