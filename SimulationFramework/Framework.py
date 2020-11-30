@@ -448,7 +448,7 @@ class Framework(Munch):
         self.save_settings(directory=self.subdirectory, filename='settings.def', elements={'filename': 'lattice.yaml'})
         self.progress = 0
         if files is None:
-            files = ['generator'] + self.lines if hasattr(self, 'generator') else self.lines
+            files = ['generator'] + self.lines if not hasattr(self, 'generator') else self.lines
         if startfile is not None and startfile in files:
             index = files.index(startfile)
             files = files[index:]

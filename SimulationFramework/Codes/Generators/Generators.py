@@ -44,8 +44,9 @@ astra_generator_keywords = {
     },
 }
 gpt_generator_keywords = {
-    'keywords':{
-    },
+    'keywords': [
+        'image_filename', 'image_calibration_x', 'image_calibration_y'
+    ],
 }
 generator_keywords = {
     'defaults': {
@@ -280,7 +281,7 @@ class ASTRAGenerator(frameworkGenerator):
 class GPTGenerator(frameworkGenerator):
     def __init__(self, executables, global_parameters, **kwargs):
         super(GPTGenerator, self).__init__(executables, global_parameters, **kwargs)
-        gpt_keywords = list(gpt_generator_keywords['keywords'].values())
+        gpt_keywords = list(gpt_generator_keywords['keywords'])
         keywords = generator_keywords['keywords']
         self.code = "gpt"
         self.allowedKeyWords = [*gpt_keywords, *keywords]
@@ -348,7 +349,13 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
     def generate_radial_distribution(self):
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
-        if True:#(self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
+        if self.distribution_type_x == 'image' or self.distribution_type_x == 'image':
+            image_filename = os.path.relpath('./'+self.image_filename, start=self.global_parameters['master_subdir']+'/')
+            image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
+            image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
+            output =  'setxydistbmp("beam", \"' + str(image_filename) + '\", ' + str(image_calibration_x) + ', ' + str(image_calibration_y) + ') ;\n'
+            return output
+        elif True:#(self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
             output =  "radius = " + str(self.sigma_x) + ";\n"
             output += self._distribution('distribution_type_x', 'setrxydist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
             output += 'setphidist("beam", "u", 0, 2*pi) ;\n'
@@ -364,10 +371,13 @@ setGBphidist("beam","u", 0, 2*pi);
 '''
 
     def generate_thermal_emittance(self):
-        thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
-        return '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
-setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
-'''
+        if self.distribution_type_x == 'image' or self.distribution_type_x == 'image':
+            return '\n'
+        else:
+            thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
+            return '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
+    setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
+    '''
 
     def generate_longitudinal_distribution(self):
         if self.distribution_type_z.lower() in ['g','gaussian']:
@@ -406,7 +416,7 @@ setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
         gptbeamfilename = 'generator.gdf'
         self.global_parameters['beam'].read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=0, longitudinal_reference='t')
         # Set the Z component to be zero
-        self.global_parameters['beam']['beam']['z'] = 0 * self.global_parameters['beam']['beam']['z']
+        self.global_parameters['beam']['z'] = 0 * self.global_parameters['beam']['z']
         HDF5filename = 'laser.hdf5'
-        self.global_parameters['beam']['beam']['status'] = np.full(len(self.global_parameters['beam']['beam']['x']), -1)
+        self.global_parameters['beam']['status'] = np.full(len(self.global_parameters['beam']['x']), -1)
         self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename)

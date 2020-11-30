@@ -121,4 +121,4 @@ def read_HDF5_beam_file(self, filename, local=False):
         theta = theta if theta is not None else 0
         self['rotation'] = theta
         if local == True:
-            self.rotate_beamXZ(self['rotation'], preOffset=self['starting_position'])
+            rotate_beamXZ(self['rotation'], preOffset=self['starting_position'])

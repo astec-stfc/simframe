@@ -109,6 +109,9 @@ def convert_csrtrackfile_to_astrafile(self, csrtrackfile, astrafile):
     array = np.array([x, y, z, cpx, cpy, cpz, clock, charge, index, status]).transpose()
     write_csv_file(self, astrafile, array)
 
+def cdist(a, b):
+    return np.sqrt(np.sum((a-b)**2,axis=1))
+
 def find_nearest_vector(self, nodes, node):
     return cdist([node], nodes).argmin()
 
@@ -123,36 +126,36 @@ def create_ref_particle(self, array, index=0, subtractmean=False):
 
 def write_astra_beam_file(self, file, index=1, status=5, charge=None, normaliseZ=False):
     if not isinstance(index,(list, tuple, np.ndarray)):
-        if len(self._beam['charge']) == len(self.x):
+        if len(self._beam['charge']) == len(self._beam.x):
             chargevector = 1e9*self._beam['charge']
         else:
-            chargevector = np.full(len(self.x), 1e9*self.charge/len(self.x))
+            chargevector = np.full(len(self._beam.x), 1e9*self.charge/len(self._beam.x))
     if not isinstance(index,(list, tuple, np.ndarray)):
-        indexvector = np.full(len(self.x), index)
-    statusvector = self._beam['status'] if 'status' in self._beam else status if isinstance(status,(list, tuple, np.ndarray)) else np.full(len(self.x), status)
+        indexvector = np.full(len(self._beam.x), index)
+    statusvector = self._beam['status'] if 'status' in self._beam else status if isinstance(status,(list, tuple, np.ndarray)) else np.full(len(self._beam.x), status)
     ''' if a particle is emitting from the cathode it's z value is 0 and it's clock value is finite, otherwise z is finite and clock is irrelevant (thus zero) '''
     if self['longitudinal_reference'] == 't':
-        zvector = [0 if status == -1 and t == 0 else z for status, z, t in zip(statusvector, self.z, self.t)]
+        zvector = [0 if status == -1 and t == 0 else z for status, z, t in zip(statusvector, self._beam.z, self._beam.t)]
     else:
-        zvector = self.z
+        zvector = self._beam.z
     ''' if the clock value is finite, we calculate it from the z value, using Betaz '''
     # clockvector = [1e9*z / (1 * Bz * constants.speed_of_light) if status == -1 and t == 0 else 1.0e9*t for status, z, t, Bz in zip(statusvector, self.z, self.t, self.Bz)]
-    clockvector = [1.0e9*t for status, z, t, Bz in zip(statusvector, self.z, self.t, self.Bz)]
+    clockvector = [1.0e9*t for status, z, t, Bz in zip(statusvector, self._beam.z, self._beam.t, self._beam.Bz)]
     ''' this is the ASTRA array in all it's glory '''
-    array = np.array([self.x, self.y, zvector, self.cpx, self.cpy, self.cpz, clockvector, chargevector, indexvector, statusvector]).transpose()
-    if 'reference_particle' in self._beam:
+    array = np.array([self._beam.x, self._beam.y, zvector, self._beam.cpx, self._beam.cpy, self._beam.cpz, clockvector, chargevector, indexvector, statusvector]).transpose()
+    if hasattr(self._beam,'reference_particle'):
         ref_particle = self._beam['reference_particle']
         # print 'we have a reference particle! ', ref_particle
         # np.insert(array, 0, ref_particle, axis=0)
     else:
         ''' take the rms - if the rms is 0 set it to 1, so we don't get a divide by error '''
-        rms_vector = [a if abs(a) > 0 else 1 for a in self.rms(array, axis=0)]
+        rms_vector = [a if abs(a) > 0 else 1 for a in rms(self, array, axis=0)]
         ''' normalise the array '''
         norm_array = array / rms_vector
         ''' take the meen of the normalised array '''
         mean_vector = np.mean(norm_array, axis=0)
         ''' find the index of the vector that is closest to the mean - if you read in an ASTRA file, this should actually return the reference particle! '''
-        nearest_idx = self.find_nearest_vector(norm_array, mean_vector);
+        nearest_idx = find_nearest_vector(self, norm_array, mean_vector);
         ref_particle = array[nearest_idx]
         ''' set the closest mean vector to be in position 0 in the array '''
         array = np.roll(array, -1*nearest_idx, axis=0)

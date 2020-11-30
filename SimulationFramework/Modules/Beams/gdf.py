@@ -68,8 +68,8 @@ def read_gdf_beam_file_info(self, file):
 def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, charge=None, longitudinal_reference='t', gdfbeam=None):
     self.reset_dicts()
     if gdfbeam is None and not file is None:
-        gdfbeam = self.read_gdf_beam_file_object(file)
-        self.gdfbeam = gdfbeam
+        gdfbeam = read_gdf_beam_file_object(self, file)
+        # self.gdfbeam = gdfbeam
     elif gdfbeam is None and file is None:
         return None
 

@@ -172,6 +172,20 @@ class beam(munch.Munch):
             except KeyError:
                 raise AttributeError(key)
 
+    def __setitem__(self, key, value):
+        for p in parameters:
+            if key in parameters[p]:
+                return setattr(super(beam, self).__getattr__(p), key, value)
+        # if hasattr(np, key):
+        #     return stats(self, getattr(np, key))
+        if hasattr(self, '_beam') and hasattr(super(beam, self).__getitem__('_beam'),key):
+            return setattr(super(beam, self).__getitem__('_beam'),key,value)
+        else:
+            try:
+                return super(beam, self).__setitem__(key, value)
+            except KeyError:
+                raise AttributeError(key)
+
     def __repr__(self):
         return repr({'filename': self.filename, 'code': self.code, 'beam': [k for k in self._beam.keys() if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0]})
 
@@ -187,6 +201,25 @@ class beam(munch.Munch):
 
     def reset_dicts(self):
         self._beam = Particles()
+
+    def read_HDF5_beam_file(self, *args, **kwargs):
+        hdf5.read_HDF5_beam_file(self, *args, **kwargs)
+    def read_SDDS_beam_file(self, *args, **kwargs):
+        sdds.read_SDDS_beam_file(self, *args, **kwargs)
+    def read_gdf_beam_file(self, *args, **kwargs):
+        gdf.read_gdf_beam_file(self, *args, **kwargs)
+    def read_astra_beam_file(self, *args, **kwargs):
+        astra.read_astra_beam_file(self, *args, **kwargs)
+
+    def write_HDF5_beam_file(self, *args, **kwargs):
+        hdf5.write_HDF5_beam_file(self, *args, **kwargs)
+    def write_SDDS_beam_file(self, *args, **kwargs):
+        sdds.write_SDDS_beam_file(self, *args, **kwargs)
+    def write_gdf_beam_file(self, *args, **kwargs):
+        gdf.write_gdf_beam_file(self, *args, **kwargs)
+    def write_astra_beam_file(self, *args, **kwargs):
+        astra.write_astra_beam_file(self, *args, **kwargs)
+
 
     def read_beam_file(self, filename, run_extension='001'):
         pre, ext = os.path.splitext(os.path.basename(filename))
