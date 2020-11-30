@@ -1,5 +1,4 @@
 import os
-from ruamel import yaml
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *
 import SimulationFramework.Modules.Beams as rbf

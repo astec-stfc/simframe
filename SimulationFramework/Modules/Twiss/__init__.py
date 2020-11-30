@@ -1,14 +1,22 @@
 import os, math, sys
 import numpy as np
-from scipy import interpolate
-import scipy.constants as constants
+try:
+    from scipy import interpolate
+    use_interpolate = True
+except ImportError:
+    use_interpolate = False
+from .. import constants
 import munch
 import glob
 from . import hdf5
 from . import gpt
 from . import astra
 from . import elegant
-from . import plot
+try:
+    from . import plot
+    use_matplotlib = True
+except ImportError:
+    use_matplotlib = False
 
 class twissData(np.ndarray):
 
@@ -129,7 +137,7 @@ class twiss(munch.Munch):
         self.sddsindex = 0
         for k, v in self.properties.items():
             self[k] = twissData(units=v)
-        self.elegant = {}
+        self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
         index = self[key].argsort()
@@ -156,14 +164,13 @@ class twiss(munch.Munch):
         return None
 
     def interpolate(self, z=None, value='z', index='z'):
-        f = interpolate.interp1d(self[index], self[value], kind='linear', fill_value="extrapolate")
         if z is None:
-            return f
+            return np.interp(z, self[index], self[value])
         else:
             if z > max(self[index]):
                 return 10**6
             else:
-                return float(f(z))
+                return float(np.interp(z, self[index], self[value]))
 
     def extract_values(self, array, start, end):
         startidx = self.find_nearest(self['z'], start)
@@ -177,8 +184,9 @@ class twiss(munch.Munch):
         else:
             return self.interpolate(z=z, value=param, index='z')
 
-    def plot(self, *args, **kwargs):
-        plot.plot(self, *args, **kwargs)
+    if use_matplotlib:
+        def plot(self, *args, **kwargs):
+            plot.plot(self, *args, **kwargs)
 
     def covariance(self, u, up):
         u2 = u - np.mean(u)

@@ -1,8 +1,8 @@
 import munch
 import numpy as np
-import scipy.constants as constants
+from ... import constants
 
-class stats(munch.Munch):
+class sigmas(munch.Munch):
 
     def __init__(self, beam):
         self.beam = beam

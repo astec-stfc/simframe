@@ -1,5 +1,5 @@
 import os
-from ruamel.yaml import YAML
+from ruamel.yaml.main import YAML
 yaml = YAML(typ='safe')
 from SimulationFramework.Framework_objects import *
 from SimulationFramework.Framework_elements import *

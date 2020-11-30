@@ -1,10 +1,10 @@
 import numpy as np
 from munch import Munch
-import scipy.constants as constants
+from ... import constants
 from .emittance import emittance as emittanceobject
 from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
-from .stats import stats as statsobject
+from .sigmas import sigmas as sigmasobject
 
 class Particles(Munch):
 
@@ -35,7 +35,10 @@ class Particles(Munch):
         if isinstance(super(Particles, self).__getitem__(key),(list, tuple)):
             return np.array(super(Particles, self).__getitem__(key))
         else:
-            return super(Particles, self).__getitem__(key)
+            try:
+                return super(Particles, self).__getitem__(key)
+            except KeyError:
+                raise AttributeError(key)
 
     @property
     def slice(self):
@@ -56,10 +59,10 @@ class Particles(Munch):
         return self._twiss
 
     @property
-    def stats(self):
-        if not hasattr(self, '_stats'):
-            self._stats = statsobject(self)
-        return self._stats
+    def sigmas(self):
+        if not hasattr(self, '_sigmas'):
+            self._sigmas = sigmasobject(self)
+        return self._sigmas
 
     def covariance(self, u, up):
         # u2 = u - np.mean(u)

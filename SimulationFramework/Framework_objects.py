@@ -1,7 +1,9 @@
 import os
 import subprocess
-from ruamel.yaml import YAML
-yaml = YAML(typ='safe')
+import ruamel.yaml
+print(ruamel.yaml.__version__)
+from ruamel.yaml.main import YAML
+yaml = YAML(typ='unsafe')
 from munch import Munch, unmunchify
 from collections import OrderedDict
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts

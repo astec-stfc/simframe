@@ -1,7 +1,9 @@
 import os
 import numpy as np
-import scipy.constants as constants
-import scipy.integrate as integrate
+from .. import constants
+
+def cumtrapz(x=[], y=[]):
+    return [np.trapz(x=x[:n], y=y[:n]) for n in range(len(x))]
 
 def read_astra_twiss_files(self, filename, reset=True):
     if reset:
@@ -70,8 +72,8 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         self.append('sigma_cp', (rms_e / e_kin) * p)
         self.append('sigma_cp_eV', (rms_e))
         # print('astra = ', (rms_e)[-1)
-        self.append('mux', integrate.cumtrapz(x=self['z'], y=1/self['beta_x'], initial=0))
-        self.append('muy', integrate.cumtrapz(x=self['z'], y=1/self['beta_y'], initial=0))
+        self.append('mux', cumtrapz(x=self['z'], y=1/self['beta_x']))
+        self.append('muy', cumtrapz(x=self['z'], y=1/self['beta_y']))
         self.append('eta_x', np.zeros(len(z)))
         self.append('eta_xp', np.zeros(len(z)))
 

@@ -1,6 +1,6 @@
 import h5py
 import numpy as np
-import scipy.constants as constants
+from .. import constants
 
 def rotate_beamXZ(self, theta, preOffset=[0,0,0], postOffset=[0,0,0]):
     preOffset=np.array(preOffset)

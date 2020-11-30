@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from copy import copy
 import numpy as np
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../', 'openPMD')))
-
-from pmd_beamphysics.units import nice_array, nice_scale_prefix
+from .units import nice_array, nice_scale_prefix
 
 # from units import nice_array, nice_scale_prefix
 

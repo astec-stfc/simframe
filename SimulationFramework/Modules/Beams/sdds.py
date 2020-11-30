@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.constants as constants
+from .. import constants
 try:
     import sdds
 except:

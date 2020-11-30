@@ -1,5 +1,5 @@
 import time, os, subprocess, re
-from ruamel.yaml import YAML
+from ruamel.yaml.main import YAML
 yaml = YAML(typ='safe')
 import copy
 from collections import OrderedDict
@@ -13,7 +13,11 @@ from SimulationFramework.Codes.Elegant.Elegant import *
 from SimulationFramework.Codes.Generators.Generators import *
 from SimulationFramework.Codes.GPT.GPT import *
 from SimulationFramework.Codes.MAD8.MAD8 import *
-import SimulationFramework.Modules.plotting as groupplot
+try:
+    import SimulationFramework.Modules.plotting as groupplot
+    use_matplotlib = True
+except ImportError:
+    use_matplotlib = False
 import progressbar
 from munch import Munch, unmunchify
 
@@ -526,8 +530,9 @@ class frameworkDirectory(Munch):
         else:
             self.beams = None
 
-    def plot(self, *args, **kwargs):
-        return groupplot.plot(self, *args, **kwargs)
+    if use_matplotlib:
+        def plot(self, *args, **kwargs):
+            return groupplot.plot(self, *args, **kwargs)
 
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})

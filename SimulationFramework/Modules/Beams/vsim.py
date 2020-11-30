@@ -1,4 +1,5 @@
 import numpy as np
+from .. import constants
 
 def read_vsim_h5_beam_file(self, filename, charge=70e-12, interval=1):
     self.reset_dicts()

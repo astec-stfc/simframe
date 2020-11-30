@@ -1,6 +1,6 @@
 import numpy as np
 from .. import read_gdf_file as rgf
-import scipy.constants as constants
+from .. import constants
 
 def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cathode=False):
     q = np.full(len(self.x), -1 * constants.elementary_charge)

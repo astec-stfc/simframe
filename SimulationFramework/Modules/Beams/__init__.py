@@ -6,23 +6,32 @@ import numpy as np
 import re
 import copy
 import glob
-import scipy.constants as constants
+from .. import constants
 from .Particles import Particles
 from . import astra
 from . import sdds
 from . import vsim
 from . import gdf
 from . import hdf5
-from . import plot
+try:
+    from . import plot
+    use_matplotlib = True
+except ImportError:
+    use_matplotlib = False
+
+from .Particles.emittance import emittance as emittanceobject
+from .Particles.twiss import twiss as twissobject
+from .Particles.slice import slice as sliceobject
+from .Particles.sigmas import sigmas as sigmasobject
 
 # I can't think of a clever way of doing this, so...
+def get_properties(obj): return [f for f in dir(obj) if type(getattr(obj, f)) is property]
 parameters = {
-'data': ['x', 'y',  'z', 't', 'px', 'cpx', 'py', 'cpy', 'pz', 'cpz', 'p', ],
-'emittance': ['ex', 'ey', 'enx', 'eny',],
-'twiss': ['alpha_x', 'beta_x', 'gamma_x', 'alpha_y', 'beta_y', 'gamma_y', 'eta_x', 'eta_xp', ],
-'stats': ['sigma_x', 'sigma_y', 'sigma_z', 'sigma_t', ],
-'slice': ['slice_ex', 'slice_ey', 'slice_enx', 'slice_eny', 'slice_current', 'slice_t', 'slice_normalized_horizontal_emittance', 'slice_normalized_vertical_emittance',
-          'slice_relative_momentum_spread', 'slice_beta_x', 'slice_beta_y',],
+'data': get_properties(Particles),
+'emittance': get_properties(emittanceobject),
+'twiss': get_properties(twissobject),
+'slice': get_properties(sliceobject),
+'sigmas': get_properties(sigmasobject),
 }
 
 class particlesGroup(munch.Munch):
@@ -65,8 +74,8 @@ class beamGroup(munch.Munch):
     def data(self):
         return particlesGroup([b._beam for b in self.beams.values()])
     @property
-    def stats(self):
-        return particlesGroup([b._beam.stats for b in self.beams.values()])
+    def sigmas(self):
+        return particlesGroup([b._beam.sigmas for b in self.beams.values()])
     @property
     def twiss(self):
         return particlesGroup([b._beam.twiss for b in self.beams.values()])
@@ -98,6 +107,17 @@ class beamGroup(munch.Munch):
     def param(self, param):
         return [getattr(b._beam, param) for b in self.beams.values()]
 
+class stats(object):
+
+    def __init__(self, beam, function):
+        self._beam = beam
+        self._func = function
+
+    def __getattr__(self, key):
+        var = self._beam.__getitem__(key)
+        return self._func(var)
+        # return np.sqrt(self._beam.covariance(var, var))
+
 class beam(munch.Munch):
 
     particle_mass = constants.m_e
@@ -108,6 +128,8 @@ class beam(munch.Munch):
 
     def __init__(self, filename=None, sddsindex=0):
         self._beam = Particles()
+        # self.sigma = stats(self, lambda var:  np.sqrt(self._beam.covariance(var, var)))
+        # self.mean = stats(self, np.mean)
         self.sddsindex = sddsindex
         self.filename = ''
         self.code = None
@@ -121,8 +143,8 @@ class beam(munch.Munch):
     def data(self):
         return self._beam
     @property
-    def stats(self):
-        return self._beam.stats
+    def sigmas(self):
+        return self._beam.sigmas
     @property
     def twiss(self):
         return self._beam.twiss
@@ -140,10 +162,15 @@ class beam(munch.Munch):
         for p in parameters:
             if key in parameters[p]:
                 return getattr(super(beam, self).__getattr__(p), key)
+        # if hasattr(np, key):
+        #     return stats(self, getattr(np, key))
         if hasattr(super(beam, self).__getitem__('_beam'),key):
             return getattr(super(beam, self).__getitem__('_beam'),key)
         else:
-            return super(beam, self).__getitem__(key)
+            try:
+                return super(beam, self).__getitem__(key)
+            except KeyError:
+                raise AttributeError(key)
 
     def __repr__(self):
         return repr({'filename': self.filename, 'code': self.code, 'beam': [k for k in self._beam.keys() if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0]})
@@ -185,17 +212,12 @@ class beam(munch.Munch):
                 else:
                     return None
 
-    def plot(self, **kwargs):
-        # if keys is not None:
-        #     kwargs['key1'] = keys[0]
-        #     if len(keys) > 1:
-        #         kwargs['key2'] = keys[1]
-        #     else:
-        #         kwargs['key2'] = None
-        plot.plot(self, **kwargs)
+    if use_matplotlib:
+        def plot(self, **kwargs):
+            plot.plot(self, **kwargs)
 
-    def slice_plot(self, *args, **kwargs):
-        plot.slice_plot(self, *args, **kwargs)
+        def slice_plot(self, *args, **kwargs):
+            plot.slice_plot(self, *args, **kwargs)
 
 def load_directory(directory='.', types={'SimFrame':'.hdf5'}, verbose=False):
     bg = beamGroup()

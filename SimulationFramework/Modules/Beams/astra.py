@@ -2,7 +2,7 @@ import sys
 import time
 import numpy as np
 import csv
-import scipy.constants as constants
+from .. import constants
 
 def read_csv_file(self, file, delimiter=' '):
     with open(file, 'r') as f:

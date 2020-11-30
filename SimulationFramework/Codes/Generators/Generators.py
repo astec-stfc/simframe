@@ -4,7 +4,7 @@ from collections import OrderedDict
 from SimulationFramework.FrameworkHelperFunctions import *
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from munch import Munch
-import scipy.constants as constants
+from ...Modules import constants
 import SimulationFramework.Modules.Beams as rbf
 
 astra_generator_keywords = {
