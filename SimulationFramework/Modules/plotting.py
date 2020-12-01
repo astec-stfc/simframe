@@ -6,6 +6,7 @@ from matplotlib.gridspec import GridSpec
 from copy import copy
 import numpy as np
 from .units import nice_array, nice_scale_prefix
+from mpl_axes_aligner import align
 
 # from units import nice_array, nice_scale_prefix
 
@@ -79,7 +80,7 @@ def load_fieldmaps(lattice, bounds=None, sections='All', types=['cavity', 'solen
             for s in sections:
                 elements += lattice[s].getElementType(t)
         if bounds is not None:
-            elements = [e for e in elements if e.position_start[2] < bounds[1] and e.position_end[2] > bounds[0]]
+            elements = [e for e in elements if e.position_start[2] <= bounds[1] and e.position_end[2] >= bounds[0]]
         for e in elements:
             if t == 'cavity' or t == 'solenoid':
                 fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
@@ -115,10 +116,10 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
         for name, data in fmaps[section].items():
             label = f'{section}_{name}'
             c = color[section]
-            if section == 'cavity' and not section == 'solenoid':
-                if section == types[0]:
-                    max_scale = max(abs(data[:,1])) if max(abs(data[:,1])) > max_scale else max_scale
-                a.plot(*data.T, label=label, color=c)
+            # if section == 'cavity':# and not section == 'solenoid':
+            if section == types[0]:
+                max_scale = max(abs(data[:,1])) if max(abs(data[:,1])) > max_scale else max_scale
+            a.plot(*data.T, label=label, color=c)
         a.set_ylabel(ylabel[section])
     ax1.set_xlabel('$z$ (m)')
 
@@ -142,6 +143,8 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
     ax[0].plot(*data.T, color='black')
     if bounds:
         ax1.set_xlim(bounds[0], bounds[1])
+
+    align.yaxes(ax[0], 0, ax[1], 0, 0.5)
 
 
 def plot_fieldmaps(lattice, sections='All', include_labels=True,  xlim=None, figsize=(12,4), types=['cavity', 'solenoid'], **kwargs):
