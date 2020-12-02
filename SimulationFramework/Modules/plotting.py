@@ -272,6 +272,7 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
     for ix, keys in enumerate([ykeys, ykeys2]):
         if not keys:
             continue
+
         ax = ax_plot[ix]
         linestyle = linestyles[ix]
 
@@ -309,7 +310,7 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
                     ax.scatter(X_particles/factor_x, Y_particles/factor, color=color)
                 # except:
                 #     pass
-
+        keys = ['$'+k.replace('sigma', '\sigma')+'$' for k in keys]
         ax.set_ylabel(', '.join(keys)+f' ({unit})')
 
     # Collect legend
