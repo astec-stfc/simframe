@@ -218,11 +218,12 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
     if xlim:
         good = np.logical_and(X >= xlim[0], X <= xlim[1])
         idx = list(np.where(good == True)[0])
-        if idx[0] > 0:
-            good[idx[0]-1] = True
-        if (idx[-1]+1) < len(good):
-            good[idx[-1]+1] = True
-        X = X[good]
+        if len(idx) > 0:
+            if idx[0] > 0:
+                good[idx[0]-1] = True
+            if (idx[-1]+1) < len(good):
+                good[idx[-1]+1] = True
+            X = X[good]
         if X.min() > xlim[0]:
             xlim[0] = X.min()
         if X.max() < xlim[1]:
@@ -303,7 +304,8 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
             # Particles
             if Pnames:
                 # try:
-                    Y_particles = np.array([P[name][key] for name in Pnames])
+                    # print(Pnames, [key in P._parameters['data'] for key in Pnames])
+                    Y_particles = np.array([np.mean(P[name][key]) if key in P._parameters['data'] else P[name][key] for name in Pnames])
                     ax.scatter(X_particles/factor_x, Y_particles/factor, color=color)
                 # except:
                 #     pass

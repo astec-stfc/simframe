@@ -515,10 +515,10 @@ class Framework(Munch):
 
 class frameworkDirectory(Munch):
 
-    def __init__(self, directory='.', twiss=True, beams=False):
+    def __init__(self, directory='.', twiss=True, beams=False, verbose=False):
         super(frameworkDirectory, self).__init__()
         directory = os.path.relpath(directory)
-        self.framework = Framework(directory, clean=False, verbose=True)
+        self.framework = Framework(directory, clean=False, verbose=verbose)
         self.framework.loadSettings(directory+'/'+'settings.def')
         if twiss:
             self.twiss = rtf.load_directory(directory)
@@ -537,5 +537,5 @@ class frameworkDirectory(Munch):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
 
 def load_directory(directory='.', twiss=True, beams=False, **kwargs):
-    fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, clean=False, verbose=True, **kwargs)
+    fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs)
     return fw

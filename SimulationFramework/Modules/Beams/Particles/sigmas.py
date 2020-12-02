@@ -19,6 +19,9 @@ class sigmas(munch.Munch):
     @property
     def sigma_z(self):
         return self.Sz
+    @property
+    def sigma_cp(self):
+        return self.momentum_spread
 
     @property
     def Sx(self):
@@ -34,7 +37,8 @@ class sigmas(munch.Munch):
         return np.sqrt(self.beam.covariance(self.beam.t, self.beam.t))
     @property
     def momentum_spread(self):
-        return self.beam.cp.std()/np.mean(self.beam.cp)
+        return np.std(self.beam.cp)
+        # return self.beam.cp.std()/np.mean(self.beam.cp)
     @property
     def linear_chirp_z(self):
         return -1*self.beam.rms(self.beam.Bz*constants.speed_of_light*self.t)/self.momentum_spread/100

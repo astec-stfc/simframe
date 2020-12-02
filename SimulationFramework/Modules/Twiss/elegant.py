@@ -48,8 +48,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         z = self.elegantTwiss['Z']
         self.append('z', z)
         cp = self.elegantTwiss['pCentral0'] * self.E0
-        self.append('cp', cp)
-        self.append('cp_eV', cp / constants.elementary_charge)
+        # self.append('cp', cp)
+        self.append('cp', cp / constants.elementary_charge)
         ke = np.array((np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge)
         self.append('kinetic_energy', ke)
         gamma = 1 + ke / self.E0_eV
@@ -77,8 +77,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         # print 'len(z) = ', len(z), '  len(beta) = ', len(beta)
         self.append('t', z / (beta * constants.speed_of_light))
         self.append('sigma_z', self.elegantTwiss['St'] * (beta * constants.speed_of_light))
-        self.append('sigma_cp', self.elegantTwiss['Sdelta'] * cp )
-        self.append('sigma_cp_eV', self.elegantTwiss['Sdelta'] * cp / constants.elementary_charge)
+        # self.append('sigma_cp', self.elegantTwiss['Sdelta'] * cp )
+        self.append('sigma_cp', self.elegantTwiss['Sdelta'] * cp / constants.elementary_charge)
         # print('elegant = ', (self.elegantTwiss['Sdelta'] * cp / constants.elementary_charge)[-1)
         self.append('sigma_p', self.elegantTwiss['Sdelta'] )
         self.append('mux', self.elegantTwiss['psix'] / (2*constants.pi))

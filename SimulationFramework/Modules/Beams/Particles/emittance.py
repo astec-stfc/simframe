@@ -29,14 +29,15 @@ class emittance():
         if p is None:
             return emittance
         else:
-            gamma = np.mean(p)/self.beam.E0_eV
+            beta = np.mean(self.beam.Bz)
+            gamma = np.mean(p)/(self.beam.E0_eV * beta)
             return gamma*emittance
 
     def normalized_emittance(self, plane='x', corrected=False):
         if corrected:
-            return self.emittance_calc(getattr(self.beam, plane+'c'), getattr(self.beam, plane+'pc'), self.beam.cp)
+            return self.emittance_calc(getattr(self.beam, plane+'c'), getattr(self.beam, plane+'pc'), self.beam.cpz)
         else:
-            return self.emittance_calc(getattr(self.beam, plane), getattr(self.beam, plane+'p'), self.beam.cp)
+            return self.emittance_calc(getattr(self.beam, plane), getattr(self.beam, plane+'p'), self.beam.cpz)
 
     def emittance(self, plane='x', corrected=False):
         if corrected:

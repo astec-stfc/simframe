@@ -40,8 +40,8 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         gamma = 1 + (e_kin / self.E0_eV)
         self.append('gamma', gamma)
         cp = np.sqrt(e_kin * (2 * self.E0_eV + e_kin)) * constants.elementary_charge
-        self.append('cp', cp)
-        self.append('cp_eV', cp / constants.elementary_charge)
+        # self.append('cp', cp)
+        self.append('cp', cp / constants.elementary_charge)
         p = cp * self.q_over_c
         self.append('p', p)
         self.append('enx', exn)
@@ -69,8 +69,8 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         beta = np.sqrt(1-(gamma**-2))
         self.append('sigma_t', rms_z / (beta * constants.speed_of_light))
         self.append('sigma_p', (rms_e / e_kin))
-        self.append('sigma_cp', (rms_e / e_kin) * p)
-        self.append('sigma_cp_eV', (rms_e))
+        # self.append('sigma_cp', (rms_e / e_kin) * p)
+        self.append('sigma_cp', (rms_e))
         # print('astra = ', (rms_e)[-1)
         self.append('mux', cumtrapz(x=self['z'], y=1/self['beta_x']))
         self.append('muy', cumtrapz(x=self['z'], y=1/self['beta_y']))

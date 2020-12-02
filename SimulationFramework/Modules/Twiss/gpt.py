@@ -33,8 +33,8 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         elif hasattr(gdfbeamdata, 'position'):
             self.append('z', gdfbeamdata.position)
         cp = self.E0 * np.sqrt(gdfbeamdata.avgG**2 - 1)
-        self.append('cp', cp)
-        self.append('cp_eV', cp / constants.elementary_charge)
+        # self.append('cp', cp)
+        self.append('cp', cp / constants.elementary_charge)
         ke = np.array((np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge)
         self.append('kinetic_energy', ke)
         gamma = 1 + ke / self.E0_eV
@@ -67,8 +67,8 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         else:
             self.append('t', gdfbeamdata.time)
         self.append('sigma_z', gdfbeamdata.stdz)
-        self.append('sigma_cp', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp)
-        self.append('sigma_cp_eV', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.elementary_charge)
+        # self.append('sigma_cp', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp)
+        self.append('sigma_cp', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.elementary_charge)
         self.append('sigma_p', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.speed_of_light)
         self.append('mux', np.zeros(len(gdfbeamdata.stdx)))
         self.append('muy', np.zeros(len(gdfbeamdata.stdx)))

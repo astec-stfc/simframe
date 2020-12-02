@@ -9,7 +9,6 @@ from .sigmas import sigmas as sigmasobject
 class Particles(Munch):
 
     properties = {
-    'z': 'm',
     'x': 'm',
     'y': 'm',
     'z': 'm',
@@ -70,6 +69,27 @@ class Particles(Munch):
         # return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
         return float(np.cov([u,up])[0,1])
 
+    @property
+    def x(self):
+        return self['x']
+    @property
+    def y(self):
+        return self['y']
+    @property
+    def z(self):
+        return self['z']
+    @property
+    def px(self):
+        return self['px']
+    @property
+    def py(self):
+        return self['py']
+    @property
+    def pz(self):
+        return self['pz']
+    @property
+    def t(self):
+        return self['t']
     @property
     def xc(self):
         return self.eta_corrected(self.x)

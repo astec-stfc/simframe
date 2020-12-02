@@ -45,6 +45,17 @@ class particlesGroup(munch.Munch):
         else:
             return [getattr(p, key) for p in self.particles]
 
+class statsGroup(object):
+
+    def __init__(self, beam, function):
+        self._beam = beam
+        self._func = function
+
+    def __getattr__(self, key):
+        var = self._beam.__getitem__(key)
+        return np.array([self._func(v) for v in var])
+        # return np.sqrt(self._beam.covariance(var, var))
+
 class beamGroup(munch.Munch):
 
     def __repr__(self):
@@ -56,15 +67,22 @@ class beamGroup(munch.Munch):
     def __getitem__(self, key):
         if isinstance(key, int):
             return list(self.beams.values())[key]
+        elif isinstance(key, slice):
+            return beamGroup(beams=list(self.beams.items())[key])
+        elif hasattr(np, key):
+            return statsGroup(self, getattr(np, key))
         for p in parameters:
             if key in parameters[p]:
                 return getattr(super(beamGroup, self).__getattr__(p), key)
         else:
             return super(beamGroup, self).__getitem__(key)
 
-    def __init__(self, filenames=[]):
+    def __init__(self, filenames=[], beams=[]):
         self.sddsindex = 0
         self.beams = OrderedDict()
+        self._parameters = parameters
+        for k,v in beams:
+            self.beams[k] = v
         if isinstance(filenames, (str)):
             filenames = [filenames]
         for f in filenames:
@@ -107,6 +125,12 @@ class beamGroup(munch.Munch):
     def param(self, param):
         return [getattr(b._beam, param) for b in self.beams.values()]
 
+    def getScreen(self, screen):
+        for b in self.beams:
+            if screen in b:
+                return self.beams[b]
+        return None
+
 class stats(object):
 
     def __init__(self, beam, function):
@@ -128,6 +152,7 @@ class beam(munch.Munch):
 
     def __init__(self, filename=None, sddsindex=0):
         self._beam = Particles()
+        self._parameters = parameters
         # self.sigma = stats(self, lambda var:  np.sqrt(self._beam.covariance(var, var)))
         # self.mean = stats(self, np.mean)
         self.sddsindex = sddsindex
@@ -136,6 +161,9 @@ class beam(munch.Munch):
         if filename is not None:
             self.read_beam_file(filename)
 
+    @property
+    def beam(self):
+        return self._beam
     @property
     def Particles(self):
         return self._beam
@@ -162,8 +190,8 @@ class beam(munch.Munch):
         for p in parameters:
             if key in parameters[p]:
                 return getattr(super(beam, self).__getattr__(p), key)
-        # if hasattr(np, key):
-        #     return stats(self, getattr(np, key))
+        if hasattr(np, key):
+            return stats(self, getattr(np, key))
         if hasattr(super(beam, self).__getitem__('_beam'),key):
             return getattr(super(beam, self).__getitem__('_beam'),key)
         else:
@@ -187,7 +215,7 @@ class beam(munch.Munch):
                 raise AttributeError(key)
 
     def __repr__(self):
-        return repr({'filename': self.filename, 'code': self.code, 'beam': [k for k in self._beam.keys() if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0]})
+        return repr({'filename': self.filename, 'code': self.code, 'Particles': [k for k in self._beam.keys() if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0]})
 
     def set_particle_mass(self, mass=constants.m_e):
         self.particle_mass = mass
@@ -219,7 +247,6 @@ class beam(munch.Munch):
         gdf.write_gdf_beam_file(self, *args, **kwargs)
     def write_astra_beam_file(self, *args, **kwargs):
         astra.write_astra_beam_file(self, *args, **kwargs)
-
 
     def read_beam_file(self, filename, run_extension='001'):
         pre, ext = os.path.splitext(os.path.basename(filename))
