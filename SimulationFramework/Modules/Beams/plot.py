@@ -7,6 +7,9 @@ from matplotlib.gridspec import GridSpec
 from copy import copy
 from ..units import nice_array, nice_scale_prefix
 
+from fastkde import fastKDE
+
+
 CMAP0 = copy(plt.get_cmap('viridis'))
 CMAP0.set_under('white')
 CMAP1 = copy(plt.get_cmap('plasma'))
@@ -249,3 +252,28 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
     else:
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
+
+def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, **kwargs):
+    #Do the self-consistent density estimate
+    myPDF,axes = fastKDE.pdf(1e3*(beam.x-np.mean(beam.x)),1e3*(beam.y-np.mean(beam.y)), **kwargs)
+    v1,v2 = axes
+    myPDF=myPDF/myPDF.max()*scale
+
+    fig, ax = plt.subplots()
+    ax.set_aspect(1)
+    #ax.xaxis.set_visible(False)
+    #ax.yaxis.set_visible(False)
+    draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
+    ax.add_artist(draw_circle)
+
+    # Make a circle
+    circ = plt.Circle((0,0), size, facecolor='none')
+    ax.add_patch(circ) # Plot the outline
+
+    ax.set_facecolor('k')
+    plt.pcolormesh(v1,v2,myPDF, cmap=colormap, shading='auto', vmax=1, clip_path=circ);
+    ax.set_xlim([-(size + 1), (size + 1)])
+    ax.set_ylim([-(size + 1), (size + 1)])
+    file, ext = os.path.splitext(os.path.basename(beam.filename))
+    plt.title(file)
+    plt.show()

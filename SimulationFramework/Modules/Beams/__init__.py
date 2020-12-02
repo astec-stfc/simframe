@@ -279,6 +279,9 @@ class beam(munch.Munch):
         def slice_plot(self, *args, **kwargs):
             plot.slice_plot(self, *args, **kwargs)
 
+        def plotScreenImage(self, **kwargs):
+            plot.plotScreenImage(self, **kwargs)
+
 def load_directory(directory='.', types={'SimFrame':'.hdf5'}, verbose=False):
     bg = beamGroup()
     if verbose:
