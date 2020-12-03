@@ -80,7 +80,7 @@ def load_fieldmaps(lattice, bounds=None, sections='All', types=['cavity', 'solen
             for s in sections:
                 elements += lattice[s].getElementType(t)
         if bounds is not None:
-            elements = [e for e in elements if e.position_start[2] <= bounds[1] and e.position_end[2] >= bounds[0]]
+            elements = [e for e in elements if e.position_start[2] <= bounds[1] and e.position_end[2] >= bounds[0]-0.1]
         for e in elements:
             if t == 'cavity' or t == 'solenoid':
                 fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)

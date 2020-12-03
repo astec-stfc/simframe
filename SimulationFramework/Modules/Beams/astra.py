@@ -39,9 +39,6 @@ def interpret_astra_data(self, data, normaliseZ=False):
     cpz = self.normalise_to_ref_particle(cpz, subtractmean=False)
     clock = self.normalise_to_ref_particle(clock, subtractmean=True)
     cp = np.sqrt(cpx**2 + cpy**2 + cpz**2)
-    self._beam['x'] = x
-    self._beam['y'] = y
-    self._beam['z'] = z
     self._beam['px'] = cpx * self.q_over_c
     self._beam['py'] = cpy * self.q_over_c
     self._beam['pz'] = cpz * self.q_over_c
@@ -49,9 +46,12 @@ def interpret_astra_data(self, data, normaliseZ=False):
     self._beam['charge'] = 1.0e-9*charge
     self._beam['index'] = index
     self._beam['status'] = status
+    self._beam['z'] = z
     # print self.Bz
     self._beam['t'] = [clock if status == -1 else ((z-zref) / (-1 * Bz * constants.speed_of_light)) for status, z, Bz, clock in zip(self._beam['status'], z, self.Bz, self._beam['clock'])]
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
+    self._beam['x'] = x + (self.Bx * constants.speed_of_light) * self.t
+    self._beam['y'] = y + (self.By * constants.speed_of_light) * self.t
     self._beam['total_charge'] = np.sum(self._beam['charge'])
 
 def read_csrtrack_beam_file(self, file):

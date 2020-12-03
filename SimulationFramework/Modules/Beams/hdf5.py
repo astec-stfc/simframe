@@ -1,3 +1,4 @@
+import os
 import h5py
 import numpy as np
 from .. import constants
@@ -34,12 +35,6 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         xoffset = zoffset[0]
         yoffset = zoffset[1]
         zoffset = zoffset[2]
-    # else:
-    #     xoffset = 0 if xoffset is None else xoffset
-    #     yoffset = 0 if yoffset is None else yoffset
-    # print('xoffset = ', xoffset)
-    # print('yoffset = ', yoffset)
-    # print('zoffset = ', zoffset)
     with h5py.File(filename, "w") as f:
         inputgrp = f.create_group("Parameters")
         if not 'total_charge' in self._beam or self._beam['total_charge'] == 0:
@@ -73,6 +68,18 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         beamgrp['columns'] = np.array(['x','y','z', 'cpx', 'cpy', 'cpz', 't', 'q'], dtype='S')
         beamgrp['units'] = np.array(['m','m','m','eV','eV','eV','s','e'], dtype='S')
         beamgrp.create_dataset("beam", data=array)
+
+def write_HDF5_summary_file(filename, beams=[], clean=False):
+    if isinstance(beams, str):
+        beams = [beams]
+    mode = 'a' if not clean else 'w'
+    with h5py.File(filename, mode) as f:
+        for name in beams:
+            pre, ext = os.path.splitext(os.path.basename(name))
+            try:
+                f[pre] = h5py.ExternalLink(name, '/')
+            except RuntimeError:
+                pass
 
 def read_HDF5_beam_file(self, filename, local=False):
     self.reset_dicts()

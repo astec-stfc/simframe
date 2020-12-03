@@ -38,9 +38,6 @@ class twiss(munch.Munch):
 
     properties = {
     'z': 'm',
-    'x': 'm',
-    'y': 'm',
-    'z': 'm',
     't': 's',
     'kinetic_energy': 'J',
     'gamma': '',
@@ -72,8 +69,6 @@ class twiss(munch.Munch):
     'eta_x': 'm',
     'eta_xp': 'mrad',
     'element_name': '',
-    'x': 'm',
-    'y': 'm',
     'ecnx': 'm-mrad',
     'ecny': 'm-mrad',
     'eta_x_beam': 'm',
@@ -112,6 +107,9 @@ class twiss(munch.Munch):
 
     def read_elegant_twiss_files(self, *args, **kwargs):
         return elegant.read_elegant_twiss_files(self, *args, **kwargs)
+
+    def save_HDF5_twiss_file(self, *args, **kwargs):
+        return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
 
     def __repr__(self):
         return repr([k for k in self.properties if len(self[k]) > 0])
@@ -198,12 +196,12 @@ class twiss(munch.Munch):
     def cp_MeV(self):
         return self['cp'] / 1e6
 
-def load_directory(directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, verbose=False, sortkey='z'):
+def load_directory(directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, preglob='*', verbose=False, sortkey='z'):
     t = twiss()
     if verbose:
         print('Directory:',directory)
     for code, string in types.items():
-        twiss_files = glob.glob(directory+'/*'+string)
+        twiss_files = glob.glob(directory+'/'+preglob+string)
         if verbose:
             print(code, [os.path.basename(t) for t in twiss_files])
         if t._which_code(code) is not None and len(twiss_files) > 0:

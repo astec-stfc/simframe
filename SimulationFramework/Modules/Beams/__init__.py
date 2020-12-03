@@ -6,6 +6,7 @@ import numpy as np
 import re
 import copy
 import glob
+import h5py
 from .. import constants
 from .Particles import Particles
 from . import astra
@@ -120,7 +121,11 @@ class beamGroup(munch.Munch):
                 self.add_directory(file)
             elif os.path.isfile(file):
                 file = file.replace('\\','/')
-                self.beams[file] = beam(file)
+                try:
+                    self.beams[file] = beam(file)
+                except:
+                    if file in self.beams:
+                        del self.beams[file]
 
     def param(self, param):
         return [getattr(b._beam, param) for b in self.beams.values()]
@@ -298,3 +303,13 @@ def load_file(filename, *args, **kwargs):
     b = beam()
     b.read_beam_file(filename)
     return b
+
+def save_HDF5_summary_file(directory='.', filename='./Beam_Summary.hdf5', files=None):
+    if not files:
+        beam_files = glob.glob(directory+'/*.hdf5')
+        files = []
+        for bf in beam_files:
+            with h5py.File(bf, "a") as f:
+                if "/beam/beam" in f:
+                    files.append(bf)
+    hdf5.write_HDF5_summary_file(filename, files)

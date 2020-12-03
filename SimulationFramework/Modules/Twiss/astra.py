@@ -79,7 +79,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
 
         self.append('ecnx', exn)
         self.append('ecny', eyn)
-        self.append('element_name', np.zeros(len(z)))
+        self.append('element_name', np.full(len(z),''))
         self.append('eta_x_beam', np.zeros(len(z)))
         self.append('eta_xp_beam', np.zeros(len(z)))
         self.append('eta_y_beam', np.zeros(len(z)))

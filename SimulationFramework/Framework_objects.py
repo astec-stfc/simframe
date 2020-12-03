@@ -331,7 +331,6 @@ class frameworkLattice(Munch):
             sNames = self.getSNames()
             return [a for a in sNames if a[0] == elem]
 
-
 class frameworkObject(Munch):
 
     def __init__(self, objectname=None, objecttype=None, **kwargs):
@@ -587,6 +586,10 @@ class frameworkElement(frameworkObject):
 
     def __neg__(self):
         return self
+
+    def __repr__(self):
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
+        return repr({k.replace('object',''):v for k,v in self.items() if k not in disallowed})
 
     @property
     def x(self):

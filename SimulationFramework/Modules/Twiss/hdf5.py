@@ -1,4 +1,5 @@
 import h5py
+import numpy as np
 
 def read_hdf_summary(self, filename, reset=True):
     if reset:
@@ -11,19 +12,22 @@ def read_hdf_summary(self, filename, reset=True):
         self.interpret_astra_data(np.array(xemit.get(item)), np.array(yemit.get(item)), np.array(zemit.get(item)))
 
 
-    # def write_HDF5_beam_file(self, filename, sourcefilename=None):
-    #     with h5py.File(filename, "w") as f:
-    #         inputgrp = f.create_group("Parameters")
-    #         if sourcefilename is not None:
-    #             inputgrp['Source'] = sourcefilename
-    #         inputgrp['code'] = self.beam['code']
-    #         twissgrp = f.create_group("twiss")
-    #         array = np.array([self.s, self.t, self.sigma_x, self.sigma_y, self.sigma_z, self.sigma_p, self.sigma_t, self.beta_x, self.alpha_x, self.gamma_x,
-    #                   self.beta_y, self.alpha_y, self.gamma_y, self.beta_z, self.alpha_z, self.gamma_z, self.mux, self.muy,
-    #                   self.ex, self.enx, self.ey, self.eny]).transpose()
-    #         beamgrp['columns'] = ("s","t","Sx","Sy","Sz","Sp","St","betax","alphax","gammax","betay","alphay","gammay","betaz","alphaz","gammaz","mux","muy")
-    #         beamgrp['units'] = ("m","s","m","m","m","eV/c","s","m","","","m","","","m","","","","")
-    #         beamgrp.create_dataset("twiss", data=array)
+def write_HDF5_twiss_file(self, filename, sourcefilename=None):
+    with h5py.File(filename, "w") as f:
+        inputgrp = f.create_group("Parameters")
+        if sourcefilename is not None:
+            inputgrp['Source'] = sourcefilename
+        # inputgrp['code'] = self.beam['code']
+        twissgrp = f.create_group("twiss")
+        # array = np.array([self.s, self.t, self.sigma_x, self.sigma_y, self.sigma_z, self.sigma_p, self.sigma_t, self.beta_x, self.alpha_x, self.gamma_x,
+        #           self.beta_y, self.alpha_y, self.gamma_y, self.beta_z, self.alpha_z, self.gamma_z, self.mux, self.muy,
+        #           self.ex, self.enx, self.ey, self.eny]).transpose()
+        # beamgrp['columns'] = ("s","t","Sx","Sy","Sz","Sp","St","betax","alphax","gammax","betay","alphay","gammay","betaz","alphaz","gammaz","mux","muy")
+        # beamgrp['units'] = ("m","s","m","m","m","eV/c","s","m","","","m","","","m","","","","")
+        twissgrp['columns'] = np.array(list(self.properties.keys()), dtype='S')
+        twissgrp['units'] = np.array(list(self.properties.values()), dtype='S')
+        array = np.array([self[k] if not k == 'element_name' else np.array(self[k], dtype='S') for k in self.properties.keys()]).transpose()
+        twissgrp.create_dataset("twiss", data=array)
     #
     # def read_HDF5_beam_file(self, filename, local=False):
     #     self.reset_dicts()

@@ -1,6 +1,7 @@
 import time, os, subprocess, re
 import yaml
 import copy
+from pprint import pprint
 from collections import OrderedDict
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 import SimulationFramework.Modules.Beams as rbf
@@ -196,7 +197,6 @@ class Framework(Munch):
                         changedict[e][k] = self.convert_numpy_types(new[k])
         else:
             for e in changeelements:
-                # print 'saving element: ', e
                 if not self.original_elementObjects[e] == unmunchify(self.elementObjects[e]):
                     orig = self.original_elementObjects[e]
                     new = unmunchify(self.elementObjects[e])
@@ -224,8 +224,8 @@ class Framework(Munch):
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
             pre, ext = os.path.splitext(os.path.basename(filename))
-        dict = OrderedDict({'elements': OrderedDict()})
-        latticedict = dict['elements']
+        dic = OrderedDict({'elements': OrderedDict()})
+        latticedict = dic['elements']
         if lattice is None:
             elements = list(self.elementObjects.keys())
             filename =  pre     + '.yaml'
@@ -234,20 +234,23 @@ class Framework(Munch):
                 return
             elements = list(self.latticeObjects[lattice].elements.keys())
             filename =  pre + '_' + lattice + '_lattice.yaml'
-        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname']
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
         for e in elements:
             new = unmunchify(self.elementObjects[e])
-            if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
-                try:
+            try:
+                if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
                     latticedict[e] = {k.replace('object',''): self.convert_numpy_types(new[k]) for k in new if not k in disallowed}
-                    # latticedict[e].update({k: self.convert_numpy_types(new[k]) for k in new})
-                except:
-                    print ('##### ERROR IN CHANGE ELEMS: ', e, new)
-                    pass
+                    if 'sub_elements' in new:
+                        for subelem in new['sub_elements']:
+                            newsub = self.elementObjects[subelem]
+                            latticedict[e]['sub_elements'][subelem] = {k.replace('object',''): self.convert_numpy_types(newsub[k]) for k in newsub if not k in disallowed}
+            except:
+                print ('##### ERROR IN CHANGE ELEMS: ', e, new)
+                pass
         # print('#### Saving Lattice - ', filename)
         with open(directory + '/' + filename,"w") as yaml_file:
             yaml.default_flow_style = True
-            yaml.dump(dict, yaml_file)
+            yaml.dump(dic, yaml_file)
 
     def load_changes_file(self, filename=None, apply=True):
         if isinstance(filename, (tuple, list)):
@@ -310,6 +313,8 @@ class Framework(Munch):
             self.load_Elements_File(element)
         else:
             if subelement:
+                if 'subelement' in element:
+                    del element['subelement']
                 self.add_Element(name, subelement=True, **element)
             else:
                 self.add_Element(name, **element)
@@ -443,7 +448,7 @@ class Framework(Munch):
     def commands(self):
         return list(self.commandObjects.keys())
 
-    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True):
+    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True):
         self.save_lattice(directory=self.subdirectory, filename='lattice.yaml')
         self.save_settings(directory=self.subdirectory, filename='settings.def', elements={'filename': 'lattice.yaml'})
         self.progress = 0
@@ -472,6 +477,8 @@ class Framework(Munch):
                         self.generator.run()
                     if postprocess:
                         self.generator.postProcess()
+                    if save_summary:
+                        self.save_summary_files()
                 else:
                     if i == (len(files) - 1):
                         format_custom_text.update_mapping(running='Finished')
@@ -485,6 +492,8 @@ class Framework(Munch):
                         self.latticeObjects[l].run()
                     if postprocess:
                         self.latticeObjects[l].postProcess()
+                    if save_summary:
+                        self.save_summary_files()
         else:
             for i in range(len(files)):
                 l = files[i]
@@ -498,6 +507,8 @@ class Framework(Munch):
                     self.progress = 100. * (i+0.66)/len(files)
                     if postprocess:
                         self.generator.postProcess()
+                    if save_summary:
+                        self.save_summary_files()
                 else:
                     if preprocess:
                         self.latticeObjects[l].preProcess()
@@ -510,8 +521,14 @@ class Framework(Munch):
                     self.progress = 100. * (i+0.75)/len(files)
                     if postprocess:
                         self.latticeObjects[l].postProcess()
+                    if save_summary:
+                        self.save_summary_files()
             self.progress = 100
 
+    def save_summary_files(self, twiss=True, beams=True):
+        t = rtf.load_directory(self.subdirectory)
+        t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
+        rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
 
 class frameworkDirectory(Munch):
 
@@ -520,6 +537,8 @@ class frameworkDirectory(Munch):
         directory = os.path.relpath(directory)
         self.framework = Framework(directory, clean=False, verbose=verbose)
         self.framework.loadSettings(directory+'/'+'settings.def')
+        if os.path.exists(directory+'/'+'changes.yaml'):
+            self.framework.loadSettings(directory+'/'+'changes.yaml')
         if twiss:
             self.twiss = rtf.load_directory(directory)
         else:
@@ -535,6 +554,20 @@ class frameworkDirectory(Munch):
 
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
+
+    def getScreen(self, screen):
+        if self.beams:
+            return self.beams.getScreen(screen)
+
+    def element(self, element, field=None):
+        elem = self.framework.getElement(element)
+        if field:
+            return elem[field]
+        else:
+            disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
+            return pprint({k.replace('object',''):v for k,v in elem.items() if k not in disallowed})
+        return elem
+
 
 def load_directory(directory='.', twiss=True, beams=False, **kwargs):
     fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs)

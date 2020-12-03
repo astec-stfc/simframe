@@ -134,6 +134,9 @@ class Particles(Munch):
     def BetaGamma(self):
         return self.cp/self.E0_eV
     @property
+    def energy(self):
+        return self.gamma * self.E0_eV
+    @property
     def vx(self):
         velocity_conversion = 1 / (constants.m_e * self.gamma)
         return velocity_conversion * self.px

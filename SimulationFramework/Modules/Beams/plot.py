@@ -4,6 +4,8 @@ from io import StringIO
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
+from matplotlib.transforms import Bbox
+# plt.rcParams["axes.axisbelow"] = False
 from copy import copy
 from ..units import nice_array, nice_scale_prefix
 
@@ -253,27 +255,102 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, **kwargs):
+def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, **kwargs):
     #Do the self-consistent density estimate
-    myPDF,axes = fastKDE.pdf(1e3*(beam.x-np.mean(beam.x)),1e3*(beam.y-np.mean(beam.y)), **kwargs)
+    x = 1e3*(beam.x-np.mean(beam.x))
+    y = 1e3*(beam.y-np.mean(beam.y))
+    myPDF,axes = fastKDE.pdf(x,y, **kwargs)
     v1,v2 = axes
+    # normalise the PDF to 1
     myPDF=myPDF/myPDF.max()*scale
 
-    fig, ax = plt.subplots()
-    ax.set_aspect(1)
-    #ax.xaxis.set_visible(False)
-    #ax.yaxis.set_visible(False)
+    # Initialise the plot objects
+    # start with a square Figure
+
+    # Add a gridspec with two rows and two columns and a ratio of 2 to 7 between
+    # the size of the marginal axes and the main axes in both directions.
+    # Also adjust the subplot parameters for a square plot.
+    if marginals:
+        fig = plt.figure(figsize=(12.41, 12.41))
+        gs = fig.add_gridspec(2, 2,  width_ratios=(8, 2), height_ratios=(2, 8),
+                              left=0.1, right=0.9, bottom=0.1, top=0.95,
+                              wspace=0.05, hspace=0.05)
+        ax = fig.add_subplot(gs[1, 0])
+        ax_histx = fig.add_subplot(gs[0, 0], sharex=ax)
+        ax_histy = fig.add_subplot(gs[1, 1], sharey=ax)
+    else:
+        fig = plt.figure(figsize=(10, 10))
+        fig.subplots_adjust(top=0.95)
+        ax = fig.add_subplot()
+
+    # Define ticks
+    # Major ticks every 5, minor ticks every 1
+    major_ticks = np.arange(-size, size, 5)
+    minor_ticks = np.arange(-size, size, 1)
+
+    ax.set_xticks(major_ticks)
+    ax.set_xticks(minor_ticks, minor=True)
+    ax.set_yticks(major_ticks)
+    ax.set_yticks(minor_ticks, minor=True)
+
+    if marginals:
+        hist, bin_edges = myPDF.sum(axis=0)[:-1], v1
+        hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
+        hist_width =  np.diff(bin_edges)
+        hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
+        ax_histx.bar(hist_x, hist_y, hist_width, color=colormap(hist_y/max(hist_y)))
+
+        hist, bin_edges = myPDF.sum(axis=1)[:-1], v2
+        hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
+        hist_width =  np.diff(bin_edges)
+        hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
+        ax_histy.barh(hist_x, hist_y, hist_width, color=colormap(hist_y/max(hist_y)))
+
+    # Make a circle for the edges of the screen
     draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
     ax.add_artist(draw_circle)
 
-    # Make a circle
+
+    # Make a circle to clip the PDF
     circ = plt.Circle((0,0), size, facecolor='none')
     ax.add_patch(circ) # Plot the outline
 
+    # Set the background color to black
     ax.set_facecolor('k')
-    plt.pcolormesh(v1,v2,myPDF, cmap=colormap, shading='auto', vmax=1, clip_path=circ);
-    ax.set_xlim([-(size + 1), (size + 1)])
-    ax.set_ylim([-(size + 1), (size + 1)])
+    # Plot the PDF
+    if grid:
+        # Add a grid
+        ax.grid(which='minor', color="w", alpha=0.2, clip_path=circ)
+        ax.grid(which='major', color="w", alpha=0.5, clip_path=circ)
+    # Set the image limits to slightly larger than the screen size
+    if limits:
+        if isinstance(limits, (int, float)):
+            limits = (-limits, limits)
+        if np.array(limits).shape == (2,2):
+            ax.set_xlim(limits[0])
+            ax.set_ylim(limits[1])
+            bbox = plt.Rectangle((min(limits[0]), min(limits[1])), max(limits[0]) - min(limits[0]), max(limits[1]) - min(limits[1]), facecolor="none", edgecolor="none")
+        elif np.array(limits).shape == (2,):
+            ax.set_xlim(limits)
+            ax.set_ylim(limits)
+            # make a bounding box for the limits
+            bbox = plt.Rectangle((min(limits), min(limits)), max(limits) - min(limits), max(limits) - min(limits), facecolor="none", edgecolor="none")
+    else:
+        ax.set_xlim([-(size + 0.5), (size + 0.5)])
+        ax.set_ylim([-(size + 0.5), (size + 0.5)])
+        bbox = plt.Rectangle((-(size + 0.5), -(size + 0.5)), size + 1, size +1, facecolor="none", edgecolor="none")
+
+    ax.add_artist(bbox)
+
+    mesh = ax.pcolormesh(v1,v2,myPDF, cmap=colormap, zorder=1, shading='auto', clip_path=bbox)
+    mesh.set_clip_path(circ)
+    if marginals:
+        plt.setp(ax_histx.get_xticklabels(), visible=False)
+        plt.setp(ax_histy.get_yticklabels(), visible=False)
+    # ax_histy.set_ylim([-(size + 0.5), (size + 0.5)])
+    # Extract the screen name
     file, ext = os.path.splitext(os.path.basename(beam.filename))
-    plt.title(file)
+    # Set the screen name as the title
+    plt.suptitle(file)
+    # Show the final image
     plt.show()
