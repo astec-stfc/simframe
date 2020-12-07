@@ -255,7 +255,7 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, **kwargs):
+def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, screen=False, **kwargs):
     #Do the self-consistent density estimate
     x = 1e3*(beam.x-np.mean(beam.x))
     y = 1e3*(beam.y-np.mean(beam.y))
@@ -285,13 +285,31 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
 
     # Define ticks
     # Major ticks every 5, minor ticks every 1
-    major_ticks = np.arange(-size, size, 5)
-    minor_ticks = np.arange(-size, size, 1)
+    if not size:
+        if not screen:
+            xmin, xmax = [(x + 4) // 5 * 5 for x in [min(v1), max(v1)]]
+            ymin, ymax = [(y + 4) // 5 * 5 for y in [min(v2), max(v2)]]
+            size = max([xmax-xmin, ymax-ymin])
+        else:
+            xmin, xmax = -15, 15
+            ymin, ymax = -15, 15
+            size = 15
+        major_ticksx = np.arange(xmin, xmax, 5)
+        minor_ticksx = np.arange(xmin, xmax, 1)
+        ax.set_xticks(major_ticksx)
+        ax.set_xticks(minor_ticksx, minor=True)
+        major_ticksy = np.arange(ymin, ymax, 5)
+        minor_ticksy = np.arange(ymin, ymax, 1)
+        ax.set_yticks(major_ticksy)
+        ax.set_yticks(minor_ticksy, minor=True)
+    else:
+        major_ticks = np.arange(-size, size, 5)
+        minor_ticks = np.arange(-size, size, 1)
 
-    ax.set_xticks(major_ticks)
-    ax.set_xticks(minor_ticks, minor=True)
-    ax.set_yticks(major_ticks)
-    ax.set_yticks(minor_ticks, minor=True)
+        ax.set_xticks(major_ticks)
+        ax.set_xticks(minor_ticks, minor=True)
+        ax.set_yticks(major_ticks)
+        ax.set_yticks(minor_ticks, minor=True)
 
     if marginals:
         hist, bin_edges = myPDF.sum(axis=0)[:-1], v1
@@ -306,17 +324,25 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
         hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
         ax_histy.barh(hist_x, hist_y, hist_width, color=colormap(hist_y/max(hist_y)))
 
-    # Make a circle for the edges of the screen
-    draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
-    ax.add_artist(draw_circle)
 
+
+    # Make a circle for the edges of the screen
+    if screen:
+        draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
+        ax.add_artist(draw_circle)
+
+    if screen:
+        ax.set_facecolor('k')
+    else:
+        ax.set_facecolor(colormap(0))
 
     # Make a circle to clip the PDF
-    circ = plt.Circle((0,0), size, facecolor='none')
+    if not screen:
+        circ = plt.Circle((0,0), 2*size, facecolor='none')
+    else:
+        circ = plt.Circle((0,0), size, facecolor='none')
     ax.add_patch(circ) # Plot the outline
 
-    # Set the background color to black
-    ax.set_facecolor('k')
     # Plot the PDF
     if grid:
         # Add a grid
@@ -335,15 +361,21 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
             ax.set_ylim(limits)
             # make a bounding box for the limits
             bbox = plt.Rectangle((min(limits), min(limits)), max(limits) - min(limits), max(limits) - min(limits), facecolor="none", edgecolor="none")
-    else:
+    elif screen:
         ax.set_xlim([-(size + 0.5), (size + 0.5)])
         ax.set_ylim([-(size + 0.5), (size + 0.5)])
         bbox = plt.Rectangle((-(size + 0.5), -(size + 0.5)), size + 1, size +1, facecolor="none", edgecolor="none")
+    else:
+        ax.set_xlim([min(v1), max(v1)])
+        ax.set_ylim([min(v2), max(v2)])
+        bbox = plt.Polygon([(min(v1),min(v2)), (min(v1), max(v2)), (max(v1),max(v2)), (max(v1),min(v2))], facecolor="none", edgecolor="none")
 
     ax.add_artist(bbox)
 
     mesh = ax.pcolormesh(v1,v2,myPDF, cmap=colormap, zorder=1, shading='auto', clip_path=bbox)
-    mesh.set_clip_path(circ)
+    if screen:
+        # Set the background color to black
+        mesh.set_clip_path(circ)
     if marginals:
         plt.setp(ax_histx.get_xticklabels(), visible=False)
         plt.setp(ax_histy.get_yticklabels(), visible=False)

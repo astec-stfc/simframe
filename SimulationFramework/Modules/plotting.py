@@ -147,19 +147,19 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
     align.yaxes(ax[0], 0, ax[1], 0, 0.5)
 
 
-def plot_fieldmaps(lattice, sections='All', include_labels=True,  xlim=None, figsize=(12,4), types=['cavity', 'solenoid'], **kwargs):
+def plot_fieldmaps(lattice, sections='All', include_labels=True,  limits=None, figsize=(12,4), types=['cavity', 'solenoid'], **kwargs):
     """
     Simple fieldmap plot
     """
 
     fig, axes = plt.subplots(figsize=figsize, **kwargs)
 
-    add_fieldmaps_to_axes(lattice, axes, bounds=xlim, include_labels=include_labels,
+    add_fieldmaps_to_axes(lattice, axes, bounds=limits, include_labels=include_labels,
                           sections=sections, types=types)
 
 
 def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
-                           xkey='z', xlim=None,
+                           xkey='z', limits=None,
                            nice=True,
                            include_layout=False,
                            include_labels=True,
@@ -215,8 +215,8 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
     X = I.stat(xkey)
 
     # Only get the data we need
-    if xlim:
-        good = np.logical_and(X >= xlim[0], X <= xlim[1])
+    if limits:
+        good = np.logical_and(X >= limits[0], X <= limits[1])
         idx = list(np.where(good == True)[0])
         if len(idx) > 0:
             if idx[0] > 0:
@@ -224,12 +224,12 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
             if (idx[-1]+1) < len(good):
                 good[idx[-1]+1] = True
             X = X[good]
-        if X.min() > xlim[0]:
-            xlim[0] = X.min()
-        if X.max() < xlim[1]:
-            xlim[1] = X.max()
+        if X.min() > limits[0]:
+            limits[0] = X.min()
+        if X.max() < limits[1]:
+            limits[1] = X.max()
     else:
-        xlim = X.min(), X.max()
+        limits = X.min(), X.max()
         good = slice(None,None,None) # everything
 
     # Try particles within these bounds
@@ -240,7 +240,7 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
         # try:
             for pname in range(len(P)): # Modified from Impact
                 xp = np.mean(np.array(P[pname][xkey]))
-                if xp >= xlim[0] and xp <= xlim[1]:
+                if xp >= limits[0] and xp <= limits[1]:
                     Pnames.append(pname)
                     X_particles.append(xp)
             X_particles = np.array(X_particles)
@@ -260,7 +260,7 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
 
     # set all but the layout
     for ax in ax_plot:
-        ax.set_xlim(xlim[0]/factor_x, xlim[1]/factor_x)
+        ax.set_xlim(limits[0]/factor_x, limits[1]/factor_x)
         ax.set_xlabel(f'{xkey} ({units_x})')
 
 
@@ -331,8 +331,8 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
 
         if xkey == 'z':
             #ax_layout.set_axis_off()
-            ax_layout.set_xlim(xlim[0], xlim[1])
+            ax_layout.set_xlim(limits[0], limits[1])
         # else:
         #     ax_layout.set_xlabel('mean_z')
-        #     xlim = (0, I.stop)
-        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=xlim, include_labels=include_labels, types=types)
+        #     limits = (0, I.stop)
+        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=limits, include_labels=include_labels, types=types)
