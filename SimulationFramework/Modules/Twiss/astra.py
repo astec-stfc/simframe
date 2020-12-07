@@ -88,3 +88,5 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         self.append('beta_y_beam', rms_y**2 / ey)
         self.append('alpha_x_beam', (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex)
         self.append('alpha_y_beam', (-1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey)
+        self['cp_eV'] = self['cp']
+        self['sigma_cp_eV'] = self['sigma_cp']

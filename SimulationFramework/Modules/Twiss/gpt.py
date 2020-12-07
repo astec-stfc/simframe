@@ -86,3 +86,5 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.append('beta_y_beam', np.zeros(len(gdfbeamdata.stdx)))
         self.append('alpha_x_beam', np.zeros(len(gdfbeamdata.stdx)))
         self.append('alpha_y_beam', np.zeros(len(gdfbeamdata.stdx)))
+        self['cp_eV'] = self['cp']
+        self['sigma_cp_eV'] = self['sigma_cp']

@@ -97,3 +97,5 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append('beta_y_beam', self.elegantTwiss['betayBeam'])
         self.append('alpha_x_beam', self.elegantTwiss['alphaxBeam'])
         self.append('alpha_y_beam', self.elegantTwiss['alphayBeam'])
+        self['cp_eV'] = self['cp']
+        self['sigma_cp_eV'] = self['sigma_cp']
