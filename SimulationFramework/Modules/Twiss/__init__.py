@@ -42,6 +42,7 @@ class twiss(munch.Munch):
     'kinetic_energy': 'J',
     'gamma': '',
     'cp': 'eV/c',
+    'cp_eV': 'eV/c',
     'p': 'kg*m/s',
     'enx': 'm-radians',
     'ex': 'm-radians',
@@ -133,6 +134,7 @@ class twiss(munch.Munch):
         self.sddsindex = 0
         for k, v in self.properties.items():
             self[k] = twissData(units=v)
+        self['cp_eV'] = self['cp']
         self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
@@ -189,12 +191,12 @@ class twiss(munch.Munch):
         up2 = up - np.mean(up)
         return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
 
-    @property
-    def cp_eV(self):
-        return self['cp']
-    @property
-    def cp_MeV(self):
-        return self['cp'] / 1e6
+    # @property
+    # def cp_eV(self):
+    #     return self['cp']
+    # @property
+    # def cp_MeV(self):
+    #     return self['cp'] / 1e6
 
 def load_directory(directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, preglob='*', verbose=False, sortkey='z'):
     t = twiss()
