@@ -69,7 +69,39 @@ def fieldmap_data(element, directory='.'):
     dat[:,1] *= scale / normalise
     return dat
 
-def load_fieldmaps(lattice, bounds=None, sections='All', types=['cavity', 'solenoid'], verbose=False, scale=1):
+class magnet_plotting_data():
+
+    def half_rectangle(self, e, half_height):
+        return np.array([[e.position_start[2], 0], [e.position_start[2], half_height], [e.position_end[2], half_height], [e.position_end[2], 0]])
+
+    def full_rectangle(self, e, half_height, width=0):
+        return np.array([[e.position_start[2]-width, -half_height], [e.position_start[2]-width, half_height], [e.position_end[2]+width, half_height], [e.position_end[2]+width, -half_height]])
+
+    def quadrupole(self, e):
+        strength = np.sign(e.k1l) * 0.5#e.k1l / e.length
+        return self.half_rectangle(e, strength), 'red'
+
+    def dipole(self, e):
+        strength = np.sign(e.angle)*0.4#e.angle
+        return self.half_rectangle(e, strength), 'gray'
+
+    def beam_position_monitor(self, e):
+        strength = 0.1#e.angle
+        return self.full_rectangle(e, strength), 'purple'
+
+    def screen(self, e):
+        strength = 0.33#e.angle
+        return self.full_rectangle(e, strength), 'green'
+
+    def aperture(self, e):
+        strength = 0.15#e.angle
+        return self.full_rectangle(e, strength, width=0.01), 'black'
+
+    def wall_current_monitor(self, e):
+        strength = 0.33#e.angle
+        return self.full_rectangle(e, strength), 'brown'
+
+def load_elements(lattice, bounds=None, sections='All', types=['cavity', 'solenoid'], verbose=False, scale=1):
     fmap = {}
     for t in types:
         fmap[t] = {}
@@ -84,16 +116,15 @@ def load_fieldmaps(lattice, bounds=None, sections='All', types=['cavity', 'solen
         for e in elements:
             if t == 'cavity' or t == 'solenoid':
                 fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
-            elif t == 'quadrupole':
-                strength = np.sign(e.k1l) * 0.5#e.k1l / e.length
-                fmap[t][e.objectname] = np.array([[e.position_start[2], 0], [e.position_start[2], strength], [e.position_end[2], strength], [e.position_end[2], 0]])
-            elif t == 'dipole':
-                strength = np.sign(e.angle)*0.25#e.angle
-                fmap[t][e.objectname] = np.array([[e.position_start[2], 0], [e.position_start[2], strength], [e.position_end[2], strength], [e.position_end[2], 0]])
+            elif hasattr(magnet_plotting_data, t):
+                fmap[t][e.objectname] = getattr(magnet_plotting_data(), t)(e)
+            else:
+                print('Missing drawings for',t)
     return fmap
 
 def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
-                           types=['cavity', 'solenoid'],
+                           fields=['cavity', 'solenoid'],
+                           magnets = ['quadrupole', 'dipole', 'beam_position_monitor', 'screen'],
                           include_labels=True, verbose=False):
     """
     Adds fieldmaps to an axes.
@@ -102,40 +133,40 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
 
     max_scale = 0
 
-    fmaps = load_fieldmaps(lattice, bounds=bounds, sections=sections, verbose=verbose, types=types)
+    fmaps = load_elements(lattice, bounds=bounds, sections=sections, verbose=verbose, types=fields)
     ax1 = axes
 
     ax1rhs = ax1.twinx()
     ax = [ax1, ax1rhs]
 
     ylabel = {'cavity': '$E_z$ (MV/m)', 'solenoid':'$B_z$ (T)'}
-    color = {'cavity': 'green', 'solenoid':'blue', 'quadrupole':'red', 'dipole':'black'}
+    color = {'cavity': 'green', 'solenoid':'blue'}
 
-    for i, section in enumerate(types):
+    for i, section in enumerate(fields):
         a = ax[i]
         for name, data in fmaps[section].items():
             label = f'{section}_{name}'
             c = color[section]
             # if section == 'cavity':# and not section == 'solenoid':
-            if section == types[0]:
+            if section == fields[0]:
                 max_scale = max(abs(data[:,1])) if max(abs(data[:,1])) > max_scale else max_scale
             a.plot(*data.T, label=label, color=c)
         a.set_ylabel(ylabel[section])
     ax1.set_xlabel('$z$ (m)')
 
-    if len(types) < 1:
+    if len(fields) < 1:
         for a in ax:
             a.set_yticks([])
 
     max_scale = 1 if max_scale == 0 else max_scale
     a = ax[0]
-    magnets = ['quadrupole', 'dipole']
-    fmaps = load_fieldmaps(lattice, bounds=bounds, sections=sections, verbose=verbose, types=magnets, scale=max_scale)
+
+    fmaps = load_elements(lattice, bounds=bounds, sections=sections, verbose=verbose, types=magnets, scale=max_scale)
     for section in magnets:
         if len(fmaps[section].items()) > 0:
             section_scale = max_scale #/ max([max(abs(d[:,1])) for d in fmaps[section].values()])
-        for name, data in fmaps[section].items():
-            c = color[section]
+        for name, (data, c) in fmaps[section].items():
+            # c = color[section]
             data[:,1] = data[:,1] * section_scale
             a.fill(*data.T, color=c)
 
@@ -147,7 +178,9 @@ def add_fieldmaps_to_axes(lattice, axes, bounds=None, sections='All',
     align.yaxes(ax[0], 0, ax[1], 0, 0.5)
 
 
-def plot_fieldmaps(lattice, sections='All', include_labels=True,  limits=None, figsize=(12,4), types=['cavity', 'solenoid'], **kwargs):
+def plot_fieldmaps(lattice, sections='All', include_labels=True,  limits=None, figsize=(12,4),
+                    fields=['cavity', 'solenoid'],
+                    magnets = ['quadrupole', 'dipole', 'beam_position_monitor', 'screen'], **kwargs):
     """
     Simple fieldmap plot
     """
@@ -155,7 +188,7 @@ def plot_fieldmaps(lattice, sections='All', include_labels=True,  limits=None, f
     fig, axes = plt.subplots(figsize=figsize, **kwargs)
 
     add_fieldmaps_to_axes(lattice, axes, bounds=limits, include_labels=include_labels,
-                          sections=sections, types=types)
+                          sections=sections, fields=fields, magnets=magnets)
 
 
 def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
@@ -165,7 +198,8 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
                            include_labels=True,
                            include_legend=True,
                            include_particles=False,
-                           types=['cavity', 'solenoid'],
+                           fields=['cavity', 'solenoid'],
+                           magnets = ['quadrupole', 'dipole', 'beam_position_monitor', 'screen', 'wall_current_monitor', 'aperture'],
                            grid=False, **kwargs):
     """
     Plots stat output multiple keys.
@@ -335,4 +369,4 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
         # else:
         #     ax_layout.set_xlabel('mean_z')
         #     limits = (0, I.stop)
-        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=limits, include_labels=include_labels, types=types)
+        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=limits, include_labels=include_labels, fields=fields, magnets=magnets)

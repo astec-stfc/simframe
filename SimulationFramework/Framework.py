@@ -113,12 +113,12 @@ class Framework(Munch):
         else:
             stream = open(self.global_parameters['master_lattice_location']+filename, 'r')
         self.settings = yaml.safe_load(stream)
-        self.globalSettings = self.settings['global']
+        self.globalSettings = self.settings['global'] if 'global' in self.settings else {}
         master_run_no = self.globalSettings['run_no'] if 'run_no' in self.globalSettings else 1
         if 'generator' in self.settings:
             self.generatorSettings = self.settings['generator']
             self.add_Generator(**self.generatorSettings)
-        self.fileSettings = self.settings['files']
+        self.fileSettings = self.settings['files'] if 'files' in self.settings else {}
         elements = self.settings['elements']
         self.groups = self.settings['groups'] if 'groups' in self.settings and self.settings['groups'] is not None else {}
         changes = self.settings['changes'] if 'changes' in self.settings and self.settings['changes'] is not None else {}
@@ -532,13 +532,13 @@ class Framework(Munch):
 
 class frameworkDirectory(Munch):
 
-    def __init__(self, directory='.', twiss=True, beams=False, verbose=False):
+    def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml'):
         super(frameworkDirectory, self).__init__()
         directory = os.path.relpath(directory)
         self.framework = Framework(directory, clean=False, verbose=verbose)
-        self.framework.loadSettings(directory+'/'+'settings.def')
-        if os.path.exists(directory+'/'+'changes.yaml'):
-            self.framework.loadSettings(directory+'/'+'changes.yaml')
+        self.framework.loadSettings(directory+'/'+settings)
+        if os.path.exists(directory+'/'+changes):
+            self.framework.load_changes_file(directory+'/'+changes)
         if twiss:
             self.twiss = rtf.load_directory(directory)
         else:

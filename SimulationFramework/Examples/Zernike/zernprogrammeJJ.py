@@ -119,18 +119,17 @@ def reconstruction(a, N):
     recon = np.zeros([N,N])
     for i in range(len(a)):
         if a[i] != 0:
-
             im = zerngenerator(i,N)
             recon += im*a[i]#You just add up the components multiplied by their coefficients
     return(recon)
 
 
+if __name__ == "main":
+    data = reconstruction([0,1,0,1], 1000)
 
-data = reconstruction([0,1,0,1], 1000)
+    from PIL import Image
 
-from PIL import Image
-
-data /= np.max(data) / 255
-image = Image.fromarray(data)
-image = image.convert('L')
-image.save('test.bmp')
+    data /= np.max(data) / 255
+    image = Image.fromarray(data)
+    image = image.convert('L')
+    image.save('test.bmp')

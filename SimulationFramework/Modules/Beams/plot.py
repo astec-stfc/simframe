@@ -303,13 +303,14 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
         ax.set_yticks(major_ticksy)
         ax.set_yticks(minor_ticksy, minor=True)
     else:
-        major_ticks = np.arange(-size, size, 5)
-        minor_ticks = np.arange(-size, size, 1)
-
-        ax.set_xticks(major_ticks)
-        ax.set_xticks(minor_ticks, minor=True)
-        ax.set_yticks(major_ticks)
-        ax.set_yticks(minor_ticks, minor=True)
+        major_ticksx = np.arange(-size, size, 5)
+        minor_ticksx = np.arange(-size, size, 1)
+        major_ticksy = np.arange(-size, size, 5)
+        minor_ticksy = np.arange(-size, size, 1)
+        ax.set_xticks(major_ticksx)
+        ax.set_xticks(minor_ticksx, minor=True)
+        ax.set_yticks(major_ticksy)
+        ax.set_yticks(minor_ticksy, minor=True)
 
     if marginals:
         hist, bin_edges = myPDF.sum(axis=0)[:-1], v1
@@ -324,8 +325,6 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
         hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
         ax_histy.barh(hist_x, hist_y, hist_width, color=colormap(hist_y/max(hist_y)))
 
-
-
     # Make a circle for the edges of the screen
     if screen:
         draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
@@ -337,17 +336,17 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
         ax.set_facecolor(colormap(0))
 
     # Make a circle to clip the PDF
-    if not screen:
-        circ = plt.Circle((0,0), 2*size, facecolor='none')
-    else:
+    if screen:
         circ = plt.Circle((0,0), size, facecolor='none')
+    else:
+        circ = plt.Circle((0,0), 3*size, facecolor='none')
     ax.add_patch(circ) # Plot the outline
 
     # Plot the PDF
     if grid:
         # Add a grid
-        ax.grid(which='minor', color="w", alpha=0.2, clip_path=circ)
-        ax.grid(which='major', color="w", alpha=0.5, clip_path=circ)
+        ax.grid(which='minor', color="w", alpha=0.3, clip_path=circ)
+        ax.grid(which='major', color="w", alpha=0.55, clip_path=circ)
     # Set the image limits to slightly larger than the screen size
     if limits:
         if isinstance(limits, (int, float)):
@@ -374,7 +373,6 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
 
     mesh = ax.pcolormesh(v1,v2,myPDF, cmap=colormap, zorder=1, shading='auto', clip_path=bbox)
     if screen:
-        # Set the background color to black
         mesh.set_clip_path(circ)
     if marginals:
         plt.setp(ax_histx.get_xticklabels(), visible=False)
@@ -385,4 +383,4 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
     # Set the screen name as the title
     plt.suptitle(file)
     # Show the final image
-    plt.show()
+    plt.draw()
