@@ -65,6 +65,7 @@ class twiss(munch.Munch):
     'sigma_t': 's',
     'sigma_p': 'kg * m/s',
     'sigma_cp': 'eV/c',
+    'sigma_cp_eV': 'eV/c',
     'mux': '2 pi',
     'muy': '2 pi',
     'eta_x': 'm',
