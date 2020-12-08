@@ -194,11 +194,11 @@ class beam(munch.Munch):
     def __getitem__(self, key):
         for p in parameters:
             if key in parameters[p]:
-                return getattr(super(beam, self).__getattr__(p), key)
+                return getattr(super().__getattr__(p), key)
         if hasattr(np, key):
             return stats(self, getattr(np, key))
-        if hasattr(super(beam, self).__getitem__('_beam'),key):
-            return getattr(super(beam, self).__getitem__('_beam'),key)
+        if hasattr(super().__getitem__('_beam'),key):
+            return getattr(super().__getitem__('_beam'),key)
         else:
             try:
                 return super(beam, self).__getitem__(key)
@@ -208,7 +208,7 @@ class beam(munch.Munch):
     def __setitem__(self, key, value):
         for p in parameters:
             if key in parameters[p]:
-                return setattr(super(beam, self).__getattr__(p), key, value)
+                return super().__getattr__(p).__setitem__(key, value)
         # if hasattr(np, key):
         #     return stats(self, getattr(np, key))
         if hasattr(self, '_beam') and hasattr(super(beam, self).__getitem__('_beam'),key):
