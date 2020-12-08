@@ -11,3 +11,6 @@ SimulationFramework/Examples/S2EBunchPrePostCombined_v3.sdds
 SimulationFramework/Examples/S2EBunchPrePostCombined_v2.sdds
 SimulationFramework/Examples/S2EBunchPrePostCombined.astra
 SAMM3.0/Examples
+*checkpoint.ipynb
+*.pyc*
+*Untitled*

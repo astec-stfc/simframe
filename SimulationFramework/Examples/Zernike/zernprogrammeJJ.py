@@ -124,7 +124,8 @@ def reconstruction(a, N):
     return(recon)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
+
     data = reconstruction([0,1,0,1], 1000)
 
     from PIL import Image
