@@ -184,7 +184,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.bestfit = 1e26
 
         self.opt_iteration = ''
-        try:
-            self.OptimisingFunction(best)
-        except:
-            pass
+        # try:
+        self.OptimisingFunction(best)
+        # except:
+            # pass
