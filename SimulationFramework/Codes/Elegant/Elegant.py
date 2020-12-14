@@ -1,7 +1,7 @@
 import os
-from SimulationFramework.Framework_objects import *
-from SimulationFramework.Framework_elements import *
-import SimulationFramework.Modules.Beams as rbf
+from ...Framework_objects import *
+from ...Framework_elements import *
+from ...Modules import Beams as rbf
 
 class elegantLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):

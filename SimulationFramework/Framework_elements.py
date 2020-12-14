@@ -1,8 +1,8 @@
 from operator import add
-from SimulationFramework.Framework_objects import *
-from SimulationFramework.FrameworkHelperFunctions import *
-from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
-import SimulationFramework.Modules.Beams as rbf
+from .Framework_objects import *
+from .FrameworkHelperFunctions import *
+from .FrameworkHelperFunctions import _rotation_matrix
+from .Modules import Beams as rbf
 
 class dipole(frameworkElement):
 

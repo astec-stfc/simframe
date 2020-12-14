@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from munch import Munch
 from ... import constants
@@ -64,10 +65,9 @@ class Particles(Munch):
         return self._sigmas
 
     def covariance(self, u, up):
-        # u2 = u - np.mean(u)
-        # up2 = up - np.mean(up)
-        # return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
-        return float(np.cov([u,up])[0,1])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return float(np.cov([u,up])[0,1])
 
     @property
     def x(self):

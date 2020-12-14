@@ -1,9 +1,9 @@
 import os
 import yaml
-from SimulationFramework.Framework_objects import *
-from SimulationFramework.Framework_elements import *
-from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
-import SimulationFramework.Modules.Beams as rbf
+from ...Framework_objects import *
+from ...Framework_elements import *
+from ...FrameworkHelperFunctions import _rotation_matrix
+from ...Modules import Beams as rbf
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/csrtrack_defaults.yaml', 'r') as infile:
     csrtrack_defaults = yaml.safe_load(infile)

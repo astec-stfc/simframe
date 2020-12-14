@@ -1,5 +1,4 @@
 import os
-import sys
 import munch
 from collections import OrderedDict
 import numpy as np

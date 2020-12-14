@@ -1,11 +1,11 @@
 import os
 import subprocess
 from collections import OrderedDict
-from SimulationFramework.FrameworkHelperFunctions import *
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from munch import Munch
+from ...FrameworkHelperFunctions import *
+from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import constants
-import SimulationFramework.Modules.Beams as rbf
+from ...Modules import Beams as rbf
 
 astra_generator_keywords = {
     'keywords':{
@@ -349,15 +349,22 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
     def generate_radial_distribution(self):
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
-        if self.distribution_type_x == 'image' or self.distribution_type_x == 'image':
+        if self.distribution_type_x == 'image' or self.distribution_type_y == 'image':
             image_filename = os.path.relpath('./'+self.image_filename, start=self.global_parameters['master_subdir']+'/')
             image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
             image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
             output =  'setxydistbmp("beam", \"' + str(image_filename) + '\", ' + str(image_calibration_x) + ', ' + str(image_calibration_y) + ') ;\n'
             return output
-        elif True:#(self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
+        elif (self.sigma_x != self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
+            output =   "radius_x = " + str(self.sigma_x) + ";\n"
+            output +=  "radius_y = " + str(self.sigma_y) + ";\n"
+            # output += self._distribution('distribution_type_x', 'setxdist', 'radius_x', left_cutoff=self.guassian_cutoff_x, right_cutoff=self.guassian_cutoff_x) + "\n"
+            # output += self._distribution('distribution_type_y', 'setydist', 'radius_y', left_cutoff=self.guassian_cutoff_y, right_cutoff=self.guassian_cutoff_y) + "\n"
+            output += 'setellipse("beam", 2.0*radius_x, 2.0*radius_y, 1e-12);\n'
+            return output
+        elif (self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
             output =  "radius = " + str(self.sigma_x) + ";\n"
-            output += self._distribution('distribution_type_x', 'setrxydist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
+            output += self._distribution('distribution_type_x', 'setxdist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
             output += 'setphidist("beam", "u", 0, 2*pi) ;\n'
             return output
         else:
@@ -373,11 +380,16 @@ setGBphidist("beam","u", 0, 2*pi);
     def generate_thermal_emittance(self):
         if self.distribution_type_x == 'image' or self.distribution_type_x == 'image':
             return '\n'
+        elif (self.sigma_x != self.sigma_y):
+            thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
+            output = '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius_x)) ;'''
+            output += '''setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius_y)) ;'''
+            return output
         else:
             thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
             return '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
-    setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
-    '''
+setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
+'''
 
     def generate_longitudinal_distribution(self):
         if self.distribution_type_z.lower() in ['g','gaussian']:

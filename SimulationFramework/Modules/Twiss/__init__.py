@@ -1,4 +1,6 @@
-import os, math, sys
+import os
+import math
+import warnings
 import numpy as np
 try:
     from scipy import interpolate
@@ -96,7 +98,7 @@ class twiss(munch.Munch):
             'gpt': gpt.read_gdf_twiss_files,
             'astra': astra.read_astra_twiss_files
         }
-        self.code_signatures = {'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}
+        self.code_signatures = [['elegant','.twi'], ['elegant','.flr'], ['elegant','.sig'], ['GPT', 'emit.gdf'], ['astra', 'Xemit.001']]
 
     # def __getitem__(self, key):
     #     if key in super(twiss, self).__getitem__('data') and super(twiss, self).__getitem__('data') is not None:
@@ -105,13 +107,24 @@ class twiss(munch.Munch):
     #         return super(twiss, self).__getitem__(key)
 
     def read_astra_twiss_files(self, *args, **kwargs):
-        return astra.read_astra_twiss_files(self, *args, **kwargs)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return astra.read_astra_twiss_files(self, *args, **kwargs)
 
     def read_elegant_twiss_files(self, *args, **kwargs):
-        return elegant.read_elegant_twiss_files(self, *args, **kwargs)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return elegant.read_elegant_twiss_files(self, *args, **kwargs)
+
+    def read_GPT_twiss_files(self, *args, **kwargs):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return gpt.read_gdf_twiss_files(self, *args, **kwargs)
 
     def save_HDF5_twiss_file(self, *args, **kwargs):
-        return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
 
     def __repr__(self):
         return repr([k for k in self.properties if len(self[k]) > 0])
@@ -155,7 +168,7 @@ class twiss(munch.Munch):
         return None
 
     def _determine_code(self, filename):
-        for k,v in self.code_signatures.items():
+        for k,v in self.code_signatures:
             l = -len(v)
             if v == filename[l:]:
                 return self.codes[k]

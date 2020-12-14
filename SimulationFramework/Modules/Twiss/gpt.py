@@ -1,5 +1,5 @@
+import os
 from .. import read_gdf_file as rgf
-
 
 def read_gdf_beam_file_object(self, file):
     if isinstance(file, (str)):
@@ -16,7 +16,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
     if isinstance(filename, (list, tuple)):
         for f in filename:
             self.read_gdf_twiss_files(file=f, reset=False)
-    if os.path.isfile(filename):
+    elif os.path.isfile(filename):
         if gdfbeam is None and not filename is None:
             print('GDF filename = ', filename)
             gdfbeam = self.read_gdf_beam_file_object(filename)

@@ -3,16 +3,15 @@ import yaml
 import copy
 from pprint import pprint
 from collections import OrderedDict
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-import SimulationFramework.Modules.Beams as rbf
-import SimulationFramework.Modules.Twiss as rtf
-import SimulationFramework.Codes.Executables as exes
-from SimulationFramework.Codes.ASTRA.ASTRA import *
-from SimulationFramework.Codes.CSRTrack.CSRTrack import *
-from SimulationFramework.Codes.Elegant.Elegant import *
-from SimulationFramework.Codes.Generators.Generators import *
-from SimulationFramework.Codes.GPT.GPT import *
-# from SimulationFramework.Codes.MAD8.MAD8 import *
+from .Modules.merge_two_dicts import merge_two_dicts
+from .Modules import Beams as rbf
+from .Modules import Twiss as rtf
+from .Codes import Executables as exes
+from .Codes.ASTRA.ASTRA import *
+from .Codes.CSRTrack.CSRTrack import *
+from .Codes.Elegant.Elegant import *
+from .Codes.Generators.Generators import *
+from .Codes.GPT.GPT import *
 try:
     import SimulationFramework.Modules.plotting as groupplot
     use_matplotlib = True

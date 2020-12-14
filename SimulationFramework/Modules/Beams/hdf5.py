@@ -73,11 +73,12 @@ def write_HDF5_summary_file(filename, beams=[], clean=False):
     if isinstance(beams, str):
         beams = [beams]
     mode = 'a' if not clean else 'w'
+    basedirectory = os.path.dirname(filename)
     with h5py.File(filename, mode) as f:
         for name in beams:
             pre, ext = os.path.splitext(os.path.basename(name))
             try:
-                f[pre] = h5py.ExternalLink(name, '/')
+                f[pre] = h5py.ExternalLink(os.path.relpath(name, basedirectory), '/')
             except RuntimeError:
                 pass
 

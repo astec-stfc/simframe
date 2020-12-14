@@ -1,7 +1,7 @@
-from SimulationFramework.Framework_objects import *
-from SimulationFramework.Framework_elements import *
-from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
-import SimulationFramework.Modules.Beams as rbf
+from ...Framework_objects import *
+from ...Framework_elements import *
+from ...FrameworkHelperFunctions import _rotation_matrix
+from ...Modules import Beams as rbf
 
 gpt_defaults = {}
 

@@ -3,9 +3,9 @@ import subprocess
 import yaml
 from munch import Munch, unmunchify
 from collections import OrderedDict
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-from SimulationFramework.FrameworkHelperFunctions import *
-from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix
+from .Modules.merge_two_dicts import merge_two_dicts
+from .FrameworkHelperFunctions import *
+from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/type_conversion_rules.yaml', 'r') as infile:
