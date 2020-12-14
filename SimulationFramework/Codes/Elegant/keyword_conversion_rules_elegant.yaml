@@ -20,6 +20,7 @@ general:
 dipole:
   isr_enable: isr
   sr_enable: synch_rad
+  csr_enable: csr
   smoothing_half_width: sg_halfwidth
   csr_bins: bins
   edge_order: edge_order
