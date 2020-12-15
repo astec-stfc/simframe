@@ -80,7 +80,10 @@ class Framework(Munch):
     def setMasterLatticeLocation(self, master_lattice=None):
         # global master_lattice_location
         if master_lattice is None:
-            self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/').replace('\\','/')
+            if os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/')+'/'):
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/')+'/').replace('\\','/')
+            else:
+                raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:
             self.global_parameters['master_lattice_location'] = master_lattice
         self.master_lattice_location = self.global_parameters['master_lattice_location']
