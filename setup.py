@@ -11,7 +11,7 @@ requirements = ["deepdiff>=5", "h5py>=3.1", "munch>=2.5", "numpy>=1.19", "progre
 setup(
     name="AcceleratorSimFrame",
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass()
+    cmdclass=versioneer.get_cmdclass(),
     author="James Jones",
     author_email="james.jones@stfc.ac.uk",
     description="A python framework for particle accelerator simulations",
