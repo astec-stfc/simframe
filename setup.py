@@ -24,10 +24,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-	data_files=[
-	('../../SimulationFramework/Codes', ['SimulationFramework/Codes/elementkeywords.yaml', 'SimulationFramework/Codes/type_conversion_rules.yaml']),
-	('../../SimulationFramework/Codes/CSRTrack', ['SimulationFramework/Codes/CSRTrack/csrtrack_defaults.yaml']),
-	('../../SimulationFramework/Codes/Elegant', ['SimulationFramework/Codes/Elegant/commands_Elegant.yaml',
-	'SimulationFramework/Codes/Elegant/elements_Elegant.yaml', 'SimulationFramework/Codes/Elegant/keyword_conversion_rules_elegant.yaml']),
-	]
+	package_data={'SimulationFramework': ['Codes/*.yaml', 'Codes/Elegant/*.yaml', 'Codes/CSRTrack/*.yaml']},
 )

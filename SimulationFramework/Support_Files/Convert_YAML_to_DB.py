@@ -1,5 +1,5 @@
 import time, os, subprocess, re, sys
-from ruamel import yaml
+from pyyaml import yaml
 sys.path.append('../..')
 from SimulationFramework.Framework import *
 from collections import OrderedDict
