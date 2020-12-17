@@ -82,3 +82,14 @@ class emittance():
     def normalized_vertical_emittance_90(self):
         emit = self.beam.vertical_emittance_90
         return np.mean(self.beam.cp)/self.beam.E0_eV * emit
+
+    @property
+    def horizontal_emittance_corrected(self):
+        xc = self.beam.eta_corrected(self.beam.x)
+        xpc = self.beam.eta_corrected(self.beam.xp)
+        return self.emittance_calc(xc, xpc)
+    @property
+    def vertical_emittance_corrected(self):
+        yc = self.beam.eta_corrected(self.beam.y)
+        ypc = self.beam.eta_corrected(self.beam.yp)
+        return self.emittance_calc(yc, ypc)

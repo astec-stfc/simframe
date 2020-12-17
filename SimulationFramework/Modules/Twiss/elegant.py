@@ -1,5 +1,8 @@
 import os
-import sdds
+try:
+    import sdds
+except:
+    raise Exception('Needs PythonSDDS - see https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#Python%20SDDS%20Binaries')
 import numpy as np
 from .. import constants
 

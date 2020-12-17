@@ -69,6 +69,12 @@ class Particles(Munch):
             warnings.simplefilter("ignore")
             return float(np.cov([u,up])[0,1])
 
+    def eta_correlation(self, u):
+        return self.covariance(u,self.p) / self.covariance(self.p, self.p)
+
+    def eta_corrected(self, u):
+        return u - self.eta_correlation(u)*self.p
+
     @property
     def x(self):
         return self['x']

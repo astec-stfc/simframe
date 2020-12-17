@@ -16,7 +16,8 @@ from . import hdf5
 try:
     from . import plot
     use_matplotlib = True
-except ImportError:
+except ImportError as e:
+    print('Import error - plotting disabled. Missing package:', e)
     use_matplotlib = False
 
 from .Particles.emittance import emittance as emittanceobject

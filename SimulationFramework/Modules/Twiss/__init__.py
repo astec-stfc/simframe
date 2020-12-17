@@ -116,6 +116,9 @@ class twiss(munch.Munch):
             warnings.simplefilter("ignore")
             return elegant.read_elegant_twiss_files(self, *args, **kwargs)
 
+    def read_gdf_twiss_files(self, *args, **kwargs):
+        return self.read_GPT_twiss_files(*args, **kwargs)
+        
     def read_GPT_twiss_files(self, *args, **kwargs):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

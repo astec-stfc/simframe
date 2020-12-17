@@ -13,9 +13,15 @@ from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
 try:
+    import MasterLattice
+    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
+except:
+    MasterLatticeLocation = None
+try:
     import SimulationFramework.Modules.plotting as groupplot
     use_matplotlib = True
-except ImportError:
+except ImportError as e:
+    print('Import error - plotting disabled. Missing package:', e)
     use_matplotlib = False
 import progressbar
 from munch import Munch, unmunchify
@@ -62,7 +68,7 @@ class Framework(Munch):
         self.define_gpt_command = self.executables.define_gpt_command
 
     def __repr__(self):
-        return repr({'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
+        return repr({'master_lattice_location': self.global_parameters['master_lattice_location'], 'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
 
     def setSubDirectory(self, dir):
         # global self.global_parameters['master_subdir'], self.global_parameters['master_lattice_location']
@@ -80,8 +86,15 @@ class Framework(Munch):
     def setMasterLatticeLocation(self, master_lattice=None):
         # global master_lattice_location
         if master_lattice is None:
-            if os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/')+'/'):
-                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/')+'/').replace('\\','/')
+            if MasterLatticeLocation is not None:
+                # print('Found MasterLattice Package =', MasterLatticeLocation)
+                self.global_parameters['master_lattice_location'] = MasterLatticeLocation.replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice/')+'/'):
+                # print('Found MasterLattice Directory 2-up =', MasterLatticeLocation)
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice/')+'/').replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/'):
+                # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/').replace('\\','/')
             else:
                 raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:

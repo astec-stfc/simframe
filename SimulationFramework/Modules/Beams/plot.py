@@ -9,9 +9,17 @@ from matplotlib.transforms import Bbox
 from copy import copy
 from ..units import nice_array, nice_scale_prefix
 
-from fastkde import fastKDE
-
-
+try:
+    from fastkde import fastKDE
+    fastKDE_installed = True
+except ImportError as e:
+    print('fastKDE missing - plotScreenImage will use SciPy')
+    fastKDE_installed = False
+try:
+    from scipy import stats
+    SciPy_installed = True
+except:
+    SciPy_installed = False
 CMAP0 = copy(plt.get_cmap('viridis'))
 CMAP0.set_under('white')
 CMAP1 = copy(plt.get_cmap('plasma'))
@@ -255,12 +263,25 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, screen=False, **kwargs):
+def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, screen=False, use_scipy=False, **kwargs):
     #Do the self-consistent density estimate
     x = 1e3*(beam.x-np.mean(beam.x))
     y = 1e3*(beam.y-np.mean(beam.y))
-    myPDF,axes = fastKDE.pdf(x,y, **kwargs)
-    v1,v2 = axes
+    if fastKDE_installed and not use_scipy:
+        myPDF,axes = fastKDE.pdf(x,y, **kwargs)
+        v1,v2 = axes
+    elif SciPy_installed:
+        xmin = x.min()
+        xmax = x.max()
+        ymin = y.min()
+        ymax = y.max()
+        v1, v2 = np.mgrid[xmin:xmax:100j, ymin:ymax:100j]
+        positions = np.vstack([v1.ravel(), v2.ravel()])
+        values = np.vstack([x, y])
+        kernel = stats.gaussian_kde(values)
+        myPDF = np.reshape(kernel(positions).T, v1.shape)
+    else:
+        raise Exception("fastKDE or SciPy required")
     # normalise the PDF to 1
     myPDF=myPDF/myPDF.max()*scale
 

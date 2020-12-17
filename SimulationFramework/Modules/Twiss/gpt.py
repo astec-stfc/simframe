@@ -1,5 +1,7 @@
 import os
+import numpy as np
 from .. import read_gdf_file as rgf
+from .. import constants
 
 def read_gdf_beam_file_object(self, file):
     if isinstance(file, (str)):
@@ -19,7 +21,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
     elif os.path.isfile(filename):
         if gdfbeam is None and not filename is None:
             print('GDF filename = ', filename)
-            gdfbeam = self.read_gdf_beam_file_object(filename)
+            gdfbeam = read_gdf_beam_file_object(self, filename)
             self.gdfbeam = gdfbeam
         elif gdfbeam is None and file is None:
             return None
