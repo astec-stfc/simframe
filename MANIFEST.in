@@ -1,0 +1,2 @@
+include versioneer.py
+include SimulationFramework/_version.py

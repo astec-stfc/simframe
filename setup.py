@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import versioneer
 
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
@@ -9,7 +10,8 @@ requirements = ["deepdiff>=5", "h5py>=3.1", "munch>=2.5", "numpy>=1.19", "progre
 
 setup(
     name="AcceleratorSimFrame",
-    version="0.0.1",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass()
     author="James Jones",
     author_email="james.jones@stfc.ac.uk",
     description="A python framework for particle accelerator simulations",
