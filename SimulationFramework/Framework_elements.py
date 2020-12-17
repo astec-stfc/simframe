@@ -3,6 +3,7 @@ from .Framework_objects import *
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Modules import Beams as rbf
+from .Support_Files.symmlinks import has_symlink_privilege
 
 class dipole(frameworkElement):
 
@@ -416,14 +417,18 @@ class cavity(frameworkElement):
         return cells
 
     def write_ASTRA(self, n):
-        # print('wsl astra = ', self.global_parameters['astra_use_wsl'])
-        if int(self.global_parameters['astra_use_wsl']) > 1:
-            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
-            efield_def = ['FILE_EFieLD', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
-        else:
+        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
+        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
+        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
+            symlink(efield_location, efield_basename)
+            efield_def = ['FILE_EFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
             efield_def = ['FILE_EFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
+        else:
+            copylink(efield_location, efield_basename)
+            efield_def = ['FILE_EFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['C_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
@@ -522,13 +527,18 @@ class solenoid(frameworkElement):
             self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
 
     def write_ASTRA(self, n):
-        if int(self.global_parameters['astra_use_wsl']) > 1:
-            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
-            efield_def = ['FILE_BFieLD', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
-        else:
+        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
+        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
+        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
+            symlink(efield_location, efield_basename)
+            efield_def = ['FILE_BFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
             efield_def = ['FILE_BFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
+        else:
+            copylink(efield_location, efield_basename)
+            efield_def = ['FILE_BFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
@@ -939,13 +949,18 @@ class longitudinal_wakefield(cavity):
 
     def write_ASTRA(self, startn):
         self.update_field_definition()
-        if int(self.global_parameters['astra_use_wsl']) > 1:
-            efield_basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-            efield_location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-            symlink(os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+efield_location.replace('\\','/')), os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + efield_basename.replace('\\','/')))
-            efield_def = ['Wk_filename', {'value': '\'' + efield_basename.replace('\\','/') + '\'', 'default': ''}]
-        else:
+        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
+        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
+        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
+        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
+        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
+            symlink(efield_location, efield_basename)
+            efield_def = ['Wk_filename', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
             efield_def = ['Wk_filename', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
+        else:
+            copylink(efield_location, efield_basename)
+            efield_def = ['Wk_filename', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
         current_bins = self.lsc_bins if self.lsc_bins > 0 else 100
         output = ''
         if self.scale_kick > 0:

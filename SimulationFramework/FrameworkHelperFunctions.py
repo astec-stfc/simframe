@@ -1,5 +1,6 @@
 import os
 import re
+from shutil import copyfile
 from collections import OrderedDict
 import numpy as np
 
@@ -168,7 +169,6 @@ def list_add(list1, list2):
     return list(map(add, list1, list2))
 
 def symlink(source, link_name):
-    import os
     os_symlink = getattr(os, "symlink", None)
     if callable(os_symlink):
         try:
@@ -183,3 +183,6 @@ def symlink(source, link_name):
         flags = 1 if os.path.isdir(source) else 0
         if csl(link_name, source, flags) == 0:
             raise ctypes.WinError()
+
+def copylink(source, destination):
+    copyfile(source, destination)

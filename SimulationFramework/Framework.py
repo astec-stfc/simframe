@@ -72,7 +72,8 @@ class Framework(Munch):
 
     def setSubDirectory(self, dir):
         # global self.global_parameters['master_subdir'], self.global_parameters['master_lattice_location']
-        self.subdirectory = os.path.abspath(self.basedirectory+'/'+dir)
+        self.subdirectory = os.path.abspath(dir)
+        # print('self.subdirectory = ', self.subdirectory)
         self.global_parameters['master_subdir'] = self.subdirectory
         if not os.path.exists(self.subdirectory):
             os.makedirs(self.subdirectory, exist_ok=True)
@@ -549,7 +550,7 @@ class frameworkDirectory(Munch):
 
     def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml'):
         super(frameworkDirectory, self).__init__()
-        directory = os.path.relpath(directory)
+        directory = os.path.abspath(directory)
         self.framework = Framework(directory, clean=False, verbose=verbose)
         self.framework.loadSettings(directory+'/'+settings)
         if os.path.exists(directory+'/'+changes):
