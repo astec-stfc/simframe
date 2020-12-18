@@ -3,7 +3,6 @@ from .Framework_objects import *
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Modules import Beams as rbf
-from .Support_Files.symmlinks import has_symlink_privilege
 
 class dipole(frameworkElement):
 
@@ -394,13 +393,13 @@ class cavity(frameworkElement):
         if hasattr(self, 'field_definition') and self.field_definition is not None:
             self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"').strip('\'"').replace('\\','/')+'"'
         if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
-            self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"')+'"'
+            self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"'+'"')+'"'
         if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
             self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
         if hasattr(self, 'longitudinal_wakefield_sdds') and self.longitudinal_wakefield_sdds is not None:
-            self.longitudinal_wakefield_sdds = '"' + expand_substitution(self, '\''+self.longitudinal_wakefield_sdds+'\'').strip('\'"')+'"'
+            self.longitudinal_wakefield_sdds = '"' + expand_substitution(self, '\''+self.longitudinal_wakefield_sdds+'\'').strip('\'"') + '"'
         if hasattr(self, 'transverse_wakefield_sdds') and self.transverse_wakefield_sdds is not None:
-            self.transverse_wakefield_sdds = '"' + expand_substitution(self, '\''+self.transverse_wakefield_sdds+'\'').strip('\'"')+'"'
+            self.transverse_wakefield_sdds = '"' + expand_substitution(self, '\''+self.transverse_wakefield_sdds+'\'').strip('\'"') + '"'
 
     @property
     def cells(self):
@@ -417,18 +416,8 @@ class cavity(frameworkElement):
         return cells
 
     def write_ASTRA(self, n):
-        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
-        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
-        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
-            symlink(efield_location, efield_basename)
-            efield_def = ['FILE_EFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
-        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
-            efield_def = ['FILE_EFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
-        else:
-            copylink(efield_location, efield_basename)
-            efield_def = ['FILE_EFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        basename = self.generate_field_file_name(self.field_definition)
+        efield_def = ['FILE_EFieLD', {'value': '\'' + basename + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['C_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
@@ -500,7 +489,7 @@ class cavity(frameworkElement):
                 output += 'ffac'+subname+' = ' + str((self.cells) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
             else:
                 output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
-            output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(expand_substitution(self,self.field_definition_gdf).strip('\'"')).replace('\\','/')+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
+            output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(self.field_definition_gdf)+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
         else:
             output = ""
         return output
@@ -527,18 +516,8 @@ class solenoid(frameworkElement):
             self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
 
     def write_ASTRA(self, n):
-        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
-        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
-        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
-            symlink(efield_location, efield_basename)
-            efield_def = ['FILE_BFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
-        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
-            efield_def = ['FILE_BFieLD', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
-        else:
-            copylink(efield_location, efield_basename)
-            efield_def = ['FILE_BFieLD', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        basename = self.generate_field_file_name(self.field_definition)
+        efield_def = ['FILE_BFieLD', {'value': '\'' + basename + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
@@ -559,7 +538,7 @@ class solenoid(frameworkElement):
         map1D_B("wcs",xOffset,0,zOffset+0.,cos(angle),0,-sin(angle),0,1,0,"bas_sol_norm.gdf","Z","Bz",gunSolField);
         '''
         output = 'map1D_B' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) + \
-        ', \"'+str(expand_substitution(self, self.field_definition_gdf).strip('\'"')).replace('\\','/') + \
+        ', \"'+str(self.generate_field_file_name(self.field_definition_gdf)) + \
         '", "Z","Bz", '+ str(expand_substitution(self, self.field_amplitude)) + ');\n'
         return output
 
@@ -949,18 +928,8 @@ class longitudinal_wakefield(cavity):
 
     def write_ASTRA(self, startn):
         self.update_field_definition()
-        basename = os.path.basename(self.field_definition).replace('"','').replace('\'','')
-        location = (expand_substitution(self, self.field_definition)).replace('\\','/').replace('"','').replace('\'','')
-        efield_location = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/')+'/'+location.replace('\\','/'))
-        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
-        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
-            symlink(efield_location, efield_basename)
-            efield_def = ['Wk_filename', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
-        elif len(('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
-            efield_def = ['Wk_filename', {'value': ('\''+expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"')+'\'').replace('\\','/'), 'default': ''}]
-        else:
-            copylink(efield_location, efield_basename)
-            efield_def = ['Wk_filename', {'value': '\'' + basename.replace('\\','/') + '\'', 'default': ''}]
+        basename = self.generate_field_file_name(self.field_definition)
+        efield_def = ['Wk_filename', {'value': '\'' + basename + '\'', 'default': ''}]
         current_bins = self.lsc_bins if self.lsc_bins > 0 else 100
         output = ''
         if self.scale_kick > 0:

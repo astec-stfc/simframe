@@ -508,8 +508,8 @@ class Framework(Munch):
                         self.latticeObjects[l].run()
                     if postprocess:
                         self.latticeObjects[l].postProcess()
-                    if save_summary:
-                        self.save_summary_files()
+            if save_summary:
+                self.save_summary_files()
         else:
             for i in range(len(files)):
                 l = files[i]
@@ -523,8 +523,6 @@ class Framework(Munch):
                     self.progress = 100. * (i+0.66)/len(files)
                     if postprocess:
                         self.generator.postProcess()
-                    if save_summary:
-                        self.save_summary_files()
                 else:
                     if preprocess:
                         self.latticeObjects[l].preProcess()
@@ -537,8 +535,8 @@ class Framework(Munch):
                     self.progress = 100. * (i+0.75)/len(files)
                     if postprocess:
                         self.latticeObjects[l].postProcess()
-                    if save_summary:
-                        self.save_summary_files()
+            if save_summary:
+                self.save_summary_files()
             self.progress = 100
 
     def save_summary_files(self, twiss=True, beams=True):

@@ -308,7 +308,7 @@ class GPTGenerator(frameworkGenerator):
         # post_command = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['position','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
         # post_command_t = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emitt.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
         # post_command_traj = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'traj.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz']
-        with open(os.path.relpath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log', '.'), "w") as f:
+        with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
             # print('gpt command = ', command)
             subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
             # subprocess.call(post_command, stdout=f, cwd=self.global_parameters['master_subdir'])
@@ -350,7 +350,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
         if self.distribution_type_x == 'image' or self.distribution_type_y == 'image':
-            image_filename = os.path.relpath('./'+self.image_filename, start=self.global_parameters['master_subdir']+'/')
+            image_filename = os.path.abs('./'+self.image_filename)
             image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
             image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
             output =  'setxydistbmp("beam", \"' + str(image_filename) + '\", ' + str(image_calibration_x) + ', ' + str(image_calibration_y) + ') ;\n'

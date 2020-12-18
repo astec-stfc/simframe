@@ -7,6 +7,10 @@ from .Modules.merge_two_dicts import merge_two_dicts
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
+if os.name == 'nt':
+    from .Support_Files.symmlinks import has_symlink_privilege
+else:
+    def has_symlink_privilege(): return True
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/type_conversion_rules.yaml', 'r') as infile:
     type_conversion_rules = yaml.safe_load(infile)
@@ -761,6 +765,22 @@ class frameworkElement(frameworkObject):
 
     def write_ASTRA(self, n):
         return ""
+
+    def generate_field_file_name(self, param):
+        basename = os.path.basename(param).replace('"','').replace('\'','')
+        location = (expand_substitution(self, param)).replace('\\','/').replace('"','').replace('\'','')
+        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
+        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
+            # print('symmlink', basename)
+            symlink(location, efield_basename)
+            return basename
+        elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
+            # print('path')
+            return expand_substitution(self, '\''+param+'\'').replace('\\','/')
+        else:
+            # print('copy')
+            copylink(location, efield_basename)
+            return basename
 
     def _write_Elegant(self):
         wholestring=''

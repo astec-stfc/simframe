@@ -115,9 +115,17 @@ def isevaluable(self, s):
     except:
         return False
 
-def expand_substitution(self, param, subs={}, elements={}):
+def path_function(a,b):
+    a_drive, a_tail = os.path.splitdrive(os.path.abspath(a))
+    b_drive, b_tail = os.path.splitdrive(os.path.abspath(b))
+    if (a_drive == b_drive):
+        return os.path.relpath(a, b)
+    else:
+        return os.path.abspath(a)
+
+def expand_substitution(self, param, subs={}, elements={}, absolute=False):
     if isinstance(param,(str)):
-        subs['master_lattice_location'] = os.path.relpath(self.global_parameters['master_lattice_location'],self.global_parameters['master_subdir'])+'/'
+        subs['master_lattice_location'] = path_function(self.global_parameters['master_lattice_location'],self.global_parameters['master_subdir'])+'/'
         subs['master_subdir'] = './'
         regex = re.compile('\$(.*)\$')
         s = re.search(regex, param)
@@ -129,7 +137,7 @@ def expand_substitution(self, param, subs={}, elements={}):
             for key in subs:
                 replaced_str = replaced_str.replace(key, subs[key])
             if os.path.exists(replaced_str):
-                replaced_str = os.path.relpath(replaced_str, self.global_parameters['master_subdir']).replace('\\','/')
+                replaced_str = path_function(replaced_str, self.global_parameters['master_subdir']).replace('\\','/')
             for e in elements.keys():
                 if e in replaced_str:
                     print('Element is in string!', e, replaced_str)
