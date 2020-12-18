@@ -768,10 +768,10 @@ class frameworkElement(frameworkObject):
 
     def generate_field_file_name(self, param):
         basename = os.path.basename(param).replace('"','').replace('\'','')
-        location = (expand_substitution(self, param)).replace('\\','/').replace('"','').replace('\'','')
+        location = os.path.abspath(expand_substitution(self, param).replace('\\','/').replace('"','').replace('\'',''))
         efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
         if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
-            # print('symmlink', basename)
+            # print('symmlink', location, efield_basename, basename)
             symlink(location, efield_basename)
             return basename
         elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
