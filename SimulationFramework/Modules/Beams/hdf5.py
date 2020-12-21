@@ -29,7 +29,7 @@ def unrotate_beamXZ(self):
     if 'rotation' in self._beam or abs(self['rotation']) > 0:
         self.rotate_beamXZ(-1*self['rotation'], -1*offset)
 
-def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0):
+def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0, cathode=False):
     # print('zoffset = ', zoffset, type(zoffset))
     if isinstance(zoffset,(list, np.ndarray)) and len(zoffset) == 3:
         xoffset = zoffset[0]
@@ -60,6 +60,8 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         if 'status' in self._beam:
             beamgrp['status'] = self._beam['status']
         beamgrp['longitudinal_reference'] = longitudinal_reference
+        beamgrp['cathode'] = cathode
+        # print('hdf5 write cathode', cathode, np.array(beamgrp['cathode']))
         if len(self._beam['charge']) == len(self.x):
             chargevector = self._beam['charge']
         else:
@@ -93,8 +95,6 @@ def read_HDF5_beam_file(self, filename, local=False):
             self['longitudinal_reference'] = np.array(h5file.get('beam/longitudinal_reference'))
         else:
             self['longitudinal_reference'] = 't'
-        if h5file.get('beam/status') is not None:
-            self._beam['status'] = np.array(h5file.get('beam/status'))
         x, y, z, cpx, cpy, cpz, t, charge = np.array(h5file.get('beam/beam')).transpose()
         cp = np.sqrt(cpx**2 + cpy**2 + cpz**2)
         self._beam['x'] = x
@@ -122,6 +122,11 @@ def read_HDF5_beam_file(self, filename, local=False):
         self._beam['t'] = t
         self._beam['charge'] = charge
         self._beam['total_charge'] = np.sum(self._beam['charge'])
+        if h5file.get('beam/status') is not None:
+            self._beam['status'] = np.array(h5file.get('beam/status'))
+        elif np.array(h5file.get('beam/cathode')) == True:
+            self._beam['status'] = np.full(len(self.x), -1)
+        # print('hdf5 read cathode', np.array(h5file.get('beam/cathode')))
         startposition = np.array(h5file.get('/Parameters/Starting_Position'))
         startposition = startposition if startposition is not None else [0,0,0]
         self['starting_position'] = startposition

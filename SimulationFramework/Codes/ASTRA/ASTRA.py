@@ -116,15 +116,22 @@ class astraLattice(frameworkLattice):
         self.headers['charge'].npart = len(self.global_parameters['beam'].x)
 
     def postProcess(self):
+        # print('ASTRA/postProcess', 'starting')
+        cathode = self.headers['newrun']['particle_definition'] == 'laser'
+        # print('ASTRA/postProcess', cathode)
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0,0,0]:
                 e.zstart = self.allElementObjects[self.start].start
             else:
                 e.zstart = [0,0,0]
-            e.astra_to_hdf5(self.objectname)
-        self.astra_to_hdf5()
+            # print(e.objectname, cathode)
+            e.astra_to_hdf5(self.objectname, cathode=cathode)
+        # print('ASTRA/postProcess', 'finished elems')
+        self.astra_to_hdf5(cathode=cathode)
+        # print('ASTRA/postProcess', 'finished')
 
-    def astra_to_hdf5(self):
+    def astra_to_hdf5(self, cathode=False):
+        # print('ASTRA/astra_to_hdf5', cathode)
         master_run_no = self.global_parameters['run_no'] if 'run_no' in self.global_parameters else 1
         if not self.starting_offset == [0,0,0]:
             zstart = self.allElementObjects[self.start].start
@@ -140,7 +147,8 @@ class astraLattice(frameworkLattice):
         rbf.astra.read_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
         rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
         HDF5filename = self.allElementObjects[self.end].objectname+'.hdf5'
-        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle, cathode=cathode)
+        # print('ASTRA/astra_to_hdf5', 'finished')
 
 class astra_header(frameworkElement):
 

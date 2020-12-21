@@ -105,13 +105,14 @@ class gptLattice(frameworkLattice):
             subprocess.call(post_command_traj, stdout=f, cwd=self.global_parameters['master_subdir'])
 
     def postProcess(self):
+        cathode = self.particle_definition == 'laser'
         for e in self.screens_and_bpms:
             if not e == self.ignore_start_screen:
-                e.gdf_to_hdf5(self.objectname + '_out.gdf')
+                e.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode)
             # else:
                 # print('Ignoring', self.ignore_start_screen.objectname)
         if self.endScreenObject is not None:
-            self.endScreenObject.gdf_to_hdf5(self.objectname + '_out.gdf')
+            self.endScreenObject.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode)
 
     def hdf5_to_gdf(self, prefix=''):
         HDF5filename = prefix+self.particle_definition+'.hdf5'
@@ -126,7 +127,7 @@ class gptLattice(frameworkLattice):
         # print(self.findS(self.end), self.findS(self.start))
         self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
         gdfbeamfilename = self.particle_definition+'.gdf'
-        cathode = self.particle_definition == 'laser'
+        cathode = self.particle_definition == 'generator'
         rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
         subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.particle_definition+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho

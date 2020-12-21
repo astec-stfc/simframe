@@ -350,7 +350,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
         if self.distribution_type_x == 'image' or self.distribution_type_y == 'image':
-            image_filename = os.path.abs('./'+self.image_filename)
+            image_filename = os.path.abspath('./'+self.image_filename)
             image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
             image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
             output =  'setxydistbmp("beam", \"' + str(image_filename) + '\", ' + str(image_calibration_x) + ', ' + str(image_calibration_y) + ') ;\n'
@@ -364,7 +364,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
             return output
         elif (self.sigma_x == self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
             output =  "radius = " + str(self.sigma_x) + ";\n"
-            output += self._distribution('distribution_type_x', 'setxdist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
+            output += self._distribution('distribution_type_x', 'setrxydist', 'radius', left_cutoff=0, right_cutoff=self.guassian_cutoff_x) + "\n"
             output += 'setphidist("beam", "u", 0, 2*pi) ;\n'
             return output
         else:
@@ -431,4 +431,4 @@ setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius)) ;
         self.global_parameters['beam']['z'] = 0 * self.global_parameters['beam']['z']
         HDF5filename = 'laser.hdf5'
         self.global_parameters['beam']['status'] = np.full(len(self.global_parameters['beam']['x']), -1)
-        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename)
+        self.global_parameters['beam'].write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, cathode=True)

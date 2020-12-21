@@ -116,12 +116,12 @@ def isevaluable(self, s):
         return False
 
 def path_function(a,b):
-    a_drive, a_tail = os.path.splitdrive(os.path.abspath(a))
-    b_drive, b_tail = os.path.splitdrive(os.path.abspath(b))
-    if (a_drive == b_drive):
-        return os.path.relpath(a, b)
-    else:
-        return os.path.abspath(a)
+    # a_drive, a_tail = os.path.splitdrive(os.path.abspath(a))
+    # b_drive, b_tail = os.path.splitdrive(os.path.abspath(b))
+    # if (a_drive == b_drive):
+    #     return os.path.relpath(a, b)
+    # else:
+    return os.path.abspath(a)
 
 def expand_substitution(self, param, subs={}, elements={}, absolute=False):
     if isinstance(param,(str)):

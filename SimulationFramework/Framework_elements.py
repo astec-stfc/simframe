@@ -722,7 +722,7 @@ class screen(frameworkElement):
         output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +');\n'
         return output
 
-    def astra_to_hdf5(self, lattice):
+    def astra_to_hdf5(self, lattice, cathode=False):
         master_run_no = self.global_parameters['run_no'] if 'run_no' in self.global_parameters else 1
         astrabeamfilename = None
         for i in [0, -0.001, 0.001]:
@@ -735,7 +735,7 @@ class screen(frameworkElement):
             rbf.astra.read_astra_beam_file(self.global_parameters['beam'], (self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'), normaliseZ=False)
             rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
             HDF5filename = (self.objectname+'.hdf5').strip('\"')
-            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle)
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle, cathode=cathode)
             if self.global_parameters['delete_tracking_files']:
                 os.remove((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'))
 
@@ -747,13 +747,13 @@ class screen(frameworkElement):
         if self.global_parameters['delete_tracking_files']:
             os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
 
-    def gdf_to_hdf5(self, gptbeamfilename):
+    def gdf_to_hdf5(self, gptbeamfilename, cathode=False):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
         try:
             # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
             rbf.gdf.read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
             HDF5filename = self.objectname+'.hdf5'
-            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0])
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0], cathode=cathode)
         except:
             print('Error with screen', self.objectname,'at', self.gpt_screen_position)
 
