@@ -346,6 +346,22 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         else:# self.distribution_type_x.lower() in ["u","uniform"]:
             return self._uniform_distribution(distname, variable, **kwargs)
 
+    def generate_image_name(self, param):
+        basename = os.path.basename(param).replace('"','').replace('\'','')
+        location = os.path.abspath(expand_substitution(self, param).replace('\\','/').replace('"','').replace('\'',''))
+        efield_basename = os.path.abspath(self.global_parameters['master_subdir'].replace('\\','/') + '/' + basename.replace('\\','/'))
+        if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
+            # print('symmlink', expand_substitution(self, param), location, efield_basename, basename)
+            symlink(location, efield_basename)
+            return basename
+        elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
+            # print('path')
+            return expand_substitution(self, '\''+param+'\'').replace('\\','/')
+        else:
+            # print('copy')
+            copylink(location, efield_basename)
+            return basename
+
     def generate_radial_distribution(self):
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
@@ -353,6 +369,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
             image_filename = os.path.abspath('./'+self.image_filename)
             image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
             image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
+            image_filename = self.generate_image_name(image_filename)
             output =  'setxydistbmp("beam", \"' + str(image_filename) + '\", ' + str(image_calibration_x) + ', ' + str(image_calibration_y) + ') ;\n'
             return output
         elif (self.sigma_x != self.sigma_y) and (self.distribution_type_x == self.distribution_type_y):
