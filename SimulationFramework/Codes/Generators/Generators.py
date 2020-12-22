@@ -366,7 +366,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         # self.check_xy_parameters("sigma_x", "sigma_y", 1)
         # self.check_xy_parameters("distribution_type_x", "distribution_type_y", "g")
         if self.distribution_type_x == 'image' or self.distribution_type_y == 'image':
-            image_filename = os.path.abspath('./'+self.image_filename)
+            image_filename = os.path.abspath(self.image_filename)
             image_calibration_x = self.image_calibration_x if isinstance(self.image_calibration_x, int) and self.image_calibration_x > 0 else 1000 * 1e3
             image_calibration_y = self.image_calibration_y if isinstance(self.image_calibration_y, int) and self.image_calibration_y > 0 else 1000 * 1e3
             image_filename = self.generate_image_name(image_filename)
