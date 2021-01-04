@@ -14,7 +14,12 @@ from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
 try:
     import MasterLattice
-    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
+    if os.path.isdir(os.path.dirname(MasterLattice.__file__)+'/MasterLattice'+'/'):
+        MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/MasterLattice'+'/'
+    elif os.path.isdir(os.path.dirname(MasterLattice.__file__)+'/'):
+        MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
+    else:
+        MasterLatticeLocation = None
 except:
     MasterLatticeLocation = None
 try:
@@ -90,12 +95,12 @@ class Framework(Munch):
             if MasterLatticeLocation is not None:
                 # print('Found MasterLattice Package =', MasterLatticeLocation)
                 self.global_parameters['master_lattice_location'] = MasterLatticeLocation.replace('\\','/')
-            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice/')+'/'):
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/'):
                 # print('Found MasterLattice Directory 2-up =', MasterLatticeLocation)
-                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice/')+'/').replace('\\','/')
-            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/'):
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/').replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/'):
                 # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
-                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/').replace('\\','/')
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/').replace('\\','/')
             else:
                 raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:
