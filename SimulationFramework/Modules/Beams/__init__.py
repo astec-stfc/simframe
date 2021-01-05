@@ -13,6 +13,7 @@ from . import sdds
 from . import vsim
 from . import gdf
 from . import hdf5
+from . import mad8
 try:
     from . import plot
     use_matplotlib = True
@@ -247,11 +248,13 @@ class beam(munch.Munch):
     def write_HDF5_beam_file(self, *args, **kwargs):
         hdf5.write_HDF5_beam_file(self, *args, **kwargs)
     def write_SDDS_beam_file(self, *args, **kwargs):
-        sdds.write_SDDS_beam_file(self, *args, **kwargs)
+        sdds.write_SDDS_file(self, *args, **kwargs)
     def write_gdf_beam_file(self, *args, **kwargs):
         gdf.write_gdf_beam_file(self, *args, **kwargs)
     def write_astra_beam_file(self, *args, **kwargs):
         astra.write_astra_beam_file(self, *args, **kwargs)
+    def write_mad8_beam_file(self, *args, **kwargs):
+        mad8.write_mad8_beam_file(self, *args, **kwargs)
 
     def read_beam_file(self, filename, run_extension='001'):
         pre, ext = os.path.splitext(os.path.basename(filename))

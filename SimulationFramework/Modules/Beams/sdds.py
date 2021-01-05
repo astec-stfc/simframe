@@ -21,7 +21,7 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
         SDDSparameters[sddsref.parameterName[param]] = sddsref.parameterData[param]
     self.filename = fileName
     self['code'] = "SDDS"
-    cp = (self._beam['p']) * self.E0_eV 
+    cp = (self._beam['p']) * self.E0_eV
     cpz = cp / np.sqrt(self._beam['xp']**2 + self._beam['yp']**2 + 1)
     cpx = self._beam['xp'] * cpz
     cpy = self._beam['yp'] * cpz

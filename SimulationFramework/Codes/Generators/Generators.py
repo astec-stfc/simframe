@@ -399,8 +399,10 @@ setGBphidist("beam","u", 0, 2*pi);
             return '\n'
         elif (self.sigma_x != self.sigma_y):
             thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
-            output = '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius_x)) ;'''
-            output += '''setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius_y)) ;'''
+            output = '''setGBxemittance("beam", (''' + str(thermal_emittance) + '''*radius_x)) ;
+'''
+            output += '''setGByemittance("beam", (''' + str(thermal_emittance) + '''*radius_y)) ;
+'''
             return output
         else:
             thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3

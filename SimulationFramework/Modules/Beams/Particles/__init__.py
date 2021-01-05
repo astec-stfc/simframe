@@ -119,6 +119,9 @@ class Particles(Munch):
     def cpz(self):
         return self['pz'] / self.q_over_c
     @property
+    def deltap(self):
+        return (self.cp - np.mean(self.cp)) / np.mean(self.cp) 
+    @property
     def xp(self):
         return np.arctan(self.px/self.pz)
     @property
