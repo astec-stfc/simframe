@@ -6,6 +6,8 @@ from ...FrameworkHelperFunctions import *
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import constants
 from ...Modules import Beams as rbf
+from ...Modules.symmlinks import has_symlink_privilege
+
 
 astra_generator_keywords = {
     'keywords':{
