@@ -40,9 +40,11 @@ class elegantLattice(frameworkLattice):
     def write(self):
         self.lattice_file = self.global_parameters['master_subdir']+'/'+self.objectname+'.lte'
         saveFile(self.lattice_file, self.writeElements())
-        if hasattr(self, 'command_file'):
+        try:
             self.command_file = self.global_parameters['master_subdir']+'/'+self.objectname+'.ele'
             saveFile(self.command_file, self.commandFile.write())
+        except:
+            pass
 
     def preProcess(self):
         prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block['input'] else ''
