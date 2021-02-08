@@ -76,3 +76,9 @@ wiggler:
 kicker:
   horizontal_kick: hkick
   vertical_kick: vkick
+rcollimator:
+  horizontal_size: x_max
+  vertical_size: y_max
+collimator:
+  horizontal_size: x_max
+  vertical_size: y_max

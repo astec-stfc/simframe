@@ -9,7 +9,7 @@ except:
 def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
     self.reset_dicts()
     self.sddsindex += 1
-    sddsref = sdds.SDDS(self.sddsindex%20)
+    sddsref = sdds.SDDS(0)#self.sddsindex%20)
     sddsref.load(fileName)
     for col in range(len(sddsref.columnName)):
         if len(sddsref.columnData[col]) == 1:
@@ -61,7 +61,7 @@ def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0,0,0]):
     Ccolumns = [np.array(self.x) - float(xoffset), self.xp, np.array(self.y) - float(yoffset), self.yp, self.t , self.cp/self.E0_eV]
     # {Step, pCentral, Charge, Particles, IDSlotsPerBunch}
     Pnames = ["pCentral", "Charge", "Particles"]
-    Ptypes = [x.SDDS_DOUBLE, x.SDDS_DOUBLE, x.SDDS_LONG]
+    Ptypes = [x.SDDS_DOUBLE, x.SDDS_DOUBLE, x.SDDS_DOUBLE]
     Psymbols = ["p$bcen$n", "", ""]
     Punits = ["m$be$nc", "C", ""]
     parameterData = [[np.mean(self.BetaGamma)], [abs(self._beam['total_charge'])], [len(self.x)]]

@@ -1,15 +1,15 @@
 import numpy as np
 import os
 import sys
-sys.path.append(os.path.abspath(__file__+'/../../../../../'))
-import SimulationFramework.Framework as fw
-from SimulationFramework.Modules.constraints import *
-import SimulationFramework.Modules.read_beam_file as rbf
-import SimulationFramework.Modules.read_twiss_file as rtf
+# sys.path.append(os.path.abspath(__file__+'/../../'))
+from .. import Framework as fw
+from ..Modules.constraints import *
+from ..Modules import Beams as rbf
+from ..Modules import Twiss as rtf
 import shutil
 import uuid
 from functools import partial
-import ruamel.yaml as yaml
+import yaml as yaml
 
 def merge_two_dicts(x, y):
     """Given two dicts, merge them into a new dict as a shallow copy."""
@@ -75,23 +75,28 @@ class fitnessFunc(object):
     def set_start_file(self, file):
         self.start_lattice = file
 
-    def load_best(self, filename):
-        with open(filename, 'r') as infile:
-            data = dict(yaml.load(infile, Loader=yaml.UnsafeLoader))
-            best = []
-            for n, p in [r[:2] for r in self.parameter_names]:
-                if n in data:
-                    best.append(data[n][p])
-                elif n == 'bunch_compressor' and p == 'set_angle':
-                    best.append(data['CLA-VBC-MAG-DIP-01']['angle'])
-                elif n == 'startcharge':
-                    best.append(self.startcharge)
-                else:
-                    # print(n, p)
-                    if not hasattr(self, 'framework'):
-                        self.framework = fw.Framework(None)
-                        self.framework.loadSettings(self.lattice_file)
-                    best.append(self.framework[n][p])
+    def load_best(self, datadict):
+        if isinstance(datadict, str):
+            with open(datadict, 'r') as infile:
+                data = dict(yaml.load(infile, Loader=yaml.UnsafeLoader))
+        elif isinstance(datadict, dict):
+            data = datadict
+        else:
+            raise ValueError('load_best requires a filename or a dictionary of key/values')
+        best = []
+        for n, p in [r[:2] for r in self.parameter_names]:
+            if n in data:
+                best.append(data[n][p])
+            elif n == 'bunch_compressor' and p == 'set_angle':
+                best.append(data['CLA-VBC-MAG-DIP-01']['angle'])
+            elif n == 'startcharge':
+                best.append(self.startcharge)
+            else:
+                # print(n, p)
+                if not hasattr(self, 'framework'):
+                    self.framework = fw.Framework(None)
+                    self.framework.loadSettings(self.lattice_file)
+                best.append(self.framework[n][p])
             self.best = best
         return best
 

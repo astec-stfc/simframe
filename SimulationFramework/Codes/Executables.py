@@ -79,7 +79,7 @@ class Executables(object):
                 if 'apclara1' in self.hostname:
                     self.elegant = ['/opt/MPICH2-3.2/bin/mpiexec','-np',str(ncpu),'Pelegant']
                 elif 'apclara2' in self.hostname:
-                    self.elegant = ['salloc','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','Pelegant']
+                    self.elegant = ['salloc','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','/usr/bin/Pelegant']
                 elif 'apclara3' in self.hostname:
                     self.elegant = ['salloc','-w','apclara3','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','Pelegant']
             else:

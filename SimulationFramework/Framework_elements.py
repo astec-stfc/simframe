@@ -436,11 +436,11 @@ class cavity(frameworkElement):
     def _write_Elegant(self):
         self.update_field_definition()
         if self.field_definition_sdds is not None:
-            self.field_definition_sdds = self.generate_field_file_name(self.field_definition_sdds)
+            self.field_definition_sdds = '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
         if self.longitudinal_wakefield_sdds is not None:
-            self.longitudinal_wakefield_sdds = self.generate_field_file_name(self.longitudinal_wakefield_sdds)
+            self.longitudinal_wakefield_sdds = '"' + self.generate_field_file_name(self.longitudinal_wakefield_sdds) + '"'
         if self.transverse_wakefield_sdds is not None:
-            self.transverse_wakefield_sdds = self.generate_field_file_name(self.transverse_wakefield_sdds)
+            self.transverse_wakefield_sdds = '"' + self.generate_field_file_name(self.transverse_wakefield_sdds) + '"'
         wholestring=''
         etype = self._convertType_Elegant(self.objecttype)
         if (not hasattr(self, 'longitudinal_wakefield_sdds') or self.longitudinal_wakefield_sdds == None) and (not hasattr(self, 'transverse_wakefield_sdds') or self.transverse_wakefield_sdds == None):
@@ -792,6 +792,11 @@ class collimator(aperture):
     def __init__(self, name=None, type='collimator', **kwargs):
         super(collimator, self).__init__(name, type, **kwargs)
 
+class rcollimator(aperture):
+
+    def __init__(self, name=None, type='rcollimator', **kwargs):
+        super(rcollimator, self).__init__(name, type, **kwargs)
+
 class marker(screen):
 
     def __init__(self, name=None, type='marker', **kwargs):
@@ -985,7 +990,7 @@ class longitudinal_wakefield(cavity):
     def _write_Elegant(self):
         self.update_field_definition()
         if self.field_definition_sdds is not None:
-            self.field_definition_sdds = self.generate_field_file_name(self.field_definition_sdds)
+            self.field_definition_sdds = '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
         wholestring=''
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname+': '+ etype

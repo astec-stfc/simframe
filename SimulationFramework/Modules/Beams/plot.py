@@ -7,7 +7,10 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.transforms import Bbox
 # plt.rcParams["axes.axisbelow"] = False
 from copy import copy
-from ..units import nice_array, nice_scale_prefix
+try:
+    from ..units import nice_array, nice_scale_prefix
+except:
+    pass
 
 try:
     from fastkde import fastKDE
@@ -15,6 +18,7 @@ try:
 except ImportError as e:
     print('fastKDE missing - plotScreenImage will use SciPy')
     fastKDE_installed = False
+
 try:
     from scipy import stats
     SciPy_installed = True
@@ -166,7 +170,7 @@ def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=
             labels += b
         ax_plot[0].legend(lines, labels, loc='best')
 
-def marginal_plot(particle_group, key1='t', key2='p', bins=None, **kwargs):
+def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], **kwargs):
     """
     Density plot and projections
 
@@ -178,16 +182,21 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, **kwargs):
 
     if not bins:
         n = len(particle_group)
-        bins = int(np.sqrt(n/4) )
+        bins = int(np.sqrt(n/2) )
+
+    if not isinstance(subtract_mean, (list, tuple)):
+        subtract_mean = [subtract_mean, subtract_mean]
+    if not isinstance(scale, (list, tuple)):
+        scale = [scale, scale]
 
     # Scale to nice units and get the factor, unit prefix
-    x, f1, p1 = nice_array(particle_group[key1])
-    y, f2, p2 = nice_array(particle_group[key2])
+    x, f1, p1 = nice_array(scale[0] * (particle_group[key1] - subtract_mean[0] * np.mean(particle_group[key1])))
+    y, f2, p2 = nice_array(scale[1] * (particle_group[key2] - subtract_mean[1] * np.mean(particle_group[key2])))
+
 
     w = np.full(len(x), 1)#particle_group['charge']
 
-    u1 = ''#particle_group.units(key1).unitSymbol
-    u2 = ''#particle_group.units(key2).unitSymbol
+    u1, u2 = units
     ux = p1+u1
     uy = p2+u2
 
@@ -263,10 +272,24 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marginals=False, limits=None, screen=False, use_scipy=False, **kwargs):
+def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm.jet, size=None, grid=False, marginals=False, limits=None, screen=False, use_scipy=False, units=['m','m'], subtract_mean=[False,False], **kwargs):
     #Do the self-consistent density estimate
-    x = 1e3*(beam.x-np.mean(beam.x))
-    y = 1e3*(beam.y-np.mean(beam.y))
+    key1, key2 = keys
+    if not isinstance(subtract_mean, (list, tuple)):
+        subtract_mean = [subtract_mean, subtract_mean]
+    if not isinstance(scale, (list, tuple)):
+        scale = [scale, scale]
+
+    x, f1, p1 = nice_array(scale[0] * (beam[key1] - subtract_mean[0] * np.mean(beam[key1])))
+    y, f2, p2 = nice_array(scale[1] * (beam[key2] - subtract_mean[1] * np.mean(beam[key2])))
+
+    u1, u2 = units
+    ux = p1+u1
+    uy = p2+u2
+
+    labelx = f'{key1} ({ux})'
+    labely = f'{key2} ({uy})'
+
     if fastKDE_installed and not use_scipy:
         myPDF,axes = fastKDE.pdf(x,y, **kwargs)
         v1,v2 = axes
@@ -283,7 +306,7 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
     else:
         raise Exception("fastKDE or SciPy required")
     # normalise the PDF to 1
-    myPDF=myPDF/myPDF.max()*scale
+    myPDF=myPDF/myPDF.max()*iscale
 
     # Initialise the plot objects
     # start with a square Figure
@@ -308,19 +331,19 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
     # Major ticks every 5, minor ticks every 1
     if not size:
         if not screen:
-            xmin, xmax = [(x + 4) // 5 * 5 for x in [min(v1), max(v1)]]
-            ymin, ymax = [(y + 4) // 5 * 5 for y in [min(v2), max(v2)]]
+            xmin, xmax = [np.floor(min(v1)), np.round(max(v1))]
+            ymin, ymax = [np.floor(min(v2)), np.round(max(v2))]
             size = max([xmax-xmin, ymax-ymin])
         else:
             xmin, xmax = -15, 15
             ymin, ymax = -15, 15
             size = 15
-        major_ticksx = np.arange(xmin, xmax, 5)
-        minor_ticksx = np.arange(xmin, xmax, 1)
+        major_ticksx = np.arange(xmin, xmax + (xmax-xmin) / 6, (xmax-xmin) / 6)
+        minor_ticksx = np.arange(xmin, xmax + (xmax-xmin) / 6, (xmax-xmin) / 60)
         ax.set_xticks(major_ticksx)
         ax.set_xticks(minor_ticksx, minor=True)
-        major_ticksy = np.arange(ymin, ymax, 5)
-        minor_ticksy = np.arange(ymin, ymax, 1)
+        major_ticksy = np.arange(ymin, ymax + (ymax-ymin) / 6, (ymax-ymin) / 6)
+        minor_ticksy = np.arange(ymin, ymax + (ymax-ymin) / 6, (ymax-ymin) / 60)
         ax.set_yticks(major_ticksy)
         ax.set_yticks(minor_ticksy, minor=True)
     else:
@@ -399,6 +422,9 @@ def plotScreenImage(beam, scale=1, colormap=plt.cm.jet, size=15, grid=True, marg
         plt.setp(ax_histx.get_xticklabels(), visible=False)
         plt.setp(ax_histy.get_yticklabels(), visible=False)
     # ax_histy.set_ylim([-(size + 0.5), (size + 0.5)])
+    ax.set_xlabel(labelx)
+    ax.set_ylabel(labely)
+
     # Extract the screen name
     file, ext = os.path.splitext(os.path.basename(beam.filename))
     # Set the screen name as the title

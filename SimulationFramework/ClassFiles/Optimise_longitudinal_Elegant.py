@@ -1,17 +1,17 @@
 import os, errno, sys, shutil
 import numpy as np
 import random
-sys.path.append(os.path.abspath(__file__+'/../../../../../'))
-from SimulationFramework.Modules.constraints import constraintsClass
-from SimulationFramework.Modules.nelder_mead import nelder_mead
+# sys.path.append(os.path.abspath(__file__+'/../../../../../'))
+from ..Modules.constraints import constraintsClass
+from ..Modules.nelder_mead import nelder_mead
 import time
 import csv
 from copy import copy
 from functools import partial
 from collections import OrderedDict
 from shutil import copyfile
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-import SimulationFramework.ClassFiles.runElegant as runEle
+from ..Modules.merge_two_dicts import merge_two_dicts
+from . import runElegant as runEle
 from scipy.optimize import minimize
 
 def saveState(dir, args, n, fitness):
@@ -180,8 +180,8 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.subdir = dir
         self.optdir = self.subdir
         self.best_changes = './example_best_changes.yaml'
-        print('best = ', best)
-        self.bestfit = 1e26
+        # print('best = ', best)
+        self.bestfit = -1e26
 
         self.opt_iteration = ''
         # try:

@@ -80,6 +80,12 @@ collimator:
     horizontal_size,
     vertical_size,
   }
+rcollimator:
+  keywords: {
+    shape,
+    horizontal_size,
+    vertical_size,
+  }
 aperture:
   keywords: {
     shape,

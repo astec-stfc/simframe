@@ -133,7 +133,7 @@ class beamGroup(munch.Munch):
 
     def getScreen(self, screen):
         for b in self.beams:
-            if screen in b:
+            if screen == os.path.splitext(os.path.basename(b))[0]:
                 return self.beams[b]
         return None
 

@@ -123,7 +123,10 @@ class elegantTrackFile(elegantCommandFile):
         self.alphay = alphay if alphay is not None else self.global_parameters['beam'].twiss.alpha_y_corrected
         self.etax = etax if etax is not None else self.global_parameters['beam'].twiss.eta_x
         self.etaxp = etaxp if etaxp is not None else self.global_parameters['beam'].twiss.eta_xp
-        self.addCommand(type='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
+        if not os.name == 'nt':
+            self.addCommand(type='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
+        else:
+            self.addCommand(type='global_settings', inhibit_fsync=1)
         self.addCommand(type='run_setup',lattice=self.lattice_filename, \
             use_beamline=lattice.objectname,p_central=np.mean(self.global_parameters['beam'].BetaGamma), \
             centroid='%s.cen',always_change_p0 = 1, \
