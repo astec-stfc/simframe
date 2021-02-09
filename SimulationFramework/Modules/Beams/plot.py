@@ -279,6 +279,8 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
         subtract_mean = [subtract_mean, subtract_mean]
     if not isinstance(scale, (list, tuple)):
         scale = [scale, scale]
+    if not isinstance(size, (list, tuple)):
+        size = [size, size]
 
     x, f1, p1 = nice_array(scale[0] * (beam[key1] - subtract_mean[0] * np.mean(beam[key1])))
     y, f2, p2 = nice_array(scale[1] * (beam[key2] - subtract_mean[1] * np.mean(beam[key2])))
@@ -329,32 +331,42 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
 
     # Define ticks
     # Major ticks every 5, minor ticks every 1
-    if not size:
+    if size[0] is None:
+        use_size = False
         if not screen:
             xmin, xmax = [np.floor(min(v1)), np.round(max(v1))]
             ymin, ymax = [np.floor(min(v2)), np.round(max(v2))]
-            size = max([xmax-xmin, ymax-ymin])
+            size = [xmax-xmin, ymax-ymin]
         else:
             xmin, xmax = -15, 15
             ymin, ymax = -15, 15
-            size = 15
-        major_ticksx = np.arange(xmin, xmax + (xmax-xmin) / 6, (xmax-xmin) / 6)
-        minor_ticksx = np.arange(xmin, xmax + (xmax-xmin) / 6, (xmax-xmin) / 60)
-        ax.set_xticks(major_ticksx)
-        ax.set_xticks(minor_ticksx, minor=True)
-        major_ticksy = np.arange(ymin, ymax + (ymax-ymin) / 6, (ymax-ymin) / 6)
-        minor_ticksy = np.arange(ymin, ymax + (ymax-ymin) / 6, (ymax-ymin) / 60)
-        ax.set_yticks(major_ticksy)
-        ax.set_yticks(minor_ticksy, minor=True)
+            size = [15, 15]
+        minvalx = xmin
+        maxvalx = xmax
+        meanvalx = (xmin + xmax) / 2.0 if not subtract_mean[0] else 0
+        minvaly = ymin
+        maxvaly = ymax
+        meanvaly = (ymin + ymax) / 2.0 if not subtract_mean[1] else 0
     else:
-        major_ticksx = np.arange(-size, size, 5)
-        minor_ticksx = np.arange(-size, size, 1)
-        major_ticksy = np.arange(-size, size, 5)
-        minor_ticksy = np.arange(-size, size, 1)
-        ax.set_xticks(major_ticksx)
-        ax.set_xticks(minor_ticksx, minor=True)
-        ax.set_yticks(major_ticksy)
-        ax.set_yticks(minor_ticksy, minor=True)
+        use_size = True
+        maxvalx = size[0] / f1
+        minvalx = -maxvalx
+        meanvalx = (max(v1)+min(v1)) / 2.0 if not subtract_mean[0] else 0
+        maxvaly = size[1] / f2
+        minvaly = -maxvaly
+        meanvaly = (max(v2)+min(v2)) / 2.0 if not subtract_mean[1] else 0
+        size[0] = size[0] / f1
+        size[1] = size[1] / f2
+
+    major_ticksx = np.arange(meanvalx + minvalx, meanvalx + maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 4)
+    minor_ticksx = np.arange(meanvalx + minvalx, meanvalx + maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 40)
+    ax.set_xticks(major_ticksx)
+    ax.set_xticks(minor_ticksx, minor=True)
+    major_ticksy = np.arange(meanvaly + minvaly, meanvaly + maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 4)
+    minor_ticksy = np.arange(meanvaly + minvaly, meanvaly + maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 40)
+    # print(minvaly, maxvaly, meanvaly, major_ticksy)
+    ax.set_yticks(major_ticksy)
+    ax.set_yticks(minor_ticksy, minor=True)
 
     if marginals:
         hist, bin_edges = myPDF.sum(axis=0)[:-1], v1
@@ -371,7 +383,7 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
 
     # Make a circle for the edges of the screen
     if screen:
-        draw_circle = plt.Circle((0,0), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
+        draw_circle = plt.Circle((meanvalx,meanvaly), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
         ax.add_artist(draw_circle)
 
     if screen:
@@ -381,10 +393,10 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
 
     # Make a circle to clip the PDF
     if screen:
-        circ = plt.Circle((0,0), size, facecolor='none')
+        circ = plt.Circle((meanvalx,meanvaly), max(size), facecolor='none')
     else:
-        circ = plt.Circle((0,0), 3*size, facecolor='none')
-    ax.add_patch(circ) # Plot the outline
+        circ = plt.Circle((meanvalx,meanvaly), 3*max(size), facecolor='none')
+    # ax.add_patch(circ) # Plot the outline
 
     # Plot the PDF
     if grid:
@@ -404,18 +416,18 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
             ax.set_ylim(limits)
             # make a bounding box for the limits
             bbox = plt.Rectangle((min(limits), min(limits)), max(limits) - min(limits), max(limits) - min(limits), facecolor="none", edgecolor="none")
-    elif screen:
-        ax.set_xlim([-(size + 0.5), (size + 0.5)])
-        ax.set_ylim([-(size + 0.5), (size + 0.5)])
-        bbox = plt.Rectangle((-(size + 0.5), -(size + 0.5)), size + 1, size +1, facecolor="none", edgecolor="none")
+    elif screen or use_size:
+        ax.set_xlim([meanvalx - (size[0] + 0.5), meanvalx + (size[0] + 0.5)])
+        ax.set_ylim([meanvaly - (size[1] + 0.5), meanvaly + (size[1] + 0.5)])
+        bbox = plt.Rectangle((-(size[0] + 0.5), -(size[1] + 0.5)), size[0] + 0, size[1] +0, facecolor="none", edgecolor="none")
     else:
         ax.set_xlim([min(v1), max(v1)])
         ax.set_ylim([min(v2), max(v2)])
         bbox = plt.Polygon([(min(v1),min(v2)), (min(v1), max(v2)), (max(v1),max(v2)), (max(v1),min(v2))], facecolor="none", edgecolor="none")
 
-    ax.add_artist(bbox)
+    # ax.add_artist(bbox)
 
-    mesh = ax.pcolormesh(v1,v2,myPDF, cmap=colormap, zorder=1, shading='auto', clip_path=bbox)
+    mesh = ax.pcolormesh(v1,v2,myPDF, cmap=colormap, zorder=1, shading='auto')#, clip_path=bbox)
     if screen:
         mesh.set_clip_path(circ)
     if marginals:

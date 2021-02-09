@@ -12,6 +12,7 @@ from .Codes.CSRTrack.CSRTrack import *
 from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
+from .Framework_Settings import FrameworkSettings
 try:
     import MasterLattice
     if os.path.isdir(os.path.dirname(MasterLattice.__file__)+'/MasterLattice'+'/'):
@@ -125,16 +126,20 @@ class Framework(Munch):
             for name, elem in list(elements.items()):
                 self.read_Element(name, elem)
 
-    def loadSettings(self, filename='short_240.settings'):
-        """Load Lattice Settings from file"""
-        self.settingsFilename = filename
-        # print 'self.settingsFilename = ', self.settingsFilename
-        if os.path.exists(filename):
-            stream = open(filename, 'r')
-        else:
-            stream = open(self.global_parameters['master_lattice_location']+filename, 'r')
-        self.settings = yaml.safe_load(stream)
-        self.globalSettings = self.settings['global'] if 'global' in self.settings else {}
+    def loadSettings(self, filename=None, settings=None):
+        """Load Lattice Settings from file or dictionary"""
+        if isinstance(filename, str):
+            self.settingsFilename = filename
+            self.settings = FrameworkSettings()
+            if os.path.exists(filename):
+                self.settings.loadSettings(filename)
+            else:
+                self.settings.loadSettings(self.global_parameters['master_lattice_location']+filename)
+        elif isinstance(settings, FrameworkSettings):
+            self.settingsFilename = settings.settingsFilename
+            self.settings = settings
+
+        self.globalSettings = self.settings['global']
         master_run_no = self.globalSettings['run_no'] if 'run_no' in self.globalSettings else 1
         if 'generator' in self.settings:
             self.generatorSettings = self.settings['generator']
@@ -143,11 +148,11 @@ class Framework(Munch):
         elements = self.settings['elements']
         self.groups = self.settings['groups'] if 'groups' in self.settings and self.settings['groups'] is not None else {}
         changes = self.settings['changes'] if 'changes' in self.settings and self.settings['changes'] is not None else {}
-        stream.close()
 
         for name, elem in list(self.groups.items()):
-            group = globals()[elem['type']](name, self.elementObjects, global_parameters=self.global_parameters, **elem)
-            self.groupObjects[name] = group
+            if 'type' in elem:
+                group = globals()[elem['type']](name, self.elementObjects, global_parameters=self.global_parameters, **elem)
+                self.groupObjects[name] = group
 
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
@@ -170,7 +175,6 @@ class Framework(Munch):
             filename =  'settings.def'
         settings = self.settings.copy()
         if elements is not None:
-            settings = self.settings.copy()
             settings['elements'] = elements
         with open(directory + '/' + filename,"w") as yaml_file:
             yaml.default_flow_style=True
@@ -443,6 +447,11 @@ class Framework(Munch):
     def set_lattice_prefix(self, lattice, prefix):
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].prefix = prefix
+
+    def set_lattice_sample_interval(self, lattice, interval):
+        if lattice in self.latticeObjects:
+            self.latticeObjects[lattice].sample_interval = interval
+
 
     def __getitem__(self,key):
         if key in super(Framework, self).__getitem__('elementObjects'):

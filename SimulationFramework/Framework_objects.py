@@ -8,7 +8,8 @@ from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
 if os.name == 'nt':
-    from .Modules.symmlinks import has_symlink_privilege
+    # from .Modules.symmlinks import has_symlink_privilege
+    def has_symlink_privilege(): return False
 else:
     def has_symlink_privilege(): return True
 
