@@ -20,21 +20,7 @@ try:
 except ImportError:
     use_matplotlib = False
 
-class twissData(np.ndarray):
-
-    def __new__(cls=np.ndarray, input_array=[], units=''):
-        # Input array is an already formed ndarray instance
-        # We first cast to be our class type
-        obj = np.asarray(input_array).view(cls)
-        # add the new attribute to the created instance
-        obj.units = units
-        # Finally, we must return the newly created object:
-        return obj
-
-    def __array_finalize__(self, obj):
-        # see InfoArray.__array_finalize__ for comments
-        if obj is None: return
-        self.units = getattr(obj, 'units', '')
+from ..UnitFloat import UnitArray
 
 class twiss(munch.Munch):
 
@@ -68,6 +54,8 @@ class twiss(munch.Munch):
     'sigma_p': 'kg * m/s',
     'sigma_cp': 'eV/c',
     'sigma_cp_eV': 'eV/c',
+    'mean_x': 'm',
+    'mean_y': 'm',
     'mux': '2 pi',
     'muy': '2 pi',
     'eta_x': 'm',
@@ -118,7 +106,7 @@ class twiss(munch.Munch):
 
     def read_gdf_twiss_files(self, *args, **kwargs):
         return self.read_GPT_twiss_files(*args, **kwargs)
-        
+
     def read_GPT_twiss_files(self, *args, **kwargs):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -150,7 +138,7 @@ class twiss(munch.Munch):
     def reset_dicts(self):
         self.sddsindex = 0
         for k, v in self.properties.items():
-            self[k] = twissData(units=v)
+            self[k] = UnitArray(units=v)
         self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
@@ -163,7 +151,7 @@ class twiss(munch.Munch):
                     self[k] = self[k][index[::1]]
 
     def append(self, array, data):
-        self[array] = twissData(np.concatenate([self[array], data]), units=self[array].units)
+        self[array] = UnitArray(np.concatenate([self[array], data]), units=self[array].units)
 
     def _which_code(self, name):
         if name.lower() in self.codes.keys():

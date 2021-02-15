@@ -131,7 +131,7 @@ class Framework(Munch):
         if isinstance(filename, str):
             self.settingsFilename = filename
             self.settings = FrameworkSettings()
-            if os.path.exists(filename):
+            if os.path.isfile(filename):
                 self.settings.loadSettings(filename)
             else:
                 self.settings.loadSettings(self.global_parameters['master_lattice_location']+filename)
@@ -579,6 +579,9 @@ class frameworkDirectory(Munch):
     if use_matplotlib:
         def plot(self, *args, **kwargs):
             return groupplot.plot(self, *args, **kwargs)
+        def general_plot(self, *args, **kwargs):
+            return groupplot.general_plot(self, *args, **kwargs)
+
 
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})

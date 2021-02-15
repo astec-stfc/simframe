@@ -66,6 +66,8 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         self.append('sigma_x', rms_x)
         self.append('sigma_y', rms_y)
         self.append('sigma_z', rms_z)
+        self.append('mean_x', mean_x)
+        self.append('mean_y', mean_y)
         beta = np.sqrt(1-(gamma**-2))
         self.append('sigma_t', rms_z / (beta * constants.speed_of_light))
         self.append('sigma_p', (rms_e / e_kin))

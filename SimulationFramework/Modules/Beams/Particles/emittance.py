@@ -1,4 +1,5 @@
 import numpy as np
+from ...UnitFloat import UnitFloat
 
 class emittance():
 
@@ -20,18 +21,29 @@ class emittance():
     @property
     def eny(self):
         return self.normalized_emittance('y')
+    @property
+    def ecx(self):
+        return self.horizontal_emittance_corrected
+    @property
+    def ecy(self):
+        return self.vertical_emittance_corrected
+    @property
+    def ecnx(self):
+        return self.normalised_horizontal_emittance_corrected
+    @property
+    def ecny(self):
+        return self.normalised_vertical_emittance_corrected
 
-    def emittance_calc(self, x, xp, p=None):
+    def emittance_calc(self, x, xp, p=None, units='m-rad'):
         cov_x = self.beam.covariance(x, x)
         cov_xp = self.beam.covariance(xp, xp)
         cov_x_xp = self.beam.covariance(x, xp)
         emittance = np.sqrt(cov_x * cov_xp - cov_x_xp**2) if (cov_x * cov_xp - cov_x_xp**2) > 0 else 0
-        if p is None:
-            return emittance
-        else:
+        if p is not None:
             beta = np.mean(self.beam.Bz)
             gamma = np.mean(p)/(self.beam.E0_eV * beta)
-            return gamma*emittance
+            emittance = gamma*emittance
+        return emittance
 
     def normalized_emittance(self, plane='x', corrected=False):
         if corrected:
@@ -93,3 +105,14 @@ class emittance():
         yc = self.beam.eta_corrected(self.beam.y)
         ypc = self.beam.eta_corrected(self.beam.yp)
         return self.emittance_calc(yc, ypc)
+
+    @property
+    def normalised_horizontal_emittance_corrected(self):
+        xc = self.beam.eta_corrected(self.beam.x)
+        xpc = self.beam.eta_corrected(self.beam.xp)
+        return self.emittance_calc(xc, xpc, self.beam.cp)
+    @property
+    def normalised_vertical_emittance_corrected(self):
+        yc = self.beam.eta_corrected(self.beam.y)
+        ypc = self.beam.eta_corrected(self.beam.yp)
+        return self.emittance_calc(yc, ypc, self.beam.cp)

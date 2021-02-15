@@ -1,5 +1,6 @@
 import munch
 import numpy as np
+from ...UnitFloat import UnitFloat
 
 class twiss(munch.Munch):
 
@@ -98,7 +99,7 @@ class twiss(munch.Munch):
     def calculate_etax(self):
         p = self.beam.cpz
         pAve = np.mean(p)
-        p = [(a / pAve) - 1 for a in p]
+        p = p/pAve - 1#[(a / pAve) - 1 for a in p]
         S16, S66 = self.beam.covariance(self.beam.x, p), self.beam.covariance(p, p)
         eta1 = S16/S66 if S66 else 0
         S26 = self.beam.covariance(self.beam.xp, p)

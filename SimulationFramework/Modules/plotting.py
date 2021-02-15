@@ -370,3 +370,152 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
         #     ax_layout.set_xlabel('mean_z')
         #     limits = (0, I.stop)
         add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=limits, include_labels=include_labels, fields=fields, magnets=magnets)
+
+def getattrsplit(self, attr):
+    attrs = attr.split('.')
+    for a in attrs:
+        self = getattr(self, a)
+    return self
+
+def general_plot(framework_object,
+                           ykeys=[], ykeys2=[],
+                           xkey=[],
+                           limits=None,
+                           nice=True,
+                           include_layout=False,
+                           include_labels=True,
+                           include_legend=True,
+                           include_particles=False,
+                           fields=['cavity', 'solenoid'],
+                           magnets = ['quadrupole', 'dipole', 'beam_position_monitor', 'screen', 'wall_current_monitor', 'aperture'],
+                           grid=False, **kwargs):
+
+    if include_layout is not False:
+        fig, all_axis = plt.subplots(2, gridspec_kw={'height_ratios': [4, 1]}, **kwargs)
+        ax_layout = all_axis[-1]
+        ax_plot = [all_axis[0]]
+    else:
+        fig, all_axis = plt.subplots( **kwargs)
+        ax_plot = [all_axis]
+
+    if grid:
+        ax_plot[0].grid(b=True, which='major', color='#666666', linestyle='-')
+
+    # collect axes
+    if isinstance(ykeys, str):
+        ykeys = [ykeys]
+
+    if ykeys2:
+        if isinstance(ykeys2, str):
+            ykeys2 = [ykeys2]
+        ax_plot.append(ax_plot[0].twinx())
+
+    # Ensure we are using numpy arrays
+    xdata = getattrsplit(framework_object, xkey)
+    ydata = [getattrsplit(framework_object, y) for y in ykeys]
+    ydata2 = [getattrsplit(framework_object, y) for y in ykeys2]
+
+    # Split keys
+    xkey = xkey.split('.')[-1]
+    ykeys = [yk.split('.')[-1] for yk in ykeys]
+    ykeys2 = [yk.split('.')[-1] for yk in ykeys2]
+
+    # No need for a legend if there is only one plot
+    if len(ydata)==1 and not ydata2:
+        include_legend=False
+
+    X = xdata
+
+    # Only get the data we need
+    if limits:
+        good = np.logical_and(X >= limits[0], X <= limits[1])
+        idx = list(np.where(good == True)[0])
+        if len(idx) > 0:
+            if idx[0] > 0:
+                good[idx[0]-1] = True
+            if (idx[-1]+1) < len(good):
+                good[idx[-1]+1] = True
+            X = X[good]
+        if X.min() > limits[0]:
+            limits[0] = X.min()
+        if X.max() < limits[1]:
+            limits[1] = X.max()
+    else:
+        limits = X.min(), X.max()
+        good = slice(None,None,None) # everything
+
+    # X axis scaling
+    units_x = xdata.units
+    if nice:
+        X, factor_x, prefix_x = nice_array(X)
+        units_x  = prefix_x+units_x
+    else:
+        factor_x = 1
+
+    # set all but the layout
+    for ax in ax_plot:
+        ax.set_xlim(limits[0]/factor_x, limits[1]/factor_x)
+        ax.set_xlabel(f'{xkey} ({units_x})')
+
+
+    # Draw for Y1 and Y2
+
+    linestyles = ['solid','dashed']
+
+    ii = -1 # counter for colors
+    for ix, (d, keys) in enumerate([[ydata,ykeys], [ydata2,ykeys2]]):
+        if not keys:
+            continue
+        ax = ax_plot[ix]
+        linestyle = linestyles[ix]
+
+        # Check that units are compatible
+        ulist = [dat.units for dat in d]
+        if len(ulist) > 1:
+            for u2 in ulist[1:]:
+                assert ulist[0] == u2, f'Incompatible units: {ulist[0]} and {u2}'
+        # String representation
+        unit = str(ulist[0])
+
+        # Data
+        data = [key[good] for key in d]
+
+        if nice:
+            factor, prefix = nice_scale_prefix(np.ptp(data))
+            unit = prefix+unit
+        else:
+            factor = 1
+
+        # Make a line and point
+        keys = ['$'+k.replace('sigma', '\sigma')+'$' for k in keys]
+        for key, dat in zip(keys, data):
+            #
+            ii += 1
+            color = 'C'+str(ii)
+            ax.plot(X, dat/factor, label=f'{key} ({unit})', color=color, linestyle=linestyle)
+
+        ax.set_ylabel(', '.join(keys)+f' ({unit})')
+
+    # Collect legend
+    if include_legend:
+        lines = []
+        labels = []
+        for ax in ax_plot:
+            a, b = ax.get_legend_handles_labels()
+            lines += a
+            labels += b
+        ax_plot[0].legend(lines, labels, loc='best')
+
+    # Layout
+    if include_layout is not False:
+
+        # Gives some space to the top plot
+        #ax_layout.set_ylim(-1, 1.5)
+
+        if xkey == 'z':
+            #ax_layout.set_axis_off()
+            ax_layout.set_xlim(limits[0], limits[1])
+        # else:
+        #     ax_layout.set_xlabel('mean_z')
+        #     limits = (0, I.stop)
+        add_fieldmaps_to_axes(framework_object.framework,  ax_layout, bounds=limits, include_labels=include_labels, fields=fields, magnets=magnets)

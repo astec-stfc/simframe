@@ -6,6 +6,7 @@ import re
 import copy
 import glob
 import h5py
+from ..UnitFloat import UnitFloat, UnitArray
 from .. import constants
 from .Particles import Particles
 from . import astra
@@ -25,6 +26,7 @@ from .Particles.emittance import emittance as emittanceobject
 from .Particles.twiss import twiss as twissobject
 from .Particles.slice import slice as sliceobject
 from .Particles.sigmas import sigmas as sigmasobject
+from .Particles.centroids import centroids as centroidsobject
 
 # I can't think of a clever way of doing this, so...
 def get_properties(obj): return [f for f in dir(obj) if type(getattr(obj, f)) is property]
@@ -34,6 +36,7 @@ parameters = {
 'twiss': get_properties(twissobject),
 'slice': get_properties(sliceobject),
 'sigmas': get_properties(sigmasobject),
+'centroids': get_properties(centroidsobject),
 }
 
 class particlesGroup(munch.Munch):
@@ -45,7 +48,7 @@ class particlesGroup(munch.Munch):
         if key == 'particles':
             return super(particlesGroup, self).__getitem__(key)
         else:
-            return [getattr(p, key) for p in self.particles]
+            return UnitArray([getattr(p, key) for p in self.particles])
 
 class statsGroup(object):
 
@@ -55,7 +58,7 @@ class statsGroup(object):
 
     def __getattr__(self, key):
         var = self._beam.__getitem__(key)
-        return np.array([self._func(v) for v in var])
+        return UnitArray([self._func(v) for v in var], units='m')
         # return np.sqrt(self._beam.covariance(var, var))
 
 class beamGroup(munch.Munch):
@@ -96,6 +99,9 @@ class beamGroup(munch.Munch):
     @property
     def sigmas(self):
         return particlesGroup([b._beam.sigmas for b in self.beams.values()])
+    @property
+    def centroids(self):
+        return particlesGroup([b._beam.centroids for b in self.beams.values()])
     @property
     def twiss(self):
         return particlesGroup([b._beam.twiss for b in self.beams.values()])
@@ -150,11 +156,11 @@ class stats(object):
 
 class beam(munch.Munch):
 
-    particle_mass = constants.m_e
-    E0 = particle_mass * constants.speed_of_light**2
-    E0_eV = E0 / constants.elementary_charge
-    q_over_c = (constants.elementary_charge / constants.speed_of_light)
-    speed_of_light = constants.speed_of_light
+    particle_mass = UnitFloat(constants.m_e, 'kg')
+    E0 = UnitFloat(particle_mass * constants.speed_of_light**2, 'J')
+    E0_eV = UnitFloat(E0 / constants.elementary_charge, 'eV/c')
+    q_over_c = UnitFloat(constants.elementary_charge / constants.speed_of_light, 'C/c')
+    speed_of_light = UnitFloat(constants.speed_of_light, 'm/s')
 
     def __init__(self, filename=None, sddsindex=0):
         self._beam = Particles()
@@ -179,6 +185,9 @@ class beam(munch.Munch):
     @property
     def sigmas(self):
         return self._beam.sigmas
+    @property
+    def centroids(self):
+        return self._beam.centroids
     @property
     def twiss(self):
         return self._beam.twiss

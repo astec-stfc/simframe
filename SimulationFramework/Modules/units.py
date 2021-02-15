@@ -124,7 +124,7 @@ def multiply_units(u1, u2):
     s1 = u1.unitSymbol
     s2 = u2.unitSymbol
     if s1==s2:
-        symbol = f'({s1})^2'
+        symbol = f'{s1}^2'
     else:
         symbol = s1+'*'+s2
     d1 = u1.unitDimension
@@ -240,6 +240,7 @@ known_unit = {
     'V/m'        : pmd_unit('V/m', 1, 'electric_field'),
     'V'          : pmd_unit('V', 1, 'electric_potential'),
     'c_light'    : pmd_unit('vel/c', c_light, 'velocity'),
+    'c'    : pmd_unit('vel/c', c_light, 'velocity'),
     'm/s'        : pmd_unit('m/s', 1, 'velocity'),
     'eV'         : pmd_unit('eV', e_charge, 'energy'),
     'J'          : pmd_unit('J', 1, 'energy'),
@@ -262,14 +263,8 @@ def unit(symbol):
         assert len(subunits) == 2, 'TODO: more complicated units'
         return multiply_units(subunits[0], subunits[1])
 
+
     raise ValueError(f'Unknown unit symbol: {symbol}')
-
-
-
-
-
-
-
 
 
 # Dicts for prefixes

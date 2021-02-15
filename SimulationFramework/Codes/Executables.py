@@ -1,6 +1,22 @@
 import socket
 import os
 
+def which(program):
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 class Executables(object):
 
     def __init__(self, global_parameters):
@@ -83,7 +99,10 @@ class Executables(object):
                 elif 'apclara3' in self.hostname:
                     self.elegant = ['salloc','-w','apclara3','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','Pelegant']
             else:
-                self.elegant = ['mpiexec','-np',str(int(ncpu/3)),'Pelegant']
+                if which('mpiexec.exe') is not None and which('Pelegant.exe') is not None:
+                    self.elegant = ['mpiexec','-np',str(int(ncpu/3)),'Pelegant']
+                else:
+                    self.elegant = [self.master_lattice_location+'Codes/elegant']
         else:
             if not self.osname == 'nt':
                 if 'apclara1' in self.hostname:

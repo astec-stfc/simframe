@@ -48,6 +48,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         read_sdds_file(self, pre+'.flr')
         read_sdds_file(self, pre+'.sig')
         read_sdds_file(self, pre+'.twi')
+        read_sdds_file(self, pre+'.cen')
         z = self.elegantTwiss['Z']
         self.append('z', z)
         cp = self.elegantTwiss['pCentral0'] * self.E0
@@ -76,6 +77,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append('sigma_x', self.elegantTwiss['Sx'])
         self.append('sigma_y', self.elegantTwiss['Sy'])
         self.append('sigma_t', self.elegantTwiss['St'])
+        self.append('mean_x', self.elegantTwiss['Cx'])
+        self.append('mean_y', self.elegantTwiss['Cy'])
         beta = np.sqrt(1-(gamma**-2))
         # print 'len(z) = ', len(z), '  len(beta) = ', len(beta)
         self.append('t', z / (beta * constants.speed_of_light))

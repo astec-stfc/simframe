@@ -6,6 +6,8 @@ from .emittance import emittance as emittanceobject
 from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
 from .sigmas import sigmas as sigmasobject
+from .centroids import centroids as centroidsobject
+from ...UnitFloat import UnitArray, UnitFloat, unit_multiply
 
 class Particles(Munch):
 
@@ -20,11 +22,11 @@ class Particles(Munch):
     'p':  'kg*m/s'
     }
 
-    particle_mass = constants.m_e
-    E0 = particle_mass * constants.speed_of_light**2
-    E0_eV = E0 / constants.elementary_charge
-    q_over_c = (constants.elementary_charge / constants.speed_of_light)
-    speed_of_light = constants.speed_of_light
+    particle_mass = UnitFloat(constants.m_e, 'kg')
+    E0 = UnitFloat(particle_mass * constants.speed_of_light**2, 'J')
+    E0_eV = UnitFloat(E0 / constants.elementary_charge, 'eV/c')
+    q_over_c = UnitFloat(constants.elementary_charge / constants.speed_of_light, 'C/c')
+    speed_of_light = UnitFloat(constants.speed_of_light, 'm/s')
 
     ''' ********************  Statistical Parameters  ************************* '''
 
@@ -64,10 +66,19 @@ class Particles(Munch):
             self._sigmas = sigmasobject(self)
         return self._sigmas
 
+    @property
+    def centroids(self):
+        if not hasattr(self, '_mean'):
+            self._mean = centroidsobject(self)
+        return self._mean
+
     def covariance(self, u, up):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            return float(np.cov([u,up])[0,1])
+            ans = 0
+            if len(u) > 1 and len(up) > 1:
+                ans = UnitArray(np.cov([u,up])[0,1], unit_multiply(u.units, up.units, divide=False))
+            return ans
 
     def eta_correlation(self, u):
         return self.covariance(u,self.p) / self.covariance(self.p, self.p)
@@ -77,109 +88,115 @@ class Particles(Munch):
 
     @property
     def x(self):
-        return self['x']
+        return UnitArray(self['x'], 'm')
     @property
     def y(self):
-        return self['y']
+        return UnitArray(self['y'], 'm')
     @property
     def z(self):
-        return self['z']
+        return UnitArray(self['z'], 'm')
     @property
     def px(self):
-        return self['px']
+        return UnitArray(self['px'], 'kg*m/s')
     @property
     def py(self):
-        return self['py']
+        return UnitArray(self['py'], 'kg*m/s')
     @property
     def pz(self):
-        return self['pz']
+        return UnitArray(self['pz'], 'kg*m/s')
     @property
     def t(self):
-        return self['t']
+        return UnitArray(self['t'], 's')
     @property
     def xc(self):
-        return self.eta_corrected(self.x)
+        return UnitArray(self.eta_corrected(self.x), 'm')
     @property
     def xpc(self):
-        return self.eta_corrected(self.xp)
+        return UnitArray(self.eta_corrected(self.xp), '')
     @property
     def yc(self):
-        return self.eta_corrected(self.y)
+        return UnitArray(self.eta_corrected(self.y), 'm')
     @property
     def ypc(self):
-        return self.eta_corrected(self.yp)
+        return UnitArray(self.eta_corrected(self.yp), '')
 
     @property
     def cpx(self):
-        return self['px'] / self.q_over_c
+        return UnitArray(self['px'] / self.q_over_c, 'eV/c')
     @property
     def cpy(self):
-        return self['py'] / self.q_over_c
+        return UnitArray(self['py'] / self.q_over_c, 'eV/c')
     @property
     def cpz(self):
-        return self['pz'] / self.q_over_c
+        return UnitArray(self['pz'] / self.q_over_c, 'eV/c')
     @property
     def deltap(self):
-        return (self.cp - np.mean(self.cp)) / np.mean(self.cp) 
+        return UnitArray((self.cp - np.mean(self.cp)) / np.mean(self.cp), '')
     @property
     def xp(self):
-        return np.arctan(self.px/self.pz)
+        return UnitArray(np.arctan(self.px/self.pz), 'rad')
     @property
     def yp(self):
-        return np.arctan(self.py/self.pz)
+        return UnitArray(np.arctan(self.py/self.pz), 'rad')
     @property
     def p(self):
-        return self.cp * self.q_over_c
+        return UnitArray(self.cp * self.q_over_c, 'kg*m/s')
     @property
     def cp(self):
-        return np.sqrt(self.cpx**2 + self.cpy**2 + self.cpz**2)
+        return UnitArray(np.sqrt(self.cpx**2 + self.cpy**2 + self.cpz**2), 'eV/c')
     @property
     def Brho(self):
-        return np.mean(self.p) / constants.elementary_charge
+        return UnitArray(np.mean(self.p) / constants.elementary_charge, 'T*m')
     @property
     def gamma(self):
-        return np.sqrt(1+(self.cp/self.E0_eV)**2)
+        return UnitArray(np.sqrt(1+(self.cp/self.E0_eV)**2), '')
     @property
     def BetaGamma(self):
-        return self.cp/self.E0_eV
+        return UnitArray(self.cp/self.E0_eV, '')
     @property
     def energy(self):
-        return self.gamma * self.E0_eV
+        return UnitArray(self.gamma * self.E0_eV, 'eV')
     @property
     def vx(self):
         velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return velocity_conversion * self.px
+        return UnitArray(velocity_conversion * self.px, 'm*s')
     @property
     def vy(self):
         velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return velocity_conversion * self.py
+        return UnitArray(velocity_conversion * self.py, 'm*s')
     @property
     def vz(self):
         velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return velocity_conversion * self.pz
+        return UnitArray(velocity_conversion * self.pz, 'm*s')
     @property
     def Bx(self):
-        return self.vx / constants.speed_of_light
+        return UnitArray(self.vx / constants.speed_of_light, '')
     @property
     def By(self):
-        return self.vy / constants.speed_of_light
+        return UnitArray(self.vy / constants.speed_of_light, '')
     @property
     def Bz(self):
-        return self.vz / constants.speed_of_light
+        return UnitArray(self.vz / constants.speed_of_light, '')
     @property
     def Q(self):
-        return self['total_charge']
+        return UnitArray(self['total_charge'], 'C')
+    @property
+    def total_charge(self):
+        return UnitFloat(self['total_charge'], 'C')
+    @property
+    def charge(self):
+        return UnitArray(self['charge'], 'C')
     # @property
     # def sigma_z(self):
     #     return self.rms(self.Bz*constants.speed_of_light*(self['t'] - np.mean(self['t'])))
 
     @property
     def kinetic_energy(self):
-        return np.array((np.sqrt(self.E0**2 + self.cp**2) - self.E0**2))
+        return UnitArray(np.array((np.sqrt(self.E0**2 + self.cp**2) - self.E0**2)), 'J')
 
     @property
     def mean_energy(self):
-        return np.mean(self.kinetic_energy)
+        return UnitArray(np.mean(self.kinetic_energy), 'J')
 
     def computeCorrelations(self, x, y):
         xAve = np.mean(x)

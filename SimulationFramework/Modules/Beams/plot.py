@@ -272,7 +272,7 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm.jet, size=None, grid=False, marginals=False, limits=None, screen=False, use_scipy=False, units=['m','m'], subtract_mean=[False,False], **kwargs):
+def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm.jet, size=None, grid=False, marginals=False, limits=None, screen=False, use_scipy=False, subtract_mean=[False,False], **kwargs):
     #Do the self-consistent density estimate
     key1, key2 = keys
     if not isinstance(subtract_mean, (list, tuple)):
@@ -285,7 +285,7 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
     x, f1, p1 = nice_array(scale[0] * (beam[key1] - subtract_mean[0] * np.mean(beam[key1])))
     y, f2, p2 = nice_array(scale[1] * (beam[key2] - subtract_mean[1] * np.mean(beam[key2])))
 
-    u1, u2 = units
+    u1, u2 = [beam[k].units for k in keys]
     ux = p1+u1
     uy = p2+u2
 
@@ -334,8 +334,8 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
     if size[0] is None:
         use_size = False
         if not screen:
-            xmin, xmax = [np.floor(min(v1)), np.round(max(v1))]
-            ymin, ymax = [np.floor(min(v2)), np.round(max(v2))]
+            xmin, xmax = [min(v1), max(v1)]
+            ymin, ymax = [min(v2), max(v2)]
             size = [xmax-xmin, ymax-ymin]
         else:
             xmin, xmax = -15, 15
@@ -358,12 +358,13 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
         size[0] = size[0] / f1
         size[1] = size[1] / f2
 
-    major_ticksx = np.arange(meanvalx + minvalx, meanvalx + maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 4)
-    minor_ticksx = np.arange(meanvalx + minvalx, meanvalx + maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 40)
+    # print(meanvaly, minvaly, maxvaly)
+    major_ticksx = meanvalx + np.arange( minvalx, maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 4)
+    minor_ticksx = meanvalx + np.arange( minvalx, maxvalx + (maxvalx-minvalx) / 100, (maxvalx-minvalx) / 40)
     ax.set_xticks(major_ticksx)
     ax.set_xticks(minor_ticksx, minor=True)
-    major_ticksy = np.arange(meanvaly + minvaly, meanvaly + maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 4)
-    minor_ticksy = np.arange(meanvaly + minvaly, meanvaly + maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 40)
+    major_ticksy = meanvaly + np.arange( minvaly,  maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 4)
+    minor_ticksy = meanvaly + np.arange( minvaly,  maxvaly + (maxvaly-minvaly) / 100, (maxvaly-minvaly) / 40)
     # print(minvaly, maxvaly, meanvaly, major_ticksy)
     ax.set_yticks(major_ticksy)
     ax.set_yticks(minor_ticksy, minor=True)

@@ -1,6 +1,7 @@
 import munch
 import numpy as np
 from ... import constants
+from ...UnitFloat import UnitFloat
 
 class sigmas(munch.Munch):
 
@@ -41,4 +42,4 @@ class sigmas(munch.Munch):
         # return self.beam.cp.std()/np.mean(self.beam.cp)
     @property
     def linear_chirp_z(self):
-        return -1*self.beam.rms(self.beam.Bz*constants.speed_of_light*self.t)/self.momentum_spread/100
+        return -1*np.std(self.beam.Bz*self.beam.speed_of_light*self.beam.t)/self.momentum_spread/100
