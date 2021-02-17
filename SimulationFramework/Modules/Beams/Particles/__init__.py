@@ -7,7 +7,7 @@ from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
 from .sigmas import sigmas as sigmasobject
 from .centroids import centroids as centroidsobject
-from ...units import UnitValue, mean, cov
+from ...units import UnitValue
 
 class Particles(Munch):
 
@@ -77,7 +77,7 @@ class Particles(Munch):
             warnings.simplefilter("ignore")
             ans = 0
             if len(u) > 1 and len(up) > 1:
-                ans = cov([u,up])[0,1]
+                ans = UnitValue(np.cov([u,up])[0,1], unit_multiply(u.units, up.units, divide=False))
             return ans
 
     def eta_correlation(self, u):

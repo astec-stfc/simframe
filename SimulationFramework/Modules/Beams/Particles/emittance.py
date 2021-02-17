@@ -1,5 +1,5 @@
 import numpy as np
-from ...units import UnitValue, mean
+from ...units import UnitValue
 
 class emittance():
 
@@ -40,8 +40,8 @@ class emittance():
         cov_x_xp = self.beam.covariance(x, xp)
         emittance = np.sqrt(cov_x * cov_xp - cov_x_xp**2) if (cov_x * cov_xp - cov_x_xp**2) > 0 else 0
         if p is not None:
-            beta = mean(self.beam.Bz)
-            gamma = mean(p)/(self.beam.E0_eV * beta)
+            beta = np.mean(self.beam.Bz)
+            gamma = np.mean(p)/(self.beam.E0_eV * beta)
             emittance = gamma*emittance
         return emittance
 
@@ -81,7 +81,7 @@ class emittance():
     @property
     def normalized_horizontal_emittance_90(self):
         emit = self.beam.horizontal_emittance_90
-        return mean(self.beam.cp)/self.beam.E0_eV * emit
+        return np.mean(self.beam.cp)/self.beam.E0_eV * emit
     @property
     def vertical_emittance_90(self):
         emit = self.beam.vertical_emittance
@@ -93,7 +93,7 @@ class emittance():
     @property
     def normalized_vertical_emittance_90(self):
         emit = self.beam.vertical_emittance_90
-        return mean(self.beam.cp)/self.beam.E0_eV * emit
+        return np.mean(self.beam.cp)/self.beam.E0_eV * emit
 
     @property
     def horizontal_emittance_corrected(self):

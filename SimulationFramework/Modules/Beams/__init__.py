@@ -6,7 +6,7 @@ import re
 import copy
 import glob
 import h5py
-from ..units import UnitValue, mean, cov
+from ..units import UnitValue
 from .. import constants
 from .Particles import Particles
 from . import astra

@@ -20,7 +20,7 @@ try:
 except ImportError:
     use_matplotlib = False
 
-from ...units import UnitValue, mean, cov
+from ...units import UnitValue
 
 class twiss(munch.Munch):
 
