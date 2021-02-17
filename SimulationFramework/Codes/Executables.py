@@ -100,7 +100,7 @@ class Executables(object):
                     self.elegant = ['salloc','-w','apclara3','-n',str(ncpu),'/usr/lib64/openmpi3/bin/mpiexec','Pelegant']
             else:
                 if which('mpiexec.exe') is not None and which('Pelegant.exe') is not None:
-                    self.elegant = ['mpiexec','-np',str(int(ncpu/3)),'Pelegant']
+                    self.elegant = [which('mpiexec.exe'),'-np',str(min([2,int(ncpu/3)])), which('Pelegant.exe')]
                 else:
                     self.elegant = [self.master_lattice_location+'Codes/elegant']
         else:
