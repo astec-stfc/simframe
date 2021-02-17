@@ -1,7 +1,7 @@
 import munch
 import numpy as np
 from ... import constants
-from ...UnitFloat import UnitFloat
+from ...units import UnitValue, mean, covariance
 
 class centroids(munch.Munch):
 
@@ -35,25 +35,25 @@ class centroids(munch.Munch):
 
     @property
     def Cx(self):
-        return np.mean(self.beam.x)
+        return mean(self.beam.x)
     @property
     def Cy(self):
-        return np.mean(self.beam.y)
+        return mean(self.beam.y)
     @property
     def Cz(self):
-        return np.mean(self.beam.z)
+        return mean(self.beam.z)
     @property
     def Ct(self):
-        return np.mean(self.beam.t)
+        return mean(self.beam.t)
     @property
     def Cp(self):
-        return np.mean(self.beam.cp)
+        return mean(self.beam.cp)
     @property
     def Cpx(self):
-        return np.mean(self.beam.cpx)
+        return mean(self.beam.cpx)
     @property
     def Cpy(self):
-        return np.mean(self.beam.cpy)
+        return mean(self.beam.cpy)
     @property
     def Cpz(self):
-        return np.mean(self.beam.cpz)
+        return mean(self.beam.cpz)

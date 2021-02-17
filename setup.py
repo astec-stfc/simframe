@@ -4,7 +4,7 @@ import versioneer
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
-requirements = ["deepdiff>=5", "h5py>=3.1", "munch>=2.5", "numpy>=1.19", "progressbar2>=3",
+requirements = ["deepdiff>=5", "h5py>=2.10", "munch>=2.5", "numpy>=1.19", "progressbar2>=3",
                 "PyQt5>=5.1", "PyYAML>=5.3", "mpl-axes-aligner>=1.1",
                 "MasterLattice>=0.0.1"]
 

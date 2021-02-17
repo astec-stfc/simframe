@@ -70,20 +70,15 @@ class elegantLattice(frameworkLattice):
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.bunch_charge)})
         else:
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.global_parameters['beam'].Q)})
-        # print('mean cpz = ', np.mean(self.global_parameters['beam'].cpz), ' prefix = ', prefix)
         sddsbeamfilename = self.objectname+'.sdds'
         rbf.sdds.write_SDDS_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
 
     def run(self):
         """Run the code with input 'filename'"""
-        if not os.name == 'nt':
-            command = self.executables[self.code] + ['-rpnDefns='+os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn'] + [self.objectname+'.ele']
-        else:
-            command = self.executables[self.code] + ['-rpnDefns='+os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn'] + [self.objectname+'.ele']
-            command = [c.replace('/','\\') for c in command]
-        # print ('run command = ', command)
+        command = self.executables[self.code] + [self.objectname+'.ele']
+        command = [c.replace('/','\\') for c in command]
         with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
-            subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'])
+            subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env={'RPN_DEFNS': os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn'})
 
 class elegantCommandFile(object):
     def __init__(self, lattice='', *args, **kwargs):

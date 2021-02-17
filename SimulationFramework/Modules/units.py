@@ -1,271 +1,8 @@
-
-"""
-Simple units functionality for the openPMD beamphysics records.
-
-For more advanced units, use a package like Pint:
-    https://pint.readthedocs.io/
-
-
-"""
-
-import scipy.constants
-
-m_e = scipy.constants.value('electron mass energy equivalent in MeV')*1e6
-m_p = scipy.constants.value('proton mass energy equivalent in MeV')*1e6
-c_light = 299792458
-e_charge = scipy.constants.e
-mu_0 = scipy.constants.mu_0
-
+import warnings
 import numpy as np
-
-
-class pmd_unit:
-    """
-
-    Params
-    ------
-
-    unitSymbol: Native units name
-    unitSI:     Conversion factor to the the correspontign SI unit
-    unitDimension: SI Base Exponents
-
-    Base unit dimensions are defined as:
-       Base dimension  | exponents.       | SI unit
-       ---------------- -----------------   -------
-       length          : (1,0,0,0,0,0,0)     m
-       mass            : (0,1,0,0,0,0,0)     kg
-       time            : (0,0,1,0,0,0,0)     s
-       current         : (0,0,0,1,0,0,0)     A
-       temperture      : (0,0,0,0,1,0,0)     K
-       mol             : (0,0,0,0,0,1,0)     mol
-       luminous        : (0,0,0,0,0,0,1)     cd
-
-    Example:
-        pmd_unit('eV', 1.602176634e-19, (2, 1, -2, 0, 0, 0, 0))
-        defines that an eV is 1.602176634e-19 of base units m^2 kg/s^2, which is a Joule (J)
-
-    If unitSI=0 (default), init with a known symbol:
-        pmd_unit('T')
-    returns:
-        pmd_unit('T', 1, (0, 1, -2, -1, 0, 0, 0))
-
-
-    Simple equalities are provided:
-        u1 == u2
-    Returns True if the params are all the same.
-
-    """
-    def __init__(self, unitSymbol='', unitSI=0, unitDimension = (0,0,0,0,0,0,0)):
-
-        # Allow to return an internally known unit
-        if unitSI==0:
-            if unitSymbol in known_unit:
-                # Copy internals
-                u =  known_unit[unitSymbol]
-                unitSI= u.unitSI
-                unitDimension = u.unitDimension
-            else:
-                raise ValueError(f'unknown unitSymbol: {unitSymbol}')
-
-        self._unitSymbol = unitSymbol
-        self._unitSI = unitSI
-        if isinstance(unitDimension, str):
-             self._unitDimension = DIMENSION[unitDimension]
-        else:
-            self._unitDimension = unitDimension
-
-    @property
-    def unitSymbol(self):
-        return self._unitSymbol
-    @property
-    def unitSI(self):
-        return self._unitSI
-    @property
-    def unitDimension(self):
-        return self._unitDimension
-
-    def __mul__(self, other):
-        return multiply_units(self, other)
-
-    def __truediv__(self, other):
-        return divide_units(self, other)
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.__dict__ == other.__dict__
-        else:
-            return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-
-    def __str__(self):
-        return self.unitSymbol
-
-    def __repr__(self):
-        return  f"pmd_unit('{self.unitSymbol}', {self.unitSI}, {self.unitDimension})"
-
-
-def is_identity(u):
-    """Checks if the unit is equivalent to 1"""
-    return u.unitSI == 1 and u.unitDimension == (0,0,0,0,0,0,0)
-
-def multiply_units(u1, u2):
-    """
-    Multiplies two pmd_unit symbols
-    """
-
-    if is_identity(u1):
-        return u2
-    if is_identity(u2):
-        return u1
-
-    s1 = u1.unitSymbol
-    s2 = u2.unitSymbol
-    if s1==s2:
-        symbol = f'{s1}^2'
-    else:
-        symbol = s1+'*'+s2
-    d1 = u1.unitDimension
-    d2 = u2.unitDimension
-    dim=tuple(sum(x) for x in zip(d1, d2))
-    unitSI = u1.unitSI * u2.unitSI
-
-    return pmd_unit(unitSymbol=symbol, unitSI=unitSI, unitDimension=dim)
-
-def divide_units(u1, u2):
-    """
-    Divides two pmd_unit symbols : u1/u2
-    """
-
-    if is_identity(u2):
-        return u1
-
-    s1 = u1.unitSymbol
-    s2 = u2.unitSymbol
-    if s1==s2:
-        symbol =  '1'
-    else:
-        symbol = s1+'/'+s2
-    d1 = u1.unitDimension
-    d2 = u2.unitDimension
-    dim=tuple(a-b for a,b in zip(d1, d2))
-    unitSI = u1.unitSI / u2.unitSI
-
-    return pmd_unit(unitSymbol=symbol, unitSI=unitSI, unitDimension=dim)
-
-def sqrt_unit(u):
-    """
-    Returns the sqrt of a unit
-    """
-    u.unitDimension
-
-    symbol = u.unitSymbol
-    if symbol not in ['', '1']:
-        symbol = f'sqrt({symbol})'
-
-    unitSI = np.sqrt(u.unitSI)
-    dim = tuple( x/2 for x in u.unitDimension)
-
-    return pmd_unit(unitSymbol=symbol, unitSI=unitSI, unitDimension=dim)
-
-
-DIMENSION = {
-    '1'              : (0,0,0,0,0,0,0),
-     # Base units
-    'length'         : (1,0,0,0,0,0,0),
-    'mass'           : (0,1,0,0,0,0,0),
-    'time'           : (0,0,1,0,0,0,0),
-    'current'        : (0,0,0,1,0,0,0),
-    'temperture'     : (0,0,0,0,1,0,0),
-    'mol'            : (0,0,0,0,0,1,0),
-    'luminous'       : (0,0,0,0,0,0,1),
-    #
-    'charge'         : (0,0,1,1,0,0,0),
-    'electric_field'  : (1,1,-3,-1,0,0,0),
-    'electric_potential' : (1,2,-3,-1,0,0,0),
-    'magnetic_field' : (0,1,-2,-1,0,0,0),
-    'velocity'       : (1,0,-1,0,0,0,0),
-    'energy'         : (2,1,-2,0,0,0,0),
-    'momentum'       : (1,1,-1,0,0,0,0)
-}
-# Inverse
-DIMENSION_NAME = {v: k for k, v in DIMENSION.items()}
-
-def dimension(name):
-    if name in DIMENSION:
-        return DIMENSION[name]
-    else:
-        return None
-
-def dimension_name(dim_array):
-    return DIMENSION_NAME[tuple(dim_array)]
-
-SI_symbol = {
-    '1'              : '1',
-    'length'         : 'm',
-    'mass'           : 'kg',
-    'time'           : 's',
-    'current'        : 'A',
-    'temperture'     : 'K',
-    'mol'            : 'mol',
-    'luminous'       : 'cd',
-    'charge'         : 'C',
-    'electric_field' : 'V/m',
-    'electric_potential' : 'V',
-    'velocity'       : 'm/s',
-    'energy'         : 'J',
-    'momentum'       : 'kg*m/s',
-    'magnetic_field' : 'T'
-}
-# Inverse
-SI_name = {v: k for k, v in SI_symbol.items()}
-
-
-
-known_unit = {
-    '1'          : pmd_unit('', 1, '1'),
-    'rad'        : pmd_unit('', 1, '1'),
-    'm'          : pmd_unit('m', 1, 'length'),
-    'kg'         : pmd_unit('kg', 1, 'mass'),
-    'g'          : pmd_unit('g', .001, 'mass'),
-    's'          : pmd_unit('s', 1, 'time'),
-    'A'          : pmd_unit('A', 1, 'current'),
-    'K'          : pmd_unit('K', 1, 'temperture'),
-    'mol'        : pmd_unit('mol', 1, 'mol'),
-    'cd'         : pmd_unit('cd', 1, 'luminous'),
-    'C'          : pmd_unit('C', 1, 'charge'),
-    'charge_num' : pmd_unit('charge #', 1, 'charge'),
-    'V/m'        : pmd_unit('V/m', 1, 'electric_field'),
-    'V'          : pmd_unit('V', 1, 'electric_potential'),
-    'c_light'    : pmd_unit('vel/c', c_light, 'velocity'),
-    'c'    : pmd_unit('vel/c', c_light, 'velocity'),
-    'm/s'        : pmd_unit('m/s', 1, 'velocity'),
-    'eV'         : pmd_unit('eV', e_charge, 'energy'),
-    'J'          : pmd_unit('J', 1, 'energy'),
-    'eV/c'       : pmd_unit('eV/c', e_charge/c_light, 'momentum'),
-    'T'          : pmd_unit('T', 1, 'magnetic_field')
-    }
-
-def unit(symbol):
-    """
-    Returns a pmd_unit from a known symbol.
-
-    * is allowed between two known symbols:
-    """
-    if symbol in known_unit:
-        return known_unit[symbol]
-
-    if '*' in symbol:
-        subunits = [known_unit[s] for s in symbol.split('*')]
-        # Require these to be in known units
-        assert len(subunits) == 2, 'TODO: more complicated units'
-        return multiply_units(subunits[0], subunits[1])
-
-
-    raise ValueError(f'Unknown unit symbol: {symbol}')
-
+from .pmd_units import unit
+import re
+np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
 
 # Dicts for prefixes
 PREFIX_FACTOR = {
@@ -319,11 +56,6 @@ SHORT_PREFIX_FACTOR = {
 # Inverse
 SHORT_PREFIX = dict( (v,k) for k,v in SHORT_PREFIX_FACTOR.items())
 
-
-
-
-# Nice scaling
-
 def nice_scale_prefix(scale):
     """
     Returns a nice factor and a SI prefix string
@@ -346,7 +78,9 @@ def nice_scale_prefix(scale):
     else:
         f = 1
 
-    return f, SHORT_PREFIX[f]
+    if f in SHORT_PREFIX:
+        return f, SHORT_PREFIX[f]
+    return 1, ''
 
 def nice_array(a):
     """
@@ -371,144 +105,348 @@ def nice_array(a):
 
     return a/fac, fac,  prefix
 
+def unit_power(string, power_factor=1):
+    ''' # Takes a string in the form 'a^x' and returns ('a', x) '''
+    if isinstance(string, (list, tuple)) and len(string) == 2:
+        return string
+    if '^' in string:
+        pre, power = string.split('^')
+        power = power.replace('(','').replace(')','')
+        if '/' in power:
+            powers = [int(s) for s in power.split('/')]
+            power = powers[0]
+            for p in powers[1:]:
+                power /= p
+        return pre, power_factor*float(power)
+    return string, power_factor
 
+def unit_power_multiply(string1, string2, power_factor=1):
+    '''Takes two strings in the form ('a', x) and ('a', y) and returns ('a', (x+y)) '''
+    unit1, power1 = unit_power(string1)
+    unit2, power2 = unit_power(string2)
+    if unit1 == unit2:
+        power = power_factor*(power1 + power2)
+        if power == 0:
+            return '', 0
+        if float(power).is_integer():
+             return unit1, int(power)
+        return unit1, float(power)
 
+def unit_power_string(power_list, power_factor=1):
+    ''' Returns a unit in ('a', x) format and makes a unit string '''
+    unit, power = power_list
+    power = power_factor * power
+    if power == 0:
+        return ''
+    if float(power).is_integer():
+        if power == 1:
+            return unit
+        return unit+'^'+str(int(power))
+    num, denom = power.as_integer_ratio()
+    return unit+'^('+str(num)+'/'+str(denom)+')'
 
-# -------------------------
-# Units for ParticleGroup
+def unit_fraction(string):
+    ''' split a tring into numerator and denominator taking into account () - input is string in form 'a^x*b/c^y' '''
+    num=[]
+    denom=[]
+    substrings = num
+    substring = ''
+    inhat = False
+    inbracket = False
+    individe = False
+    inhatdivide = 0
+    for s in string:
+        if s == '/':
+            if not inhat:
+                inhatdivide = 0
+                individe = True
+                if not substring.isnumeric() and not substring == '': substrings.append(substring)
+                substring = ''
+                if individe and inbracket:
+                    substrings = nom
+                else:
+                    substrings = denom
+            else:
+                inhatdivide += 1
+                if inhatdivide > 1:
+                    inhatdivide = 0
+                    if not substring.isnumeric() and not substring == '': substrings.append(substring)
+                    substring = ''
+                    if individe and inbracket:
+                        substrings = num
+                    else:
+                        substrings = denom
+                else:
+                    substring += s
+        elif s == '*':
+            individe = False
+            inhatdivide = 0
+            inhat = False
+            if not substring.isnumeric() and not substring == '': substrings.append(substring)
+            substring = ''
+            if not inbracket:
+                substrings = num
+        elif s == ' ':
+            if inhat:
+                inhatdivide = 0
+                if substring[-1] == '/':
+                    individe = True
+                    substring = substring[:-1]
+            inhat = False
+            if not substring.isnumeric() and not substring == '': substrings.append(substring)
+            substring = ''
+            if individe:
+                substrings = denom
+        elif s == '(':
+            inbracket = True
+        elif s == ')':
+            inbracket = False
+        elif s == '^':
+            inhat = True
+            substring += s
+        elif inhat and not s.isnumeric():
+            inhat = False
+            inhatdivide = 0
+            if substring[-1] == '/':
+                individe = True
+                substring = substring[:-1]
+            if not substring.isnumeric() and not substring == '': substrings.append(substring)
+            substring = s
+            if individe:
+                substrings = denom
+        else:
+            substring += s
 
-PARTICLEGROUP_UNITS = {}
-for k in ['status']:
-    PARTICLEGROUP_UNITS[k] = unit('1')
-for k in ['t']:
-    PARTICLEGROUP_UNITS[k] = unit('s')
-for k in ['energy', 'kinetic_energy', 'mass', 'higher_order_energy_spread', 'higher_order_energy']:
-    PARTICLEGROUP_UNITS[k] = unit('eV')
-for k in ['px', 'py', 'pz', 'p', 'pr']:
-    PARTICLEGROUP_UNITS[k] = unit('eV/c')
-for k in ['x', 'y', 'z', 'r', 'Jx', 'Jy']:
-    PARTICLEGROUP_UNITS[k] = unit('m')
-for k in ['beta', 'beta_x', 'beta_y', 'beta_z', 'gamma', 'theta', 'ptheta']:
-    PARTICLEGROUP_UNITS[k] = unit('1')
-for k in ['charge', 'species_charge', 'weight']:
-    PARTICLEGROUP_UNITS[k] = unit('C')
-for k in ['average_current']:
-    PARTICLEGROUP_UNITS[k] = unit('A')
-for k in ['norm_emit_x', 'norm_emit_y']:
-    PARTICLEGROUP_UNITS[k] = unit('m')
-for k in ['norm_emit_4d']:
-    PARTICLEGROUP_UNITS[k] = multiply_units(unit('m'), unit('m'))
-for k in ['xp', 'yp']:
-    PARTICLEGROUP_UNITS[k] = unit('rad')
-for k in ['x_bar', 'px_bar', 'y_bar', 'py_bar']:
-    PARTICLEGROUP_UNITS[k] = sqrt_unit(unit('m'))
+    if not substring.isnumeric() and not substring == '': substrings.append(substring)
+    return num, denom
 
-def pg_units(key):
-    """
-    Returns a str representing the units of any attribute
-    """
-    for prefix in ['sigma_', 'mean_', 'min_', 'max_', 'ptp_', 'delta_']:
-        if key.startswith(prefix):
-            nkey = key[len(prefix):]
-            return PARTICLEGROUP_UNITS[nkey]
+def expand_units(unit_list, power_factor=1):
+    '''Takes a list of units (normally numerator or denominator) and collects units and powers
+    Returns units ('a^x') and unitnames (('a',x))'''
 
-    if key.startswith('cov_'):
-        subkeys = key.strip('cov_').split('__')
-        unit0 = PARTICLEGROUP_UNITS[subkeys[0]]
+    # if isinstance(unit_list[0], (list, tuple)):
+    #     return [expand_units(ul) for ul in unit_list]
 
-        unit1 = PARTICLEGROUP_UNITS[subkeys[1]]
+    unitnames = [unit_power(u, power_factor=power_factor) for u in unit_list]
+    unique_units = list(set([u[0] for u in unitnames]))
+    units = []
+    for uu in unique_units:
+        subunits = [u for u in unitnames if u[0] == uu]
+        unit = subunits[0]
+        if len(subunits) > 1:
+            for u in subunits[1:]:
+                unit = unit_power_multiply(unit, u)
+            if not unit[1] == 0:
+                units.append(unit)
+        else:
+            units.append(unit)
+    return units
 
-        return multiply_units(unit0, unit1)
-
-    # Fields
-    if key.startswith('electricField'):
-        return unit('V/m')
-    if key.startswith('magneticField'):
-        return unit('T')
-
-
-
-    return PARTICLEGROUP_UNITS[key]
-
-
-# -------------------------
-# h5 tools
-
-def write_unit_h5(h5, u):
-    """
-    Writes an pmd_unit to an h5 handle
-    """
-
-    h5.attrs['unitSI'] = u.unitSI
-    h5.attrs['unitDimension'] = u.unitDimension
-    h5.attrs['unitSymbol'] = u.unitSymbol
-
-def read_unit_h5(h5):
-    """
-    Reads unit data from an h5 handle and returns a pmd_unit object
-    """
-    a = h5.attrs
-
-    unitSI = a['unitSI']
-    unitDimension = tuple(a['unitDimension'])
-    if 'unitSymbol' not in a:
-        unitSymbol = 'unknown'
+def collect_units(unit_powers):
+    ''' Collects units into numerator ands denominator and uses '*' and '/' correctly '''
+    combined_list = sorted(unit_powers, key=lambda x: -x[1])
+    if len(combined_list) > 0:
+        finalunit = unit_power_string(combined_list[0])
+        for u in combined_list[1:]:
+            if u[1] > 0:
+                finalunit += '*' + unit_power_string(u)
+            else:
+                finalunit += '/' + unit_power_string(u, power_factor=-1)
     else:
-        unitSymbol=a['unitSymbol']
+        finalunit = ''
+    return finalunit
 
-    return pmd_unit(unitSymbol=unitSymbol, unitSI=unitSI, unitDimension=unitDimension)
+def unit_powers(string, power_factor=1):
+    num, denom = unit_fraction(string)
+    # print(expand_units(num), expand_units(denom))
+    return expand_units(expand_units(num, power_factor=power_factor) + expand_units(denom, power_factor=(-1*power_factor)))
 
-
-
-
-
-
-def read_dataset_and_unit_h5(h5, expected_unit=None, convert=True):
-    """
-    Reads a dataset that has openPMD unit attributes.
-
-    expected_unit can be a pmd_unit object, or a known unit str. Examples: 'kg', 'J', 'eV'
-
-    If expected_unit is given, will check that the units are compatible.
-
-    If convert, the data will be returned with the expected_units.
-
-
-    Returns a tuple:
-        np.array, pmd_unit
-
-    """
-
-    # Read the unit that is there.
-    u = read_unit_h5(h5)
-
-    # Simple case
-    if not expected_unit:
-        return np.array(h5), u
-
-    if isinstance(expected_unit, str):
-        # Try to get unit
-        expected_unit = unit(expected_unit)
-
-    # Check dimensions
-    du = divide_units(u, expected_unit)
-
-    assert du.unitDimension ==  (0,0,0,0,0,0,0), 'incompatible units'
-
-    if convert:
-        fac = du.unitSI
-        return fac*np.array(h5), expected_unit
+def unit_multiply(string1, string2=False, divide=False):
+    ''' multiply/divide two unit strings '''
+    if divide:
+        pf = [1,-1]
     else:
-        return np.array(h5), u
+        pf = [1,1]
+    up1 = expand_units(unit_powers(string1, power_factor=pf[0]))
+    if string2:
+        up2 = expand_units(unit_powers(string2, power_factor=pf[1]))
+    else:
+        up2 = []
+    # print(expand_units(up1 + up2))
+    return collect_units(expand_units(up1+up2))
 
+def unit_to_the_power(string1, power=1):
+    ''' raise units to a power'''
+    up1 = expand_units(unit_powers(string1, power_factor=power))
+    return collect_units(up1)
 
-def write_dataset_and_unit_h5(h5, name, data, unit=None):
-    """
-    Writes data and pmd_unit to h5[name]
+def get_base_units(string):
+    if isinstance(string, (UnitValue)):
+        string = string.units
+    # if string is None:
+    #     return np.array((0,0,0,0,0,0,0))
+    units_powers = unit_powers(string)
+    return np.sum([np.array(unit(u[0]).unitDimension) * u[1] for u in units_powers], axis=0)
 
-    See: read_dataset_and_unit_h5
-    """
-    h5[name] = data
+def are_units_equal(string1, string2):
+    return (get_base_units(string1) == get_base_units(string2)).all()
 
-    if unit:
-        write_unit_h5(h5[name], unit)
+class UnitValue(np.ndarray):
+    '''Subclass of ndarray MUST be initialized with a numpy array as first argument.
+    '''
+
+    nounits = ['sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', 'arctan2']
+
+    def __new__(cls, input_array, units=None):
+        obj = np.asarray(input_array).view(cls)
+        if units is None:
+            units = ''
+        obj.units = units
+        return obj
+
+    def __array_finalize__(self, obj):
+        if obj is None:  # __new__ handles instantiation
+            return
+        '''we essentially need to set all our attributes that are set in __new__ here again (including their default values).
+        Otherwise numpy's view-casting and new-from-template mechanisms would break our class.
+        '''
+        self.units = getattr(obj, 'units', '')
+
+    # def __array_wrap__(self, obj, context=None):
+    #     result = obj.view(type(self))
+    #     # try:
+    #     #     print(context[0].__name__)
+    #     # except:
+    #     #     print(context)
+    #     if context is not None:
+    #         if context[0].__name__ == 'sqrt':
+    #             result.units = unit_to_the_power(obj.units, 0.5)
+    #         if context[0].__name__ == 'square':
+    #             result.units = unit_to_the_power(obj.units, 2)
+    #     return result
+
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):  # this method is called whenever you use a ufunc
+        '''this implementation of __array_ufunc__ makes sure that all custom attributes are maintained when a ufunc operation is performed on our class.'''
+
+        # convert inputs and outputs of class ArraySubclass to np.ndarray to prevent infinite recursion
+        # print(ufunc)
+        args = ((i.view(np.ndarray) if isinstance(i, UnitValue) else i) for i in inputs)
+        outputs = kwargs.pop('out', None)
+        if outputs:
+            kwargs['out'] = tuple((o.view(np.ndarray) if isinstance(o, UnitValue) else o) for o in outputs)
+        else:
+            outputs = (None,) * ufunc.nout
+        # call numpys implementation of __array_ufunc__
+        results = super().__array_ufunc__(ufunc, method, *args, **kwargs)  # pylint: disable=no-member
+        # print(results)
+        if results is NotImplemented:
+            return NotImplemented
+        if method == 'at':
+            # method == 'at' means that the operation is performed in-place. Therefore, we are done.
+            return
+        # now we need to make sure that outputs that where specified with the 'out' argument are handled corectly:
+        if ufunc.nout == 1:
+            results = (results,)
+
+        if not ufunc.__name__ in self.nounits:
+            return UnitValue(results[0] if len(results) == 1 else results, units=self.units)
+        else:
+            results = tuple((self._copy_attrs_to(result) if output is None else output)
+                            for result, output in zip(results, outputs))
+            return results[0] if len(results) == 1 else results
+
+    def _copy_attrs_to(self, target):
+        '''copies all attributes of self to the target object. target must be a (subclass of) ndarray'''
+        target = target.view(UnitValue)
+        try:
+            target.units = self.units
+        except AttributeError:
+            pass
+        return target
+
+    def __repr__(self):
+        if self.shape == ():
+            if isinstance(self.item(), int):
+                f, prefix = nice_scale_prefix(self.item())
+                return int.__repr__(int(self/f))+' '+prefix+self.units
+            elif isinstance(self.item(), float):
+                f, prefix = nice_scale_prefix(self.item())
+                return np.float64.__repr__(np.float64(self/f))+' '+prefix+self.units
+        else:
+            return np.ndarray.__repr__(self)[:-1] + ', units=\'' + self.units + '\')'
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            arr = super().__getitem__(key)
+            return UnitValue(arr, units=self.units)
+        elif isinstance(key, int):
+            return UnitValue(super().__getitem__(key), units=self.units)
+        return super().__getitem__(key)
+
+    def _mul_div_units(self, m, newval, divide=False):
+        if newval is NotImplemented:
+            return newval
+        if hasattr(m, 'units'):
+            newunit = unit_multiply(self.units, m.units, divide=divide)
+            return UnitValue(newval, newunit)
+        else:
+            return UnitValue(newval, self.units)
+
+    def __mul__(self, m):
+        newarr = np.ndarray.__mul__(self, m)
+        return self._mul_div_units(m, newarr)
+
+    def __rmul__(self, m):
+        newarr = np.ndarray.__rmul__(self, m)
+        return self._mul_div_units(m, newarr)
+
+    def __truediv__(self, m):
+        newarr = np.ndarray.__truediv__(self, m)
+        return self._mul_div_units(m, newarr, divide=True)
+
+    def _add_sub_units(self, m, newval):
+        if newval is NotImplemented:
+            return newval
+        if hasattr(m, 'units'):
+            if are_units_equal(m.units, self.units):
+                return UnitValue(newval, self.units)
+            else:
+                # print('Incompatible Units - ignoring units', m.units, self.units)
+                return UnitValue(newval, '')
+        else:
+            return UnitValue(newval, self.units)
+
+    def __add__(self, m):
+        newarr = np.ndarray.__add__(self, m)
+        return self._add_sub_units(m, newarr)
+
+    def __sub__(self, m):
+        newarr = np.ndarray.__sub__(self, m)
+        return self._add_sub_units(m, newarr)
+
+    def __pow__(self, m):
+        newval = np.ndarray.__pow__(self, m)
+        if newval is NotImplemented:
+            return newval
+        newunit = unit_to_the_power(self.units, m)
+        return UnitValue(newval, newunit)
+
+    def mean(self, *args, **kwargs):
+        val = np.ndarray.mean(np.asarray(self), *args, **kwargs)
+        return UnitValue(val, units=self.units)
+
+    def std(self, *args, **kwargs):
+        val = np.ndarray.std(np.asarray(self), *args, **kwargs)
+        return UnitValue(val, units=self.units)
+
+    def var(self, *args, **kwargs):
+        val = np.ndarray.var(np.asarray(self), *args, **kwargs)
+        return UnitValue(val, units=unit_to_the_power(self.units, 2))
+
+    def sum(self, *args, **kwargs):
+        val = np.ndarray.sum(np.asarray(self), *args, **kwargs)
+        return UnitValue(val, units=self.units)
+
+    @property
+    def val(self):
+        return np.asarray(self, dtype=self.dtype)

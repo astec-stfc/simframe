@@ -1,5 +1,5 @@
 import numpy as np
-from ...UnitFloat import UnitFloat, UnitArray
+from ...units import UnitValue
 
 class slice():
 
@@ -13,7 +13,7 @@ class slice():
 
     @property
     def slice_length(self):
-        return UnitFloat(self._slicelength,'s')
+        return UnitValue(self._slicelength,'s')
 
     @slice_length.setter
     def slice_length(self, slicelength):
@@ -60,8 +60,8 @@ class slice():
             self._t_Bins = binst
             self._t_binned = np.digitize(t, self._t_Bins)
             self._tfbins = [[self._t_binned == i] for i in range(1, len(binst))]
-            self._tbins = UnitArray([np.array(self.beam.t)[tuple(tbin)] for tbin in self._tfbins], units='s', dtype=np.ndarray)
-            self._cpbins = UnitArray([np.array(self.beam.cp)[tuple(tbin)] for tbin in self._tfbins], units='eV/c', dtype=np.ndarray)
+            self._tbins = UnitValue([np.array(self.beam.t)[tuple(tbin)] for tbin in self._tfbins], units='s', dtype=np.ndarray)
+            self._cpbins = UnitValue([np.array(self.beam.cp)[tuple(tbin)] for tbin in self._tfbins], units='eV/c', dtype=np.ndarray)
 
     def bin_momentum(self, width=10**6):
         pwidth = (max(self.beam.cp) - min(self.beam.cp))
@@ -74,8 +74,8 @@ class slice():
         self._cp_Bins = binst
         self._cp_binned = np.digitize(self.beam.cp, self._cp_Bins)
         self._tfbins = [np.array([self._cp_binned == i]) for i in range(1, len(binst))]
-        self._cpbins = UnitArray([self.beam.cp[tuple(cpbin)] for cpbin in self._tfbins], units='eV/c')
-        self._tbins = UnitArray([self.beam.t[tuple(cpbin)] for cpbin in self._tfbins], units='s')
+        self._cpbins = UnitValue([self.beam.cp[tuple(cpbin)] for cpbin in self._tfbins], units='eV/c')
+        self._tbins = UnitValue([self.beam.t[tuple(cpbin)] for cpbin in self._tfbins], units='s')
 
     @property
     def slice_bins(self):
@@ -95,20 +95,20 @@ class slice():
     def slice_momentum(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
-        return UnitArray([cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins ], units='eV/c')
+        return UnitValue([cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins ], units='eV/c')
     @property
     def slice_momentum_spread(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
-        return UnitArray([cpbin.std() if len(cpbin) > 0 else 0 for cpbin in self._cpbins], units='eV/c')
+        return UnitValue([cpbin.std() if len(cpbin) > 0 else 0 for cpbin in self._cpbins], units='eV/c')
     @property
     def slice_relative_momentum_spread(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
-        return UnitArray([100*cpbin.std()/cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins], units='')
+        return UnitValue([100*cpbin.std()/cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins], units='')
 
     def slice_data(self, data):
-        return UnitArray([data[tuple(tbin)] for tbin in self._tfbins], units=data.units)
+        return UnitValue([data[tuple(tbin)] for tbin in self._tfbins], units=data.units)
 
     def emitbins(self, x, y):
         xbins = self.slice_data(x)
@@ -165,36 +165,36 @@ class slice():
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
-        return UnitArray([self.beam.emittance.emittance_calc(xbin, xpbin) if len(cpbin) > 0 else 0 for xbin, xpbin, cpbin in emitbins], units='m-rad')
+        return UnitValue([self.beam.emittance.emittance_calc(xbin, xpbin) if len(cpbin) > 0 else 0 for xbin, xpbin, cpbin in emitbins], units='m-rad')
     @property
     def slice_vertical_emittance(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
-        return UnitArray([self.beam.emittance.emittance_calc(ybin, ypbin) if len(cpbin) > 0 else 0 for ybin, ypbin, cpbin in emitbins], units='m-rad')
+        return UnitValue([self.beam.emittance.emittance_calc(ybin, ypbin) if len(cpbin) > 0 else 0 for ybin, ypbin, cpbin in emitbins], units='m-rad')
     @property
     def slice_normalized_horizontal_emittance(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
-        return UnitArray([self.beam.emittance.emittance_calc(xbin, xpbin, cpbin) if len(cpbin) > 0 else 0 for xbin, xpbin, cpbin in emitbins], units='m-rad')
+        return UnitValue([self.beam.emittance.emittance_calc(xbin, xpbin, cpbin) if len(cpbin) > 0 else 0 for xbin, xpbin, cpbin in emitbins], units='m-rad')
     @property
     def slice_normalized_vertical_emittance(self):
         if not hasattr(self,'_tbins') or not hasattr(self,'_cpbins'):
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
-        return UnitArray([self.beam.emittance.emittance_calc(ybin, ypbin, cpbin) if len(cpbin) > 0 else 0 for ybin, ypbin, cpbin in emitbins], units='m-rad')
+        return UnitValue([self.beam.emittance.emittance_calc(ybin, ypbin, cpbin) if len(cpbin) > 0 else 0 for ybin, ypbin, cpbin in emitbins], units='m-rad')
     @property
     def slice_current(self):
         if not hasattr(self,'_hist'):
             self.bin_time()
         f = lambda bin: self.beam.Q / len(self.beam.t) * (len(bin) / (max(bin) - min(bin))) if len(bin) > 1 else 0
         # f = lambda bin: len(bin) if len(bin) > 1 else 0
-        return UnitArray([f(bin) for bin in self._tbins], units='A')
+        return UnitValue([f(bin) for bin in self._tbins], units='A')
     @property
     def slice_max_peak_current_slice(self):
         peakI = self.slice_current
-        return UnitArray(abs(peakI)).index(max(abs(peakI)), units='A')
+        return UnitValue(abs(peakI)).index(max(abs(peakI)), units='A')
 
     @property
     def beta_x(self):
@@ -220,40 +220,40 @@ class slice():
         xbins = self.slice_data(self.beam.x)
         exbins =  self.slice_horizontal_emittance
         emitbins = list(zip(xbins, exbins))
-        return UnitArray([self.beam.covariance(x, x)/ex if ex > 0 else 0 for x, ex in emitbins], units='m/rad')
+        return UnitValue([self.beam.covariance(x, x)/ex if ex > 0 else 0 for x, ex in emitbins], units='m/rad')
     @property
     def slice_alpha_x(self):
         xbins = self.slice_data(self.beam.x)
         xpbins = self.slice_data(self.beam.xp)
         exbins =  self.slice_horizontal_emittance
         emitbins = list(zip(xbins, xpbins, exbins))
-        return UnitArray([-1*self.beam.covariance(x, xp)/ex if ex > 0 else 0 for x, xp, ex in emitbins], units='')
+        return UnitValue([-1*self.beam.covariance(x, xp)/ex if ex > 0 else 0 for x, xp, ex in emitbins], units='')
     @property
     def slice_gamma_x(self):
         xpbins = self.slice_data(self.beam.xp)
         exbins =  self.slice_horizontal_emittance
         emitbins = list(zip(xpbins, exbins))
-        return UnitArray([self.beam.covariance(xp, xp)/ex if ex > 0 else 0 for xp, ex in emitbins], units='rad/m')
+        return UnitValue([self.beam.covariance(xp, xp)/ex if ex > 0 else 0 for xp, ex in emitbins], units='rad/m')
 
     @property
     def slice_beta_y(self):
         ybins = self.slice_data(self.beam.y)
         eybins =  self.slice_vertical_emittance
         emitbins = list(zip(ybins, eybins))
-        return UnitArray([self.beam.covariance(y, y)/ey if ey > 0 else 0 for y, ey in emitbins], units='m/rad')
+        return UnitValue([self.beam.covariance(y, y)/ey if ey > 0 else 0 for y, ey in emitbins], units='m/rad')
     @property
     def slice_alpha_y(self):
         ybins = self.slice_data(self.beam.y)
         ypbins = self.slice_data(self.beam.yp)
         eybins =  self.slice_vertical_emittance
         emitbins = list(zip(ybins, ypbins, eybins))
-        return UnitArray([-1*self.beam.covariance(y,yp)/ey if ey > 0 else 0 for y, yp, ey in emitbins], units='')
+        return UnitValue([-1*self.beam.covariance(y,yp)/ey if ey > 0 else 0 for y, yp, ey in emitbins], units='')
     @property
     def slice_gamma_y(self):
         ypbins = self.slice_data(self.beam.yp)
         eybins =  self.slice_vertical_emittance
         emitbins = list(zip(ypbins, eybins))
-        return UnitArray([self.beam.covariance(yp,yp)/ey if ey > 0 else 0 for yp, ey in emitbins], units='rad/m')
+        return UnitValue([self.beam.covariance(yp,yp)/ey if ey > 0 else 0 for yp, ey in emitbins], units='rad/m')
 
     def sliceAnalysis(self, density=False):
         self.slice = {}

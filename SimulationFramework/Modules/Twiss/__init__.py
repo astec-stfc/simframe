@@ -20,7 +20,7 @@ try:
 except ImportError:
     use_matplotlib = False
 
-from ..UnitFloat import UnitArray
+from ...units import UnitValue, mean, cov
 
 class twiss(munch.Munch):
 
@@ -138,7 +138,7 @@ class twiss(munch.Munch):
     def reset_dicts(self):
         self.sddsindex = 0
         for k, v in self.properties.items():
-            self[k] = UnitArray(units=v)
+            self[k] = UnitValue(units=v)
         self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
@@ -151,7 +151,7 @@ class twiss(munch.Munch):
                     self[k] = self[k][index[::1]]
 
     def append(self, array, data):
-        self[array] = UnitArray(np.concatenate([self[array], data]), units=self[array].units)
+        self[array] = UnitValue(np.concatenate([self[array], data]), units=self[array].units)
 
     def _which_code(self, name):
         if name.lower() in self.codes.keys():

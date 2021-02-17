@@ -1,6 +1,6 @@
 import numpy as np
 from .. import constants
-from ..UnitFloat import UnitFloat
+from ...units import UnitValue, mean, cov
 
 try:
     import sdds
@@ -31,7 +31,7 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
     self._beam['py'] = cpy * self.q_over_c
     self._beam['pz'] = cpz * self.q_over_c
     # self._beam['t'] = self._beam['t']
-    self._beam['z'] = (-1*self._beam.Bz * constants.speed_of_light) * (self._beam.t-UnitFloat(np.mean(self._beam.t), units='s')) #np.full(len(self.t), 0)
+    self._beam['z'] = (-1*self._beam.Bz * constants.speed_of_light) * (self._beam.t-mean(self._beam.t)) #np.full(len(self.t), 0)
     if 'Charge' in SDDSparameters and len(SDDSparameters['Charge']) > 0:
         self._beam['total_charge'] = SDDSparameters['Charge'][0]
         self._beam['charge'] = np.full(len(self._beam['z']), self._beam['total_charge']/len(self._beam['x']))

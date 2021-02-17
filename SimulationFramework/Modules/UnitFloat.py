@@ -289,13 +289,87 @@ def get_base_units(string):
 def are_units_equal(string1, string2):
     return (get_base_units(string1) == get_base_units(string2)).all()
 
+class UnitFloats(np.float64):
+
+    def __new__(self, value, units=''):
+       self.value = np.float64.__new__(self, value)
+       return self.value
+
+    def __init__(self, value, units=''):
+        self.units = units
+
+    # @property
+    def __repr__(self):
+        f, prefix = nice_scale_prefix(self)
+        return np.float64.__repr__(self/f)+' '+prefix+self.units
+
+    def _mul_div_units(self, m, newval, divide=False):
+        if newval == NotImplemented:
+            return newval
+        if hasattr(m, 'units'):
+            newunit = unit_multiply(self.units, m.units, divide=divide)
+            return UnitFloat(newval, newunit)
+        else:
+            return UnitFloat(newval, self.units)
+
+    def __mul__(self, m):
+        newval = np.float64.__mul__(self, m)
+        return self._mul_div_units(m, newval)
+
+    def __rmul__(self, m):
+        newval = np.float64.__rmul__(self, m)
+        return self._mul_div_units(m, newval)
+
+    def __truediv__(self, m):
+        newval = np.float64.__truediv__(self, m)
+        return self._mul_div_units(m, newval, divide=True)
+
+    def _add_sub_units(self, m, newval):
+        if newval == NotImplemented:
+            return newval
+        if hasattr(m, 'units'):
+            if are_units_equal(m.units, self.units):
+                return UnitFloat(newval, self.units)
+            else:
+                warnings.warn('Incompatible Units - ignoring units')
+                return UnitFloat(newval, '')
+        else:
+            return UnitFloat(newval, self.units)
+
+    def __add__(self, m):
+        newval = np.float64.__add__(self, m)
+        return self._add_sub_units(m, newval)
+
+    def __sub__(self, m):
+        newval = np.float64.__sub__(self, m)
+        if newval == 0:
+            return float(0)
+        return self._add_sub_units(m, newval)
+
+    def __pow__(self, m):
+        newval = np.float64.__pow__(self, m)
+        if newval == NotImplemented:
+            return newval
+        newunit = unit_to_the_power(self.units, m)
+        return UnitFloat(newval, newunit)
+
+    @property
+    def val(self):
+        return float(self.value)
+
+    # @property
+    # def scaled(self):
+    #     f, prefix = nice_scale_prefix(self)
+    #     scaledvalue = float.__mul__(self, 1/f)
+    #     return UnitFloat(scaledvalue, units=prefix+self.units)
+
 class UnitArray(np.ndarray):
 
     def __new__(cls=np.ndarray, input_array=[], units=None, dtype=None):
         # Input array is an already formed ndarray instance
         # We first cast to be our class type
-        # if isinstance(input_array, (float, int)) or (hasattr(input_array,'size') and input_array.size == 1):
-        #     return UnitFloat(input_array, units=units)
+        if isinstance(input_array, (float, int)) or (hasattr(input_array,'size') and input_array.size == 1):
+            return UnitFloat(input_array, units=units)
         try:
             obj = np.asarray(input_array).view(cls)
         except np.VisibleDeprecationWarning:
@@ -333,12 +407,8 @@ class UnitArray(np.ndarray):
 
     def __array_wrap__(self, obj, context=None):
         result = obj.view(type(self))
-        if context is not None:
-            # print('context = ', context)
-            if context[0].__name__ == 'sqrt':
-                result.units = unit_to_the_power(obj.units, 0.5)
-            if context[0].__name__ == 'square':
-                result.units = unit_to_the_power(obj.units, 2)
+        if context[0].__name__ == 'sqrt':
+            result.units = unit_to_the_power(obj.units, 0.5)
         return result
 
     def _mul_div_units(self, m, newval, divide=False):
@@ -369,7 +439,7 @@ class UnitArray(np.ndarray):
             if are_units_equal(m.units, self.units):
                 return UnitArray(newval, self.units)
             else:
-                print('Incompatible Units - ignoring units', m.units, self.units)
+                print('Incompatible Units - ignoring units')
                 return UnitArray(newval, '')
         else:
             return UnitArray(newval, self.units)
@@ -393,104 +463,6 @@ class UnitArray(np.ndarray):
     def val(self):
         return np.asarray(self, dtype=self.dtype)
 
-class UnitFloat(np.ndarray):
+class UnitFloat(UnitArray):
 
-    def __new__(cls=np.ndarray, input_array=[], units=None, dtype=None):
-        # Input array is an already formed ndarray instance
-        # We first cast to be our class type
-        if not isinstance(input_array, (float, int, UnitFloat)):
-            # print(type(input_array))
-            return UnitArray(input_array, units=units)
-        try:
-            obj = np.asarray(input_array).view(cls)
-        except np.VisibleDeprecationWarning:
-            obj = np.asarray(input_array, dtype=object).view(cls)
-        # add the new attribute to the created instance
-        if units == None:
-            array_units = np.unique([a.units for a in input_array if hasattr(a,'units')])
-            if len(array_units) == 1:
-                obj.units = array_units[0]
-            else:
-                obj.units = ''
-        else:
-            obj.units = units
-        # Finally, we must return the newly created object:
-        return obj
-
-    # @property
-    def __repr__(self):
-        f, prefix = nice_scale_prefix(float(self))
-        if 'int' in str(self.dtype):
-            return int.__repr__(int(self/f))+' '+prefix+self.units
-        return np.float64.__repr__(np.float64(self/f))+' '+prefix+self.units
-
-    def __array_finalize__(self, obj):
-        # see InfoArray.__array_finalize__ for comments
-        if obj is None: return
-        self.units = getattr(obj, 'units', '')
-
-    def __getitem__(self, key):
-        if isinstance(key, slice):
-            arr = super().__getitem__(key)
-            return UnitFloat(arr, units=self.units)
-        elif isinstance(key, int):
-            return UnitFloat(super().__getitem__(key), units=self.units)
-        return super().__getitem__(key)
-
-    def __array_wrap__(self, obj, context=None):
-        result = obj.view(type(self))
-        if context is not None and context[0].__name__ == 'sqrt':
-            result.units = unit_to_the_power(obj.units, 0.5)
-        return result
-
-    def _mul_div_units(self, m, newval, divide=False):
-        if newval is NotImplemented:
-            return newval
-        if hasattr(m, 'units'):
-            newunit = unit_multiply(self.units, m.units, divide=divide)
-            return UnitFloat(newval, newunit)
-        else:
-            return UnitFloat(newval, self.units)
-
-    def __mul__(self, m):
-        newarr = np.ndarray.__mul__(self, m)
-        return self._mul_div_units(m, newarr)
-
-    def __rmul__(self, m):
-        newarr = np.ndarray.__rmul__(self, m)
-        return self._mul_div_units(m, newarr)
-
-    def __truediv__(self, m):
-        newarr = np.ndarray.__truediv__(self, m)
-        return self._mul_div_units(m, newarr, divide=True)
-
-    def _add_sub_units(self, m, newval):
-        if newval is NotImplemented:
-            return newval
-        if hasattr(m, 'units'):
-            if are_units_equal(m.units, self.units):
-                return UnitFloat(newval, self.units)
-            else:
-                print('Incompatible Units - ignoring units')
-                return UnitFloat(newval, '')
-        else:
-            return UnitFloat(newval, self.units)
-
-    def __add__(self, m):
-        newarr = np.ndarray.__add__(self, m)
-        return self._add_sub_units(m, newarr)
-
-    def __sub__(self, m):
-        newarr = np.ndarray.__sub__(self, m)
-        return self._add_sub_units(m, newarr)
-
-    def __pow__(self, m):
-        newval = np.ndarray.__pow__(self, m)
-        if newval is NotImplemented:
-            return newval
-        newunit = unit_to_the_power(self.units, m)
-        return UnitFloat(newval, newunit)
-
-    @property
-    def val(self):
-        return np.asarray(self, dtype=self.dtype)
+    pass

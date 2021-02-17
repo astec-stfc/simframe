@@ -6,7 +6,7 @@ import re
 import copy
 import glob
 import h5py
-from ..UnitFloat import UnitFloat, UnitArray
+from ..units import UnitValue, mean, cov
 from .. import constants
 from .Particles import Particles
 from . import astra
@@ -48,7 +48,7 @@ class particlesGroup(munch.Munch):
         if key == 'particles':
             return super(particlesGroup, self).__getitem__(key)
         else:
-            return UnitArray([getattr(p, key) for p in self.particles])
+            return UnitValue([getattr(p, key) for p in self.particles])
 
 class statsGroup(object):
 
@@ -58,7 +58,7 @@ class statsGroup(object):
 
     def __getattr__(self, key):
         var = self._beam.__getitem__(key)
-        return UnitArray([self._func(v) for v in var], units='m')
+        return UnitValue([self._func(v) for v in var], units='m')
         # return np.sqrt(self._beam.covariance(var, var))
 
 class beamGroup(munch.Munch):
@@ -156,11 +156,11 @@ class stats(object):
 
 class beam(munch.Munch):
 
-    particle_mass = UnitFloat(constants.m_e, 'kg')
-    E0 = UnitFloat(particle_mass * constants.speed_of_light**2, 'J')
-    E0_eV = UnitFloat(E0 / constants.elementary_charge, 'eV/c')
-    q_over_c = UnitFloat(constants.elementary_charge / constants.speed_of_light, 'C/c')
-    speed_of_light = UnitFloat(constants.speed_of_light, 'm/s')
+    particle_mass = UnitValue(constants.m_e, 'kg')
+    E0 = UnitValue(particle_mass * constants.speed_of_light**2, 'J')
+    E0_eV = UnitValue(E0 / constants.elementary_charge, 'eV/c')
+    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, 'C/c')
+    speed_of_light = UnitValue(constants.speed_of_light, 'm/s')
 
     def __init__(self, filename=None, sddsindex=0):
         self._beam = Particles()
