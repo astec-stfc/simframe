@@ -1,6 +1,6 @@
 import numpy as np
 from .. import constants
-from ...units import UnitValue
+from ..units import UnitValue
 
 try:
     import sdds
