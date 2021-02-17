@@ -138,7 +138,7 @@ class twiss(munch.Munch):
     def reset_dicts(self):
         self.sddsindex = 0
         for k, v in self.properties.items():
-            self[k] = UnitValue(units=v)
+            self[k] = UnitValue([], units=v)
         self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
