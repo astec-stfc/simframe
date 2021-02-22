@@ -83,10 +83,7 @@ class elegantLattice(frameworkLattice):
         else:
             code_string = ' '.join(self.executables[self.code]).lower()
             command = self.executables[self.code] + [self.objectname+'.ele']
-            # env_dict = {'RPN_DEFNS': '"'+(os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn').replace('/','\\')+'"'}
             if 'pelegant' in code_string:
-                # command_list = self.executables[self.code]
-                # command_list = [command_list[0]] +  + command_list[1:]
                 command = [command[0]] + ['-env','RPN_DEFNS',(os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn').replace('/','\\')] + command[1:]
                 command = [c.replace('/','\\') for c in command]
                 with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:

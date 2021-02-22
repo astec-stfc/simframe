@@ -391,15 +391,15 @@ class cavity(frameworkElement):
 
     def update_field_definition(self):
         if hasattr(self, 'field_definition') and self.field_definition is not None:
-            self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"').strip('\'"').replace('\\','/')+'"'
+            self.field_definition = expand_substitution(self, self.field_definition)
         if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
-            self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"'+'"')+'"'
+            self.field_definition_sdds = expand_substitution(self, self.field_definition_sdds)
         if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
-            self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
+            self.field_definition_gdf = expand_substitution(self, self.field_definition_gdf)
         if hasattr(self, 'longitudinal_wakefield_sdds') and self.longitudinal_wakefield_sdds is not None:
-            self.longitudinal_wakefield_sdds = '"' + expand_substitution(self, '\''+self.longitudinal_wakefield_sdds+'\'').strip('\'"') + '"'
+            self.longitudinal_wakefield_sdds = expand_substitution(self, self.longitudinal_wakefield_sdds)
         if hasattr(self, 'transverse_wakefield_sdds') and self.transverse_wakefield_sdds is not None:
-            self.transverse_wakefield_sdds = '"' + expand_substitution(self, '\''+self.transverse_wakefield_sdds+'\'').strip('\'"') + '"'
+            self.transverse_wakefield_sdds = expand_substitution(self, self.transverse_wakefield_sdds)
 
     @property
     def cells(self):
@@ -495,7 +495,7 @@ class cavity(frameworkElement):
                 output += 'ffac'+subname+' = ' + str((self.cells) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
             else:
                 output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
-            output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', \"'+str(self.field_definition_gdf)+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
+            output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', "'+str(self.generate_field_file_name(self.field_definition_gdf))+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
         else:
             output = ""
         return output
@@ -515,11 +515,11 @@ class solenoid(frameworkElement):
 
     def update_field_definition(self):
         if hasattr(self, 'field_definition') and self.field_definition is not None:
-            self.field_definition = '"' + expand_substitution(self, '\''+self.field_definition+'\'').strip('\'"').strip('\'"').replace('\\','/')+'"'
+            self.field_definition = expand_substitution(self, self.field_definition)
         if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
-            self.field_definition_sdds = '"' + expand_substitution(self, '\''+self.field_definition_sdds+'\'').strip('\'"')+'"'
+            self.field_definition_sdds = expand_substitution(self, self.field_definition_sdds)
         if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
-            self.field_definition_gdf = '"' + expand_substitution(self, '\''+self.field_definition_gdf+'\'').strip('\'"')+'"'
+            self.field_definition_gdf = expand_substitution(self, self.field_definition_gdf)
 
     def write_ASTRA(self, n):
         basename = self.generate_field_file_name(self.field_definition)
@@ -749,13 +749,13 @@ class screen(frameworkElement):
 
     def gdf_to_hdf5(self, gptbeamfilename, cathode=False):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
-        try:
+        # try:
             # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
-            rbf.gdf.read_gdf_beam_file(self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
+            rbf.gdf.read_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
             HDF5filename = self.objectname+'.hdf5'
-            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0], cathode=cathode)
-        except:
-            print('Error with screen', self.objectname,'at', self.gpt_screen_position)
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0], cathode=cathode, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
+        # except:
+        #     print('Error with screen', self.objectname,'at', self.gpt_screen_position)
 
 class monitor(screen):
 

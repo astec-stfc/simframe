@@ -297,8 +297,8 @@ class UnitValue(np.ndarray):
 
     nounits = ['sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan', 'arctan2']
 
-    def __new__(cls, input_array, units=None):
-        obj = np.asarray(input_array).view(cls)
+    def __new__(cls, input_array, units=None, dtype=None):
+        obj = np.asarray(input_array, dtype=dtype).view(cls)
         if units is None:
             units = ''
         obj.units = units
@@ -430,6 +430,12 @@ class UnitValue(np.ndarray):
             return newval
         newunit = unit_to_the_power(self.units, m)
         return UnitValue(newval, newunit)
+
+    def __round__(self, m):
+        newval = np.round(self, m)
+        if newval is NotImplemented:
+            return newval
+        return UnitValue(newval, self.units)
 
     def mean(self, *args, **kwargs):
         val = np.ndarray.mean(np.asarray(self), *args, **kwargs)

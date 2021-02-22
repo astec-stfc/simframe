@@ -124,6 +124,7 @@ def path_function(a,b):
     return os.path.abspath(a)
 
 def expand_substitution(self, param, subs={}, elements={}, absolute=False):
+    # print(param)
     if isinstance(param,(str)):
         subs['master_lattice_location'] = path_function(self.global_parameters['master_lattice_location'],self.global_parameters['master_subdir'])+'/'
         subs['master_subdir'] = './'
@@ -138,6 +139,7 @@ def expand_substitution(self, param, subs={}, elements={}, absolute=False):
                 replaced_str = replaced_str.replace(key, subs[key])
             if os.path.exists(replaced_str):
                 replaced_str = path_function(replaced_str, self.global_parameters['master_subdir']).replace('\\','/')
+                # print('\tpath exists', replaced_str)
             for e in elements.keys():
                 if e in replaced_str:
                     print('Element is in string!', e, replaced_str)

@@ -178,7 +178,7 @@ class Framework(Munch):
             settings['elements'] = elements
         with open(directory + '/' + filename,"w") as yaml_file:
             yaml.default_flow_style=True
-            yaml.dump(settings, yaml_file)
+            yaml.safe_dump(settings, yaml_file, sort_keys=False)
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'

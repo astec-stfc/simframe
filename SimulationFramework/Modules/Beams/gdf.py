@@ -9,7 +9,8 @@ def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cath
     toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
     x = self.x if not normaliseX else (self.x - normaliseX) if isinstance(normaliseX,(int, float)) else (self.x - np.mean(self.x))
     z = self.z if not normaliseZ else (self.z - normaliseZ) if isinstance(normaliseZ,(int, float)) else (self.z - np.mean(self.z))
-    if cathode:
+    # t = self.t - np.max(self.t)
+    if cathode or True:
         dataarray = np.array([x, self.y, z, q, m, nmacro, self.gamma*self.Bx, self.gamma*self.By, self.gamma*self.Bz, self.t]).transpose()
         namearray = 'x y z q m nmacro GBx GBy GBz t'
         np.savetxt(filename, dataarray, fmt=('%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e','%.12e'), header=namearray, comments='')

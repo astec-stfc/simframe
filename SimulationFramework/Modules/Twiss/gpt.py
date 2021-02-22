@@ -17,10 +17,10 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.reset_dicts()
     if isinstance(filename, (list, tuple)):
         for f in filename:
-            self.read_gdf_twiss_files(file=f, reset=False)
+            self.read_gdf_twiss_files(filename=f, reset=False)
     elif os.path.isfile(filename):
         if gdfbeam is None and not filename is None:
-            print('GDF filename = ', filename)
+            # print('GDF filename = ', filename)
             gdfbeam = read_gdf_beam_file_object(self, filename)
             self.gdfbeam = gdfbeam
         elif gdfbeam is None and file is None:
@@ -59,6 +59,8 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.append('alpha_z', np.zeros(len(gdfbeamdata.stdx)))
         self.append('sigma_x', gdfbeamdata.stdx)
         self.append('sigma_y', gdfbeamdata.stdy)
+        self.append('mean_x', gdfbeamdata.avgx)
+        self.append('mean_y', gdfbeamdata.avgy)
         beta = np.sqrt(1-(gamma**-2))
         if hasattr(gdfbeamdata, 'stdt'):
             self.append('sigma_t', gdfbeamdata.stdt)

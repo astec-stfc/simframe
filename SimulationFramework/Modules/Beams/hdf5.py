@@ -29,7 +29,7 @@ def unrotate_beamXZ(self):
     if 'rotation' in self._beam or abs(self['rotation']) > 0:
         self.rotate_beamXZ(-1*self['rotation'], -1*offset)
 
-def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0, cathode=False):
+def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0, toffset=0, cathode=False):
     # print('zoffset = ', zoffset, type(zoffset))
     if isinstance(zoffset,(list, np.ndarray)) and len(zoffset) == 3:
         xoffset = zoffset[0]
@@ -66,7 +66,7 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
             chargevector = self._beam['charge']
         else:
             chargevector = np.full(len(self.x), self.charge/len(self.x))
-        array = np.array([self.x + xoffset, self.y + yoffset, self.z + zoffset, self.cpx, self.cpy, self.cpz, self.t, chargevector]).transpose()
+        array = np.array([self.x + xoffset, self.y + yoffset, self.z + zoffset, self.cpx, self.cpy, self.cpz, self.t + toffset, chargevector]).transpose()
         beamgrp['columns'] = np.array(['x','y','z', 'cpx', 'cpy', 'cpz', 't', 'q'], dtype='S')
         beamgrp['units'] = np.array(['m','m','m','eV','eV','eV','s','e'], dtype='S')
         beamgrp.create_dataset("beam", data=array)

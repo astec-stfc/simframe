@@ -21,4 +21,5 @@ def write_HDF5_twiss_file(self, filename, sourcefilename=None):
         twissgrp['columns'] = np.array(list(self.properties.keys()), dtype='S')
         twissgrp['units'] = np.array(list(self.properties.values()), dtype='S')
         array = np.array([self[k] if not k == 'element_name' else np.array(self[k], dtype='S') for k in self.properties.keys() if len(self[k]) > 0]).transpose()
+        # print([[k, self[k].shape] for k in self.properties.keys()])
         twissgrp.create_dataset("twiss", data=array)

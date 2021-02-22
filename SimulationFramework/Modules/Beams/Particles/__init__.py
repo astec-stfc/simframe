@@ -7,7 +7,7 @@ from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
 from .sigmas import sigmas as sigmasobject
 from .centroids import centroids as centroidsobject
-from ...units import UnitValue
+from ...units import UnitValue, unit_multiply
 
 class Particles(Munch):
 

@@ -108,7 +108,7 @@ class slice():
         return UnitValue([100*cpbin.std()/cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins], units='')
 
     def slice_data(self, data):
-        return UnitValue([data[tuple(tbin)] for tbin in self._tfbins], units=data.units)
+        return UnitValue([data[tuple(tbin)] for tbin in self._tfbins], units=data.units, dtype=object)
 
     def emitbins(self, x, y):
         xbins = self.slice_data(x)
