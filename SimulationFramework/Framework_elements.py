@@ -95,7 +95,7 @@ class dipole(frameworkElement):
     @property
     def end(self):
         start = self.position_start
-        angle = self.angle
+        angle = -1*self.angle
         if abs(angle) > 1e-9:
             ex = (self.length * (np.cos(angle) - 1)) / angle
             ey = 0

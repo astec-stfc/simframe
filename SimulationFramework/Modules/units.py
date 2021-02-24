@@ -349,6 +349,10 @@ class UnitValue(np.ndarray):
             results = (results,)
 
         if not ufunc.__name__ in self.nounits:
+            if ufunc.__name__ == 'sqrt':
+                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(self.units, 0.5))
+            elif ufunc.__name__ == 'square':
+                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(self.units, 2))
             return UnitValue(results[0] if len(results) == 1 else results, units=self.units)
         else:
             results = tuple((self._copy_attrs_to(result) if output is None else output)
@@ -452,6 +456,10 @@ class UnitValue(np.ndarray):
     def sum(self, *args, **kwargs):
         val = np.ndarray.sum(np.asarray(self), *args, **kwargs)
         return UnitValue(val, units=self.units)
+
+    def sqrt(self, *args, **kwargs):
+        val = np.sqrt(np.asarray(self), *args, **kwargs)
+        return UnitValue(val, units=unit_to_the_power(self.units,0.5))
 
     @property
     def val(self):

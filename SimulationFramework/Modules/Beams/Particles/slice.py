@@ -192,9 +192,13 @@ class slice():
         # f = lambda bin: len(bin) if len(bin) > 1 else 0
         return UnitValue([f(bin) for bin in self._tbins], units='A')
     @property
+    def peak_current(self):
+        peakI = self.slice_current
+        return UnitValue(max(abs(peakI)), units='A')
+    @property
     def slice_max_peak_current_slice(self):
         peakI = self.slice_current
-        return UnitValue(abs(peakI)).index(max(abs(peakI)), units='A')
+        return UnitValue(list(abs(peakI)).index(max(abs(peakI))), units='A')
 
     @property
     def beta_x(self):

@@ -8,13 +8,14 @@ For more advanced units, use a package like Pint:
 
 """
 
-import scipy.constants
+# import scipy.constants
 
-m_e = scipy.constants.value('electron mass energy equivalent in MeV')*1e6
-m_p = scipy.constants.value('proton mass energy equivalent in MeV')*1e6
+m_e = 510998.94999999995
+m_p = 938272088.16
 c_light = 299792458
-e_charge = scipy.constants.e
-mu_0 = scipy.constants.mu_0
+e_charge = 1.602176634e-19
+mu_0 = 1.25663706212e-06
+
 
 import numpy as np
 

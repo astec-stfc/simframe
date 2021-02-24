@@ -4,7 +4,7 @@ sys.path.append('../..')
 from SimulationFramework.Framework import *
 from collections import OrderedDict
 from munch import Munch, unmunchify
-import mysql.connector as mariadb
+# import mysql.connector as mariadb
 import csv
 from difflib import get_close_matches
 

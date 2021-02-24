@@ -48,7 +48,8 @@ class particlesGroup(munch.Munch):
         if key == 'particles':
             return super(particlesGroup, self).__getitem__(key)
         else:
-            return UnitValue([getattr(p, key) for p in self.particles])
+            data = [getattr(p, key) for p in self.particles]
+            return UnitValue(data, units=data[0].units)
 
 class statsGroup(object):
 
