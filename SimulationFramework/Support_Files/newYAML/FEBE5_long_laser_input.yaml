@@ -136,7 +136,7 @@ elements:
     - 3.680751
     - 0
     - 63.2
-  CLA-FEH-DIA-BPM-09:
+  CLA-FEA-DIA-BPM-09:
     type: beam_position_monitor
     length: 0.21
     global_rotation:

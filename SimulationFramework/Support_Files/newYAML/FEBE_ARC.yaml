@@ -783,6 +783,62 @@ elements:
     - 3.259684
     - 0
     - 57.611159
+  CLA-FEA-PREMASK:
+    type: marker
+    fit_point: 1.0
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    centre:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    start:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    end:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    datum:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    old_datum:
+    - 3.294942
+    - 0
+    - 57.752576
+  CLA-FEA-DIA-COL-03-MASK:
+    type: rcollimator
+    length: 0.0
+    horizontal_size: 1
+    vertical_size: 1
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    centre:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    start:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    end:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    datum:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    old_datum:
+    - 3.294942
+    - 0
+    - 57.752576
   CLA-FEA-DIA-SCR-03-MASK:
     type: screen
     length: 0.2
