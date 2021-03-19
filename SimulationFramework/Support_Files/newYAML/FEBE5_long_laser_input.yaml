@@ -163,7 +163,7 @@ elements:
     - 3.680751
     - 0
     - 63.44
-  CLA-FEH-PS-SHTR-01:
+  CLA-FEA-PS-SHTR-01:
     type: shutter
     length: 0.32
     fit_point: 1.0
@@ -490,7 +490,7 @@ elements:
     - 3.680751
     - 0
     - 67.62103
-  CLA-FEH-FOCUS-01-START:
+  CLA-FEC1-START:
     type: marker
     fit_point: 1.0
     global_rotation:
@@ -517,7 +517,7 @@ elements:
     - 3.68075
     - 0
     - 67.7345
-  CLA-FEH-ECOLL-01:
+  CLA-FEC1-ECOLL-01:
     type: aperture
     horizontal_size: 1.0
     vertical_size: 1.0
@@ -546,7 +546,7 @@ elements:
     - 3.68075
     - 0
     - 68.6425
-  CLA-FEH-FOCUS-01:
+  CLA-FEC1-FOCUS:
     type: marker
     fit_point: 1.0
     global_rotation:
@@ -573,7 +573,7 @@ elements:
     - 3.68075
     - 0
     - 68.655
-  CLA-FEH-ECOLL-02:
+  CLA-FEC1-ECOLL-02:
     type: aperture
     horizontal_size: 1.0
     vertical_size: 1.0
@@ -602,7 +602,7 @@ elements:
     - 3.68075
     - 0
     - 68.6625
-  CLA-FEH-FOCUS-01-END:
+  CLA-FEC1-END:
     type: marker
     fit_point: 1.0
     global_rotation:
@@ -1119,7 +1119,7 @@ elements:
     - 3.680751
     - 0
     - 72.55103
-  CLA-FEH-FOCUS-02-START:
+  CLA-FEC2-START:
     type: marker
     fit_point: 1.0
     global_rotation:
@@ -1146,7 +1146,7 @@ elements:
     - 3.68075
     - 0
     - 72.6645
-  CLA-FEH-FOCUS-02:
+  CLA-FEC2-FOCUS:
     type: marker
     fit_point: 1.0
     global_rotation:
@@ -1173,7 +1173,7 @@ elements:
     - 3.68075
     - 0
     - 73.585
-  CLA-FEH-FOCUS-02-END:
+  CLA-FEC2-END:
     type: marker
     fit_point: 1.0
     global_rotation:

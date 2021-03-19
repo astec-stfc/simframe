@@ -188,7 +188,7 @@ class slice():
     def slice_current(self):
         if not hasattr(self,'_hist'):
             self.bin_time()
-        f = lambda bin: self.beam.Q / len(self.beam.t) * (len(bin) / (max(bin) - min(bin))) if len(bin) > 1 else 0
+        f = lambda bin: np.abs(self.beam.Q) / len(self.beam.t) * (len(bin) / (max(bin) - min(bin))) if len(bin) > 1 else 0
         # f = lambda bin: len(bin) if len(bin) > 1 else 0
         return UnitValue([f(bin) for bin in self._tbins], units='A')
     @property

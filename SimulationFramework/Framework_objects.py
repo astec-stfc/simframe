@@ -775,9 +775,9 @@ class frameworkElement(frameworkObject):
             # print('symmlink', expand_substitution(self, param), location, efield_basename, basename)
             symlink(location, efield_basename)
             return basename
-        elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
-            # print('path')
-            return expand_substitution(self, '\''+param+'\'').replace('\\','/')
+        # elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
+        #     # print('path')
+        #     return expand_substitution(self, '\''+param+'\'').replace('\\','/')
         else:
             # print('copy')
             copylink(location, efield_basename)

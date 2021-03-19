@@ -183,6 +183,11 @@ class Particles(Munch):
     @property
     def total_charge(self):
         return UnitValue(self['total_charge'], 'C')
+    @total_charge.setter
+    def total_charge(self, q):
+        self['total_charge'] = q
+        particle_q = q/(len(self['charge']))
+        self['charge'] = np.full(len(self['charge']), particle_q)
     @property
     def charge(self):
         return UnitValue(self['charge'], 'C')

@@ -73,7 +73,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.append('sigma_z', gdfbeamdata.stdz)
         # self.append('sigma_cp', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp)
         self.append('sigma_cp', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.elementary_charge)
-        self.append('sigma_p', (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.speed_of_light)
+        self.append('sigma_p', (gdfbeamdata.stdG / gdfbeamdata.avgG))
         self.append('mux', np.zeros(len(gdfbeamdata.stdx)))
         self.append('muy', np.zeros(len(gdfbeamdata.stdx)))
         self.append('eta_x', np.zeros(len(gdfbeamdata.stdx)))
