@@ -102,7 +102,7 @@ class Framework(Munch):
             else:
                 raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:
-            self.global_parameters['master_lattice_location'] = os.path.join(master_lattice,'./')
+            self.global_parameters['master_lattice_location'] = os.path.abspath(os.path.join(master_lattice,'./'))
         self.master_lattice_location = self.global_parameters['master_lattice_location']
 
     def load_Elements_File(self, input):
