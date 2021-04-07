@@ -77,9 +77,7 @@ class Framework(Munch):
         return repr({'master_lattice_location': self.global_parameters['master_lattice_location'], 'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
 
     def setSubDirectory(self, dir):
-        # global self.global_parameters['master_subdir'], self.global_parameters['master_lattice_location']
         self.subdirectory = os.path.abspath(dir)
-        # print('self.subdirectory = ', self.subdirectory)
         self.global_parameters['master_subdir'] = self.subdirectory
         if not os.path.exists(self.subdirectory):
             os.makedirs(self.subdirectory, exist_ok=True)
@@ -88,7 +86,6 @@ class Framework(Munch):
                 clean_directory(self.subdirectory)
         if self.overwrite == None:
             self.overwrite = True
-        self.setMasterLatticeLocation()
 
     def setMasterLatticeLocation(self, master_lattice=None):
         # global master_lattice_location
@@ -105,7 +102,7 @@ class Framework(Munch):
             else:
                 raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:
-            self.global_parameters['master_lattice_location'] = master_lattice
+            self.global_parameters['master_lattice_location'] = os.path.join(master_lattice,'./')
         self.master_lattice_location = self.global_parameters['master_lattice_location']
 
     def load_Elements_File(self, input):
