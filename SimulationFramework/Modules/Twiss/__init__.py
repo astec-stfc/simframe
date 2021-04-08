@@ -195,6 +195,13 @@ class twiss(munch.Munch):
         up2 = up - np.mean(up)
         return np.mean(u2*up2) - np.mean(u2)*np.mean(up2)
 
+    def read_sdds_file(self, filename, ascii=False):
+        sddsobject = munch.Munch()
+        sddsobject.sddsindex = 0
+        sddsobject.elegantTwiss = munch.Munch()
+        elegant.read_sdds_file(sddsobject, filename, ascii)
+        return sddsobject.elegantTwiss
+
     # @property
     # def cp_eV(self):
     #     return self['cp']
