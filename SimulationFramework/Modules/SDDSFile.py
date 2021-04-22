@@ -50,7 +50,7 @@ class SDDSObject(munch.Munch):
 
     def __init__(self, index=1, name=None, data=[], unit="", type=2, symbol="", formatstring="", fieldlength=0, description=""):
         super().__init__()
-        self.types = SDDS_Types
+        self._types = SDDS_Types
         self._name = name
         self._data = data
         self._unit = unit
@@ -59,6 +59,9 @@ class SDDSObject(munch.Munch):
         self._formatstring = formatstring
         self._fieldlength = fieldlength
         self._description = description
+
+    def __repr__(self):
+        return repr({'name': self.name, 'unit': self.unit, 'type': self._types(self.type).name, 'data': self.data})
 
     @property
     def name(self):
@@ -92,7 +95,7 @@ class SDDSObject(munch.Munch):
     @type.setter
     def type(self, type):
         if isinstance(type, str):
-            if type in self.types:
+            if type in self._types:
                 self._type = type
         elif isinstance(type, int):
             self._type = type
@@ -175,19 +178,58 @@ class SDDSParameter(SDDSObject):
             raise Exception('Wrong data type for SDDS Parameter!', type(data))
         return self._data
 
+class SDDSArray(munch.Munch):
+
+    def __init__(self, columns):
+        super().__init__(columns)
+
+    def __getitem__(self, itemkey):
+        try:
+            return({k:getattr(v,itemkey) if hasattr(v,itemkey) else v[itemkey] for k,v in self.items()})
+        except:
+            try:
+                return super().__getitem__(itemkey)
+            except KeyError:
+                raise AttributeError(itemkey)
+
 class SDDSFile(object):
 
     def __init__(self, index=1, ascii=False):
         super().__init__()
-        self.types = SDDS_Types
-        self._columns = {}
-        self._parameters = {}
-        self.sddsindex = index
-        self.sddsObject = sdds.SDDS(self.sddsindex%20)
+        self._types = SDDS_Types
+        self._columns = munch.Munch()
+        self._parameters = munch.Munch()
+        self._index = index
+        self._sddsObject = sdds.SDDS(self.index%20)
         if ascii:
-            self.sddsObject.mode = self.sddsObject.SDDS_ASCII
+            self._sddsObject.mode = self._sddsObject.SDDS_ASCII
         else:
-            self.sddsObject.mode = self.sddsObject.SDDS_BINARY
+            self._sddsObject.mode = self._sddsObject.SDDS_BINARY
+
+    @property
+    def index(self):
+        return self._index
+    @index.setter
+    def index(self, index):
+        self._index = index
+        return self._index
+
+    def clear(self):
+        self._columns = munch.Munch()
+        self._parameters = munch.Munch()
+        self._sddsObject = sdds.SDDS(self.index%20)
+
+    def column_names(self):
+        return self._columns.keys()
+
+    def parameter_names(self):
+        return self._parameters.keys()
+
+    def columns(self):
+        return SDDSArray(self._columns)
+
+    def parameters(self):
+        return SDDSArray(self._parameters)
 
     def add_column(self, name, data, type=2, unit="", symbol="", formatstring="", fieldlength=0, description=""):
         self._columns[name] = SDDSColumn(name=name, data=data, unit=unit, type=type, symbol=symbol, formatstring=formatstring, fieldlength=fieldlength, description=description)
@@ -207,19 +249,24 @@ class SDDSFile(object):
             data = dict(zip(combined_data.keys(), [combined_data[k][i] for k in combined_data.keys()]))
             self.add_parameter(**data)
 
+    def save(self, *args, **kwargs):
+        return self.write_file(*args, **kwargs)
     def write_file(self, filename):
         for name, param in self._parameters.items():
-            self.sddsObject.defineParameter(param.name, param.symbol, param.unit, param.description, param.formatstring, param.type, param.fieldlength)
-            self.sddsObject.setParameterValueList(param.name, param.data)
+            self._sddsObject.defineParameter(param.name, param.symbol, param.unit, param.description, param.formatstring, param.type, param.fieldlength)
+            self._sddsObject.setParameterValueList(param.name, param.data)
         for name, column in self._columns.items():
             # print(len([list(column.data)][0]))
-            self.sddsObject.defineColumn(column.name, column.symbol, column.unit, column.description, column.formatstring, column.type, column.fieldlength)
-            self.sddsObject.setColumnValueLists(column.name, [list(column.data)])
-        self.sddsObject.save(filename)
+            self._sddsObject.defineColumn(column.name, column.symbol, column.unit, column.description, column.formatstring, column.type, column.fieldlength)
+            self._sddsObject.setColumnValueLists(column.name, [list(column.data)])
+        self._sddsObject.save(filename)
 
+
+    def load(self, *args, **kwargs):
+        return self.read_file(*args, **kwargs)
     def read_file(self, filename):
-        self.sddsObject.load(filename)
-        sddsref = self.sddsObject
+        self._sddsObject.load(filename)
+        sddsref = self._sddsObject
         for col in range(len(sddsref.columnName)):
             symbol, unit, description, formatString, type, fieldLength = sddsref.columnDefinition[col]
             if len(sddsref.columnData[col]) == 1:

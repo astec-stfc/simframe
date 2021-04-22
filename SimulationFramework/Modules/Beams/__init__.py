@@ -199,6 +199,9 @@ class beam(munch.Munch):
     def emittance(self):
         return self._beam.emittance
 
+    def rms(self, x, axis=None):
+        return np.sqrt(np.mean(x**2, axis=axis))
+
     def __len__(self):
         return len(self._beam.x)
 
