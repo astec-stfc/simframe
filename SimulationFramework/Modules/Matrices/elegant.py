@@ -21,5 +21,5 @@ def read_elegant_matrix_files(self, filename, reset=True):
 
 def update_arrays(self, elegantData, reset=True):
     if reset:
-        [delattr(self, k) for k in elegantData.keys()]
+        [delattr(self, k) for k in elegantData.keys() if hasattr(self, k)]
     [self.append(k, v.data) if hasattr(self, k) else self.initialize_array(k, v.data, units=v.unit) for k,v in elegantData.items()] # if not k == 's'
