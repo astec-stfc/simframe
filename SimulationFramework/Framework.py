@@ -369,11 +369,11 @@ class Framework(Munch):
             print(( 'WARNING: Element ', element,' does not exist'))
             return {}
 
-    def getElementType(self, type, setting=None):
+    def getElementType(self, type, param=None):
         if isinstance(type, (list, tuple)):
-            all_elements = [self.getElementType(t) for t in type]
-            return [item for sublist in all_elements for item in sublist]
-        return [self.elementObjects[element] if setting is None else self.elementObjects[element][setting] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
+            return [self.getElementType(t, param=param) for t in type]
+            # return [item for sublist in all_elements for item in sublist]
+        return [self.elementObjects[element] if param is None else self.elementObjects[element][param] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
 
     def setElementType(self, type, setting, values):
         elems = self.getElementType(type)
