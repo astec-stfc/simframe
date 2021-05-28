@@ -179,12 +179,25 @@ class twiss(munch.Munch):
         endidx = self.find_nearest(self['z'], end) + 1
         return self[array][startidx:endidx]
 
-    def get_parameter_at_z(self, param, z):
+    def find_nearest(self, array, value):
+        idx = np.searchsorted(array, value, side="left")
+        if idx > 0 and (idx == len(array) or math.fabs(value - array[idx-1]) < math.fabs(value - array[idx])):
+            return array[idx-1]
+        else:
+            return array[idx]
+
+    def get_parameter_at_z(self, param, z, tol=1e-3):
         if z in self['z']:
             idx = list(self['z']).index(z)
             return self[param][idx]
         else:
-            return self.interpolate(z=z, value=param, index='z')
+            nearest_z = self.find_nearest(self['z'], z)
+            if abs(nearest_z - z) < tol:
+                idx = list(self['z']).index(nearest_z)
+                return self[param][idx]
+            else:
+                # print('interpolate!', z, self['z'])
+                return self.interpolate(z=z, value=param, index='z')
 
     if use_matplotlib:
         def plot(self, *args, **kwargs):

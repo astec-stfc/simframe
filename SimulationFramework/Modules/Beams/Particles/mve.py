@@ -35,8 +35,6 @@ MVE = mve.EllipsoidTool()
         indexes = np.where(d > 0)[0]
         return abs(X[indexes][-1] - X[indexes][0]), indexes
 
-
-
     @property
     def volume(self):
         return self.volume6D(self.x, self.y, self.z-np.mean(self.z), self.cpx/self.cpz, self.cpy/self.cpz, ((self.cpz/np.mean(self.cp)) - 1))
