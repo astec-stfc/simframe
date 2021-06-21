@@ -1,6 +1,6 @@
 import os
 import re
-from shutil import copyfile
+from shutil import copyfile, SameFileError
 from collections import OrderedDict
 import numpy as np
 
@@ -195,4 +195,7 @@ def symlink(source, link_name):
             raise ctypes.WinError()
 
 def copylink(source, destination):
-    copyfile(source, destination)
+    try:
+        copyfile(source, destination)
+    except SameFileError:
+        pass
