@@ -348,12 +348,14 @@ class UnitValue(np.ndarray):
         if ufunc.nout == 1:
             results = (results,)
 
+        units = self.units if hasattr(self, 'units') else ''
+
         if not ufunc.__name__ in self.nounits:
             if ufunc.__name__ == 'sqrt':
-                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(self.units, 0.5))
+                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(units, 0.5))
             elif ufunc.__name__ == 'square':
-                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(self.units, 2))
-            return UnitValue(results[0] if len(results) == 1 else results, units=self.units)
+                return UnitValue(results[0] if len(results) == 1 else results, units=unit_to_the_power(units, 2))
+            return UnitValue(results[0] if len(results) == 1 else results, units=units)
         else:
             results = tuple((self._copy_attrs_to(result) if output is None else output)
                             for result, output in zip(results, outputs))
@@ -394,7 +396,7 @@ class UnitValue(np.ndarray):
             newunit = unit_multiply(self.units, m.units, divide=divide)
             return UnitValue(newval, newunit)
         else:
-            return UnitValue(newval, self.units)
+            return UnitValue(newval, '')
 
     def __mul__(self, m):
         newarr = np.ndarray.__mul__(self, m)

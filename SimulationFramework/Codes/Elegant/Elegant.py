@@ -78,21 +78,21 @@ class elegantLattice(frameworkLattice):
         """Run the code with input 'filename'"""
         if not os.name == 'nt':
             command = self.executables[self.code] + [self.objectname+'.ele']
-            my_env = {**os.environ, 'RPN_DEFNS': os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns_linux.rpn'}
+            my_env = {**os.environ, 'RPN_DEFNS': os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns_linux.rpn'}
             with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
                 subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
         else:
             code_string = ' '.join(self.executables[self.code]).lower()
             command = self.executables[self.code] + [self.objectname+'.ele']
             if 'pelegant' in code_string:
-                command = [command[0]] + ['-env','RPN_DEFNS',(os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn').replace('/','\\')] + command[1:]
+                command = [command[0]] + ['-env','RPN_DEFNS',(os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns.rpn').replace('/','\\')] + command[1:]
                 command = [c.replace('/','\\') for c in command]
                 with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
                     subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'])
             else:
                 command = [c.replace('/','\\') for c in command]
                 with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
-                    subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env={'RPN_DEFNS': (os.path.abspath(self.global_parameters['master_lattice_location'])+'/Codes/defns.rpn').replace('/','\\')})
+                    subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env={'RPN_DEFNS': (os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns.rpn').replace('/','\\')})
 
 class elegantCommandFile(object):
     def __init__(self, lattice='', *args, **kwargs):

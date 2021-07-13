@@ -151,25 +151,31 @@ class fitnessFunc(object):
     def track(self, endfile=None):
         ### Have we defined where the base files are?
         if self.base_files is not None:
-            # print('Using base_files = ', self.base_files)
+            if self.verbose:
+                print('Using base_files = ', self.base_files)
             self.framework[self.start_lattice].prefix = self.base_files
         ### If not, use the defaults based on the location of the CLARA example directory
         elif self.CLARA_dir is not None:
-            # print('Using CLARA_dir base_files = ', self.CLARA_dir+'/basefiles_'+str(self.scaling)+'/')
+            if self.verbose:
+                print('Using CLARA_dir base_files = ', self.CLARA_dir+'/basefiles_'+str(self.scaling)+'/')
             self.framework[self.start_lattice].prefix = self.CLARA_dir+'/basefiles_'+str(self.scaling)+'/'
 
         ### Are we are setting the charge?
         if self.startcharge is not None:
+            if self.verbose:
+                print('Starting Charge =', self.startcharge)
             self.framework[self.start_lattice].bunch_charge = 1e-12*self.startcharge
 
         ### Are we are sub-sampling the distribution?
         if self.sample_interval is not None:
-            # print('Sampling at ', self.sample_interval)
+            if self.verbose:
+                print('Sampling at ', self.sample_interval)
             self.framework[self.start_lattice].sample_interval = self.sample_interval#2**(3*4)
 
         ### TRACKING
         if self.doTracking:
-            # print('endfile = ', endfile)
+            if self.verbose:
+                print('Tracking from', self.start_lattice,'to', endfile)
             self.framework.track(startfile=self.start_lattice, endfile=endfile)
 
 def optfunc(inputargs, dir=None, *args, **kwargs):

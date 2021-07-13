@@ -24,11 +24,12 @@ class Executables(object):
         self.osname = os.name
         self.hostname = socket.gethostname()
         self.global_parameters = global_parameters
-        master_lattice = self.global_parameters['master_lattice_location']
-        if master_lattice is None:
-            self.master_lattice_location = (os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/')+'/').replace('\\','/')
+        sim_codes = self.global_parameters['simcodes_location'] if 'simcodes_location' in self.global_parameters else None
+        if sim_codes is None:
+            self.sim_codes_location = (os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../../../SimCodes/SimCodes')+'/').replace('\\','/')
+            # print('Using SimCodes at ', os.path.abspath(self.sim_codes_location))
         else:
-            self.master_lattice_location = master_lattice
+            self.sim_codes_location = sim_codes
         self.define_ASTRAgenerator_command()
         self.define_astra_command()
         self.define_elegant_command()
@@ -58,7 +59,7 @@ class Executables(object):
             elif 'apclara3' in self.hostname:
                 self.ASTRAgenerator =  ['/opt/ASTRA/generator.sh']
         else:
-            self.ASTRAgenerator =  [self.master_lattice_location+'Codes/generator']
+            self.ASTRAgenerator =  [self.sim_codes_location+'ASTRA/generator']
 
     def define_astra_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)
@@ -81,7 +82,7 @@ class Executables(object):
                 self.astra =  ['wsl','mpiexec','-np',str(wsl_cpu),'/opt/ASTRA/astra_MPICH2.sh']
             else:
                 # print('Serial ASTRA in use!')
-                self.astra =  [self.master_lattice_location+'Codes/astra']
+                self.astra =  [self.sim_codes_location+'ASTRA/astra']
 
     def define_elegant_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)
@@ -102,7 +103,7 @@ class Executables(object):
                 if which('mpiexec.exe') is not None and which('Pelegant.exe') is not None:
                     self.elegant = [which('mpiexec.exe'),'-np',str(min([2,int(ncpu/3)])), which('Pelegant.exe')]
                 else:
-                    self.elegant = [self.master_lattice_location+'Codes/elegant']
+                    self.elegant = [self.sim_codes_location+'Elegant/elegant']
         else:
             if not self.osname == 'nt':
                 if 'apclara1' in self.hostname:
@@ -112,7 +113,7 @@ class Executables(object):
                 elif 'apclara3' in self.hostname:
                     self.elegant = ['srun','elegant']
             else:
-                self.elegant = [self.master_lattice_location+'Codes/elegant']
+                self.elegant = [self.sim_codes_location+'Elegant/elegant']
 
     def define_csrtrack_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)
@@ -129,7 +130,7 @@ class Executables(object):
             elif 'apclara3' in self.hostname:
                 self.csrtrack = ['/opt/OpenMPI-1.4.5/bin/mpiexec','-n',str(ncpu),'/opt/CSRTrack/csrtrack_1.204_Linux_x86_64_OpenMPI_1.4.3']
         else:
-            self.csrtrack = [self.master_lattice_location+'Codes/csrtrack']
+            self.csrtrack = [self.sim_codes_location+'CSRTrack/csrtrack']
 
     def define_gpt_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)

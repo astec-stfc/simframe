@@ -215,6 +215,20 @@ class twiss(munch.Munch):
         elegant.read_sdds_file(sddsobject, filename, ascii)
         return sddsobject.elegantTwiss
 
+    @classmethod
+    def load_directory(cls, directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, preglob='*', verbose=False, sortkey='z'):
+        t = cls()
+        if verbose:
+            print('Directory:',directory)
+        for code, string in types.items():
+            twiss_files = glob.glob(directory+'/'+preglob+string)
+            if verbose:
+                print(code, [os.path.basename(t) for t in twiss_files])
+            if t._which_code(code) is not None and len(twiss_files) > 0:
+                t._which_code(code)(t, twiss_files, reset=False)
+        t.sort(key=sortkey)
+        return t
+
     # @property
     # def cp_eV(self):
     #     return self['cp']

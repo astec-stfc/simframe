@@ -45,7 +45,7 @@ yaml.add_constructor(_mapping_tag, dict_constructor)
 
 class Framework(Munch):
 
-    def __init__(self, directory='test', master_lattice=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
+    def __init__(self, directory='test', master_lattice=None, simcodes=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
         super(Framework, self).__init__()
         gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
         astra_use_wsl = os.environ['WSL_ASTRA'] if 'WSL_ASTRA' in os.environ else 1
@@ -65,6 +65,7 @@ class Framework(Munch):
         if self.subdir is not None:
             self.setSubDirectory(self.subdir)
         self.setMasterLatticeLocation(master_lattice)
+        self.setSimCodesLocation(simcodes)
 
         self.executables = exes.Executables(self.global_parameters)
         self.defineASTRACommand = self.executables.define_astra_command
@@ -104,6 +105,19 @@ class Framework(Munch):
         else:
             self.global_parameters['master_lattice_location'] = os.path.join(os.path.abspath(master_lattice),'./')
         self.master_lattice_location = self.global_parameters['master_lattice_location']
+
+    def setSimCodesLocation(self, simcodes=None):
+        if simcodes is None:
+            if os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/'):
+                self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/').replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/'):
+                self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
+            else:
+                raise Exception("SimCodes not available - specify using simcodes=<location>")
+        else:
+            self.global_parameters['simcodes_location'] = os.path.join(os.path.abspath(simcodes),'./')
+        self.master_lattice_location = self.global_parameters['simcodes_location']
+
 
     def load_Elements_File(self, input):
         if isinstance(input,(list,tuple)):

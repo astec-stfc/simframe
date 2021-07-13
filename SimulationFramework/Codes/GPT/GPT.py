@@ -24,6 +24,8 @@ class gptLattice(frameworkLattice):
         self.ignore_start_screen = None
         self.screen_step_size = 0.1
         self.time_step_size = '0.1/c'
+        self.override_meanBz = None
+        self.override_tout = None
         # self.headers['tout'] = gpt_tout(startpos=0, endpos=self.allElementObjects[self.end].end[2], step=0.1)
 
     def endScreen(self, **kwargs):
@@ -121,11 +123,18 @@ class gptLattice(frameworkLattice):
         if self.sample_interval > 1:
             self.headers['setreduce'] = gpt_setreduce(set="\"beam\"", setreduce=len(self.global_parameters['beam'].x)/self.sample_interval)
         # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
-        meanBz = np.mean(self.global_parameters['beam'].Bz)
-        if meanBz < 0.5:
-            meanBz = 0.75
-        # print(self.findS(self.end), self.findS(self.start))
-        self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
+        if self.override_meanBz is not None and isinstance(self.override_meanBz, (int, float)):
+            meanBz = self.override_meanBz
+        else:
+            meanBz = np.mean(self.global_parameters['beam'].Bz)
+            if meanBz < 0.5:
+                meanBz = 0.75
+
+        if self.override_tout is not None and isinstance(self.override_tout, (int, float)):
+            self.headers['tout'] = gpt_tout(starttime=0, endpos=self.override_tout, step=str(self.time_step_size))
+        else:
+            self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
+
         gdfbeamfilename = self.particle_definition+'.gdf'
         cathode = self.particle_definition == 'generator'
         rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)

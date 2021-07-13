@@ -276,14 +276,14 @@ class slice():
         self.slice = {}
         self.bin_time()
         peakIPosition = self.slice_max_peak_current_slice
-        slice_density = self.slice_density[peakIPosition] if density else 0
+        slice_density = self.mve.slice_density[peakIPosition] if density else 0
         return self.slice_current[peakIPosition], \
             np.std(self.slice_current), \
             self.slice_relative_momentum_spread[peakIPosition], \
             self.slice_normalized_horizontal_emittance[peakIPosition], \
             self.slice_normalized_vertical_emittance[peakIPosition], \
             self.slice_momentum[peakIPosition], \
-            self.slice_density[peakIPosition],
+            slice_density,
 
     @property
     def chirp(self):
