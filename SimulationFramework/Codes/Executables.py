@@ -30,6 +30,8 @@ class executable:
                 self.executable = [location]
             elif isinstance(location,list):
                 self.executable = location
+        elif socket.gethostname() in self.settings:
+            self.executable = self._subsitute_variables(self.settings[socket.gethostname()][name])
         elif os.name in self.settings:
             self.executable = self._subsitute_variables(self.settings[os.name][name])
         else:
@@ -60,16 +62,15 @@ class Executables(object):
         self.global_parameters = global_parameters
         sim_codes = self.global_parameters['simcodes_location'] if 'simcodes_location' in self.global_parameters else None
         if sim_codes is None:
-            self.sim_codes_location = (os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../../../SimCodes/SimCodes')+'/').replace('\\','/')
+            self.sim_codes_location = (os.path.relpath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
             # print('Using SimCodes at ', os.path.abspath(self.sim_codes_location))
         else:
             self.sim_codes_location = sim_codes
-        try:
-            print(os.path.join(os.path.dirname(__file__), '../Executables.yaml'))
-            with open(os.path.join(os.path.dirname(__file__), '../Executables.yaml'), 'r') as file:
-                self.settings = yaml.load(file, Loader=yaml.Loader)
-        except:
-            self.settings = {}
+        # try:
+        with open(os.path.join(os.path.dirname(__file__), '../Executables.yaml'), 'r') as file:
+            self.settings = yaml.load(file, Loader=yaml.Loader)
+        # except:
+        #     self.settings = {}
         self.settings['sim_codes_location'] = self.sim_codes_location
         self.define_ASTRAgenerator_command()
         self.define_astra_command()

@@ -100,6 +100,9 @@ class Framework(Munch):
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/'):
                 # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/').replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/'):
+                # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
+                self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/').replace('\\','/')
             else:
                 raise Exception("Master Lattice not available - specify using master_lattice=<location>")
         else:
@@ -112,6 +115,8 @@ class Framework(Munch):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/').replace('\\','/')
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/'):
+                self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/').replace('\\','/')
             else:
                 print("SimCodes not available - specify using simcodes=<location>")
                 self.global_parameters['simcodes_location'] = None

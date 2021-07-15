@@ -78,7 +78,10 @@ class elegantLattice(frameworkLattice):
         """Run the code with input 'filename'"""
         if not os.name == 'nt':
             command = self.executables[self.code] + [self.objectname+'.ele']
-            my_env = {**os.environ, 'RPN_DEFNS': os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns_linux.rpn'}
+            if self.global_parameters['simcodes_location'] is None:
+                my_env = {**os.environ}
+            else:
+                my_env = {**os.environ, 'RPN_DEFNS': os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns_linux.rpn'}
             with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
                 subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
         else:
