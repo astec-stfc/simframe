@@ -24,5 +24,5 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-	package_data={'SimulationFramework': ['Codes/*.yaml', 'Codes/Elegant/*.yaml', 'Codes/CSRTrack/*.yaml']},
+	package_data={'SimulationFramework': ['Codes/*.yaml', 'Codes/Elegant/*.yaml', 'Codes/CSRTrack/*.yaml','*.yaml']},
 )

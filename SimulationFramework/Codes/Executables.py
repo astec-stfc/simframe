@@ -65,6 +65,7 @@ class Executables(object):
         else:
             self.sim_codes_location = sim_codes
         try:
+            print(os.path.join(os.path.dirname(__file__), '../Executables.yaml'))
             with open(os.path.join(os.path.dirname(__file__), '../Executables.yaml'), 'r') as file:
                 self.settings = yaml.load(file, Loader=yaml.Loader)
         except:
