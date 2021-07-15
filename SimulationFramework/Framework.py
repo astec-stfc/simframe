@@ -113,7 +113,7 @@ class Framework(Munch):
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
             else:
-                print("SimCodes not available - specify using simcodes=<location>")")
+                print("SimCodes not available - specify using simcodes=<location>")
                 self.global_parameters['simcodes_location'] = None
         else:
             self.global_parameters['simcodes_location'] = os.path.join(os.path.abspath(simcodes),'./')
