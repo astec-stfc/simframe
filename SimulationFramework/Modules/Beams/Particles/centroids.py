@@ -57,3 +57,9 @@ class centroids(munch.Munch):
     @property
     def Cpz(self):
         return np.mean(self.beam.cpz)
+    @property
+    def Cxp(self):
+        return np.mean(self.beam.xp)
+    @property
+    def Cyp(self):
+        return np.mean(self.beam.yp)
