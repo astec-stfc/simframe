@@ -264,6 +264,7 @@ class SDDSFile(object):
 
     def load(self, *args, **kwargs):
         return self.read_file(*args, **kwargs)
+
     def read_file(self, filename):
         self._sddsObject.load(filename)
         sddsref = self._sddsObject
@@ -276,9 +277,11 @@ class SDDSFile(object):
             self.add_column(sddsref.columnName[col], column_data, type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
         # sddsobject.SDDSparameterNames = list()
         for param in range(len(sddsref.parameterName)):
-            symbol, unit, description, formatString, type, fieldLength = sddsref.parameterDefinition[param]
-            parameter_data = sddsref.parameterData[param]
-            self.add_parameter(sddsref.parameterName[param], parameter_data[0], type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
+            if param in sddsref.parameterDefinition:
+                symbol, unit, description, formatString, type, fieldLength = sddsref.parameterDefinition[param]
+                if param in sddsref.parameterData:
+                    parameter_data = sddsref.parameterData[param]
+                    self.add_parameter(sddsref.parameterName[param], parameter_data[0], type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
 
     @property
     def data(self):
