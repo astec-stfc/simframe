@@ -471,7 +471,6 @@ class Framework(Munch):
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].sample_interval = interval
 
-
     def __getitem__(self,key):
         if key in super(Framework, self).__getitem__('elementObjects'):
             return self.elementObjects.get(key)
@@ -496,6 +495,39 @@ class Framework(Munch):
     @property
     def commands(self):
         return list(self.commandObjects.keys())
+
+    def getSValues(self):
+        s0 = 0
+        allS = []
+        for l in self.latticeObjects.values():
+            try:
+                latticeS = [a + s0 for a in l.getSValues()]
+                allS = allS + latticeS
+                s0 = alls[-1]
+            except:
+                pass
+        return allS
+
+    def getSValuesElements(self):
+        s0 = 0
+        allS = []
+        for l in self.latticeObjects:
+            if not l == 'generator':
+                names, elems, svals = self.latticeObjects[l].getSNamesElems()
+                latticeS = [a + s0 for a in svals]
+                selems = list(zip(names, elems, latticeS))
+                allS = allS + selems
+                s0 = latticeS[-1]
+        return allS
+
+    def getZValuesElements(self):
+        allZ = []
+        for l in self.latticeObjects:
+            if not l == 'generator':
+                names, elems, zvals = self.latticeObjects[l].getZNamesElems()
+                zelems = list(zip(names, elems, zvals))
+                allZ = allZ + zelems
+        return list(sorted(allZ, key=lambda x: x[2][0]))
 
     def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True):
         self.save_lattice(directory=self.subdirectory, filename='lattice.yaml')

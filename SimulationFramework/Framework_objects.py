@@ -320,16 +320,35 @@ class frameworkLattice(Munch):
         s = [0]
         for e in list(elems.values()):
             s.append(s[-1]+e.length)
-        return s[1:]
+        return list(s[1:])
+
+    def getZValues(self):
+        return [[e.start[2], e.end[2]] for e in self.elements.values()]
 
     def getNames(self):
         elems = self.createDrifts()
         return [e.objectname for e in list(elems.values())]
 
+    def getElems(self):
+        elems = self.createDrifts()
+        return [e for e in list(elems.values())]
+
     def getSNames(self):
         s = self.getSValues()
         names = self.getNames()
         return list(zip(names, s))
+
+    def getSNamesElems(self):
+        s = self.getSValues()
+        names = self.getNames()
+        elems = self.getElems()
+        return names, elems, s
+
+    def getZNamesElems(self):
+        z = self.getZValues()
+        names = self.getNames()
+        elems = self.getElems()
+        return names, elems, z
 
     def findS(self, elem):
         if elem in self.allElements:

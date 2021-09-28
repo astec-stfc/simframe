@@ -9,6 +9,7 @@ except:
     from PyQt5.QtGui import *
     from PyQt5.QtWidgets import *
 import pyqtgraph as pg
+from .latticeDraw import latticeDraw
 
 class mainWindow(QMainWindow):
     def __init__(self):
@@ -55,6 +56,8 @@ class multiPlotWidget(QWidget):
         self.multiPlotView.setCentralItem(self.multiPlotWidget)
         ''' multiPlotWidgets - holds the base plotWidgets for each Twiss plot '''
         self.multiPlotWidgets = {}
+        ''' multiPlotLattice - holds the lattice items for each Twiss plot '''
+        self.multiPlotLattice = {}
         ''' curves - a dictionary containing {directory: [individual plotItems for each twiss plot,]} '''
         self.curves = {}
         for n, param in enumerate(self.plotParams):
@@ -72,6 +75,7 @@ class multiPlotWidget(QWidget):
                     self.linkAxis = p.vb
                 else:
                     p.setXLink(self.linkAxis)
+                ''' Connect the scaleChanged signal to redraw lattice '''
                 p.showGrid(x=True, y=True)
                 p.setLabel('left', text=param['name'], units=param['units'], **{'font-size': '12pt', 'font-family': 'Arial'})
                 p.setLabel('bottom', text=xlabel, units=xlabelunits)
@@ -102,6 +106,24 @@ class multiPlotWidget(QWidget):
         ''' used for style cycling '''
         self.plotColor = 0
         self.shadowCurves = []
+
+    def add_lattice_plot(self, elementlist):
+        self.elementlist = elementlist
+        for name, p in self.multiPlotWidgets.items():
+            lattice = latticeDraw(self.elementlist)
+            self.multiPlotLattice[p.getViewBox()] = lattice
+            for elem in lattice.elements:
+                elem.setZValue(0)
+                p.addItem(elem)
+            self.reScaleLattice(p.getViewBox())
+            p.getViewBox().sigYRangeChanged.connect(self.reScaleLattice)
+
+    def reScaleLattice(self, p):
+        lattice = self.multiPlotLattice[p]
+        yScale = p.viewRange()[1]
+        latticeScale = float((yScale[1] - yScale[0]) / 5.0)
+        lattice.scale = latticeScale
+        lattice.offset = float(yScale[1]) - latticeScale
 
     def set_horizontal_axis_label(self, label=None, units=None):
         for n, param in enumerate(self.plotParams):
