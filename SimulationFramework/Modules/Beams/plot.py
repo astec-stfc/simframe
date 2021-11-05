@@ -45,7 +45,7 @@ def density_plot(particle_group, key='x', bins=None, **kwargs):
         bins = int(n/100)
     # Scale to nice units and get the factor, unit prefix
     x, f1, p1 = nice_array(particle_group[key])
-    if key is not 'charge':
+    if key != 'charge':
         w = abs(particle_group['charge'])
     else:
         w = np.ones(len(particle_group[key]))

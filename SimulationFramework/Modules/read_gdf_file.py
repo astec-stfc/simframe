@@ -134,7 +134,7 @@ class read_gdf_file(object):
                 dest = [struct.unpack('B', element)[0] for element in dest]
             destination = []
             for element in dest:
-                if element is 0:
+                if element == 0:
                     break
                 else:
                     destination.append(chr(element))

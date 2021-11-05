@@ -705,7 +705,7 @@ class frameworkElement(frameworkObject):
     @property
     def theta(self):
         if hasattr(self, 'global_rotation') and self.global_rotation is not None:
-            rotation =  self.global_rotation[2] if len(self.global_rotation) is 3 else self.global_rotation
+            rotation =  self.global_rotation[2] if len(self.global_rotation) == 3 else self.global_rotation
         else:
             rotation = 0
         # if hasattr(self, 'starting_rotation') and self.starting_rotation is not None:
@@ -808,7 +808,7 @@ class frameworkElement(frameworkObject):
         string = self.objectname+': '+ etype
         k1 = self.k1 if self.k1 is not None else 0
         for key, value in list(merge_two_dicts({'k1': k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 value = 1 if value is True else value
@@ -878,7 +878,7 @@ class csrdrift(frameworkElement):
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 value = 1 if value is True else value
@@ -903,7 +903,7 @@ class lscdrift(frameworkElement):
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 value = 1 if value is True else value

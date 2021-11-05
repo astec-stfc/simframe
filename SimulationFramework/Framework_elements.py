@@ -172,7 +172,7 @@ class dipole(frameworkElement):
         string = self.objectname+': '+ etype
         k1 = self.k1 if self.k1 is not None else 0
         for key, value in list(merge_two_dicts({'k1': k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 # if 'bins' in key or 'bins' in self._convertKeword_Elegant(key):
                     # print('BINS KEY ', key, '  ', self._convertKeword_Elegant(key))
                 if 'edge_angle' in key:
@@ -197,7 +197,7 @@ class dipole(frameworkElement):
     def corners(self):
         corners = [0,0,0,0]
         if hasattr(self, 'global_rotation') and self.global_rotation is not None:
-            rotation =  self.global_rotation[2] if len(self.global_rotation) is 3 else self.global_rotation
+            rotation =  self.global_rotation[2] if len(self.global_rotation) == 3 else self.global_rotation
         else:
             rotation = 0
         theta = self.e1+rotation
@@ -281,8 +281,8 @@ class dipole(frameworkElement):
     def gpt_ccs(self, ccs):
         if abs(self.angle) > 0 and abs(self.rho) < 100:
             # print('Creating new CCS')
-            number = str(int(ccs._name.split('_')[1])+1) if ccs._name is not "wcs" else "1"
-            name = 'ccs_' + number if ccs._name is not "wcs" else "ccs_1"
+            number = str(int(ccs._name.split('_')[1])+1) if ccs._name != "wcs" else "1"
+            name = 'ccs_' + number if ccs._name != "wcs" else "ccs_1"
             # print('middle position = ', self.end)
             return gpt_ccs(name, self.end, self.global_rotation + np.array([0, 0, self.angle]), self.intersect)
         else:
@@ -403,7 +403,7 @@ class cavity(frameworkElement):
 
     @property
     def cells(self):
-        if (self.n_cells is 0 or self.n_cells is None) and self.cell_length > 0:
+        if (self.n_cells == 0 or self.n_cells is None) and self.cell_length > 0:
                 cells = round((self.length-self.cell_length)/self.cell_length)
                 cells = int(cells - (cells % 3))
         elif self.n_cells > 0 and (self.cell_length is not None and self.cell_length) > 0:
@@ -448,7 +448,7 @@ class cavity(frameworkElement):
             etype = 'rfca'
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 if self.objecttype == 'cavity':
@@ -625,7 +625,7 @@ class scatter(frameworkElement):
         string = self.objectname+': '+ etype
         k1 = self.k1 if self.k1 is not None else 0
         for key, value in list(merge_two_dicts({'k1': k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
@@ -649,7 +649,7 @@ class cleaner(frameworkElement):
         etype = 'clean'
         string = self.objectname+': '+ etype
         for key, value in merge_two_dicts(self.objectproperties, self.objectdefaults).items():
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
@@ -694,7 +694,7 @@ class screen(frameworkElement):
         #     d = drift(self.objectname+'-drift-01', type='drift', **{'length': self.length/2})
         #     wholestring+=d._write_Elegant()
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
@@ -862,7 +862,7 @@ class fel_modulator(frameworkElement):
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
@@ -895,7 +895,7 @@ class wiggler(frameworkElement):
             etype = 'drift'
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
@@ -998,7 +998,7 @@ class longitudinal_wakefield(cavity):
             d = drift(self.objectname+'-drift', type='drift', **{'length': self.length})
             wholestring+=d._write_Elegant()
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)
                 tmpstring = ', '+key+' = '+str(value)
