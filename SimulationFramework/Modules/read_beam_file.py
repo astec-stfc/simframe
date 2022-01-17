@@ -18,7 +18,7 @@ except:
 sys.path.append(os.path.abspath(__file__+'/../../'))
 import SimulationFramework.Modules.read_gdf_file as rgf
 import SimulationFramework.Modules.minimumVolumeEllipse as mve
-from .particles import Particles
+from .Beams import Particles
 MVE = mve.EllipsoidTool()
 import glob
 
