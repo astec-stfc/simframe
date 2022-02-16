@@ -5,7 +5,7 @@ try:
 except:
     # raise Exception('Needs PythonSDDS - see https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#Python%20SDDS%20Binaries')
     try:
-        import ASTeCsdds as sdds
+        import ASTeCsdds.sdds as sdds
     except:
         print('No SDDS available!')
 import numpy as np
