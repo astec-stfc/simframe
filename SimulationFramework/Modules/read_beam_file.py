@@ -1,3 +1,5 @@
+parent_name = '.'.join(__name__.split('.')[:-1])
+print('parent = ', parent_name)
 import os, time, csv, sys, subprocess
 import copy
 import h5py
@@ -13,8 +15,11 @@ from itertools import compress
 try:
     import sdds
 except:
-    print('sdds failed to load')
-    pass
+    try:
+        import ASTeCsdds.sdds as sdds
+    except:
+        print('sdds failed to load')
+        pass
 sys.path.append(os.path.abspath(__file__+'/../../'))
 import SimulationFramework.Modules.read_gdf_file as rgf
 import SimulationFramework.Modules.minimumVolumeEllipse as mve
