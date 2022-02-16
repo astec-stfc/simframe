@@ -129,7 +129,7 @@ def write_astra_beam_file(self, file, index=1, status=5, charge=None, normaliseZ
         if len(self._beam['charge']) == len(self._beam.x):
             chargevector = 1e9*self._beam['charge']
         else:
-            chargevector = np.full(len(self._beam.x), 1e9*self.charge/len(self._beam.x))
+            chargevector = np.full(len(self._beam.x), 1e9*self._beam['total_charge']/len(self._beam.x))
     if not isinstance(index,(list, tuple, np.ndarray)):
         indexvector = np.full(len(self._beam.x), index)
     statusvector = self._beam['status'] if 'status' in self._beam else status if isinstance(status,(list, tuple, np.ndarray)) else np.full(len(self._beam.x), status)

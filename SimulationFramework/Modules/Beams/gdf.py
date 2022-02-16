@@ -2,10 +2,15 @@ import numpy as np
 from .. import read_gdf_file as rgf
 from .. import constants
 
-def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cathode=False):
-    q = np.full(len(self.x), -1 * constants.elementary_charge)
-    m = np.full(len(self.x), constants.electron_mass)
-    nmacro = np.full(len(self.x), abs(self._beam['total_charge'] / constants.elementary_charge / len(self.x)))
+def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cathode=False, charge=None, mass=None):
+    charge = -1 * constants.elementary_charge if charge is None else charge
+    q = np.full(len(self.x), charge)
+    mass = constants.electron_mass if mass is None else mass
+    m = np.full(len(self.x), mass)
+    if len(self._beam['charge']) == len(self.x):
+        nmacro = self._beam['charge'] / charge
+    else:
+        nmacro = np.full(len(self.x), abs(self._beam['total_charge'] / constants.elementary_charge / len(self.x)))
     toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
     x = self.x if not normaliseX else (self.x - normaliseX) if isinstance(normaliseX,(int, float)) else (self.x - np.mean(self.x))
     z = self.z if not normaliseZ else (self.z - normaliseZ) if isinstance(normaliseZ,(int, float)) else (self.z - np.mean(self.z))

@@ -191,6 +191,9 @@ class Particles(Munch):
     @property
     def charge(self):
         return UnitValue(self['charge'], 'C')
+    @property
+    def nmacro(self):
+        return UnitValue(self['nmacro'], '')
     # @property
     # def sigma_z(self):
     #     return self.rms(self.Bz*constants.speed_of_light*(self['t'] - np.mean(self['t'])))
