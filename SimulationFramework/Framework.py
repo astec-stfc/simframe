@@ -92,8 +92,8 @@ class Framework(Munch):
         global MasterLatticeLocation
         if master_lattice is None:
             if MasterLatticeLocation is not None:
-                print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
                 self.global_parameters['master_lattice_location'] = MasterLatticeLocation.replace('\\','/')
+                print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/'):
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/').replace('\\','/')
                 print('Found MasterLattice Directory 2-up =', self.global_parameters['master_lattice_location'])
