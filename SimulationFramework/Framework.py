@@ -93,16 +93,20 @@ class Framework(Munch):
         if master_lattice is None:
             if MasterLatticeLocation is not None:
                 self.global_parameters['master_lattice_location'] = MasterLatticeLocation.replace('\\','/')
-                print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
+                if self.verbose:
+                    print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/'):
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/').replace('\\','/')
-                print('Found MasterLattice Directory 2-up =', self.global_parameters['master_lattice_location'])
+                if self.verbose:
+                    print('Found MasterLattice Directory 2-up =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/'):
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/').replace('\\','/')
-                print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
+                if self.verbose:
+                    print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/'):
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/').replace('\\','/')
-                print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
+                if self.verbose:
+                    print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
             else:
                 if self.verbose:
                     print("Master Lattice not available - specify using master_lattice=<location>")
@@ -116,16 +120,20 @@ class Framework(Munch):
         if simcodes is None:
             if SimCodesLocation is not None:
                 self.global_parameters['simcodes_location'] = SimCodesLocation.replace('\\','/')
-                print('Found SimCodes Package =', self.global_parameters['simcodes_location'])
+                if self.verbose:
+                    print('Found SimCodes Package =', self.global_parameters['simcodes_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/').replace('\\','/')
-                print('Found SimCodes Directory 2-up =', self.global_parameters['simcodes_location'])
+                if self.verbose:
+                    print('Found SimCodes Directory 2-up =', self.global_parameters['simcodes_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
-                print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
+                if self.verbose:
+                    print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/').replace('\\','/')
-                print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
+                if self.verbose:
+                    print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
             else:
                 if self.verbose:
                     print("SimCodes not available - specify using simcodes=<location>")
