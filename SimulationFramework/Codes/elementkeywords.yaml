@@ -94,6 +94,13 @@ aperture:
     elliptical,
     radius
   }
+apcontour:
+  keywords: {
+    filename,
+    xcolumn,
+    ycolumn,
+    resolution
+  }
 common:
   keywords: {
     subelement,

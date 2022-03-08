@@ -7,7 +7,7 @@ from .Modules import Beams as rbf
 class dipole(frameworkElement):
 
     def __init__(self, name=None, type='dipole', **kwargs):
-        super(dipole, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('csr_bins', 100)
         self.add_default('deltaL', 0)
         self.add_default('csr_enable', 1)
@@ -291,7 +291,7 @@ class dipole(frameworkElement):
 class kicker(dipole):
 
     def __init__(self, name=None, type='kicker', **kwargs):
-        super(kicker, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
     @property
     def angle(self):
@@ -307,7 +307,7 @@ class kicker(dipole):
 
     def write_ASTRA(self, n):
         output = ''
-        output = super(kicker, self).write_ASTRA(n)
+        output = super().write_ASTRA(n)
         return output
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
@@ -319,7 +319,7 @@ class kicker(dipole):
 class quadrupole(frameworkElement):
 
     def __init__(self, name=None, type='quadrupole', **kwargs):
-        super(quadrupole, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('k1l', 0)
         self.add_default('n_kicks', 20)
         self.strength_errors = [0]
@@ -372,7 +372,7 @@ class quadrupole(frameworkElement):
 class cavity(frameworkElement):
 
     def __init__(self, name=None, type='cavity', **kwargs):
-        super(cavity, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('tcolumn', '"t"')
         self.add_default('wzcolumn', '"W"')
         self.add_default('wxcolumn', '"W"')
@@ -503,13 +503,13 @@ class cavity(frameworkElement):
 class rf_deflecting_cavity(cavity):
 
     def __init__(self, name=None, type='rf_deflecting_cavity', **kwargs):
-        super(rf_deflecting_cavity, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('n_kicks', 10)
 
 class solenoid(frameworkElement):
 
     def __init__(self, name=None, type='solenoid', **kwargs):
-        super(solenoid, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('scale_field', True)
         self.add_default('field_scale', 1)
 
@@ -551,7 +551,7 @@ class solenoid(frameworkElement):
 class aperture(frameworkElement):
 
     def __init__(self, name=None, type='aperture', **kwargs):
-        super(aperture, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.number_of_elements = 1
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
@@ -616,7 +616,7 @@ class aperture(frameworkElement):
 class scatter(frameworkElement):
 
     def __init__(self, name=None, type='scatter', **kwargs):
-        super(scatter, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         # print('Scatter object ', self.objectname,' - DP = ', self.objectproperties)
 
     def _write_Elegant(self):
@@ -641,7 +641,7 @@ class scatter(frameworkElement):
 class cleaner(frameworkElement):
 
     def __init__(self, name=None, type='scatter', **kwargs):
-        super(cleaner, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         # print('Scatter object ', self.objectname,' - DP = ', self.objectproperties)
 
     def _write_Elegant(self):
@@ -665,17 +665,17 @@ class cleaner(frameworkElement):
 class wall_current_monitor(frameworkElement):
 
     def __init__(self, name=None, type='wall_current_monitor', **kwargs):
-        super(wall_current_monitor, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class integrated_current_transformer(wall_current_monitor):
 
     def __init__(self, name=None, type='integrated_current_transformer', **kwargs):
-        super(integrated_current_transformer, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class screen(frameworkElement):
 
     def __init__(self, name=None, type='screen', **kwargs):
-        super(screen, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         if 'output_filename' not in kwargs:
             self.output_filename = str(self.objectname)+'.sdds'
 
@@ -760,17 +760,17 @@ class screen(frameworkElement):
 class monitor(screen):
 
     def __init__(self, name=None, type='monitor', **kwargs):
-        super(monitor, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class watch_point(screen):
 
     def __init__(self, name=None, type='watch_point', **kwargs):
-        super(watch_point, self).__init__(name, 'screen', **kwargs)
+        super().__init__(name, 'screen', **kwargs)
 
 class beam_position_monitor(screen):
 
     def __init__(self, name=None, type='beam_position_monitor', **kwargs):
-        super(beam_position_monitor, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
     def write_ASTRA(self, n):
         return self._write_ASTRA(OrderedDict([
@@ -782,7 +782,7 @@ class beam_position_monitor(screen):
 class beam_arrival_monitor(screen):
 
     def __init__(self, name=None, type='beam_arrival_monitor', **kwargs):
-        super(beam_arrival_monitor, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
     def write_ASTRA(self, n):
         return ''
@@ -790,17 +790,23 @@ class beam_arrival_monitor(screen):
 class collimator(aperture):
 
     def __init__(self, name=None, type='collimator', **kwargs):
-        super(collimator, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class rcollimator(aperture):
 
     def __init__(self, name=None, type='rcollimator', **kwargs):
-        super(rcollimator, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
+
+class apcontour(frameworkElement):
+
+    def __init__(self, name=None, type='apcontour', **kwargs):
+        super().__init__(name, type, **kwargs)
+        self.add_default('resolution', 0.001)
 
 class marker(screen):
 
     def __init__(self, name=None, type='marker', **kwargs):
-        super(marker, self).__init__(name, 'screen', **kwargs)
+        super().__init__(name, 'screen', **kwargs)
 
     def write_CSRTrack(self, n):
         return ''
@@ -808,7 +814,7 @@ class marker(screen):
 class drift(frameworkElement):
 
     def __init__(self, name=None, type='drift', **kwargs):
-        super(drift, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
     # def _write_Elegant(self):
     #     wholestring=''
@@ -833,22 +839,22 @@ class drift(frameworkElement):
 class shutter(csrdrift):
 
     def __init__(self, name=None, type='shutter', **kwargs):
-        super(shutter, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class valve(csrdrift):
 
     def __init__(self, name=None, type='valve', **kwargs):
-        super(valve, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class bellows(csrdrift):
 
     def __init__(self, name=None, type='bellows', **kwargs):
-        super(bellows, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
 class fel_modulator(frameworkElement):
 
     def __init__(self, name=None, type='modulator', **kwargs):
-        super(fel_modulator, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('k1l', 0)
         self.add_default('n_steps', 1*self.periods)
 
@@ -878,7 +884,7 @@ class fel_modulator(frameworkElement):
 class wiggler(frameworkElement):
 
     def __init__(self, name=None, type='wiggler', **kwargs):
-        super(wiggler, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         # self.add_default('k1l', 0)
         # self.add_default('n_steps', 1*self.periods)
 
@@ -910,12 +916,12 @@ class wiggler(frameworkElement):
 
 class charge(frameworkElement):
     def __init__(self, name=None, type='charge', **kwargs):
-        super(charge, self).__init__(name, 'charge', **kwargs)
+        super().__init__(name, 'charge', **kwargs)
 
 class global_error(frameworkElement):
 
     def __init__(self, name=None, type='global_error', **kwargs):
-        super(global_error, self).__init__(name, 'global_error', **kwargs)
+        super().__init__(name, 'global_error', **kwargs)
         # self._errordict = {}
 
     def add_Error(self, type, sigma):
@@ -934,7 +940,7 @@ class global_error(frameworkElement):
 class longitudinal_wakefield(cavity):
 
     def __init__(self, name=None, type='longitudinal_wakefield', **kwargs):
-        super(longitudinal_wakefield, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('coupling_cell_length', 0)
 
     def write_ASTRA(self, startn):
@@ -1014,7 +1020,7 @@ class longitudinal_wakefield(cavity):
 class gpt_ccs(Munch):
 
     def __init__(self, name, position, rotation, intersect=0):
-        super(gpt_ccs, self).__init__()
+        super().__init__()
         self._name = name
         self.intersect = intersect
         # print(self._name, self.intersect)

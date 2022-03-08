@@ -15,14 +15,14 @@ from .Codes.GPT.GPT import *
 from .Framework_Settings import FrameworkSettings
 try:
     import MasterLattice
-    if os.path.isdir(os.path.dirname(MasterLattice.__file__)+'/MasterLattice'+'/'):
-        MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/MasterLattice'+'/'
-    elif os.path.isdir(os.path.dirname(MasterLattice.__file__)+'/'):
-        MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
-    else:
-        MasterLatticeLocation = None
+    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)
 except:
     MasterLatticeLocation = None
+try:
+    import SimCodes
+    SimCodesLocation = os.path.dirname(SimCodes.__file__)
+except:
+    SimCodesLocation = None
 try:
     import SimulationFramework.Modules.plotting as groupplot
     use_matplotlib = True
@@ -89,43 +89,48 @@ class Framework(Munch):
             self.overwrite = True
 
     def setMasterLatticeLocation(self, master_lattice=None):
-        # global master_lattice_location
         if master_lattice is None:
             if MasterLatticeLocation is not None:
-                # print('Found MasterLattice Package =', MasterLatticeLocation)
+                print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
                 self.global_parameters['master_lattice_location'] = MasterLatticeLocation.replace('\\','/')
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/'):
-                # print('Found MasterLattice Directory 2-up =', MasterLatticeLocation)
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../MasterLattice/MasterLattice')+'/').replace('\\','/')
+                print('Found MasterLattice Directory 2-up =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/'):
-                # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice/MasterLattice')+'/').replace('\\','/')
+                print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/'):
-                # print('Found MasterLattice Directory 1-up =', MasterLatticeLocation)
                 self.global_parameters['master_lattice_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../MasterLattice')+'/').replace('\\','/')
+                print('Found MasterLattice Directory 1-up =', self.global_parameters['master_lattice_location'])
             else:
                 if self.verbose:
                     print("Master Lattice not available - specify using master_lattice=<location>")
                     self.global_parameters['master_lattice_location'] = '.'
         else:
             self.global_parameters['master_lattice_location'] = os.path.join(os.path.abspath(master_lattice),'./')
-        self.master_lattice_location = self.global_parameters['master_lattice_location']
+        MasterLatticeLocation = self.global_parameters['master_lattice_location']
 
     def setSimCodesLocation(self, simcodes=None):
         if simcodes is None:
-            if os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/'):
+            if SimCodesLocation is not None:
+                self.global_parameters['simcodes_location'] = SimCodesLocation.replace('\\','/')
+                print('Found SimCodes Package =', self.global_parameters['simcodes_location'])
+            elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../../SimCodes/SimCodes')+'/').replace('\\','/')
+                print('Found SimCodes Directory 2-up =', self.global_parameters['simcodes_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes/SimCodes')+'/').replace('\\','/')
+                print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
             elif os.path.isdir(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/'):
                 self.global_parameters['simcodes_location'] = (os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../SimCodes')+'/').replace('\\','/')
+                print('Found SimCodes Directory 1-up =', self.global_parameters['simcodes_location'])
             else:
                 if self.verbose:
                     print("SimCodes not available - specify using simcodes=<location>")
                 self.global_parameters['simcodes_location'] = None
         else:
             self.global_parameters['simcodes_location'] = os.path.join(os.path.abspath(simcodes),'./')
-        self.master_lattice_location = self.global_parameters['simcodes_location']
+        SimCodesLocation = self.global_parameters['simcodes_location']
 
     def load_Elements_File(self, input):
         if isinstance(input,(list,tuple)):
@@ -374,6 +379,22 @@ class Framework(Munch):
                 name = kwargs['name']
         # try:
         element = globals()[type](name, type, global_parameters=self.global_parameters, **kwargs)
+        # print element
+        self.elementObjects[name] = element
+        return element
+        # except Exception as e:
+        #     raise NameError('Element \'%s\' does not exist' % type)
+
+    def replace_Element(self, name=None, type=None, **kwargs):
+        if name == None:
+            if not 'name' in kwargs:
+                raise NameError('Element does not have a name')
+            else:
+                name = kwargs['name']
+        original_element = self.getElement(name)
+        original_properties = {a:original_element[a] for a in original_element.objectproperties if a != 'objectname' and a != 'objecttype'}
+        new_properties = merge_two_dicts(kwargs, original_properties)
+        element = globals()[type](name, type, **new_properties)
         # print element
         self.elementObjects[name] = element
         return element

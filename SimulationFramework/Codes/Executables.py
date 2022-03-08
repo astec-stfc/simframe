@@ -99,7 +99,7 @@ class Executables(object):
     def define_elegant_command(self, location=None, ncpu=1, scaling=None):
         ncpu = self.getNCPU(ncpu, scaling)
         if ncpu > 1:
-            self.elegantExecutable = self.executable('Pelegant', settings=self.settings, location=location, ncpu=ncpu, default=[which('mpiexec.exe'),'-np',str(min([2,int(ncpu/3)])), which('Pelegant.exe')])
+            self.elegantExecutable = executable('Pelegant', settings=self.settings, location=location, ncpu=ncpu, default=[which('mpiexec.exe'),'-np',str(min([2,int(ncpu/3)])), which('Pelegant.exe')])
         else:
             self.elegantExecutable = executable('elegant', settings=self.settings, location=location, ncpu=ncpu, default=[self.sim_codes_location+'Elegant/elegant'])
         self.elegant = self.elegantExecutable.executable

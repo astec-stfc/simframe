@@ -14,6 +14,23 @@ alph:
   order: long
   group: string
 
+apcontour:
+  l: double
+  tilt: double
+  dx: double
+  dy: double
+  dz: double
+  resolution: double
+  xfactor: double
+  yfactor: double
+  invert: int
+  sticky: int
+  cancel: int
+  filename: string
+  xcolumn: string
+  ycolumn: string
+  group: string
+
 bggexp:
   l: double
   lfield: double
