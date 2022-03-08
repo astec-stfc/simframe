@@ -89,6 +89,7 @@ class Framework(Munch):
             self.overwrite = True
 
     def setMasterLatticeLocation(self, master_lattice=None):
+        global MasterLatticeLocation
         if master_lattice is None:
             if MasterLatticeLocation is not None:
                 print('Found MasterLattice Package =', self.global_parameters['master_lattice_location'])
@@ -111,6 +112,7 @@ class Framework(Munch):
         MasterLatticeLocation = self.global_parameters['master_lattice_location']
 
     def setSimCodesLocation(self, simcodes=None):
+        global SimCodesLocation
         if simcodes is None:
             if SimCodesLocation is not None:
                 self.global_parameters['simcodes_location'] = SimCodesLocation.replace('\\','/')
