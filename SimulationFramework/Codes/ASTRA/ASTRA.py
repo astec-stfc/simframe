@@ -96,7 +96,7 @@ class astraLattice(frameworkLattice):
                 if elemstr is not None and not elemstr == '':
                     fulltext += elemstr+'\n'
                     if element.objecttype == 'kicker':
-                        counter.add(element.objecttype,2)
+                        counter.add(element.objecttype)
                     elif element.objecttype == 'longitudinal_wakefield':
                         counter.add(element.objecttype, element.cells)
                     elif element.objecttype == 'aperture' or element.objecttype == 'collimator':

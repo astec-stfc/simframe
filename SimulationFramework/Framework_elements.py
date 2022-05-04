@@ -116,7 +116,6 @@ class dipole(frameworkElement):
         else:
             return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=0)
 
-
     @property
     def width(self):
         if 'width' in self.objectproperties:
@@ -305,10 +304,21 @@ class kicker(dipole):
         vkick = self.vertical_kick if self.vertical_kick is not None else 0
         return self.global_rotation[0] + np.arctan2(vkick, hkick)
 
-    def write_ASTRA(self, n):
-        output = ''
-        output = super().write_ASTRA(n)
-        return output
+    @property
+    def corners(self):
+        """ Do NOT include the bend angle of the magnet, as a kicker should not change the reference trajectory. """
+        corners = [0,0,0,0]
+        if hasattr(self, 'global_rotation') and self.global_rotation is not None:
+            rotation =  self.global_rotation[2] if len(self.global_rotation) == 3 else self.global_rotation
+        else:
+            rotation = 0
+        theta = self.e1+rotation
+        corners[0] = np.array(list(map(add, np.transpose(self.position_start), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
+        corners[3] = np.array(list(map(add, np.transpose(self.position_start), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
+        theta = self.e2+rotation
+        corners[1] = np.array(list(map(add, np.transpose(self.end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
+        corners[2] = np.array(list(map(add, np.transpose(self.end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
+        return corners
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         return ''

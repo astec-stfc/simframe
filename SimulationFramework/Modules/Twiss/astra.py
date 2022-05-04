@@ -32,6 +32,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
         t = 1e-9 * t
         exn = 1e-6*exn
         eyn = 1e-6*eyn
+        mean_x, mean_y, mean_xxp, mean_yyp, mean_zep = 1e-3*np.array([mean_x, mean_y, mean_xxp, mean_yyp, mean_zep])
         rms_x, rms_xp, rms_y, rms_yp, rms_z, rms_e = 1e-3*np.array([rms_x, rms_xp, rms_y, rms_yp, rms_z, rms_e])
         rms_e = 1e6 * rms_e
         self.append('z',z)
