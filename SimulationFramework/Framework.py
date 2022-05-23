@@ -15,12 +15,12 @@ from .Codes.GPT.GPT import *
 from .Framework_Settings import FrameworkSettings
 try:
     import MasterLattice
-    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)
+    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
 except:
     MasterLatticeLocation = None
 try:
     import SimCodes
-    SimCodesLocation = os.path.dirname(SimCodes.__file__)
+    SimCodesLocation = os.path.dirname(SimCodes.__file__)+'/'
 except:
     SimCodesLocation = None
 try:
