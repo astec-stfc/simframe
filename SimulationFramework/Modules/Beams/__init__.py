@@ -27,6 +27,11 @@ from .Particles.twiss import twiss as twissobject
 from .Particles.slice import slice as sliceobject
 from .Particles.sigmas import sigmas as sigmasobject
 from .Particles.centroids import centroids as centroidsobject
+try:
+    from .Particles.mve import MVE as MVEobject
+    imported_mve = True
+except ImportError:
+    imported_mve = False
 
 # I can't think of a clever way of doing this, so...
 def get_properties(obj): return [f for f in dir(obj) if type(getattr(obj, f)) is property]
@@ -37,6 +42,7 @@ parameters = {
 'slice': get_properties(sliceobject),
 'sigmas': get_properties(sigmasobject),
 'centroids': get_properties(centroidsobject),
+'mve': get_properties(MVEobject) if imported_mve else [],
 }
 
 class particlesGroup(munch.Munch):
@@ -112,6 +118,9 @@ class beamGroup(munch.Munch):
     @property
     def emittance(self):
         return particlesGroup([b._beam.emittance for b in self.beams.values()])
+    @property
+    def mve(self):
+        return particlesGroup([b._beam.mve for b in self.beams.values()])
 
     def sort(self, key='z', function='mean', *args, **kwargs):
         if isinstance(function,str) and hasattr(np, function):
@@ -198,6 +207,9 @@ class beam(munch.Munch):
     @property
     def emittance(self):
         return self._beam.emittance
+    @property
+    def mve(self):
+        return self._beam.mve
 
     def rms(self, x, axis=None):
         return np.sqrt(np.mean(x**2, axis=axis))

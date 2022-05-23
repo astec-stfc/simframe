@@ -7,7 +7,9 @@ def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cath
     q = np.full(len(self.x), charge)
     mass = constants.electron_mass if mass is None else mass
     m = np.full(len(self.x), mass)
-    if len(self._beam['charge']) == len(self.x):
+    if 'nmacro' in self._beam and len(self._beam['nmacro']) == len(self.x):
+        nmacro = self._beam['nmacro']
+    elif len(self._beam['charge']) == len(self.x):
         nmacro = self._beam['charge'] / charge
     else:
         nmacro = np.full(len(self.x), abs(self._beam['total_charge'] / constants.elementary_charge / len(self.x)))

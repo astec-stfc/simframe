@@ -7,6 +7,10 @@ from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
 from .sigmas import sigmas as sigmasobject
 from .centroids import centroids as centroidsobject
+try:
+    from .mve import MVE as MVEobject
+except ImportError:
+    pass
 from ...units import UnitValue, unit_multiply
 
 class Particles(Munch):
@@ -71,6 +75,12 @@ class Particles(Munch):
         if not hasattr(self, '_mean'):
             self._mean = centroidsobject(self)
         return self._mean
+
+    @property
+    def mve(self):
+        if not hasattr(self, '_mve'):
+            self._mve = MVEobject(self)
+        return self._mve
 
     def covariance(self, u, up):
         with warnings.catch_warnings():
