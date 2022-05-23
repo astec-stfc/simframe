@@ -2,6 +2,7 @@ import copy
 
 '''
     Pure Python/Numpy implementation of the Nelder-Mead algorithm.
+    Taken from: https://github.com/fchollet/nelder-mead
     Reference: https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
 '''
 
@@ -9,7 +10,8 @@ import copy
 def nelder_mead(f, x_start,
                 step=0.1, no_improve_thr=10e-6,
                 no_improv_break=10, max_iter=0,
-                alpha=1., gamma=2., rho=-0.5, sigma=0.5):
+                alpha=1., gamma=2., rho=-0.5, sigma=0.5,
+                converged=None):
     '''
         @param f (function): function to optimize, must return a scalar score
             and operate over a numpy array of the same dimensions as x_start
@@ -46,6 +48,10 @@ def nelder_mead(f, x_start,
         # order
         res.sort(key=lambda x: x[1])
         best = res[0][1]
+
+        # break if <= converged
+        if converged is not None and best <= converged:
+            return res[0]
 
         # break after max_iter
         if max_iter and iters >= max_iter:
