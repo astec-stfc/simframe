@@ -120,36 +120,42 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         self.setup_lattice(self.inputlist, dir)
         self.before_tracking()
-        fitvalue = self.track()
+        try:
+            fitvalue = self.track()
+            constraintsList = self.calculate_constraints()
+            fitvalue = self.cons.constraints(constraintsList)
+        except:
+            fitvalue = 1e26
 
         if isinstance(self.opt_iteration, int):
             self.opt_iteration += 1
-
-        constraintsList = self.calculate_constraints()
-        fitvalue = self.cons.constraints(constraintsList)
-
-        if isinstance(self.opt_iteration, int):
             print('fitvalue[', self.opt_iteration-1, '] = ', fitvalue)
         else:
             print('fitvalue = ', fitvalue)
 
         if save_state:
-            if isinstance(self.opt_iteration, int):
-                saveState(self.subdir, inputargs, self.opt_iteration-1, fitvalue)
-            else:
-                saveState(self.subdir, inputargs, self.opt_iteration, fitvalue)
+            try:
+                if isinstance(self.opt_iteration, int):
+                    saveState(self.subdir, inputargs, self.opt_iteration-1, fitvalue)
+                else:
+                    saveState(self.subdir, inputargs, self.opt_iteration, fitvalue)
+            except:
+                pass
         if save_state and fitvalue < self.bestfit:
             print(self.cons.constraintsList(constraintsList))
             print('!!!!!!  New best = ', fitvalue, inputargs)
-            copyfile(dir+'/changes.yaml', self.best_changes)
             self.bestfit = fitvalue
-            self.framework.save_lattice()
+            try:
+                copyfile(dir+'/changes.yaml', self.best_changes)
+                self.framework.save_lattice()
+            except:
+                pass
         else:
             if self.deleteFolders:
                 shutil.rmtree(dir, ignore_errors=True)
         return fitvalue
 
-    def Nelder_Mead(self, best=None, step=0.1, best_changes='./nelder_mead_best_changes.yaml', subdir='nelder_mead'):
+    def Nelder_Mead(self, best=None, step=0.1, best_changes='./nelder_mead_best_changes.yaml', subdir='nelder_mead', converged=None):
         best = np.array(self.best) if best is None else np.array(best)
         self.subdir = subdir
         self.optdir = self.subdir + '/iteration_'
@@ -159,7 +165,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         with open(subdir+'/best_solutions_running.csv','w') as out:
             self.opt_iteration = 0
-        res = nelder_mead(self.OptimisingFunction, best, step=step, max_iter=300, no_improv_break=100)
+        res = nelder_mead(self.OptimisingFunction, best, step=step, max_iter=300, no_improv_break=100, converged=converged)
         print(res)
 
     def Simplex(self, best=None, best_changes='./simplex_best_changes.yaml', subdir='simplex', maxiter=300):
