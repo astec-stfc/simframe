@@ -28,9 +28,15 @@ dipole:
   lsc_high_frequency_cutoff_end: high_frequency_cutoff1
   lsc_low_frequency_cutoff_start: low_frequency_cutoff0
   lsc_low_frequency_cutoff_end: low_frequency_cutoff1
+  n_kicks: n_slices
 quadrupole:
   isr_enable: isr
   sr_enable: synch_rad
+  n_kicks: n_slices
+sextupole:
+  isr_enable: isr
+  sr_enable: synch_rad
+  n_kicks: n_slices
 cavity:
   field_amplitude: volt
   longitudinal_wakefield_sdds: zwakefile

@@ -116,6 +116,7 @@ class dipole(frameworkElement):
         else:
             return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=0)
 
+
     @property
     def width(self):
         if 'width' in self.objectproperties:
@@ -304,21 +305,10 @@ class kicker(dipole):
         vkick = self.vertical_kick if self.vertical_kick is not None else 0
         return self.global_rotation[0] + np.arctan2(vkick, hkick)
 
-    @property
-    def corners(self):
-        """ Do NOT include the bend angle of the magnet, as a kicker should not change the reference trajectory. """
-        corners = [0,0,0,0]
-        if hasattr(self, 'global_rotation') and self.global_rotation is not None:
-            rotation =  self.global_rotation[2] if len(self.global_rotation) == 3 else self.global_rotation
-        else:
-            rotation = 0
-        theta = self.e1+rotation
-        corners[0] = np.array(list(map(add, np.transpose(self.position_start), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
-        corners[3] = np.array(list(map(add, np.transpose(self.position_start), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
-        theta = self.e2+rotation
-        corners[1] = np.array(list(map(add, np.transpose(self.end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
-        corners[2] = np.array(list(map(add, np.transpose(self.end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
-        return corners
+    def write_ASTRA(self, n):
+        output = ''
+        output = super().write_ASTRA(n)
+        return output
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         return ''
@@ -375,6 +365,39 @@ class quadrupole(frameworkElement):
         relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
         output = str(self.objecttype) + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
+        # coord = self.gpt_coordinates(self.middle, self.global_rotation)
+        # output = str(self.objecttype) + '( "wcs", ' + coord + ', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
+        return output
+
+class sextupole(frameworkElement):
+
+    def __init__(self, name=None, type='sextupole', **kwargs):
+        super().__init__(name, type, **kwargs)
+        self.add_default('k2l', 0)
+        self.add_default('n_kicks', 20)
+        self.strength_errors = [0]
+
+    @property
+    def k2(self):
+        return self.k2l / self.length
+    @k2.setter
+    def k2(self, k2):
+        self.k2l = self.length * k2
+
+    @property
+    def dk2(self):
+        return self.strength_errors[0]
+    @dk2.setter
+    def dk2(self, dk2):
+        self.strength_errors[0] = dk2
+
+    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+        # print(self.objectname)
+        # print('self.start = ', self.position_start)
+        relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
+        relpos = relpos + [0, 0, self.length/2.]
+        coord = self.gpt_coordinates(relpos, relrot)
+        output = str(self.objecttype) + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', '+str(self.length)+', '+str(-Brho*self.k2)+');\n'
         # coord = self.gpt_coordinates(self.middle, self.global_rotation)
         # output = str(self.objecttype) + '( "wcs", ' + coord + ', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
         return output

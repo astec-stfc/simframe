@@ -1,14 +1,11 @@
-import numpy as np
 import os
 import sys
-# sys.path.append(os.path.abspath(__file__+'/../../'))
-from .. import Framework as fw
-from ..Modules.constraints import *
-from ..Modules import Beams as rbf
-from ..Modules import Twiss as rtf
+from SimulationFramework import Framework as fw
+from SimulationFramework.Modules.constraints import *
+from SimulationFramework.Modules import Beams as rbf
+from SimulationFramework.Modules import Twiss as rtf
 import shutil
 import uuid
-from functools import partial
 import yaml as yaml
 
 def merge_two_dicts(x, y):
@@ -45,7 +42,7 @@ class TemporaryDirectory(object):
 
 class fitnessFunc(object):
 
-    def __init__(self, lattice='Lattices/clara400_v12_v3_elegant_jkj.def'):
+    def __init__(self, *args, lattice='Lattices/clara400_v12_v3_elegant_jkj.def', **kwargs):
         self.CLARA_dir = os.path.relpath(os.path.dirname(os.path.dirname( os.path.abspath(__file__))))# if CLARA_dir is None else CLARA_dir
         self.cons = constraintsClass()
         self.beam = rbf.beam()
@@ -67,7 +64,7 @@ class fitnessFunc(object):
         self.genesis_ncpu = 2
         self.doTracking = True
         self.change_to_elegant = True
-        self.framework = fw.Framework('.', clean=False, overwrite=False, verbose=False)
+        self.framework = fw.Framework('.', *args, clean=False, overwrite=False, verbose=False, **kwargs)
 
     def set_CLARA_directory(self, clara_dir):
         self.CLARA_dir = clara_dir
@@ -96,6 +93,7 @@ class fitnessFunc(object):
                 if not hasattr(self, 'framework'):
                     self.framework = fw.Framework(None)
                     self.framework.loadSettings(self.lattice_file)
+                print(n,p)
                 best.append(self.framework[n][p])
             self.best = best
         return best

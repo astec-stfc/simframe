@@ -156,6 +156,11 @@ quadrupole:
     k1l,
     k1,
   }
+sextupole:
+  keywords: {
+    k2l,
+    k2,
+  }
 rf_deflecting_cavity:
   keywords: {
     phase,

@@ -1,16 +1,10 @@
-import os, errno, sys, shutil
+import os, shutil
 import numpy as np
-import random
-# sys.path.append(os.path.abspath(__file__+'/../../../../../'))
-from ..Modules.constraints import constraintsClass
-from ..Modules.nelder_mead import nelder_mead
-import time
+from SimulationFramework.Modules.constraints import constraintsClass
+from SimulationFramework.Modules.nelder_mead import nelder_mead
 import csv
 from copy import copy
-from functools import partial
-from collections import OrderedDict
-from shutil import copyfile
-from ..Modules.merge_two_dicts import merge_two_dicts
+from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from . import runElegant as runEle
 from scipy.optimize import minimize
 
@@ -58,8 +52,8 @@ class Optimise_Elegant(runEle.fitnessFunc):
         ['CLA-S07-DCP-01', 'factor'],
     ]
 
-    def __init__(self):
-        super(Optimise_Elegant, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.cons = constraintsClass()
         self.changes = None
         self.lattice = None
@@ -92,7 +86,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
     def set_start_file(self, file):
         self.start_lattice = file
 
-    def OptimisingFunction(self, inputargs, *args, **kwargs):
+    def OptimisingFunction(self, inputargs, *args, track=True, endfile=None, **kwargs):
         if not self.POST_INJECTOR:
             parameternames = self.injector_parameter_names + self.parameter_names
         else:
@@ -101,6 +95,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         self.linac_fields = np.array([i[2] for i in self.inputlist if i[1] == 'field_amplitude'])
         self.linac_phases = np.array([i[2] for i in self.inputlist if i[1] == 'phase'])
+        self.vbc_angle = np.array([i[2] for i in self.inputlist if i[1] == 'angle'])
 
         if 'iteration' in list(kwargs.keys()):
             self.opt_iteration = kwargs['iteration']
@@ -120,12 +115,12 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         self.setup_lattice(self.inputlist, dir)
         self.before_tracking()
-        try:
-            fitvalue = self.track()
-            constraintsList = self.calculate_constraints()
-            fitvalue = self.cons.constraints(constraintsList)
-        except:
-            fitvalue = 1e26
+        if track:
+            fitvalue = self.track(endfile=endfile)
+        constraintsList = self.calculate_constraints()
+        fitvalue = self.cons.constraints(constraintsList)
+        # except:
+        #     fitvalue = 1e26
 
         if isinstance(self.opt_iteration, int):
             self.opt_iteration += 1
@@ -146,7 +141,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             print('!!!!!!  New best = ', fitvalue, inputargs)
             self.bestfit = fitvalue
             try:
-                copyfile(dir+'/changes.yaml', self.best_changes)
+                shutil.copyfile(dir+'/changes.yaml', self.best_changes)
                 self.framework.save_lattice()
             except:
                 pass
@@ -155,7 +150,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
                 shutil.rmtree(dir, ignore_errors=True)
         return fitvalue
 
-    def Nelder_Mead(self, best=None, step=0.1, best_changes='./nelder_mead_best_changes.yaml', subdir='nelder_mead', converged=None):
+    def Nelder_Mead(self, best=None, step=0.1, best_changes='./nelder_mead_best_changes.yaml', subdir='nelder_mead', converged=None, **kwargs):
         best = np.array(self.best) if best is None else np.array(best)
         self.subdir = subdir
         self.optdir = self.subdir + '/iteration_'
@@ -163,12 +158,13 @@ class Optimise_Elegant(runEle.fitnessFunc):
         print('best = ', best)
         self.bestfit = 1e26
 
+        os.makedirs(subdir, exist_ok=True)
         with open(subdir+'/best_solutions_running.csv','w') as out:
             self.opt_iteration = 0
-        res = nelder_mead(self.OptimisingFunction, best, step=step, max_iter=300, no_improv_break=100, converged=converged)
+        res = nelder_mead(self.OptimisingFunction, best, step=step, max_iter=300, no_improv_break=100, converged=converged, **kwargs)
         print(res)
 
-    def Simplex(self, best=None, best_changes='./simplex_best_changes.yaml', subdir='simplex', maxiter=300):
+    def Simplex(self, best=None, best_changes='./simplex_best_changes.yaml', subdir='simplex', maxiter=300, **kwargs):
         best = self.best if best is None else best
         self.subdir = subdir
         self.optdir = self.subdir + '/iteration_'
@@ -176,12 +172,13 @@ class Optimise_Elegant(runEle.fitnessFunc):
         print('best = ', best)
         self.bestfit = 1e26
 
+        os.makedirs(subdir, exist_ok=True)
         with open(subdir+'/best_solutions_running.csv','w') as out:
             self.opt_iteration = 0
         res = minimize(self.OptimisingFunction, best, method='nelder-mead', options={'disp': True, 'maxiter': maxiter, 'adaptive': True})
         print(res.x)
 
-    def Example(self, best=None, step=0.1, dir='example'):
+    def Example(self, best=None, step=0.1, dir='example', **kwargs):
         best = np.array(self.best) if best is None else np.array(best)
         self.subdir = dir
         self.optdir = self.subdir
@@ -191,6 +188,6 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         self.opt_iteration = ''
         # try:
-        self.OptimisingFunction(best)
+        self.OptimisingFunction(best, **kwargs)
         # except:
             # pass

@@ -43,7 +43,7 @@ def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0,0,0]):
     self.sddsindex += 1
     x = SDDSFile(index=(self.sddsindex), ascii=ascii)
 
-    Cnames = ["x", "xp", "y", "yp", "t","p"]
+    Cnames = ["x", "xp", "y", "yp", "t", "p"]
     Ctypes = [SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE]
     Csymbols = ["", "x'","","y'","",""]
     Cunits = ["m","","m","","s","m$be$nc"]
