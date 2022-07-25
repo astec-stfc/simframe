@@ -527,7 +527,7 @@ class cavity(frameworkElement):
             if self.Structure_Type == 'TravellingWave' and self.cells is not None and self.cell_length is not None:
                 output += 'ffac'+subname+' = ' + str((self.cells) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
             else:
-                output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
+                output += 'ffac'+subname+' = ' + str(1.0 * np.sqrt(2) * self.field_amplitude)+';\n'
             output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', "'+str(self.generate_field_file_name(self.field_definition_gdf))+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
         else:
             output = ""
