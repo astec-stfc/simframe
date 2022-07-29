@@ -1,10 +1,10 @@
 import os
 import munch
 try:
-    import sdds.sdds
-except ImportError:
+    import sdds
+except:
     try:
-        import sdds
+        import ASTeCsdds.sdds as sdds
     except:
         print('No SDDS available!')
 import numpy as np
@@ -203,7 +203,10 @@ class SDDSFile(object):
         self._columns = munch.Munch()
         self._parameters = munch.Munch()
         self._index = index
-        self._sddsObject = sdds.SDDS(self.index%20)
+        try:
+            self._sddsObject = sdds.SDDS(self.index%20)
+        except:
+            self._sddsObject = sdds.sdds.SDDS(self.index%20)
         if ascii:
             self._sddsObject.mode = self._sddsObject.SDDS_ASCII
         else:
@@ -220,7 +223,10 @@ class SDDSFile(object):
     def clear(self):
         self._columns = munch.Munch()
         self._parameters = munch.Munch()
-        self._sddsObject = sdds.SDDS(self.index%20)
+        try:
+            self._sddsObject = sdds.SDDS(self.index%20)
+        except:
+            self._sddsObject = sdds.sdds.SDDS(self.index%20)
 
     def column_names(self):
         return self._columns.keys()
