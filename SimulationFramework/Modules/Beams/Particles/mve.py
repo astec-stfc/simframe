@@ -1,8 +1,7 @@
-import SimulationFramework.Modules.minimumVolumeEllipse as mve
+from SimulationFramework.Modules.minimumVolumeEllipse import getMinVolEllipse
 import numpy as np
 from scipy.stats import gaussian_kde
 from functools import partial
-MVE = mve.EllipsoidTool()
 
 class MVE():
 
@@ -62,7 +61,7 @@ class MVE():
             return ConvexHull(beam, qhull_options='QJ').volume
 
     def mve_emittance(self, x, xp, p=None):
-        (center, radii, rotation, hullP) = MVE.getMinVolEllipse(list(zip(x,xp)), .01)
+        (center, radii, rotation, hullP) = getMinVolEllipse(list(zip(x,xp)), .01)
         emittance = radii[0] * radii[1]
         if p is None:
             return emittance
