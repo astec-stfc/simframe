@@ -1,10 +1,10 @@
 import os
 import munch
 try:
-    import sdds
-except:
+    import sdds.sdds
+except ImportError:
     try:
-        import ASTeCsdds.sdds as sdds
+        import sdds
     except:
         print('No SDDS available!')
 import numpy as np
