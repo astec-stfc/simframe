@@ -1,3 +1,4 @@
+from math import copysign
 from operator import add
 from .Framework_objects import *
 from .FrameworkHelperFunctions import *
@@ -266,6 +267,8 @@ class dipole(frameworkElement):
             new_ccs = self.gpt_ccs(ccs).name
             b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.02) * self.check_value(self.edge_field_integral, default=0.4))
             dl = 0 if self.deltaL is None else self.deltaL
+            e1 = self.e1 if self.angle >= 0 else -1*self.e1
+            e2 = self.e2 if self.angle >= 0 else -1*self.e2
             # print(self.objectname, ' - deltaL = ', dl)
             # b1 = 0.
             '''
@@ -273,7 +276,7 @@ class dipole(frameworkElement):
             sectormagnet( "wcs", "bend1", rho, field, e1, e2, 0., 100., 0 ) ;
             '''
             output = 'ccs( ' + ccs.name + ', '+ coord + ', ' + new_ccs + ');\n'
-            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(self.e1) + ', ' + str(self.e2) + ', ' + str(abs(dl)) + ', ' + str(b1) + ', 0);\n'
+            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(e1) + ', ' + str(e2) + ', ' + str(abs(dl)) + ', ' + str(b1) + ', 0);\n'
         else:
             output = ''
         return output
@@ -490,9 +493,9 @@ class cavity(frameworkElement):
                     # If using rftmez0 or similar
                     # value = ((90+value)/360.0)*(2*3.14159) if key.lower() == 'phase' else value
                     # In ELEGANT the voltages  need to be compensated
-                    value = (self.cells+4.7) * self.cell_length * (1 / np.sqrt(2)) * value if key.lower() == 'volt' else value
+                    value = (self.cells+4.8) * self.cell_length * (1 / np.sqrt(2)) * value if key.lower() == 'volt' else value
                     # If using rftmez0 or similar
-                    value = 1/(2**0.5) * value if key.lower() == 'ez' else value
+                    value = 1/(np.sqrt(2)) * value if key.lower() == 'ez' else value
                     # In CAVITY NKICK = n_cells
                     value = 3*self.cells if key.lower() == 'n_kicks' else value
                     if key.lower() == 'n_bins' and value > 0:
@@ -516,6 +519,7 @@ class cavity(frameworkElement):
         coord = self.gpt_coordinates(relpos, relrot)
         '''
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
+        wakefield("wcs","z",  6.78904 + 4.06667 / 2, 4.06667, 50, "Sz5um10mm.gdf", "z","","","Wz", "FieldFactorWz", 10 * 122 / 4.06667) ;
         '''
         if self.crest is None:
             self.crest = 0
@@ -524,11 +528,39 @@ class cavity(frameworkElement):
             output = 'f = ' + str(self.frequency) +';\n' + \
             'w'+subname+' = 2*pi*f;\n' + \
             'phi'+subname+' = ' + str(self.crest - self.phase) + '/deg;\n'
-            if self.Structure_Type == 'TravellingWave' and self.cells is not None and self.cell_length is not None:
-                output += 'ffac'+subname+' = ' + str((self.cells) * self.cell_length * (1 / np.sqrt(2)) * self.field_amplitude)+';\n'
+            if self.Structure_Type == 'TravellingWave':
+                output += 'ffac'+subname+' = ' + str((1 + (0.005 * self.length**1.5)) * (9.0/(2.0 * np.pi)) * self.field_amplitude)+';\n'
             else:
-                output += 'ffac'+subname+' = ' + str(1.0 * np.sqrt(2) * self.field_amplitude)+';\n'
+                output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
+
+            # if False and self.Structure_Type == 'TravellingWave' and hasattr(self, 'attenuation_constant') and hasattr(self, 'shunt_impedance') and hasattr(self, 'design_power') and hasattr(self, 'design_gamma'):
+            #     '''
+            #     trwlinac(ECS,ao,Rs,Po,P,Go,thetao,phi,w,L)
+            #     '''
+            #     relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+            #     power = float(self.field_amplitude) / 25e6 * float(self.design_power)
+            #     output += 'trwlinac' + '( ' + ccs.name + ', "z", '+ str(relpos[2]+self.coupling_cell_length) + ', ' + str(self.attenuation_constant / self.length) + ', ' + str(float(self.shunt_impedance) / self.length)\
+            #             + ', ' + str(float(self.design_power) / self.length) + ', ' + str(power / self.length) + ', ' + str(1000/0.511) + ', ' + str(self.crest)\
+            #             + ', '+str(self.phase)+', w'+subname+', ' + str(self.length) + ');\n'
+            # else:
             output += 'map1D_TM' + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', "'+str(self.generate_field_file_name(self.field_definition_gdf))+'", "Z","Ez", ffac'+subname+', phi'+subname+', w'+subname+');\n'
+            if expand_substitution(self,self.wakefield_gdf) is not None:
+                relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+                relpos = relpos + [0, 0, 0]
+                coord = self.gpt_coordinates(relpos, relrot)
+                output += 'wakefield("wcs","z",  '+ str(relpos[2]) +', '+ str(self.length) +', 50, \"'+ str(self.generate_field_file_name(self.wakefield_gdf)) +'\", "z","Wx","Wy","Wz", "FieldFactorWz", '+ str(self.cells) +' / '+ str(self.length) +\
+                          ', "FieldFactorWx", '+ str(self.cells) +' / '+ str(self.length) + ', "FieldFactorWy", '+ str(self.cells) +' / '+ str(self.length) + ') ;\n'
+            else:
+                if expand_substitution(self,self.longitudinal_wakefield_gdf) is not None:
+                    relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+                    relpos = relpos + [0, 0, 0]
+                    coord = self.gpt_coordinates(relpos, relrot)
+                    output += 'wakefield("wcs","z",  '+ str(relpos[2]) +', '+ str(self.length) +', 50, \"'+ str(self.generate_field_file_name(self.longitudinal_wakefield_gdf)) +'\", "z","","","Wz", "FieldFactorWz", '+ str(self.cells) +' / '+ str(self.length) +') ;\n'
+                if expand_substitution(self,self.transverse_wakefield_gdf) is not None:
+                    relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+                    relpos = relpos + [0, 0, 0]
+                    coord = self.gpt_coordinates(relpos, relrot)
+                    output += 'wakefield("wcs","z",  '+ str(relpos[2]) +', '+ str(self.length) +', 50, \"'+ str(self.generate_field_file_name(self.transverse_wakefield_gdf)) +'\", "z","Wx","Wy","", "FieldFactorWx", '+ str(self.cells) +' / '+ str(self.length) +', "FieldFactorWy", '+ str(self.cells) +' / '+ str(self.length) +') ;\n'
         else:
             output = ""
         return output
@@ -747,12 +779,15 @@ class screen(frameworkElement):
         z = self.middle[2]
         return """quadrupole{\nposition{rho="""+str(z)+""", psi=0.0, marker=screen"""+str(n)+"""a}\nproperties{strength=0.0, alpha=0, horizontal_offset=0,vertical_offset=0}\nposition{rho="""+str(z+1e-6)+""", psi=0.0, marker=screen"""+str(n)+"""b}\n}\n"""
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def write_GPT(self, Brho, ccs="wcs", output_ccs=None, *args, **kwargs):
         relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
         relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
         self.gpt_screen_position = relpos[2]
-        output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +');\n'
+        if output_ccs is not None:
+            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +',\"' + str(output_ccs) + '\");\n'
+        else:
+            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +');\n'
         return output
 
     def astra_to_hdf5(self, lattice, cathode=False):
@@ -776,7 +811,7 @@ class screen(frameworkElement):
         elegantbeamfilename = self.output_filename.replace('.sdds','.SDDS').strip('\"')
         rbf.sdds.read_SDDS_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
         HDF5filename = self.output_filename.replace('.sdds','.hdf5').replace('.SDDS','.hdf5').strip('\"')
-        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end)
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
         if self.global_parameters['delete_tracking_files']:
             os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
 
