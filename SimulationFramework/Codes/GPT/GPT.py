@@ -42,8 +42,9 @@ class gptLattice(frameworkLattice):
             # self.headers['dtmaxt'] = gpt_dtmaxt(tstart=0, tend="0.25/c", dtmax="0.25/1000/c")
         else:
             self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
-        if self.csr_enable and not os.name == 'nt':
+        if self.csr_enable and len(self.dipoles) > 0 and max([abs(d.angle) for d in self.dipoles]) > 0:# and not os.name == 'nt':
             self.headers['csr1d'] = gpt_csr1d()
+            # print('CSR Enabled!', self.objectname, len(self.dipoles))
         # self.headers['forwardscatter'] = gpt_forwardscatter(ECS='"wcs", "I"', name='cathode', probability=0)
         # self.headers['scatterplate'] = gpt_scatterplate(ECS='"wcs", "z", -1e-6', model='cathode', a=1, b=1)
         for header in self.headers:
@@ -66,12 +67,12 @@ class gptLattice(frameworkLattice):
                         fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
                     screen0pos = 0
                 ccs = new_ccs
-        if not isinstance(element, screen):
-            element = self.endScreenObject = self.endScreen()
-            fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs)
-        else:
-            # print('End screen', element.objectname)
-            self.endScreenObject = None
+        # if not isinstance(element, screen):
+        element = self.endScreenObject = self.endScreen()
+        fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs, output_ccs="wcs")
+        # else:
+        #     # print('End screen', element.objectname)
+        #     self.endScreenObject = None
         relpos, relrot = ccs.relative_position(element.position_end, element.global_rotation)
         if self.particle_definition == 'laser':
             fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
@@ -91,7 +92,7 @@ class gptLattice(frameworkLattice):
 
     def run(self):
         """Run the code with input 'filename'"""
-        command = self.executables[self.code] + ['-o', self.objectname+'_out.gdf'] + ['GPTLICENSE='+self.global_parameters['GPTLICENSE']] + [self.objectname+'.in']
+        main_command = self.executables[self.code] + ['-o', self.objectname+'_out.gdf'] + ['GPTLICENSE='+self.global_parameters['GPTLICENSE']] + [self.objectname+'.in']
         my_env = os.environ.copy()
         my_env["LD_LIBRARY_PATH"] = my_env["LD_LIBRARY_PATH"] + ":/opt/GPT3.3.6/lib/" if "LD_LIBRARY_PATH" in my_env else "/opt/GPT3.3.6/lib/"
         my_env["OMP_WAIT_POLICY"] = "PASSIVE"
@@ -99,9 +100,16 @@ class gptLattice(frameworkLattice):
         post_command = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['position','avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
         post_command_t = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emitt.gdf'] + [self.objectname+'_out.gdf'] + ['time', 'avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay','avgfBx','avgfEx','avgfBy','avgfEy','avgfBz','avgfEz']
         post_command_traj = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'traj.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz']
+        with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.bat'), "w") as batfile:
+            for command in [main_command, post_command, post_command_t, post_command_traj]:
+                output = ""
+                for c in command:
+                    output += c + ' '
+                output += "\n"
+                batfile.write(output)
         with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
             # print('gpt command = ', command)
-            subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
+            subprocess.call(main_command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
             subprocess.call(post_command, stdout=f, cwd=self.global_parameters['master_subdir'])
             subprocess.call(post_command_t, stdout=f, cwd=self.global_parameters['master_subdir'])
             subprocess.call(post_command_traj, stdout=f, cwd=self.global_parameters['master_subdir'])
@@ -136,7 +144,7 @@ class gptLattice(frameworkLattice):
             self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
 
         gdfbeamfilename = self.particle_definition+'.gdf'
-        cathode = self.particle_definition == 'generator'
+        cathode = self.particle_definition == 'laser'
         rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
         subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.particle_definition+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho

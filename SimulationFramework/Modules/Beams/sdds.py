@@ -33,6 +33,7 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
     else:
         self._beam['total_charge'] = charge
         self._beam['charge'] = np.full(len(self._beam['z']), self._beam['total_charge']/len(self._beam['x']))
+    self._beam['nmacro'] = np.full(len(self._beam['z']), 1)
     # self._beam['charge'] = []
 
 def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0,0,0]):

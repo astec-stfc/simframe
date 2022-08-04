@@ -201,7 +201,7 @@ class twiss(munch.Munch):
 
     if use_matplotlib:
         def plot(self, *args, **kwargs):
-            plot.plot(self, *args, **kwargs)
+            return plot.plot(self, *args, **kwargs)
 
     def covariance(self, u, up):
         u2 = u - np.mean(u)

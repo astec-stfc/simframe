@@ -44,6 +44,14 @@ cavity:
     longitudinal_wakefield_enable,
     transverse_wakefield_enable,
     crest,
+    attenuation_constant,
+    shunt_impedance,
+    design_power,
+    design_gamma,
+    bunch_phase,
+    wakefield_gdf,
+    longitudinal_wakefield_gdf,
+    transverse_wakefield_gdf,
   }
 longitudinal_wakefield:
   keywords: {

@@ -129,9 +129,15 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
     if hasattr(gdfbeamdata,'q') and  hasattr(gdfbeamdata,'nmacro'):
         self._beam['charge'] = gdfbeamdata.q * gdfbeamdata.nmacro
         self._beam['total_charge'] = np.sum(self._beam['charge'])
+        self._beam['nmacro'] = gdfbeamdata.nmacro
+    elif hasattr(gdfbeamdata,'q'):
+        self._beam['charge'] = gdfbeamdata.q
+        self._beam['total_charge'] = np.sum(self._beam['charge'])
+        self._beam['nmacro'] = int(self._beam['charge'] / constants.elementary_charge)
     else:
         if charge is None:
             self._beam['total_charge'] = 0
+            self._beam['charge'] = np.full(len(self.z), 0)
         else:
             self._beam['total_charge'] = charge
     # print(self._beam['charge'],self._beam['total_charge'])
@@ -142,4 +148,8 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
     self._beam['px'] = vx / velocity_conversion
     self._beam['py'] = vy / velocity_conversion
     self._beam['pz'] = vz / velocity_conversion
+    if hasattr(gdfbeamdata,'nmacro'):
+        self._beam['nmacro'] = gdfbeamdata.nmacro
+    else:
+        self._beam['nmacro'] = np.full(len(self.z), 1)
     return gdfbeam

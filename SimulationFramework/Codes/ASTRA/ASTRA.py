@@ -231,15 +231,15 @@ class astra_charge(astra_header):
 
     @property
     def space_charge(self):
-        return False if self.space_charge_mode == 'False' or self.space_charge_mode == False or self.space_charge_mode == None else True
+        return not (self.space_charge_mode == 'False' or self.space_charge_mode == False or self.space_charge_mode == None)
 
     @property
     def space_charge_2D(self):
-        return True if self.space_charge and self.space_charge_mode != '3D' else False
+        return self.space_charge and self.space_charge_mode != '3D'
 
     @property
     def space_charge_3D(self):
-        return True if self.space_charge and not self.space_charge_2D else False
+        return self.space_charge and not self.space_charge_2D
 
     @property
     def grid_size(self):
