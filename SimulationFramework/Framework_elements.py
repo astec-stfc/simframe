@@ -94,11 +94,25 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
+    def intersection(self):
+        sx, sy, sz = self.position_start
+        angle = -self.angle
+        l = self.length
+        if abs(angle) > 0:
+            cx = 0
+            cy = 0
+            cz = l * np.tan(0.5 * angle) / angle
+            vec = [cx, cy, cz]
+        else:
+            vec = [0,0,l/2.0]
+        return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
+
+    @property
     def end(self):
         start = self.position_start
         angle = -1*self.angle
         if abs(angle) > 1e-9:
-            ex = (self.length * (np.cos(angle) - 1)) / angle
+            ex = (self.length * (1 - np.cos(angle))) / angle
             ey = 0
             ez = (self.length * (np.sin(angle))) / angle
             return np.array(self.position_start) + self.rotated_position(np.array([ex, ey, ez]), offset=self.starting_offset, theta=self.y_rot)
@@ -155,10 +169,10 @@ class dipole(frameworkElement):
 
     @property
     def intersect(self):
-        return self.rho * np.tan(self.angle / 2.0)
+        return self.length * np.tan(0.5 * self.angle) / self.angle
     @property
     def rho(self):
-        return -1*self.length/self.angle if self.length is not None and abs(self.angle) > 1e-9 else 0
+        return abs(self.length/self.angle) if self.length is not None and abs(self.angle) > 1e-9 else 0
 
     @property
     def e1(self):
@@ -257,15 +271,14 @@ class dipole(frameworkElement):
         output += 'cos('+str(angle)+'), 0, -sin('+str(angle)+'), 0, 1 ,0'
         return output
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def write_GPT(self, Brho, ccs, *args, **kwargs):
         # field = Brho/self.rho if abs(self.rho) > 0 else 0
-        field = -1*self.angle * Brho / self.length
-        if abs(field) > 0 and abs(self.rho) < 100:
-            relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
-            relpos = relpos + [0, 0, -self.intersect]
+        field = 1.0 * self.angle * Brho / self.length
+        if abs(field) > 0 and self.rho < 100:
+            relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
             coord = self.gpt_coordinates(relpos, relrot)
             new_ccs = self.gpt_ccs(ccs).name
-            b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.02) * self.check_value(self.edge_field_integral, default=0.4))
+            b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.016) * self.check_value(self.edge_field_integral, default=0.5)) if self.check_value(self.half_gap, default=0.0) > 0 else 10000
             dl = 0 if self.deltaL is None else self.deltaL
             e1 = self.e1 if self.angle >= 0 else -1*self.e1
             e2 = self.e2 if self.angle >= 0 else -1*self.e2
@@ -276,7 +289,7 @@ class dipole(frameworkElement):
             sectormagnet( "wcs", "bend1", rho, field, e1, e2, 0., 100., 0 ) ;
             '''
             output = 'ccs( ' + ccs.name + ', '+ coord + ', ' + new_ccs + ');\n'
-            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(e1) + ', ' + str(e2) + ', ' + str(abs(dl)) + ', ' + str(b1) + ', 0);\n'
+            output += 'sectormagnet( ' + ccs.name + ', '+ new_ccs +', '+str(abs(self.rho))+', '+str(abs(field))+', ' + str(e1) + ', ' + str(e2) + ', ' + str(dl) + ', ' + str(b1) + ', 0);\n'
         else:
             output = ''
         return output
@@ -286,8 +299,8 @@ class dipole(frameworkElement):
             # print('Creating new CCS')
             number = str(int(ccs._name.split('_')[1])+1) if ccs._name != "wcs" else "1"
             name = 'ccs_' + number if ccs._name != "wcs" else "ccs_1"
-            # print('middle position = ', self.end)
-            return gpt_ccs(name, self.end, self.global_rotation + np.array([0, 0, self.angle]), self.intersect)
+            # print('middle position = ', self.start, self.middle)
+            return gpt_ccs(name, self.middle, self.global_rotation - np.array([0, 0, self.angle]), 0*abs(self.intersect))
         else:
             return ccs
 
@@ -364,8 +377,8 @@ class quadrupole(frameworkElement):
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         # print(self.objectname)
         # print('self.start = ', self.position_start)
-        relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
-        relpos = relpos + [0, 0, self.length/2.]
+        relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+        # relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
         output = str(self.objecttype) + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
         # coord = self.gpt_coordinates(self.middle, self.global_rotation)
@@ -397,8 +410,8 @@ class sextupole(frameworkElement):
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         # print(self.objectname)
         # print('self.start = ', self.position_start)
-        relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
-        relpos = relpos + [0, 0, self.length/2.]
+        relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+        # relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
         output = str(self.objecttype) + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', '+str(self.length)+', '+str(-Brho*self.k2)+');\n'
         # coord = self.gpt_coordinates(self.middle, self.global_rotation)
@@ -515,7 +528,7 @@ class cavity(frameworkElement):
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         self.update_field_definition()
         relpos, relrot = ccs.relative_position(self.start, self.global_rotation)
-        relpos = relpos + [0, 0, 0]
+        # relpos = relpos + [0, 0, 0]
         coord = self.gpt_coordinates(relpos, relrot)
         '''
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
@@ -525,9 +538,9 @@ class cavity(frameworkElement):
             self.crest = 0
         subname = str(relpos[2]).replace('.','')
         if expand_substitution(self,self.field_definition_gdf) is not None:
-            output = 'f = ' + str(self.frequency) +';\n' + \
-            'w'+subname+' = 2*pi*f;\n' + \
-            'phi'+subname+' = ' + str(self.crest - self.phase) + '/deg;\n'
+            output = 'f'+subname+' = ' + str(self.frequency) +';\n' + \
+            'w'+subname+' = 2*pi*f'+subname+';\n' + \
+            'phi'+subname+' = ' + str((self.crest - self.phase) % 360.0) + '/deg;\n'
             if self.Structure_Type == 'TravellingWave':
                 output += 'ffac'+subname+' = ' + str((1 + (0.005 * self.length**1.5)) * (9.0/(2.0 * np.pi)) * self.field_amplitude)+';\n'
             else:
@@ -603,7 +616,7 @@ class solenoid(frameworkElement):
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         relpos, relrot = ccs.relative_position(self.start, self.global_rotation)
-        relpos = relpos + [0, 0, 0]
+        # relpos = relpos + [0, 0, 0]
         coord = self.gpt_coordinates(relpos, relrot)
         '''
         map1D_B("wcs",xOffset,0,zOffset+0.,cos(angle),0,-sin(angle),0,1,0,"bas_sol_norm.gdf","Z","Bz",gunSolField);
@@ -780,14 +793,14 @@ class screen(frameworkElement):
         return """quadrupole{\nposition{rho="""+str(z)+""", psi=0.0, marker=screen"""+str(n)+"""a}\nproperties{strength=0.0, alpha=0, horizontal_offset=0,vertical_offset=0}\nposition{rho="""+str(z+1e-6)+""", psi=0.0, marker=screen"""+str(n)+"""b}\n}\n"""
 
     def write_GPT(self, Brho, ccs="wcs", output_ccs=None, *args, **kwargs):
-        relpos, relrot = ccs.relative_position(self.position_start, self.global_rotation)
-        relpos = relpos + [0, 0, self.length/2.]
+        relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+        # relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
         self.gpt_screen_position = relpos[2]
         if output_ccs is not None:
-            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +',\"' + str(output_ccs) + '\");\n'
+            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) + ',\"' + str(output_ccs) + '\");\n'
         else:
-            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) +');\n'
+            output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) + ',' + ccs.name + ');\n'
         return output
 
     def astra_to_hdf5(self, lattice, cathode=False):
@@ -815,11 +828,11 @@ class screen(frameworkElement):
         if self.global_parameters['delete_tracking_files']:
             os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
 
-    def gdf_to_hdf5(self, gptbeamfilename, cathode=False):
+    def gdf_to_hdf5(self, gptbeamfilename, cathode=False, gdfbeam=None):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
         # try:
             # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
-            rbf.gdf.read_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position)
+            rbf.gdf.read_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + gptbeamfilename, position=self.gpt_screen_position, gdfbeam=gdfbeam)
             HDF5filename = self.objectname+'.hdf5'
             rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0], cathode=cathode, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
         # except:
@@ -1031,11 +1044,11 @@ class longitudinal_wakefield(cavity):
                     ['Wk_hx', {'value': self.scale_field_hx, 'default': 1}],
                     ['Wk_hy', {'value': self.scale_field_hy, 'default': 0}],
                     ['Wk_hz', {'value': self.scale_field_hz, 'default': 0}],
-                    ['Wk_equi_grid', {'value': self.equal_grid, 'default': 0.5}],
-                    ['Wk_N_bin', {'value': 4, 'default': 100}],
+                    ['Wk_equi_grid', {'value': self.equal_grid, 'default': 0.66}],
+                    ['Wk_N_bin', {'value': 10, 'default': 100}],
                     ['Wk_ip_method', {'value': self.interpolation_method, 'default': 2}],
-                    ['Wk_smooth', {'value': self.smooth, 'default': 0.5}],
-                    ['Wk_sub', {'value': self.subbins, 'default': 3}],
+                    ['Wk_smooth', {'value': self.smooth, 'default': 0.25}],
+                    ['Wk_sub', {'value': self.subbins, 'default': 10}],
                     ['Wk_scaling', {'value': 1*self.scale_kick, 'default': 1}],
                 ]), n)
                 output += '\n'
@@ -1100,10 +1113,12 @@ class gpt_ccs(Munch):
         psi, phi, theta = rotation
         # print(self.name, [x - self.x, y - self.y, z - self.z])
         # print(self.name, [psi - self.psi, phi - self.phi, theta - self.theta])
-        newpos = [x - self.x, y - self.y, z - self.z]
+        # newpos = [x - self.x, y - self.y, z - self.z]
+        length = np.sqrt((x - self.x)**2 + (y - self.y)**2 + (z - self.z)**2)
         # print('newpos = ', self.name,  x, self.x, y, self.y, z, self.z)
-        finalrot = [psi - self.psi, phi - self.phi, theta - self.theta]
-        finalpos = np.array([0,0, -self.intersect]) + np.dot(np.array(newpos), _rotation_matrix(-self.theta))
+        finalrot = np.array([psi - self.psi, phi - self.phi, theta - self.theta])
+        finalpos = np.array([0, 0, abs(self.intersect) + length])# + np.dot(np.array(newpos), _rotation_matrix(-self.theta))
+        # print(self._name, finalpos, finalrot)
         return finalpos, finalrot
 
     @property

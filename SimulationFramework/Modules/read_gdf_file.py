@@ -63,7 +63,7 @@ def is_gdf_file(filename):
         return  gdf_id_check == GDFID
 
 class read_gdf_file(object):
-###############################################################################
+    ###############################################################################
 
     def create_grab_group(self, name):
         self.grab_groups[name] = grab_group(name)

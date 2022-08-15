@@ -549,7 +549,7 @@ class chicane(frameworkGroup):
                 starting_angle += elem_angle
 
     def __str__(self):
-        return str([[self.allElementObjects[e].objectname, self.allElementObjects[e].angle, self.allElementObjects[e].global_rotation[2], self.allElementObjects[e].position_start[0], self.allElementObjects[e].position_end[0]] for e in self.elements])
+        return str([[self.allElementObjects[e].objectname, self.allElementObjects[e].angle, self.allElementObjects[e].global_rotation[2], self.allElementObjects[e].position_start, self.allElementObjects[e].position_end] for e in self.elements])
 
 class s_chicane(chicane):
     def __init__(self, name, elementObjects, type, elements, **kwargs):

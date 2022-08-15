@@ -156,7 +156,7 @@ class Particles(Munch):
         return UnitValue(np.sqrt(self.cpx**2 + self.cpy**2 + self.cpz**2), 'eV/c')
     @property
     def Brho(self):
-        return UnitValue(np.mean(self.p) / constants.elementary_charge, 'T*m')
+        return UnitValue(np.mean(self.pz) / constants.elementary_charge, 'T*m')
     @property
     def gamma(self):
         return UnitValue(np.sqrt(1+(self.cp/self.E0_eV)**2), '')
