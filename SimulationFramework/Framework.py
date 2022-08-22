@@ -642,9 +642,15 @@ class Framework(Munch):
         rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
 
     def loadElementErrors(self, file):
+        # load error definitions from markup file
         if isinstance(file, str) and ('.yaml' in file):
             with open(file, 'r') as infile:
                 self.errorElements = dict(yaml.safe_load(infile))
+        # define errors from dictionary
+        elif isinstance(file, dict):
+            self.errorElements = file
+
+        # set error definitions for all lattice objects
         latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('MasterLattice' not in x))]
         for l in self.latticeObjects:
             if isinstance(self.latticeObjects[l], tuple(latticeClasses)):

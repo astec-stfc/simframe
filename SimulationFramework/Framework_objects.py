@@ -53,7 +53,7 @@ class frameworkLattice(Munch):
         self.lsc_low_frequency_cutoff_start = -1
         self.lsc_low_frequency_cutoff_end = -1
         self._sample_interval = self.file_block['input']['sample_interval'] if 'input' in self.file_block and 'sample_interval' in self.file_block['input'] else 1
-        self.errorElements = errorElements
+        self.setErrorElements(errorElements)
 
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
@@ -355,8 +355,18 @@ class frameworkLattice(Munch):
             return [a for a in sNames if a[0] == elem]
 
     def setErrorElements(self, errorElements):
+        error_defns = {'elements': (dict, {}),
+                       'seed': ((int, float), 987654321),
+                       'nreplicas': ((int, float), 2)
+                       }
+        self.errorElements = OrderedDict()
         if isinstance(errorElements, dict):
-            self.errorElements = errorElements
+            for key in error_defns:
+                types, default = error_defns[key]
+                self.errorElements[key] = errorElements[key] if ((key in errorElements) and isinstance(errorElements[key], types)) else default
+        else:
+            for key in error_defns:
+                self.errorElements[key] = default
 
 class frameworkObject(Munch):
 

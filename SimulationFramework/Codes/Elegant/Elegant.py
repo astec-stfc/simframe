@@ -44,20 +44,19 @@ class elegantLattice(frameworkLattice):
                        'type': '"gaussian"'
                        }
 
-        # check all element names in the errorElements object are correct
         output = {}
-        for ele in self.errorElements:
-            # check if the element exists in the lattice at all
+        for ele in self.errorElements['elements']:
+            # check that elements in the errorElements dictionary exist
             if ele not in self.allElements:
                 raise KeyError('Specified element %s does not exist in the lattice' % str(ele))
 
             if ele in self.elements:
-                # fetch object type
+                # fetch element type
                 eleType = str(self.allElementObjects[ele].objecttype)
                 output[ele] = {}
 
-                # iterate through parameters
-                for item in self.errorElements[ele]:
+                # iterate through element parameters
+                for item in self.errorElements['elements'][ele]:
                     # check that parameter is valid for the specified element type
                     if item not in elementkeywords[eleType]['keywords']:
                         raise KeyError('Element type %s has no keyword %s' % (str(eleType), item))
@@ -69,9 +68,9 @@ class elegantLattice(frameworkLattice):
 
                     # fill in defined error parameters
                     for key in default_err:
-                        if key in self.errorElements[ele][item]:
-                            output[ele][keyword][key] = self.errorElements[ele][item][key]
-        self.errorElements = output
+                        if key in self.errorElements['elements'][ele][item]:
+                            output[ele][keyword][key] = self.errorElements['elements'][ele][item][key]
+        self.errorElements['elements'] = output
 
     def write(self):
         self.lattice_file = self.global_parameters['master_subdir']+'/'+self.objectname+'.lte'
@@ -93,7 +92,10 @@ class elegantLattice(frameworkLattice):
         alphax=self.alphax,
         alphay=self.alphay,
         global_parameters=self.global_parameters,
-        error_elements=self.errorElements)
+        error_elements=self.errorElements['elements'],
+        error_seed=self.errorElements['seed'],
+        runs=self.errorElements['nreplicas']
+        )
 
     def postProcess(self):
         if self.trackBeam:
@@ -164,7 +166,8 @@ class elegantCommandFile(object):
         return output
 
 class elegantTrackFile(elegantCommandFile):
-    def __init__(self, error_elements={}, lattice='', trackBeam=True, elegantbeamfilename='', betax=None, betay=None, alphax=None, alphay=None, etax=None, etaxp=None, *args, **kwargs):
+    def __init__(self, lattice='', trackBeam=True, elegantbeamfilename='', betax=None, betay=None, alphax=None, alphay=None, etax=None, etaxp=None, \
+                 error_elements={}, runs=1, error_seed=987654321, *args, **kwargs):
         super(elegantTrackFile, self).__init__(lattice, *args, **kwargs)
         self.elegantbeamfilename = elegantbeamfilename
         self.sample_interval = kwargs['sample_interval'] if 'sample_interval' in kwargs else 1
@@ -175,20 +178,22 @@ class elegantTrackFile(elegantCommandFile):
         self.alphay = alphay if alphay is not None else self.global_parameters['beam'].twiss.alpha_y_corrected
         self.etax = etax if etax is not None else self.global_parameters['beam'].twiss.eta_x
         self.etaxp = etaxp if etaxp is not None else self.global_parameters['beam'].twiss.eta_xp
+
         if not os.name == 'nt':
             self.addCommand(objecttype='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
         else:
             self.addCommand(objecttype='global_settings', inhibit_fsync=1)
         self.addCommand(objecttype='run_setup',lattice=self.lattice_filename, \
             use_beamline=lattice.objectname,p_central=np.mean(self.global_parameters['beam'].BetaGamma), \
+            random_number_seed=error_seed, \
             centroid='%s.cen',always_change_p0 = 1, \
             sigma='%s.sig', default_order=3)
 
         enable_errors = True if (len(error_elements) > 0) else False
         if enable_errors:
-            self.addCommand(objecttype='run_control', n_steps=2, n_passes=1, reset_rf_for_each_step=0, first_is_fiducial=1)
+            self.addCommand(objecttype='run_control', n_steps=runs, n_passes=1, reset_rf_for_each_step=0, first_is_fiducial=1)
             self.addCommand(objecttype='error_control', no_errors_for_first_step=1, error_log='%s.erl')
-            for e in error_elements.keys():
+            for e in error_elements:
                 for item in error_elements[e]:
                     self.addCommand(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **error_elements[e][item])
         else:
