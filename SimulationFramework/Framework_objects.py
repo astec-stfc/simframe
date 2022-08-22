@@ -1,6 +1,4 @@
-import os
-import subprocess
-import yaml
+import os, subprocess, yaml ,copy
 from munch import Munch, unmunchify
 from collections import OrderedDict
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -31,7 +29,7 @@ with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elements_E
     elements_Elegant = yaml.safe_load(infile)
 
 class frameworkLattice(Munch):
-    def __init__(self, name, file_block, elementObjects, groupObjects, settings, executables, global_parameters):
+    def __init__(self, name, file_block, elementObjects, groupObjects, errorElements, settings, executables, global_parameters):
         super(frameworkLattice, self).__init__()
         self.global_parameters = global_parameters
         self.objectname = name
@@ -55,6 +53,7 @@ class frameworkLattice(Munch):
         self.lsc_low_frequency_cutoff_start = -1
         self.lsc_low_frequency_cutoff_end = -1
         self._sample_interval = self.file_block['input']['sample_interval'] if 'input' in self.file_block and 'sample_interval' in self.file_block['input'] else 1
+        self.errorElements = errorElements
 
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
@@ -355,6 +354,10 @@ class frameworkLattice(Munch):
             sNames = self.getSNames()
             return [a for a in sNames if a[0] == elem]
 
+    def setErrorElements(self, errorElements):
+        if isinstance(errorElements, dict):
+            self.errorElements = errorElements
+
 class frameworkObject(Munch):
 
     def __init__(self, objectname=None, objecttype=None, **kwargs):
@@ -425,17 +428,16 @@ class frameworkObject(Munch):
 
 class frameworkCommand(frameworkObject):
 
-    def __init__(self, name=None, type=None, **kwargs):
-        super(frameworkCommand, self).__init__(name, type, **kwargs)
-        if not type in commandkeywords:
-            raise NameError('Command \'%s\' does not exist' % commandname)
+    def __init__(self, objectname=None, objecttype=None, **kwargs):
+        super(frameworkCommand, self).__init__(objectname, objecttype, **kwargs)
+        if not objecttype in commandkeywords:
+            raise NameError('Command \'%s\' does not exist' % objecttype)
 
     def write_Elegant(self):
         wholestring=''
         string = '&'+self.objecttype+'\n'
-        # print(self.objecttype, self.objectproperties)
         for key in commandkeywords[self.objecttype]:
-            if key.lower() in self.objectproperties and not key =='name' and not key == 'type' and not self.objectproperties[key.lower()] is None:
+            if key.lower() in self.objectproperties and not key =='objectname' and not key == 'objecttype' and not self.objectproperties[key.lower()] is None:
                 string+='\t'+key+' = '+str(self.objectproperties[key.lower()])+'\n'
         string+='&end\n'
         return string
@@ -480,7 +482,6 @@ class frameworkGroup(object):
             for e in self.elements:
                 setattr(self.allElementObjects[e], p, v)
                 # print ('Changing group elements ', self.objectname, ' ', p, ' = ', v, '  result = ', self.allElementObjects[self.elements[0]].objectname, self.get_Parameter(p))
-
 
     # def __getattr__(self, p):
     #     return self.get_Parameter(p)

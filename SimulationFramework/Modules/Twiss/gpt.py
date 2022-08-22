@@ -31,7 +31,22 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         # 'avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay','avgfBx','avgfEx','avgfBy','avgfEy','avgfBz','avgfEz'
         # self.beam['x'] = gdfbeamdata.x
         if hasattr(gdfbeamdata, 'avgz'):
+            # mjohnson code added 2022-08-11
+            nsteps = len(gdfbeamdata.avgz)
+            z_sort = np.array([x for _, x in sorted(zip(gdfbeamdata.avgt, gdfbeamdata.avgz))], dtype=float)
+            order = np.array([x for _, x in sorted(zip(gdfbeamdata.avgt, np.arange(nsteps)))], dtype=int)
+
+            offset = 0.
+            for i in range(1, nsteps):
+                pos = 0. if i==0 else z_sort[i-1]
+                if z_sort[i] < pos:
+                    offset += pos
+
+                gdfbeamdata.avgz[order[i]] = z_sort[i] + offset
+
+            # original code begins
             self.append('z', gdfbeamdata.avgz)
+
         elif hasattr(gdfbeamdata, 'position'):
             self.append('z', gdfbeamdata.position)
         cp = self.E0 * np.sqrt(gdfbeamdata.avgG**2 - 1)

@@ -56,6 +56,7 @@ class Framework(Munch):
         self.elementObjects = OrderedDict()
         self.latticeObjects = OrderedDict()
         self.commandObjects = OrderedDict()
+        self.errorElements = OrderedDict()
         self.groupObjects = OrderedDict()
         self.progress = 0
         self.basedirectory = os.getcwd()
@@ -216,7 +217,7 @@ class Framework(Munch):
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'
-        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.settings, self.executables, self.global_parameters)
+        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.errorElements, self.settings, self.executables, self.global_parameters)
 
     def convert_numpy_types(self, v):
         if isinstance(v, (np.ndarray, list, tuple)):
@@ -365,7 +366,7 @@ class Framework(Munch):
             if not name == 'generator' and not (name == exclude or (isinstance(exclude, (list, tuple)) and name in exclude)):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[name]
-                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.settings, self.executables, self.global_parameters)
+                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.errorElements, self.settings, self.executables, self.global_parameters)
 
     def read_Element(self, name, element, subelement=False):
         if name == 'filename':
@@ -640,6 +641,15 @@ class Framework(Munch):
         t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
         rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
 
+    def loadElementErrors(self, file):
+        if isinstance(file, str) and ('.yaml' in file):
+            with open(file, 'r') as infile:
+                self.errorElements = dict(yaml.safe_load(infile))
+        latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('MasterLattice' not in x))]
+        for l in self.latticeObjects:
+            if isinstance(self.latticeObjects[l], tuple(latticeClasses)):
+                self.latticeObjects[l].setErrorElements(self.errorElements)
+
 class frameworkDirectory(Munch):
 
     def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml'):
@@ -664,7 +674,6 @@ class frameworkDirectory(Munch):
         def general_plot(self, *args, **kwargs):
             return groupplot.general_plot(self, *args, **kwargs)
 
-
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
 
@@ -680,7 +689,6 @@ class frameworkDirectory(Munch):
             disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
             return pprint({k.replace('object',''):v for k,v in elem.items() if k not in disallowed})
         return elem
-
 
 def load_directory(directory='.', twiss=True, beams=False, **kwargs):
     fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs)
