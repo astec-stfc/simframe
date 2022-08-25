@@ -41,28 +41,48 @@ class elegantLattice(frameworkLattice):
         '''prepare the dictionary of element error definitions'''
         default_err = {'amplitude': 1E-6,
                        'fractional': 0,
-                       'type': '"gaussian"'
+                       'type': '"gaussian"',
+                       # 'bind': 0,
+                       # 'bind_across_names': 0
                        }
 
         output = {}
         for ele in self.errorElements['elements']:
-            # check that elements in the errorElements dictionary exist
-            if ele not in self.allElements:
+            # identify definitions with wildcard characters
+            wildcard = True if ('*' in ele) else False
+
+            # raise errors for non-wildcarded element names that don't exist
+            if (not wildcard) and (ele not in self.allElements):
                 raise KeyError('Specified element %s does not exist in the lattice' % str(ele))
 
-            if ele in self.elements:
-                # fetch element type
-                eleType = str(self.allElementObjects[ele].objecttype)
+            # check that each element exists (or has a wildcard match) in the current lattice section
+            exists_in_lattice = False
+            if (not wildcard) and (ele in self.elements):
+                exists_in_lattice = True
+                elementTypes = [self.allElementObjects[ele].objecttype]
+            elif wildcard:
+                matchingElements = [x for x in self.elements if (ele.replace('*', '') in x)]
+                if len(matchingElements) > 0:
+                    exists_in_lattice = True
+                    elementTypes = [self.allElementObjects[x].objecttype for x in matchingElements]
+
+            # element is in lattice, continue with preprocessing
+            if exists_in_lattice:
+
+                # check element type
+                elementType = str(elementTypes[0])
+                if not all([(x == elementType) for x in elementTypes]):
+                    raise TypeError('All lattice elements matching a wilcarded element (%s) must have the same type (%s)' % (ele, elementType))
                 output[ele] = {}
 
                 # iterate through element parameters
                 for item in self.errorElements['elements'][ele]:
                     # check that parameter is valid for the specified element type
-                    if item not in elementkeywords[eleType]['keywords']:
-                        raise KeyError('Element type %s has no keyword %s' % (str(eleType), item))
+                    if item not in elementkeywords[elementType]['keywords']:
+                        raise KeyError('Element type %s has no keyword %s' % (str(elementType), item))
 
                     # check for keyword conversions
-                    conversions = keyword_conversion_rules_elegant[eleType]
+                    conversions = keyword_conversion_rules_elegant[elementType]
                     keyword = conversions[item] if (item in conversions) else item
                     output[ele][keyword] = copy.copy(default_err)
 
@@ -70,6 +90,11 @@ class elegantLattice(frameworkLattice):
                     for key in default_err:
                         if key in self.errorElements['elements'][ele][item]:
                             output[ele][keyword][key] = self.errorElements['elements'][ele][item][key]
+
+                    # bind errors for wildcarded elements
+                    if wildcard:
+                        output[ele][keyword]['bind'] = 1
+                        output[ele][keyword]['bind_across_names'] = 1
         self.errorElements['elements'] = output
 
     def write(self):
@@ -92,8 +117,8 @@ class elegantLattice(frameworkLattice):
         alphax=self.alphax,
         alphay=self.alphay,
         global_parameters=self.global_parameters,
-        error_elements=self.errorElements['elements'],
-        error_seed=self.errorElements['seed'],
+        elementErrors=self.errorElements['elements'],
+        seed=self.errorElements['seed'],
         runs=self.errorElements['nreplicas']
         )
 
@@ -167,7 +192,7 @@ class elegantCommandFile(object):
 
 class elegantTrackFile(elegantCommandFile):
     def __init__(self, lattice='', trackBeam=True, elegantbeamfilename='', betax=None, betay=None, alphax=None, alphay=None, etax=None, etaxp=None, \
-                 error_elements={}, runs=1, error_seed=987654321, *args, **kwargs):
+                 elementErrors={}, runs=1, seed=987654321, *args, **kwargs):
         super(elegantTrackFile, self).__init__(lattice, *args, **kwargs)
         self.elegantbeamfilename = elegantbeamfilename
         self.sample_interval = kwargs['sample_interval'] if 'sample_interval' in kwargs else 1
@@ -185,17 +210,17 @@ class elegantTrackFile(elegantCommandFile):
             self.addCommand(objecttype='global_settings', inhibit_fsync=1)
         self.addCommand(objecttype='run_setup',lattice=self.lattice_filename, \
             use_beamline=lattice.objectname,p_central=np.mean(self.global_parameters['beam'].BetaGamma), \
-            random_number_seed=error_seed, \
+            random_number_seed=seed, \
             centroid='%s.cen',always_change_p0 = 1, \
             sigma='%s.sig', default_order=3)
 
-        enable_errors = True if (len(error_elements) > 0) else False
+        enable_errors = True if (len(elementErrors) > 0) else False
         if enable_errors:
             self.addCommand(objecttype='run_control', n_steps=runs, n_passes=1, reset_rf_for_each_step=0, first_is_fiducial=1)
             self.addCommand(objecttype='error_control', no_errors_for_first_step=1, error_log='%s.erl')
-            for e in error_elements:
-                for item in error_elements[e]:
-                    self.addCommand(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **error_elements[e][item])
+            for e in elementErrors:
+                for item in elementErrors[e]:
+                    self.addCommand(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
         else:
             self.addCommand(objecttype='run_control', n_steps=1, n_passes=1)
         self.addCommand(objecttype='twiss_output',matched = 0,output_at_each_step=0,radiation_integrals=1,statistics=1,filename="%s.twi",
