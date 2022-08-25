@@ -13,10 +13,10 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
     elegantData = elegantObject.data
     for k, v in elegantData.items():
         # case handling for multiple ELEGANT runs per file
-        # only extract the last run
+        # only extract the first run (in ELEGANT this is the fiducial run)
         if isinstance(v, np.ndarray):
             if v.ndim > 1:
-                self._beam[k] = v[-1]
+                self._beam[k] = v[0]
             else:
                 self._beam[k] = v
         else:

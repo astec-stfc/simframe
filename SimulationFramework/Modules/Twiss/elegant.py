@@ -35,8 +35,9 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         elegantData = elegantObject.data
         for k in elegantData:
             # handling for multiple elegant runs per file (e.g. error simulations)
+            # by default extract only the first run (in ELEGANT this is the fiducial)
             if isinstance(elegantData[k], np.ndarray) and (elegantData[k].ndim > 1):
-                elegantData[k] = elegantData[k][-1]
+                elegantData[k] = elegantData[k][0]
         z = elegantData['Z']
         self.append('z', z)
         cp = elegantData['pCentral0'] * self.E0
