@@ -92,7 +92,10 @@ class astraLattice(frameworkLattice):
             for element in elements:
                 element.starting_offset = self.starting_offset
                 element.starting_rotation = self.starting_rotation
-                elemstr = element.write_ASTRA(counter.counter(element.objecttype))
+                if element.objecttype == 'cavity':
+                    elemstr = element.write_ASTRA(counter.counter(element.objecttype), auto_phase=self.headers['newrun']['auto_phase'])
+                else:
+                    elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == '':
                     fulltext += elemstr+'\n'
                     if element.objecttype == 'kicker':

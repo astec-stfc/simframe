@@ -230,7 +230,7 @@ class dipole(frameworkElement):
         z2 = self.position_end[2]
         return """dipole{\nposition{rho="""+str(z1)+""", psi="""+str(chop(self.theta+self.e1))+""", marker=d"""+str(n)+"""a}\nproperties{r="""+str(self.rho)+"""}\nposition{rho="""+str(z2)+""", psi="""+str(chop(self.theta+self.angle-self.e2))+""", marker=d"""+str(n)+"""b}\n}\n"""
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         # print('self.start = ', self.position_start)
         # print('self.end = ', self.position_end)
         # print('self.rotation = ', self.global_rotation[2])
@@ -321,7 +321,7 @@ class kicker(dipole):
         vkick = self.vertical_kick if self.vertical_kick is not None else 0
         return self.global_rotation[0] + np.arctan2(vkick, hkick)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         output = ''
         output = super().write_ASTRA(n)
         return output
@@ -355,7 +355,7 @@ class quadrupole(frameworkElement):
     def dk1(self, dk1):
         self.strength_errors[0] = dk1
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         if abs(self.k1 + self.dk1) > 0:
             return self._write_ASTRA(OrderedDict([
                 ['Q_pos', {'value': self.middle[2] + self.dz, 'default': 0}],
@@ -464,7 +464,9 @@ class cavity(frameworkElement):
             cells = None
         return cells
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
+        auto_phase = kwargs['auto_phase'] if 'auto_phase' in kwargs else True
+        crest = self.crest if not auto_phase else 0
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ['FILE_EFieLD', {'value': '\'' + basename + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
@@ -473,7 +475,7 @@ class cavity(frameworkElement):
             ['C_numb', {'value': self.cells}],
             ['Nue', {'value': self.frequency / 1e9, 'default': 2998.5}],
             ['MaxE', {'value': self.field_amplitude / 1e6, 'default': 0}],
-            ['Phi', {'value': -self.phase, 'default': 0.0}],
+            ['Phi', {'value': crest-self.phase, 'default': 0.0}],
             ['C_smooth', {'value': self.smooth, 'default': 10}],
             ['C_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
             ['C_yoff', {'value': self.start[1] + self.dy, 'default': 0}],
@@ -599,7 +601,7 @@ class solenoid(frameworkElement):
         if hasattr(self, 'field_definition_gdf') and self.field_definition_gdf is not None:
             self.field_definition_gdf = expand_substitution(self, self.field_definition_gdf)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ['FILE_BFieLD', {'value': '\'' + basename + '\'', 'default': ''}]
         return self._write_ASTRA(OrderedDict([
@@ -672,7 +674,7 @@ class aperture(frameworkElement):
         dic['Ap_R'] = {'value': width}
         return self.write_ASTRA_Common(dic)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         self.number_of_elements = 1
         if self.shape == 'elliptical' or self.shape == 'circular':
             dic = self.write_ASTRA_Circular(n)
@@ -757,7 +759,7 @@ class screen(frameworkElement):
         if 'output_filename' not in kwargs:
             self.output_filename = str(self.objectname)+'.sdds'
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA(OrderedDict([
             ['Screen', {'value': self.middle[2], 'default': 0}],
             ['Scr_xrot', {'value': self.y_rot + self.dy_rot, 'default': 0}],
@@ -853,7 +855,7 @@ class beam_position_monitor(screen):
     def __init__(self, name=None, type='beam_position_monitor', **kwargs):
         super().__init__(name, type, **kwargs)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA(OrderedDict([
             ['Screen', {'value': self.middle[2], 'default': 0}],
             ['Scr_xrot', {'value': self.y_rot + self.dy_rot, 'default': 0}],
@@ -865,7 +867,7 @@ class beam_arrival_monitor(screen):
     def __init__(self, name=None, type='beam_arrival_monitor', **kwargs):
         super().__init__(name, type, **kwargs)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         return ''
 
 class collimator(aperture):
@@ -939,7 +941,7 @@ class fel_modulator(frameworkElement):
         self.add_default('k1l', 0)
         self.add_default('n_steps', 1*self.periods)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA(OrderedDict([
             ['Q_pos', {'value': self.middle[2] + self.dz, 'default': 0}],
         ]), n)
@@ -969,7 +971,7 @@ class wiggler(frameworkElement):
         # self.add_default('k1l', 0)
         # self.add_default('n_steps', 1*self.periods)
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA(OrderedDict([
             ['Q_pos', {'value': self.middle[2] + self.dz, 'default': 0}],
         ]), n)
