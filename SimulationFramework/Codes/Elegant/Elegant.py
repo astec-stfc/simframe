@@ -235,7 +235,7 @@ class elegantTrackFile(elegantCommandFile):
         Z0 = lattice.startObject['position_start'][2],
         theta0 = 0)
         mat = self.addCommand(objecttype='matrix_output', SDDS_output="%s.mat",
-        full_matrix_only=0, SDDS_output_order=2)
+        full_matrix_only=0, individual_matrices=1, SDDS_output_order=2)
         if self.trackBeam:
             if enable_errors:
                 self.addCommand(objecttype='sdds_beam', input=self.elegantbeamfilename, sample_interval=self.sample_interval, reuse_bunch=1)

@@ -92,7 +92,10 @@ class astraLattice(frameworkLattice):
             for element in elements:
                 element.starting_offset = self.starting_offset
                 element.starting_rotation = self.starting_rotation
-                elemstr = element.write_ASTRA(counter.counter(element.objecttype))
+                if element.objecttype == 'cavity':
+                    elemstr = element.write_ASTRA(counter.counter(element.objecttype), auto_phase=self.headers['newrun']['auto_phase'])
+                else:
+                    elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == '':
                     fulltext += elemstr+'\n'
                     if element.objecttype == 'kicker':
@@ -147,7 +150,8 @@ class astraLattice(frameworkLattice):
         rbf.astra.read_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
         rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
         HDF5filename = self.allElementObjects[self.end].objectname+'.hdf5'
-        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle, cathode=cathode)
+        toffset = self.global_parameters['beam']['toffset']
+        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.allElementObjects[self.end].middle, cathode=cathode, toffset=toffset)
         # print('ASTRA/astra_to_hdf5', 'finished')
 
 class astra_header(frameworkElement):

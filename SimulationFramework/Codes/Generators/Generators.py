@@ -71,7 +71,7 @@ generator_keywords = {
             'thermal_emittance': 0.9e-3,
             'distribution_type_x': 'radial',
             'sigma_x': 0.25e-3,
-            'distribution_type_y': 'r',
+            'distribution_type_y': 'radial',
             'sigma_y': 0.25e-3,
             'offset_x': 0,
             'offset_y': 0,

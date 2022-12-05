@@ -54,6 +54,7 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         inputgrp['centered'] = centered
         inputgrp['code'] = self['code']
         inputgrp['particle_mass'] = mass
+        inputgrp['toffset'] = abs(toffset)
         beamgrp = f.create_group("beam")
         if 'reference_particle' in self._beam:
             beamgrp['reference_particle'] = self._beam['reference_particle']
