@@ -29,7 +29,7 @@ with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elements_E
     elements_Elegant = yaml.safe_load(infile)
 
 class frameworkLattice(Munch):
-    def __init__(self, name, file_block, elementObjects, groupObjects, errorElements, settings, executables, global_parameters):
+    def __init__(self, name, file_block, elementObjects, groupObjects, runSettings, settings, executables, global_parameters):
         super(frameworkLattice, self).__init__()
         self.global_parameters = global_parameters
         self.objectname = name
@@ -53,7 +53,9 @@ class frameworkLattice(Munch):
         self.lsc_low_frequency_cutoff_start = -1
         self.lsc_low_frequency_cutoff_end = -1
         self._sample_interval = self.file_block['input']['sample_interval'] if 'input' in self.file_block and 'sample_interval' in self.file_block['input'] else 1
-        self.setErrorElements(errorElements)
+
+        # define settings for simulations with multiple runs
+        self.updateRunSettings(runSettings)
 
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
@@ -354,19 +356,11 @@ class frameworkLattice(Munch):
             sNames = self.getSNames()
             return [a for a in sNames if a[0] == elem]
 
-    def setErrorElements(self, errorElements):
-        error_defns = {'elements': (dict, {}),
-                       'seed': ((int, float), 987654321),
-                       'nreplicas': ((int, float), 2)
-                       }
-        self.errorElements = OrderedDict()
-        if isinstance(errorElements, dict):
-            for key in error_defns:
-                types, default = error_defns[key]
-                self.errorElements[key] = errorElements[key] if ((key in errorElements) and isinstance(errorElements[key], types)) else default
+    def updateRunSettings(self, runSettings):
+        if isinstance(runSettings, runSetup):
+            self.runSettings = runSettings
         else:
-            for key in error_defns:
-                self.errorElements[key] = default
+            raise TypeError('runSettings argument passed to frameworkLattice.updateRunSettings is not a runSetup instance')
 
 class frameworkObject(Munch):
 
@@ -929,3 +923,72 @@ class lscdrift(frameworkElement):
                     string+= tmpstring
         wholestring+=string+';\n'
         return wholestring
+
+class runSetup(object):
+    '''class defining settings for simulations that include multiple runs'''
+
+    def __init__(self):
+        # define the number of runs and the random number seed
+        self.nruns = 1
+        self.seed  = 0
+
+        # init errorElement and elementScan settings as None
+        self.elementErrors = None
+        self.elementScan = None
+
+    def setNRuns(self, nruns):
+        '''sets the number of simulation runs to a new value'''
+        # enforce integer argument type
+        if isinstance(nruns, (int, float)):
+            self.nruns = int(nruns)
+        else:
+            raise TypeError('Argument nruns passed to runSetup instance must be an integer')
+    
+    def setSeedValue(self, seed):
+        '''sets the random number seed to a new value for all lattice objects'''
+        # enforce integer argument type
+        if isinstance(seed, (int, float)):
+            self.seed = int(seed)
+        else:
+            raise TypeError('Argument seed passed to runSetup must be an integer')
+
+    def loadElementErrors(self, file):
+        # load error definitions from markup file
+        if isinstance(file, str) and ('.yaml' in file):
+            with open(file, 'r') as infile:
+                error_setup = dict(yaml.safe_load(infile))
+        # define errors from dictionary
+        elif isinstance(file, dict):
+            error_setup = file
+
+        # assign the element error definitions
+        self.elementErrors = error_setup['elements']
+        self.elementScan = None
+
+        # set the number of runs and random number seed, if available
+        if 'nruns' in error_setup:
+            self.setNRuns(error_setup['nruns'])
+        if 'seed' in error_setup:
+            self.setSeedValue(error_setup['seed'])
+
+    def setElementScan(self, name, item, scanrange, multiplicative=False):
+        '''define a parameter scan for a single parameter of a given machine element'''
+        if not (isinstance(name, str) and isinstance(item, str)):
+            raise TypeError('Machine element name and item (parameter) must be defined as strings')
+        
+        if isinstance(scanrange, (list, tuple, np.ndarray)) and (len(scanrange) == 2) and all([isinstance(x, (float, int)) for x in scanrange]):
+            minval, maxval = scanrange
+        else:
+            raise TypeError('Scan range (min. and max.) must be defined as floats')
+        
+        if not isinstance(multiplicative, bool):
+            raise ValueError('Argument multiplicative passed to runSetup.setElementScan must be a boolean')
+
+        # if no type errors were raised, build an assign a dictionary
+        self.elementScan = {'name': name,
+                            'item': item,
+                            'min':  minval,
+                            'max':  maxval,
+                            'multiplicative': multiplicative
+                            }
+        self.elementErrors = None

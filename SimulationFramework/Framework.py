@@ -13,6 +13,7 @@ from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
 from .Framework_Settings import FrameworkSettings
+from .Framework_objects import runSetup
 try:
     import MasterLattice
     MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
@@ -43,6 +44,8 @@ def dict_constructor(loader, node):
 yaml.add_representer(OrderedDict, dict_representer)
 yaml.add_constructor(_mapping_tag, dict_constructor)
 
+latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('MasterLattice' not in x))]
+
 class Framework(Munch):
 
     def __init__(self, directory='test', master_lattice=None, simcodes=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
@@ -56,7 +59,6 @@ class Framework(Munch):
         self.elementObjects = OrderedDict()
         self.latticeObjects = OrderedDict()
         self.commandObjects = OrderedDict()
-        self.errorElements = OrderedDict()
         self.groupObjects = OrderedDict()
         self.progress = 0
         self.basedirectory = os.getcwd()
@@ -74,6 +76,9 @@ class Framework(Munch):
         self.defineASTRAGeneratorCommand = self.executables.define_ASTRAgenerator_command
         self.defineCSRTrackCommand = self.executables.define_csrtrack_command
         self.define_gpt_command = self.executables.define_gpt_command
+
+        # object encoding settings for simulations with multiple runs
+        self.runSetup = runSetup()
 
     def __repr__(self):
         return repr({'master_lattice_location': self.global_parameters['master_lattice_location'], 'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
@@ -217,7 +222,7 @@ class Framework(Munch):
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'
-        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.errorElements, self.settings, self.executables, self.global_parameters)
+        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
     def convert_numpy_types(self, v):
         if isinstance(v, (np.ndarray, list, tuple)):
@@ -366,7 +371,7 @@ class Framework(Munch):
             if not name == 'generator' and not (name == exclude or (isinstance(exclude, (list, tuple)) and name in exclude)):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[name]
-                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.errorElements, self.settings, self.executables, self.global_parameters)
+                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
     def read_Element(self, name, element, subelement=False):
         if name == 'filename':
@@ -641,20 +646,29 @@ class Framework(Munch):
         t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
         rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
 
-    def loadElementErrors(self, file):
-        # load error definitions from markup file
-        if isinstance(file, str) and ('.yaml' in file):
-            with open(file, 'r') as infile:
-                self.errorElements = dict(yaml.safe_load(infile))
-        # define errors from dictionary
-        elif isinstance(file, dict):
-            self.errorElements = file
+    def pushRunSettings(self):
+        for l, latticeObject in self.latticeObjects.items():
+            if isinstance(latticeObject, tuple(latticeClasses)):
+                latticeObject.updateRunSettings(self.runSetup)  
 
-        # set error definitions for all lattice objects
-        latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('MasterLattice' not in x))]
-        for l in self.latticeObjects:
-            if isinstance(self.latticeObjects[l], tuple(latticeClasses)):
-                self.latticeObjects[l].setErrorElements(self.errorElements)
+    def setNRuns(self, nruns):
+        '''sets the number of simulation runs to a new value for all lattice objects'''
+        self.runSetup.setNRuns(nruns)
+        self.pushRunSettings()
+
+    def setSeedValue(self, seed):
+        '''sets the random number seed to a new value for all lattice objects'''
+        self.runSetup.setSeedValue(seed)
+        self.pushRunSettings()
+
+    def loadElementErrors(self, file):
+        self.runSetup.loadElementErrors(file)
+        self.pushRunSettings()
+
+    def setElementScan(self, name, item, scanrange, multiplicative=False):
+        '''define a parameter scan for a single parameter of a given machine element'''
+        self.runSetup.setElementScan(name=name, item=item, scanrange=scanrange, multiplicative=multiplicative)
+        self.pushRunSettings()
 
 class frameworkDirectory(Munch):
 
