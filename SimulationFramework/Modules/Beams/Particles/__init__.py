@@ -96,6 +96,15 @@ class Particles(Munch):
     def eta_corrected(self, u):
         return u - self.eta_correlation(u)*self.p
 
+    def apply_mask(self, mask):
+        prebeam = self.fullbeam
+        cutbeam = prebeam[mask,:]
+        self['x'], self['y'], self['z'], self['px'], self['py'], self['pz'] = cutbeam.T
+
+    @property
+    def fullbeam(self):
+        return np.array([self.x, self.y, self.z, self.px, self.py, self.pz]).T
+
     @property
     def x(self):
         return UnitValue(self['x'], 'm')
@@ -141,7 +150,7 @@ class Particles(Munch):
         return UnitValue(self['pz'] / self.q_over_c, 'eV/c')
     @property
     def deltap(self):
-        return (self.cp - mean(self.cp)) / mean(self.cp)
+        return (self.cp - np.mean(self.cp)) / np.mean(self.cp)
     @property
     def xp(self):
         return UnitValue(np.arctan(self.px/self.pz), 'rad')

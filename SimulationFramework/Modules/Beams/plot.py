@@ -170,7 +170,7 @@ def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=
             labels += b
         ax_plot[0].legend(lines, labels, loc='best')
 
-def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], **kwargs):
+def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], cmap=None, **kwargs):
     """
     Density plot and projections
 
@@ -184,6 +184,8 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
         n = len(particle_group)
         bins = int(np.sqrt(n/2) )
 
+    cmap = CMAP0 if cmap is None else cmap
+
     if not isinstance(subtract_mean, (list, tuple)):
         subtract_mean = [subtract_mean, subtract_mean]
     if not isinstance(scale, (list, tuple)):
@@ -194,7 +196,8 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     y, f2, p2 = nice_array(scale[1] * (particle_group[key2] - subtract_mean[1] * np.mean(particle_group[key2])))
 
 
-    w = np.full(len(x), 1)#particle_group['charge']
+    w = np.full(len(x), 1)#
+    charge = particle_group['charge']
 
     u1, u2 = units
     ux = p1+u1
@@ -214,7 +217,7 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     #ax_info.table(cellText=['a'])
 
     # Proper weighting
-    ax_joint.hexbin(x, y, C=w, reduce_C_function=np.sum, gridsize=bins, cmap=CMAP0, vmin=1e-20)
+    ax_joint.hexbin(x, y, C=w, reduce_C_function=np.sum, gridsize=bins, cmap=cmap, vmin=1e-20)
 
     # Manual histogramming version
     #H, xedges, yedges = np.histogram2d(x, y, weights=w, bins=bins)
@@ -230,11 +233,12 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     hist, bin_edges = np.histogram(x, bins=bins, weights=w)
     hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
     hist_width =  np.diff(bin_edges)
-    hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
+    hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
     ax_marg_x.bar(hist_x, hist_y, hist_width, color='gray')
     # Special label for C/s = A
     if u1 == 's':
         _, hist_prefix = nice_scale_prefix(hist_f/f1)
+        # print(np.sum(charge).val, hist_f, f1)
         ax_marg_x.set_ylabel(f'{hist_prefix}A')
     else:
         ax_marg_x.set_ylabel(f'{hist_prefix}C/{ux}')
@@ -247,7 +251,7 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     hist, bin_edges = np.histogram(y, bins=bins, weights=w)
     hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
     hist_width =  np.diff(bin_edges)
-    hist_y, hist_f, hist_prefix = nice_array(hist/hist_width)
+    hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
     ax_marg_y.barh(hist_x, hist_y, hist_width, color='gray')
     ax_marg_y.set_xlabel(f'{hist_prefix}C/{uy}')
 
@@ -272,7 +276,8 @@ def plot(self, keys=None, bins=None, type='density', **kwargs):
         xkey, ykey = keys
         return marginal_plot(self, key1=xkey, key2=ykey, bins=bins, **kwargs)
 
-def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm.jet, size=None, grid=False, marginals=False, limits=None, screen=False, use_scipy=False, subtract_mean=[False,False], **kwargs):
+def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm.jet, size=None, grid=False, marginals=False,
+                    limits=None, screen=False, use_scipy=False, subtract_mean=[False,False], **kwargs):
     #Do the self-consistent density estimate
     key1, key2 = keys
     if not isinstance(subtract_mean, (list, tuple)):
@@ -384,7 +389,7 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
 
     # Make a circle for the edges of the screen
     if screen:
-        draw_circle = plt.Circle((meanvalx,meanvaly), size+0.05, fill=True, ec='w', fc=colormap(0), zorder=-1)
+        draw_circle = plt.Circle((meanvalx,meanvaly), size+[0.05, 0.05], fill=True, ec='w', fc=colormap(0), zorder=-1)
         ax.add_artist(draw_circle)
 
     if screen:
