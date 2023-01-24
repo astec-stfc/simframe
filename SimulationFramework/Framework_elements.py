@@ -33,7 +33,7 @@ class dipole(frameworkElement):
     @property
     def middle(self):
         sx, sy, sz = self.position_start
-        angle = -self.angle
+        angle = self.angle
         l = self.length
         if abs(angle) > 0:
             cx = 0
@@ -48,7 +48,7 @@ class dipole(frameworkElement):
     @property
     def arc_middle(self):
         sx, sy, sz = self.position_start
-        angle = -self.angle
+        angle = self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -64,7 +64,7 @@ class dipole(frameworkElement):
     @property
     def line_middle(self):
         sx, sy, sz = self.position_start
-        angle = -self.angle
+        angle = self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -80,7 +80,7 @@ class dipole(frameworkElement):
     @property
     def TD_middle(self):
         sx, sy, sz = self.position_start
-        angle = -self.angle
+        angle = self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -96,7 +96,7 @@ class dipole(frameworkElement):
     @property
     def intersection(self):
         sx, sy, sz = self.position_start
-        angle = -self.angle
+        angle = self.angle
         l = self.length
         if abs(angle) > 0:
             cx = 0
@@ -110,7 +110,7 @@ class dipole(frameworkElement):
     @property
     def end(self):
         start = self.position_start
-        angle = -1*self.angle
+        angle = self.angle
         if abs(angle) > 1e-9:
             ex = (self.length * (1 - np.cos(angle))) / angle
             ey = 0

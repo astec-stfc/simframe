@@ -13,6 +13,7 @@ from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
 from .Framework_Settings import FrameworkSettings
+from .FrameworkHelperFunctions import _rotation_matrix
 try:
     import MasterLattice
     MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
