@@ -69,9 +69,10 @@ def read_gdf_beam_file_info(self, file):
     self.reset_dicts()
     gdfbeamdata = None
     gdfbeam = read_gdf_beam_file_object(self, file)
-    print('grab_groups = ',  gdfbeam.grab_groups)
-    print(( 'Positions = ', gdfbeam.positions))
-    print(( 'Times = ', gdfbeam.times))
+    # print('grab_groups = ',  gdfbeam.grab_groups)
+    # print(( 'Positions = ', gdfbeam.positions))
+    # print(( 'Times = ', gdfbeam.times))
+    return gdfbeam
 
 def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, charge=None, longitudinal_reference='t', gdfbeam=None):
     self.reset_dicts()
