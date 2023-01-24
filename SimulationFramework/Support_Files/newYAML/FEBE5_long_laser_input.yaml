@@ -1586,9 +1586,9 @@ elements:
   CLA-FED-MAG-DIP-01:
     type: dipole
     length: 0.5
-    angle: -0.3490658504
-    entrance_edge_angle: -0.1745329252
-    exit_edge_angle: -0.1745329252
+    angle: 0.3490658504
+    entrance_edge_angle: 0.1745329252
+    exit_edge_angle: 0.1745329252
     global_rotation:
     - 0
     - 0
@@ -1602,7 +1602,7 @@ elements:
     - 0.0
     - 79.3801
     end:
-    - 3.594367
+    - 3.767135
     - 0.0
     - 79.870008
     datum:
@@ -1700,9 +1700,9 @@ elements:
     - 0.0
     - 81.756248
     datum:
-    - 2.93921
+    - 2.933498
     - 0.0
-    - 81.670078
+    - 81.685771
     old_datum:
     - 2.907847
     - 0

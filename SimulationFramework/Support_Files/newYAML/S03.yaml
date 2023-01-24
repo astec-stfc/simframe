@@ -114,7 +114,7 @@ elements:
     - 0
     - 0
     - 11.8224
-  CLA-S03-DIA-SCR-01-W:
+  CLA-S03-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0

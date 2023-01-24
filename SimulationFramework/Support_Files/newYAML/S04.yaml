@@ -198,7 +198,7 @@ elements:
     - 0
     - 0
     - 17.1002
-  CLA-S04-DIA-SCR-01-W:
+  CLA-S04-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0
@@ -340,7 +340,7 @@ elements:
     - 0
     - 0
     - 18.3752
-  CLA-S04-DIA-SCR-02-W:
+  CLA-S04-DIA-SCR-02:
     type: screen
     global_rotation:
     - 0
@@ -432,7 +432,7 @@ elements:
     - -4.5e-05
     - 0
     - 19.1402
-  CLA-S04-DIA-SCR-03-W:
+  CLA-S04-DIA-SCR-03:
     type: screen
     global_rotation:
     - 0
@@ -600,7 +600,7 @@ elements:
     - -4.5e-05
     - 0
     - 20.4452
-  CLA-S04-DIA-SCR-04-W:
+  CLA-S04-DIA-SCR-04:
     type: screen
     global_rotation:
     - 0
@@ -692,7 +692,7 @@ elements:
     - 0
     - 0
     - 21.1652
-  CLA-S04-DIA-SCR-05-W:
+  CLA-S04-DIA-SCR-05:
     type: screen
     global_rotation:
     - 0

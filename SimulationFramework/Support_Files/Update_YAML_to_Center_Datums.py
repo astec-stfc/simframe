@@ -21,10 +21,9 @@ yaml.add_constructor(_mapping_tag, dict_constructor)
 
 class Converter(Framework):
 
-    def __init__(self):
-        super(Converter, self).__init__(directory='', master_lattice=None, overwrite=None, runname='', clean=False, verbose=True)
-        global master_lattice_location
-        master_lattice_location = self.master_lattice_location
+    def __init__(self, master_lattice=None):
+        super(Converter, self).__init__(directory='', master_lattice=master_lattice, overwrite=None, runname='', clean=False, verbose=True)
+        self.master_lattice_location = self.global_parameters['master_lattice_location']
         # self.mariadb_connection = mariadb.connect(host='astecnas2', user='root', password='control123', database='master_lattice')
         # self.cursor = self.mariadb_connection.cursor(buffered=True)
         self.datums = {k:v for k,v in self.load_datums().items() if not '-a' == k[-2:] and not '-b'  == k[-2:]}
@@ -55,7 +54,7 @@ class Converter(Framework):
         if os.path.exists(filename):
             stream = open(filename, 'r')
         else:
-            stream = open(master_lattice_location+filename, 'r')
+            stream = open(self.master_lattice_location+filename, 'r')
         self.settings = yaml.load(stream, Loader=yaml.UnsafeLoader)
         self.globalSettings = self.settings['global']
         master_run_no = self.globalSettings['run_no'] if 'run_no' in self.globalSettings else 1
@@ -120,11 +119,12 @@ class Converter(Framework):
                 with open(f, 'r') as stream:
                     elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
             else:
-                with open(master_lattice_location + f, 'r') as stream:
+                with open(self.master_lattice_location + f, 'r') as stream:
                     elements = yaml.load(stream, Loader=yaml.UnsafeLoader)['elements']
             for name, elem in list(elements.items()):
                 self.read_Element(name, elem)
             with open(self.currentfile.replace('YAML/','newYAML/'), 'w') as outfile:
+                yaml.default_flow_style = False
                 yaml.dump({'elements': self.all_data[self.currentfile]}, outfile)
 
     def FSlist(self, l):  # concert list into flow-style (default is block style)
@@ -136,14 +136,14 @@ class Converter(Framework):
     def insert_element(self, element):
         element['centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].middle]
         lname = element['name'].lower()
-        for r in (("fea", "feb"), ("feh", "feb"), ("fed", "feb")):
-            lname = lname.replace(*r)
+        # for r in (("fea", "feb"), ("feh", "feb"), ("fed", "feb")):
+        #     lname = lname.replace(*r)
         if 'dip' in lname:
             lname = lname + '-d'
         match = self.closeMatches(self.datums, lname)
         finalmatch = None
         mdiff = 100
-        if not '-feb-' in lname:
+        if not ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
             if not match == [] :
                 for m in match:
                     dx, dy, dz = self.datums[m.lower()]
@@ -159,19 +159,19 @@ class Converter(Framework):
                     print('Match found but diff big', mdiff, ez, dz , ex, dx, lname, finalmatch)
         element['start'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].start ]
         element['end'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].end ]
-        if ('-feb-' in lname or '-s08-' in lname):
+        if ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
             element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].middle ]
         else:
             element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].end ]
         if not 'global_rotation' in element:
             element['global_rotation'] = [0,0,0]
-        if element['type'] == 'dipole' and ('-feb-' in lname or '-s08-' in lname):
+        if element['type'] == 'dipole' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
             element['arc_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].arc_middle ]
             element['line_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].line_middle ]
             element['TD_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].TD_middle ]
-        if element['type'] == 'screen' and ('-feb-' in lname or '-s08-' in lname) and not 'mask' in lname and not 'ctr' in lname and not 'fed-dia-scr-02-wide' in lname:
+        if element['type'] == 'screen' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname) and not 'mask' in lname and not 'ctr' in lname and not 'fed-dia-scr-02-wide' in lname:
             element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0167]) ]
-        if element['type'] == 'beam_position_monitor' and ('-feb-' in lname or '-s08-' in lname):
+        if element['type'] == 'beam_position_monitor' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
             if 'inside' in lname:
                 element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_start([0,0,0.0353]) ]
             else:
@@ -214,7 +214,7 @@ class Converter(Framework):
         # print (c)
         return [c[0] for c in self.cursor]
 
-fw = Converter()
+fw = Converter(master_lattice='C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice')
 # fw.loadSettings('Lattices/clara400_v12_FEBE.def')
 
 fw.read_Element('filename', ['YAML/Injector400.yaml', 'YAML/S02.yaml','YAML/L02.yaml',
@@ -222,6 +222,8 @@ fw.read_Element('filename', ['YAML/Injector400.yaml', 'YAML/S02.yaml','YAML/L02.
              'YAML/S05.yaml', 'YAML/VBC.yaml', 'YAML/S06.yaml', 'YAML/L04.yaml',
              'YAML/S07_FEBE.yaml', 'YAML/FEBE_ARC.yaml', 'YAML/FEBE5_long_laser_input.yaml',
              'YAML/S07_FEBE_STRAIGHT_ON.yaml'])
+
+# fw.read_Element('filename', ['YAML/VBC.yaml'])
 
 exit()
 

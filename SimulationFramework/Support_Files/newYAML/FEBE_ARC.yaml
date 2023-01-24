@@ -29,9 +29,9 @@ elements:
   CLA-FEA-MAG-DIP-01:
     type: dipole
     length: 0.2
-    angle: 0.2443460953
-    entrance_edge_angle: 0.1221730476
-    exit_edge_angle: 0.1221730476
+    angle: -0.2443460953
+    entrance_edge_angle: -0.1221730476
+    exit_edge_angle: -0.1221730476
     global_rotation:
     - 0
     - 0
@@ -45,7 +45,7 @@ elements:
     - 0.0
     - 48.2978
     end:
-    - 0.024313
+    - -0.024313
     - 0.0
     - 48.495816
     datum:
@@ -260,6 +260,34 @@ elements:
     - 0.688388
     - 0
     - 51.159269
+  CLA-FEA-MAG-SEXT-01:
+    type: sextupole
+    length: 0.1
+    k2l: 22.6172
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    centre:
+    - 0.71028
+    - 0.0
+    - 51.24705
+    start:
+    - 0.698184
+    - 0.0
+    - 51.198535
+    end:
+    - 0.722376
+    - 0.0
+    - 51.295565
+    datum:
+    - 0.71028
+    - 0.0
+    - 51.24705
+    old_datum:
+    - 0.722376
+    - 0
+    - 51.295565
   CLA-FEA-MAG-QUAD-04:
     type: quadrupole
     length: 0.21
@@ -318,9 +346,9 @@ elements:
   CLA-FEA-MAG-DIP-02:
     type: dipole
     length: 0.2
-    angle: 0.2443460953
-    entrance_edge_angle: 0.1221730476
-    exit_edge_angle: 0.1221730476
+    angle: -0.2443460953
+    entrance_edge_angle: -0.1221730476
+    exit_edge_angle: -0.1221730476
     global_rotation:
     - 0
     - 0
@@ -334,9 +362,9 @@ elements:
     - 0.0
     - 52.04709
     end:
-    - 0.981242
+    - 0.93406
     - 0.0
-    - 52.233342
+    - 52.245106
     datum:
     - 0.93406
     - 0.0
@@ -607,9 +635,9 @@ elements:
   CLA-FEA-MAG-DIP-03:
     type: dipole
     length: 0.2
-    angle: -0.2443460953
-    entrance_edge_angle: -0.1221730476
-    exit_edge_angle: -0.1221730476
+    angle: 0.2443460953
+    entrance_edge_angle: 0.1221730476
+    exit_edge_angle: 0.1221730476
     global_rotation:
     - 0
     - 0
@@ -623,9 +651,9 @@ elements:
     - 0.0
     - 55.46493
     end:
-    - 2.771004
+    - 2.813939
     - 0.0
-    - 55.651182
+    - 55.628353
     datum:
     - 2.746691
     - 0.0
@@ -894,6 +922,34 @@ elements:
     - 3.435079
     - 0
     - 58.314644
+  CLA-FEA-MAG-SEXT-02:
+    type: sextupole
+    length: 0.1
+    k2l: -22.6172
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    centre:
+    - 3.454465
+    - 0.0
+    - 58.392385
+    start:
+    - 3.442369
+    - 0.0
+    - 58.34387
+    end:
+    - 3.466561
+    - 0.0
+    - 58.4409
+    datum:
+    - 3.454465
+    - 0.0
+    - 58.392385
+    old_datum:
+    - 3.466561
+    - 0
+    - 58.4409
   CLA-FEA-MAG-QUAD-12:
     type: quadrupole
     length: 0.21
@@ -952,9 +1008,9 @@ elements:
   CLA-FEA-MAG-DIP-04:
     type: dipole
     length: 0.2
-    angle: -0.2443460953
-    entrance_edge_angle: -0.1221730476
-    exit_edge_angle: -0.1221730476
+    angle: 0.2443460953
+    entrance_edge_angle: 0.1221730476
+    exit_edge_angle: 0.1221730476
     global_rotation:
     - 0
     - 0
@@ -968,9 +1024,9 @@ elements:
     - 0.0
     - 59.202464
     end:
-    - 3.680751
+    - 3.727933
     - 0.0
-    - 59.40048
+    - 59.388716
     datum:
     - 3.680751
     - 0.0
