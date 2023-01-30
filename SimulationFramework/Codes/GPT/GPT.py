@@ -60,13 +60,13 @@ class gptLattice(frameworkLattice):
                 new_ccs = element.gpt_ccs(ccs)
                 if not new_ccs == ccs:
                     # print('ccs = ', ccs, '  new_ccs = ', new_ccs)
-                    relpos, relrot = ccs.relative_position(element.end, element.global_rotation)
+                    relpos, relrot = ccs.relative_position(element.middle, element.global_rotation)
                     if self.particle_definition == 'laser':
-                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
                     else:
-                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
                     screen0pos = 0
-                ccs = new_ccs
+                    ccs = new_ccs
         # if not isinstance(element, screen):
         element = self.endScreenObject = self.endScreen()
         fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs, output_ccs="wcs")
@@ -75,9 +75,9 @@ class gptLattice(frameworkLattice):
         #     self.endScreenObject = None
         relpos, relrot = ccs.relative_position(element.position_end, element.global_rotation)
         if self.particle_definition == 'laser':
-            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name + ');\n'
         else:
-            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
         return fulltext
 
     def write(self):

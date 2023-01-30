@@ -33,7 +33,7 @@ class dipole(frameworkElement):
     @property
     def middle(self):
         sx, sy, sz = self.position_start
-        angle = self.angle
+        angle = -self.angle
         l = self.length
         if abs(angle) > 0:
             cx = 0
@@ -48,7 +48,7 @@ class dipole(frameworkElement):
     @property
     def arc_middle(self):
         sx, sy, sz = self.position_start
-        angle = self.angle
+        angle = -self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -64,7 +64,7 @@ class dipole(frameworkElement):
     @property
     def line_middle(self):
         sx, sy, sz = self.position_start
-        angle = self.angle
+        angle = -self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -80,7 +80,7 @@ class dipole(frameworkElement):
     @property
     def TD_middle(self):
         sx, sy, sz = self.position_start
-        angle = self.angle
+        angle = -self.angle
         l = self.length
         r = l / angle
         if abs(angle) > 0:
@@ -96,7 +96,7 @@ class dipole(frameworkElement):
     @property
     def intersection(self):
         sx, sy, sz = self.position_start
-        angle = self.angle
+        angle = -self.angle
         l = self.length
         if abs(angle) > 0:
             cx = 0
@@ -110,7 +110,7 @@ class dipole(frameworkElement):
     @property
     def end(self):
         start = self.position_start
-        angle = self.angle
+        angle = -self.angle
         if abs(angle) > 1e-9:
             ex = (self.length * (1 - np.cos(angle))) / angle
             ey = 0
@@ -122,7 +122,7 @@ class dipole(frameworkElement):
     @property
     def astra_end(self):
         start = self.position_start
-        angle = self.angle
+        angle = -self.angle
         if abs(self.angle) > 1e-9:
             ex = -1 * (self.length * (np.cos(angle) - 1)) / angle
             ey = 0
@@ -172,7 +172,7 @@ class dipole(frameworkElement):
         return self.length * np.tan(0.5 * self.angle) / self.angle
     @property
     def rho(self):
-        return abs(self.length/self.angle) if self.length is not None and abs(self.angle) > 1e-9 else 0
+        return self.length/self.angle if self.length is not None and abs(self.angle) > 1e-9 else 0
 
     @property
     def e1(self):
@@ -221,6 +221,7 @@ class dipole(frameworkElement):
         theta = self.angle-self.e2+rotation
         corners[1] = np.array(list(map(add, np.transpose(self.end), np.dot([-self.width*self.length,0,0], _rotation_matrix(theta)))))
         corners[2] = np.array(list(map(add, np.transpose(self.end), np.dot([self.width*self.length,0,0], _rotation_matrix(theta)))))
+        # print(self.objectname, self.position_start, self.end)
         # print('rotation = ', rotation)
         # corners = [self.rotated_position(x, offset=self.starting_offset, theta=rotation) for x in corners]
         return corners
@@ -256,7 +257,7 @@ class dipole(frameworkElement):
             if abs(checkValue(self, 'strength', default=0)) > 0 or not abs(self.rho) > 0:
                 params['D_strength'] = {'value': checkValue(self, 'strength', 0), 'default': 1e6}
             else:
-                params['D_radius'] =  {'value': -1*self.rho, 'default': 1e6}
+                params['D_radius'] =  {'value': 1*self.rho, 'default': 1e6}
             return self._write_ASTRA(params, n)
         else:
             return None
@@ -272,13 +273,12 @@ class dipole(frameworkElement):
         return output
 
     def write_GPT(self, Brho, ccs, *args, **kwargs):
-        # field = Brho/self.rho if abs(self.rho) > 0 else 0
         field = 1.0 * self.angle * Brho / self.length
-        if abs(field) > 0 and self.rho < 100:
+        if abs(field) > 0 and abs(self.rho) < 100:
             relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
             coord = self.gpt_coordinates(relpos, relrot)
             new_ccs = self.gpt_ccs(ccs).name
-            b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.016) * self.check_value(self.edge_field_integral, default=0.5)) if self.check_value(self.half_gap, default=0.0) > 0 else 10000
+            b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.016) * self.check_value(self.edge_field_integral, default=0.5)) if abs(self.check_value(self.half_gap, default=0.02)) > 0 else 10000
             dl = 0 if self.deltaL is None else self.deltaL
             e1 = self.e1 if self.angle >= 0 else -1*self.e1
             e2 = self.e2 if self.angle >= 0 else -1*self.e2
@@ -300,7 +300,7 @@ class dipole(frameworkElement):
             number = str(int(ccs._name.split('_')[1])+1) if ccs._name != "wcs" else "1"
             name = 'ccs_' + number if ccs._name != "wcs" else "ccs_1"
             # print('middle position = ', self.start, self.middle)
-            return gpt_ccs(name, self.middle, self.global_rotation - np.array([0, 0, self.angle]), 0*abs(self.intersect))
+            return gpt_ccs(name, self.middle, self.global_rotation + np.array([0, 0, -self.angle]), 0*abs(self.intersect))
         else:
             return ccs
 
@@ -798,6 +798,7 @@ class screen(frameworkElement):
         relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
         # relpos = relpos + [0, 0, self.length/2.]
         coord = self.gpt_coordinates(relpos, relrot)
+        # print(self.objectname, self.start, self.middle)
         self.gpt_screen_position = relpos[2]
         if output_ccs is not None:
             output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) + ',\"' + str(output_ccs) + '\");\n'

@@ -154,7 +154,8 @@ class elegantTrackFile(elegantCommandFile):
         flr = self.addCommand(type='floor_coordinates', filename="%s.flr",
         X0  = lattice.startObject['position_start'][0],
         Z0 = lattice.startObject['position_start'][2],
-        theta0 = 0)
+        theta0 = 0,
+        magnet_centers = 0)
         mat = self.addCommand(type='matrix_output', SDDS_output="%s.mat",
         full_matrix_only=0, SDDS_output_order=2)
         if self.trackBeam:
