@@ -136,9 +136,10 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
         self._beam['t'] = gdfbeamdata.t
         self._beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
     else:
-        if hasattr(gdfbeamdata,'z'):
-            self._beam['z'] = gdfbeamdata.z
-            self._beam['t'] = self.z / (-1 * self.Bz * constants.speed_of_light)
+        if hasattr(gdfbeamdata,'z') and self['longitudinal_reference'] == 'z':
+                self._beam['z'] = gdfbeamdata.z
+                self._beam['t'] = gdfbeamdata.z / (-1 * gdfbeamdata.Bz * constants.speed_of_light)
+                self._beam['t'][self._beam['t'] == inf] = 0
         elif hasattr(gdfbeamdata,'t'):
             self._beam['t'] = gdfbeamdata.t
             self._beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
