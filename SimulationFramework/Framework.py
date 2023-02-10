@@ -638,8 +638,14 @@ class Framework(Munch):
 
     def save_summary_files(self, twiss=True, beams=True):
         t = rtf.load_directory(self.subdirectory)
-        t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
-        rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
+        try:
+            t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
+        except:
+            pass
+        try:
+            rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
+        except:
+            pass
 
 class frameworkDirectory(Munch):
 
