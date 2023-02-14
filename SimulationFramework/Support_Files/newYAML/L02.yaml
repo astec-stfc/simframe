@@ -31,15 +31,23 @@ elements:
   CLA-L02-CAV:
     type: cavity
     length: 4.06667
-    cell_length: 0.033333
+    Structure_Type: TravellingWave
+    cell_length: 0.0333333333333333
     coupling_cell_length: 0.0495
+    n_cells: 121
     field_amplitude: 30000000.0
     frequency: 2998500000.0
     phase: 23
+    crest: 92.381
+    attenuation_constant: 0.42
+    shunt_impedance: 1.30693e8
+    design_power: 25e6
+    design_gamma: 100
     longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
     field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
-    field_definition_gdf: $master_lattice_location$Data_Files/TWS_S-DL.dat
+    field_definition_gdf: $master_lattice_location$Data_Files/mockup4m_moved.gdf
     lsc_enable: true
     lsc_bins: 20.0
     lsc_cutoff_high:
@@ -101,3 +109,32 @@ elements:
     - 0
     - 0
     - 10.8557
+  CLA-L02-APER-02:
+    type: aperture
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 10.8965
+    start:
+    - 0.0
+    - 0.0
+    - 10.8965
+    end:
+    - 0.0
+    - 0.0
+    - 10.8965
+    datum:
+    - 0.0
+    - 0.0
+    - 10.8965
+    old_datum:
+    - 0
+    - 0
+    - 10.8965

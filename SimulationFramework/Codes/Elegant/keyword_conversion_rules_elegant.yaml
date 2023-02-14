@@ -3,6 +3,7 @@ general:
   entrance_edge_angle: e1
   exit_edge_angle: e2
   edge_field_integral: fint
+  half_gap: hgap
   horizontal_size: x_max
   vertical_size: y_max
   field_amplitude: volt

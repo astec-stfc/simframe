@@ -68,10 +68,11 @@ def calculate_gdf_eta(self, file):
 def read_gdf_beam_file_info(self, file):
     self.reset_dicts()
     gdfbeamdata = None
-    gdfbeam = self.read_gdf_beam_file_object(file)
-    print('grab_groups = ',  gdfbeam.grab_groups)
-    print(( 'Positions = ', gdfbeam.positions))
-    print(( 'Times = ', gdfbeam.times))
+    gdfbeam = read_gdf_beam_file_object(self, file)
+    # print('grab_groups = ',  gdfbeam.grab_groups)
+    # print(( 'Positions = ', gdfbeam.positions))
+    # print(( 'Times = ', gdfbeam.times))
+    return gdfbeam
 
 def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, charge=None, longitudinal_reference='t', gdfbeam=None):
     self.reset_dicts()
@@ -106,10 +107,25 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
             block = None
     elif position is None and time is None and block is None:
         gdfbeamdata = gdfbeam.get_grab(0)
+    # print(gdfbeamdata.datasets)
     self.filename = file
     self['code'] = "GPT"
     self._beam['x'] = gdfbeamdata.x
     self._beam['y'] = gdfbeamdata.y
+    if hasattr(gdfbeamdata, 'G'):
+        self._beam['gamma'] = gdfbeamdata.G
+    if hasattr(gdfbeamdata, 'Bx'):
+        vx = gdfbeamdata.Bx * constants.speed_of_light
+        vy = gdfbeamdata.By * constants.speed_of_light
+        vz = gdfbeamdata.Bz * constants.speed_of_light
+        velocity_conversion = 1 / (constants.m_e * self._beam['gamma'])
+        self._beam['px'] = vx / velocity_conversion
+        self._beam['py'] = vy / velocity_conversion
+        self._beam['pz'] = vz / velocity_conversion
+    else:
+        self._beam['px'] = gdfbeamdata.GBx * self.E0 / constants.speed_of_light
+        self._beam['py'] = gdfbeamdata.GBy * self.E0 / constants.speed_of_light
+        self._beam['pz'] = gdfbeamdata.GBz * self.E0 / constants.speed_of_light
     if hasattr(gdfbeamdata,'z') and longitudinal_reference == 'z':
         # print( 'z!')
         # print(( gdfbeamdata.z))
@@ -120,12 +136,14 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
         self._beam['t'] = gdfbeamdata.t
         self._beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
     else:
-        pass
-        # print('not z and not t !!')
-        # print('z = ', hasattr(gdfbeamdata,'z'))
-        # print('t = ', hasattr(gdfbeamdata,'t'))
-        # print('longitudinal_reference = ', longitudinal_reference)
-    self._beam['gamma'] = gdfbeamdata.G
+        if hasattr(gdfbeamdata,'z') and self['longitudinal_reference'] == 'z':
+                self._beam['z'] = gdfbeamdata.z
+                self._beam['t'] = gdfbeamdata.z / (-1 * gdfbeamdata.Bz * constants.speed_of_light)
+                self._beam['t'][self._beam['t'] == inf] = 0
+        elif hasattr(gdfbeamdata,'t'):
+            self._beam['t'] = gdfbeamdata.t
+            self._beam['z'] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (gdfbeamdata.t-np.mean(gdfbeamdata.t)) + gdfbeamdata.z
+
     if hasattr(gdfbeamdata,'q') and  hasattr(gdfbeamdata,'nmacro'):
         self._beam['charge'] = gdfbeamdata.q * gdfbeamdata.nmacro
         self._beam['total_charge'] = np.sum(self._beam['charge'])
@@ -140,14 +158,7 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
             self._beam['charge'] = np.full(len(self.z), 0)
         else:
             self._beam['total_charge'] = charge
-    # print(self._beam['charge'],self._beam['total_charge'])
-    vx = gdfbeamdata.Bx * constants.speed_of_light
-    vy = gdfbeamdata.By * constants.speed_of_light
-    vz = gdfbeamdata.Bz * constants.speed_of_light
-    velocity_conversion = 1 / (constants.m_e * self._beam['gamma'])
-    self._beam['px'] = vx / velocity_conversion
-    self._beam['py'] = vy / velocity_conversion
-    self._beam['pz'] = vz / velocity_conversion
+
     if hasattr(gdfbeamdata,'nmacro'):
         self._beam['nmacro'] = gdfbeamdata.nmacro
     else:

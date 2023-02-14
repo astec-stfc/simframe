@@ -13,7 +13,7 @@ from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
 from .Framework_Settings import FrameworkSettings
-from .Framework_objects import runSetup
+from .FrameworkHelperFunctions import _rotation_matrix
 try:
     import MasterLattice
     MasterLatticeLocation = os.path.dirname(MasterLattice.__file__)+'/'
@@ -643,8 +643,14 @@ class Framework(Munch):
 
     def save_summary_files(self, twiss=True, beams=True):
         t = rtf.load_directory(self.subdirectory)
-        t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
-        rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
+        try:
+            t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
+        except:
+            pass
+        try:
+            rbf.save_HDF5_summary_file(self.subdirectory, self.subdirectory+'/'+'Beam_Summary.hdf5')
+        except:
+            pass
 
     def pushRunSettings(self):
         for l, latticeObject in self.latticeObjects.items():

@@ -12,11 +12,11 @@ class gptLattice(frameworkLattice):
         self.bunch_charge = None
         # self.particle_definition = self.allElementObjects[self.start].objectname
         self.headers = OrderedDict()
-        if 'particle_definition' in self.file_block['input'] and self.file_block['input']['particle_definition'] == 'initial_distribution':
+        if 'input' in self.file_block and 'particle_definition' in self.file_block['input'] and self.file_block['input']['particle_definition'] == 'initial_distribution':
             self.particle_definition = 'laser'
         else:
             self.particle_definition = self.allElementObjects[self.start].objectname
-        self.headers['setfile'] = gpt_setfile(set="\"beam\"", filename="\"" + self.particle_definition + ".gdf\"")
+        self.headers['setfile'] = gpt_setfile(set="\"beam\"", filename="\"" + self.objectname + ".gdf\"")
         self.headers['floorplan'] = gpt_writefloorplan(filename="\"" + self.objectname + "_floor.gdf\"")
         # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=250e-12)
         start = self.allElementObjects[self.start].start[2]
@@ -60,13 +60,13 @@ class gptLattice(frameworkLattice):
                 new_ccs = element.gpt_ccs(ccs)
                 if not new_ccs == ccs:
                     # print('ccs = ', ccs, '  new_ccs = ', new_ccs)
-                    relpos, relrot = ccs.relative_position(element.end, element.global_rotation)
+                    relpos, relrot = ccs.relative_position(element.middle, element.global_rotation)
                     if self.particle_definition == 'laser':
-                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
                     else:
-                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+                        fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
                     screen0pos = 0
-                ccs = new_ccs
+                    ccs = new_ccs
         # if not isinstance(element, screen):
         element = self.endScreenObject = self.endScreen()
         fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs, output_ccs="wcs")
@@ -75,9 +75,9 @@ class gptLattice(frameworkLattice):
         #     self.endScreenObject = None
         relpos, relrot = ccs.relative_position(element.position_end, element.global_rotation)
         if self.particle_definition == 'laser':
-            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name + ');\n'
         else:
-            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ');\n'
+            fulltext += 'screen( ' + ccs.name + ', "I", '+ str(screen0pos+self.screen_step_size) + ', ' + str(relpos[2]) + ', ' + str(self.screen_step_size) + ',' + ccs.name +');\n'
         return fulltext
 
     def write(self):
@@ -86,7 +86,7 @@ class gptLattice(frameworkLattice):
         return self.writeElements()
 
     def preProcess(self):
-        self.headers['setfile'].particle_definition = self.particle_definition
+        self.headers['setfile'].particle_definition = self.objectname + '.gdf'
         prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block['input'] else ''
         self.hdf5_to_gdf(prefix)
 
@@ -116,9 +116,10 @@ class gptLattice(frameworkLattice):
 
     def postProcess(self):
         cathode = self.particle_definition == 'laser'
+        gdfbeam = rbf.gdf.read_gdf_beam_file_object(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.objectname + '_out.gdf')
         for e in self.screens_and_bpms:
             if not e == self.ignore_start_screen:
-                e.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode)
+                e.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode, gdfbeam=gdfbeam)
             # else:
                 # print('Ignoring', self.ignore_start_screen.objectname)
         if self.endScreenObject is not None:
@@ -143,10 +144,10 @@ class gptLattice(frameworkLattice):
         else:
             self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
 
-        gdfbeamfilename = self.particle_definition+'.gdf'
+        gdfbeamfilename = self.objectname+'.gdf'
         cathode = self.particle_definition == 'laser'
-        rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.particle_definition+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
-        subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.particle_definition+'.txt'], cwd=self.global_parameters['master_subdir'])
+        rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.objectname+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
+        subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.objectname+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho
 
 class gpt_element(frameworkElement):
@@ -176,9 +177,11 @@ class gpt_setfile(gpt_element):
 
     def hdf5_to_gpt(self, prefix=''):
         HDF5filename = prefix+self.particle_definition.replace('.gdf','')+'.hdf5'
+        print('HDF5filename =',HDF5filename)
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
         # self.global_parameters['beam'].rotate_beamXZ(self.theta, preOffset=self.starting_offset)
         gptbeamfilename = self.particle_definition
+        print('gptbeamfilename =',gptbeamfilename)
         rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + gptbeamfilename, normaliseZ=False)
 
 class gpt_charge(gpt_element):

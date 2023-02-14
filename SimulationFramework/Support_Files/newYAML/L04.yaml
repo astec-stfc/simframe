@@ -31,14 +31,19 @@ elements:
   CLA-L04-CAV:
     type: cavity
     length: 4.06667
-    cell_length: 0.0333333
+    Structure_Type: TravellingWave
+    cell_length: 0.0333333333333333
     coupling_cell_length: 0.0495
+    n_cells: 121
     field_amplitude: 32000000.0
     frequency: 2998500000.0
     phase: -45
+    crest: 88.8
     longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
     field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
+    field_definition_gdf: $master_lattice_location$Data_Files/mockup4m_moved.gdf
     lsc_enable: true
     lsc_bins: 20.0
     lsc_cutoff_high:

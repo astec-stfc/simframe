@@ -167,7 +167,8 @@ def write_astra_beam_file(self, file, index=1, status=5, charge=None, normaliseZ
     ''' should we leave Z as the reference value, set it to 0, or set it to be some offset? '''
     if not normaliseZ is False:
         array[0,2] = 0
-    if not isinstance(normaliseZ,(bool)):
+    if isinstance(normaliseZ, (int, float)):
+        # print('Setting z offset', normaliseZ)
         array[0,2] += normaliseZ
     ''' normalise pz and the clock '''
     # print('Mean pz = ', np.mean(array[:,5]))

@@ -2,7 +2,7 @@ elements:
   CLA-VBC-MAG-DIP-01:
     type: dipole
     length: 0.200981
-    angle: 0.095
+    angle: -0.095
     exit_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
@@ -35,7 +35,7 @@ elements:
   CLA-VBC-MAG-DIP-02:
     type: dipole
     length: 0.200981
-    angle: -0.095
+    angle: 0.095
     entrance_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
@@ -44,9 +44,9 @@ elements:
     global_rotation:
     - 0
     - 0
-    - 0.095
+    - -0.095
     centre:
-    - 0.142931
+    - 0.162009
     - 0.0
     - 27.865913
     start:
@@ -54,13 +54,13 @@ elements:
     - 0.0
     - 27.7658
     end:
-    - 0.123938
+    - 0.162009
     - 0.0
-    - 27.964669
+    - 27.966479
     datum:
-    - 0.123938
+    - 0.162009
     - 0.0
-    - 27.964669
+    - 27.966479
     old_datum:
     - 0.162009
     - 0
@@ -152,7 +152,7 @@ elements:
     - 0.162009
     - 0
     - 28.8793
-  CLA-VBC-DIA-SCR-01-W:
+  CLA-VBC-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0
@@ -181,7 +181,7 @@ elements:
   CLA-VBC-MAG-DIP-03:
     type: dipole
     length: 0.200981
-    angle: -0.095
+    angle: 0.095
     exit_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
@@ -214,7 +214,7 @@ elements:
   CLA-VBC-MAG-DIP-04:
     type: dipole
     length: 0.200981
-    angle: 0.095
+    angle: -0.095
     entrance_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
@@ -223,9 +223,9 @@ elements:
     global_rotation:
     - 0
     - 0
-    - -0.095
+    - 0.095
     centre:
-    - 0.019079
+    - 0.0
     - 0.0
     - 31.067213
     start:
@@ -233,15 +233,15 @@ elements:
     - 0.0
     - 30.9671
     end:
-    - 0.038072
     - 0.0
-    - 31.165969
+    - 0.0
+    - 31.167779
     datum:
-    - 0.038072
     - 0.0
-    - 31.165969
+    - 0.0
+    - 31.167779
     old_datum:
-    - 0
+    - 0.0
     - 0
     - 31.1678
   CLA-VBC-MARK-01:

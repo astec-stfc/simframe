@@ -554,7 +554,7 @@ class chicane(frameworkGroup):
                 starting_angle += elem_angle
 
     def __str__(self):
-        return str([[self.allElementObjects[e].objectname, self.allElementObjects[e].angle, self.allElementObjects[e].global_rotation[2], self.allElementObjects[e].position_start[0], self.allElementObjects[e].position_end[0]] for e in self.elements])
+        return str([[self.allElementObjects[e].objectname, self.allElementObjects[e].angle, self.allElementObjects[e].global_rotation[2], self.allElementObjects[e].position_start, self.allElementObjects[e].position_end] for e in self.elements])
 
 class s_chicane(chicane):
     def __init__(self, name, elementObjects, type, elements, **kwargs):
@@ -813,7 +813,8 @@ class frameworkElement(frameworkObject):
         string = self.objectname+': '+ etype
         k1 = self.k1 if self.k1 is not None else 0
         k2 = self.k2 if self.k2 is not None else 0
-        for key, value in list(merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults)).items()):
+        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        for key, value in keydict.items():
             if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
                 key = self._convertKeword_Elegant(key)

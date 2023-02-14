@@ -175,7 +175,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         os.makedirs(subdir, exist_ok=True)
         with open(subdir+'/best_solutions_running.csv','w') as out:
             self.opt_iteration = 0
-        res = minimize(self.OptimisingFunction, best, method='nelder-mead', options={'disp': True, 'maxiter': maxiter, 'adaptive': True})
+        res = minimize(self.OptimisingFunction, best, method='nelder-mead', options={'disp': True, 'maxiter': maxiter, 'adaptive': True}, args=kwargs)
         print(res.x)
 
     def Example(self, best=None, step=0.1, dir='example', **kwargs):

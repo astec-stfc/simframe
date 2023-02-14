@@ -299,9 +299,10 @@ class elegantTrackFile(elegantCommandFile):
         flr = self.addCommand(objecttype='floor_coordinates', filename="%s.flr",
         X0  = lattice.startObject['position_start'][0],
         Z0 = lattice.startObject['position_start'][2],
-        theta0 = 0)
-        mat = self.addCommand(objecttype='matrix_output', SDDS_output="%s.mat",
-        full_matrix_only=0, individual_matrices=1, SDDS_output_order=2)
+        theta0 = 0,
+        magnet_centers = 0)
+        mat = self.addCommand(type='matrix_output', SDDS_output="%s.mat",
+        full_matrix_only=0, SDDS_output_order=2)
         if self.trackBeam:
             if (elementErrors is not None) or (elementScan is not None):
                 self.addCommand(objecttype='sdds_beam', input=self.elegantbeamfilename, sample_interval=self.sample_interval, reuse_bunch=1)

@@ -111,7 +111,7 @@ elements:
     - 0
     - 0
     - 38.6778
-  CLA-S07F-MAG-QUAD-01:
+  CLA-S07-MAG-QUAD-01:
     type: quadrupole
     length: 0.15
     k1l: 0.362686
@@ -168,7 +168,7 @@ elements:
     - 0
     - 0
     - 39.0278
-  CLA-S07F-MAG-QUAD-02:
+  CLA-S07-MAG-QUAD-02:
     type: quadrupole
     length: 0.15
     k1l: -0.116033
@@ -254,7 +254,7 @@ elements:
     - 0
     - 0
     - 39.838
-  CLA-S07-DIA-SCR-01-W:
+  CLA-S07-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0
@@ -421,7 +421,7 @@ elements:
     - 0
     - 0
     - 41.3078
-  CLA-S07F-MAG-QUAD-03:
+  CLA-S07-MAG-QUAD-03:
     type: quadrupole
     length: 0.15
     k1l: -0.190473
@@ -451,7 +451,7 @@ elements:
     - 0
     - 0
     - 41.5578
-  CLA-S07F-MAG-QUAD-04:
+  CLA-S07-MAG-QUAD-04:
     type: quadrupole
     length: 0.15
     k1l: -0.169476
@@ -508,7 +508,7 @@ elements:
     - 0
     - 0
     - 42.6178
-  CLA-S07-DIA-SCR-02-W:
+  CLA-S07-DIA-SCR-02:
     type: screen
     global_rotation:
     - 0
@@ -534,7 +534,7 @@ elements:
     - 0
     - 0
     - 42.6611
-  CLA-S07F-MAG-QUAD-05:
+  CLA-S07-MAG-QUAD-05:
     type: quadrupole
     length: 0.15
     k1l: 0.154365
@@ -621,7 +621,7 @@ elements:
     - 0
     - 0
     - 43.525
-  CLA-S07F-MAG-QUAD-06:
+  CLA-S07-MAG-QUAD-06:
     type: quadrupole
     length: 0.15
     k1l: 0.019829
@@ -774,7 +774,7 @@ elements:
     - 0
     - 0
     - 44.7378
-  CLA-S07F-MAG-QUAD-07:
+  CLA-S07-MAG-QUAD-07:
     type: quadrupole
     length: 0.15
     k1l: -0.225272
@@ -889,7 +889,7 @@ elements:
     - 0
     - 0
     - 46.2978
-  CLA-S07-DIA-SCR-03-W:
+  CLA-S07-DIA-SCR-03:
     type: screen
     global_rotation:
     - 0
@@ -942,7 +942,7 @@ elements:
     - 0
     - 0
     - 46.5178
-  CLA-S07F-MAG-QUAD-08:
+  CLA-S07-MAG-QUAD-08:
     type: quadrupole
     length: 0.15
     k1l: 0.793182
@@ -972,7 +972,7 @@ elements:
     - 0
     - 0
     - 46.8678
-  CLA-S07F-MAG-QUAD-09:
+  CLA-S07-MAG-QUAD-09:
     type: quadrupole
     length: 0.162
     k1l: 0.393205
@@ -1058,7 +1058,7 @@ elements:
     - 0
     - 0
     - 47.8028
-  CLA-S07-DIA-SCR-04-W:
+  CLA-S07-DIA-SCR-04:
     type: screen
     global_rotation:
     - 0
@@ -1084,7 +1084,7 @@ elements:
     - 0
     - 0
     - 47.8711
-  CLA-S07F-MAG-QUAD-10:
+  CLA-S07-MAG-QUAD-10:
     type: quadrupole
     length: 0.162
     k1l: -1.13485

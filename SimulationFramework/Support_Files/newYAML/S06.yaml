@@ -199,7 +199,7 @@ elements:
     - 0
     - 0
     - 32.7878
-  CLA-S06-DIA-SCR-01-W:
+  CLA-S06-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0
@@ -281,7 +281,7 @@ elements:
     - 0
     - 0
     - 33.9418
-  CLA-S06-DIA-SCR-02-W:
+  CLA-S06-DIA-SCR-02:
     type: screen
     global_rotation:
     - 0

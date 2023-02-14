@@ -13,8 +13,8 @@ TYPES = "$"
 COMMENTS = "#"
 INDEX_ID = "INDEX&&&"
 ID_TO_TYPE = {  # used when reading files
-    "%s": np.str,
-    "%bpm_s": np.str,
+    "%s": np.str_,
+    "%bpm_s": np.str_,
     "%le": np.float64,
     "%f": np.float64,
     "%hd": np.int64,

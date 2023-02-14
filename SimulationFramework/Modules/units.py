@@ -2,7 +2,10 @@ import warnings
 import numpy as np
 from .pmd_units import unit
 import re
-np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
+try:
+    np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
+except:
+    pass
 
 # Dicts for prefixes
 PREFIX_FACTOR = {

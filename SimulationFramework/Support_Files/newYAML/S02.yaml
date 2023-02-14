@@ -437,7 +437,7 @@ elements:
     - 6.49065
   CLA-S02-DIA-BPM-02:
     type: beam_position_monitor
-    length: 0.05135
+    length: 0.05065
     PV: CLA-S02-DIA-BPM-02
     global_rotation:
     - 0
@@ -446,7 +446,7 @@ elements:
     centre:
     - 0.0
     - 0.0
-    - 6.516325
+    - 6.515975
     start:
     - 0.0
     - 0.0
@@ -454,15 +454,15 @@ elements:
     end:
     - 0.0
     - 0.0
-    - 6.542
+    - 6.5413
     datum:
     - 0.0
     - 0.0
-    - 6.542
+    - 6.5413
     old_datum:
     - 0
     - 0
-    - 6.542
+    - 6.5413
   CLA-S02-DIA-SCR-03:
     type: screen
     camera_PV: CLA-S02-DIA-CAM-03
@@ -473,26 +473,26 @@ elements:
     centre:
     - 0.0
     - 0.0
-    - 6.58343
+    - 6.58455
     start:
     - 0.0
     - 0.0
-    - 6.58343
+    - 6.58455
     end:
     - 0.0
     - 0.0
-    - 6.58343
+    - 6.58455
     datum:
     - 0.0
     - 0.0
-    - 6.58343
+    - 6.58455
     old_datum:
     - 0
     - 0
-    - 6.58343
+    - 6.58455
   CLA-S02-MAG-HVCOR-04:
     type: kicker
-    length: 0.0574
+    length: 0.076607
     sr_enable: true
     isr_enable: true
     Horizontal_PV: CLA-S02-MAG-HCOR-04
@@ -510,20 +510,20 @@ elements:
     centre:
     - 0.0
     - 0.0
-    - 6.6888
+    - 6.683996
     start:
     - 0.0
     - 0.0
-    - 6.6601
+    - 6.645693
     end:
     - 0.0
     - 0.0
-    - 6.7175
+    - 6.7223
     datum:
     - 0.0
     - 0.0
-    - 6.7175
+    - 6.7223
     old_datum:
     - 0
     - 0
-    - 6.7175
+    - 6.7223

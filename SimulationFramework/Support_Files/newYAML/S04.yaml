@@ -198,7 +198,7 @@ elements:
     - 0
     - 0
     - 17.1002
-  CLA-S04-DIA-SCR-01-W:
+  CLA-S04-DIA-SCR-01:
     type: screen
     global_rotation:
     - 0
@@ -340,7 +340,7 @@ elements:
     - 0
     - 0
     - 18.3752
-  CLA-S04-DIA-SCR-02-W:
+  CLA-S04-DIA-SCR-02:
     type: screen
     global_rotation:
     - 0
@@ -370,7 +370,7 @@ elements:
     type: dipole
     length: 0.1
     angle: 0.0001
-    exit_edge_angle: 0.0001
+    exit_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
     sr_enable: true
@@ -388,11 +388,11 @@ elements:
     - 0.0
     - 18.5902
     end:
-    - 5.0e-06
+    - -5.0e-06
     - 0.0
     - 18.6902
     datum:
-    - 5.0e-06
+    - -5.0e-06
     - 0.0
     - 18.6902
     old_datum:
@@ -403,7 +403,7 @@ elements:
     type: dipole
     length: 0.1
     angle: -0.0001
-    entrance_edge_angle: -0.0001
+    entrance_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
     sr_enable: true
@@ -421,18 +421,18 @@ elements:
     - 0.0
     - 19.0402
     end:
-    - -5.5e-05
+    - -4.5e-05
     - 0.0
     - 19.1402
     datum:
-    - -5.5e-05
+    - -4.5e-05
     - 0.0
     - 19.1402
     old_datum:
     - -4.5e-05
     - 0
     - 19.1402
-  CLA-S04-DIA-SCR-03-W:
+  CLA-S04-DIA-SCR-03:
     type: screen
     global_rotation:
     - 0
@@ -600,7 +600,7 @@ elements:
     - -4.5e-05
     - 0
     - 20.4452
-  CLA-S04-DIA-SCR-04-W:
+  CLA-S04-DIA-SCR-04:
     type: screen
     global_rotation:
     - 0
@@ -630,7 +630,7 @@ elements:
     type: dipole
     length: 0.1
     angle: -0.0001
-    exit_edge_angle: -0.0001
+    exit_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
     sr_enable: true
@@ -648,11 +648,11 @@ elements:
     - 0.0
     - 20.6152
     end:
-    - -5.0e-05
+    - -4.0e-05
     - 0.0
     - 20.7152
     datum:
-    - -5.0e-05
+    - -4.0e-05
     - 0.0
     - 20.7152
     old_datum:
@@ -663,7 +663,7 @@ elements:
     type: dipole
     length: 0.1
     angle: 0.0001
-    entrance_edge_angle: 0.0001
+    entrance_edge_angle: angle
     half_gap: 0.005
     edge_field_integral: 0.4
     sr_enable: true
@@ -681,18 +681,18 @@ elements:
     - 0.0
     - 21.0652
     end:
-    - 1.0e-05
+    - 0.0
     - 0.0
     - 21.1652
     datum:
-    - 1.0e-05
+    - 0.0
     - 0.0
     - 21.1652
     old_datum:
     - 0
     - 0
     - 21.1652
-  CLA-S04-DIA-SCR-05-W:
+  CLA-S04-DIA-SCR-05:
     type: screen
     global_rotation:
     - 0
