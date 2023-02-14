@@ -31,6 +31,7 @@ def interpret_astra_data(self, data, normaliseZ=False):
     zref = z[0]
     self['code'] = "ASTRA"
     self._beam['reference_particle'] = data[0]
+    self._beam['toffset'] = 1e-9*data[0][6]
     # if normaliseZ:
     #     self._beam['reference_particle'][2] = 0
     self['longitudinal_reference'] = 'z'

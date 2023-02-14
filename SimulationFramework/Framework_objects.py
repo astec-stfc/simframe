@@ -1,6 +1,4 @@
-import os
-import subprocess
-import yaml
+import os, subprocess, yaml ,copy
 from munch import Munch, unmunchify
 from collections import OrderedDict
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -31,7 +29,7 @@ with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elements_E
     elements_Elegant = yaml.safe_load(infile)
 
 class frameworkLattice(Munch):
-    def __init__(self, name, file_block, elementObjects, groupObjects, settings, executables, global_parameters):
+    def __init__(self, name, file_block, elementObjects, groupObjects, runSettings, settings, executables, global_parameters):
         super(frameworkLattice, self).__init__()
         self.global_parameters = global_parameters
         self.objectname = name
@@ -55,6 +53,9 @@ class frameworkLattice(Munch):
         self.lsc_low_frequency_cutoff_start = -1
         self.lsc_low_frequency_cutoff_end = -1
         self._sample_interval = self.file_block['input']['sample_interval'] if 'input' in self.file_block and 'sample_interval' in self.file_block['input'] else 1
+
+        # define settings for simulations with multiple runs
+        self.updateRunSettings(runSettings)
 
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
@@ -355,6 +356,12 @@ class frameworkLattice(Munch):
             sNames = self.getSNames()
             return [a for a in sNames if a[0] == elem]
 
+    def updateRunSettings(self, runSettings):
+        if isinstance(runSettings, runSetup):
+            self.runSettings = runSettings
+        else:
+            raise TypeError('runSettings argument passed to frameworkLattice.updateRunSettings is not a runSetup instance')
+
 class frameworkObject(Munch):
 
     def __init__(self, objectname=None, objecttype=None, **kwargs):
@@ -425,17 +432,16 @@ class frameworkObject(Munch):
 
 class frameworkCommand(frameworkObject):
 
-    def __init__(self, name=None, type=None, **kwargs):
-        super(frameworkCommand, self).__init__(name, type, **kwargs)
-        if not type in commandkeywords:
-            raise NameError('Command \'%s\' does not exist' % commandname)
+    def __init__(self, objectname=None, objecttype=None, **kwargs):
+        super(frameworkCommand, self).__init__(objectname, objecttype, **kwargs)
+        if not objecttype in commandkeywords:
+            raise NameError('Command \'%s\' does not exist' % objecttype)
 
     def write_Elegant(self):
         wholestring=''
         string = '&'+self.objecttype+'\n'
-        # print(self.objecttype, self.objectproperties)
         for key in commandkeywords[self.objecttype]:
-            if key.lower() in self.objectproperties and not key =='name' and not key == 'type' and not self.objectproperties[key.lower()] is None:
+            if key.lower() in self.objectproperties and not key =='objectname' and not key == 'objecttype' and not self.objectproperties[key.lower()] is None:
                 string+='\t'+key+' = '+str(self.objectproperties[key.lower()])+'\n'
         string+='&end\n'
         return string
@@ -480,7 +486,6 @@ class frameworkGroup(object):
             for e in self.elements:
                 setattr(self.allElementObjects[e], p, v)
                 # print ('Changing group elements ', self.objectname, ' ', p, ' = ', v, '  result = ', self.allElementObjects[self.elements[0]].objectname, self.get_Parameter(p))
-
 
     # def __getattr__(self, p):
     #     return self.get_Parameter(p)
@@ -919,3 +924,72 @@ class lscdrift(frameworkElement):
                     string+= tmpstring
         wholestring+=string+';\n'
         return wholestring
+
+class runSetup(object):
+    '''class defining settings for simulations that include multiple runs'''
+
+    def __init__(self):
+        # define the number of runs and the random number seed
+        self.nruns = 1
+        self.seed  = 0
+
+        # init errorElement and elementScan settings as None
+        self.elementErrors = None
+        self.elementScan = None
+
+    def setNRuns(self, nruns):
+        '''sets the number of simulation runs to a new value'''
+        # enforce integer argument type
+        if isinstance(nruns, (int, float)):
+            self.nruns = int(nruns)
+        else:
+            raise TypeError('Argument nruns passed to runSetup instance must be an integer')
+    
+    def setSeedValue(self, seed):
+        '''sets the random number seed to a new value for all lattice objects'''
+        # enforce integer argument type
+        if isinstance(seed, (int, float)):
+            self.seed = int(seed)
+        else:
+            raise TypeError('Argument seed passed to runSetup must be an integer')
+
+    def loadElementErrors(self, file):
+        # load error definitions from markup file
+        if isinstance(file, str) and ('.yaml' in file):
+            with open(file, 'r') as infile:
+                error_setup = dict(yaml.safe_load(infile))
+        # define errors from dictionary
+        elif isinstance(file, dict):
+            error_setup = file
+
+        # assign the element error definitions
+        self.elementErrors = error_setup['elements']
+        self.elementScan = None
+
+        # set the number of runs and random number seed, if available
+        if 'nruns' in error_setup:
+            self.setNRuns(error_setup['nruns'])
+        if 'seed' in error_setup:
+            self.setSeedValue(error_setup['seed'])
+
+    def setElementScan(self, name, item, scanrange, multiplicative=False):
+        '''define a parameter scan for a single parameter of a given machine element'''
+        if not (isinstance(name, str) and isinstance(item, str)):
+            raise TypeError('Machine element name and item (parameter) must be defined as strings')
+        
+        if isinstance(scanrange, (list, tuple, np.ndarray)) and (len(scanrange) == 2) and all([isinstance(x, (float, int)) for x in scanrange]):
+            minval, maxval = scanrange
+        else:
+            raise TypeError('Scan range (min. and max.) must be defined as floats')
+        
+        if not isinstance(multiplicative, bool):
+            raise ValueError('Argument multiplicative passed to runSetup.setElementScan must be a boolean')
+
+        # if no type errors were raised, build an assign a dictionary
+        self.elementScan = {'name': name,
+                            'item': item,
+                            'min':  minval,
+                            'max':  maxval,
+                            'multiplicative': multiplicative
+                            }
+        self.elementErrors = None

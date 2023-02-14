@@ -819,7 +819,8 @@ class screen(frameworkElement):
             rbf.astra.read_astra_beam_file(self.global_parameters['beam'], (self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'), normaliseZ=False)
             rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], -1*self.starting_rotation, preOffset=[0,0,0], postOffset=-1*np.array(self.starting_offset))
             HDF5filename = (self.objectname+'.hdf5').strip('\"')
-            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle, cathode=cathode)
+            toffset = self.global_parameters['beam']['toffset']
+            rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=astrabeamfilename, pos=self.middle, cathode=cathode, toffset=toffset)
             if self.global_parameters['delete_tracking_files']:
                 os.remove((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'))
 

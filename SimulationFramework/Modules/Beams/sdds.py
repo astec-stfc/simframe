@@ -12,7 +12,15 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
     elegantObject.read_file(fileName)
     elegantData = elegantObject.data
     for k, v in elegantData.items():
-        self._beam[k] = v
+        # case handling for multiple ELEGANT runs per file
+        # only extract the first run (in ELEGANT this is the fiducial run)
+        if isinstance(v, np.ndarray):
+            if v.ndim > 1:
+                self._beam[k] = v[0]
+            else:
+                self._beam[k] = v
+        else:
+            self._beam[k] = v
     self.filename = fileName
     self['code'] = "SDDS"
     cp = (self._beam['p']) * self.E0_eV

@@ -44,6 +44,8 @@ def dict_constructor(loader, node):
 yaml.add_representer(OrderedDict, dict_representer)
 yaml.add_constructor(_mapping_tag, dict_constructor)
 
+latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('MasterLattice' not in x))]
+
 class Framework(Munch):
 
     def __init__(self, directory='test', master_lattice=None, simcodes=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
@@ -74,6 +76,9 @@ class Framework(Munch):
         self.defineASTRAGeneratorCommand = self.executables.define_ASTRAgenerator_command
         self.defineCSRTrackCommand = self.executables.define_csrtrack_command
         self.define_gpt_command = self.executables.define_gpt_command
+
+        # object encoding settings for simulations with multiple runs
+        self.runSetup = runSetup()
 
     def __repr__(self):
         return repr({'master_lattice_location': self.global_parameters['master_lattice_location'], 'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
@@ -217,7 +222,7 @@ class Framework(Munch):
 
     def read_Lattice(self, name, lattice):
         code = lattice['code'] if 'code' in lattice else 'astra'
-        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.settings, self.executables, self.global_parameters)
+        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
     def convert_numpy_types(self, v):
         if isinstance(v, (np.ndarray, list, tuple)):
@@ -366,7 +371,7 @@ class Framework(Munch):
             if not name == 'generator' and not (name == exclude or (isinstance(exclude, (list, tuple)) and name in exclude)):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[name]
-                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.settings, self.executables, self.global_parameters)
+                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
     def read_Element(self, name, element, subelement=False):
         if name == 'filename':
@@ -647,6 +652,30 @@ class Framework(Munch):
         except:
             pass
 
+    def pushRunSettings(self):
+        for l, latticeObject in self.latticeObjects.items():
+            if isinstance(latticeObject, tuple(latticeClasses)):
+                latticeObject.updateRunSettings(self.runSetup)  
+
+    def setNRuns(self, nruns):
+        '''sets the number of simulation runs to a new value for all lattice objects'''
+        self.runSetup.setNRuns(nruns)
+        self.pushRunSettings()
+
+    def setSeedValue(self, seed):
+        '''sets the random number seed to a new value for all lattice objects'''
+        self.runSetup.setSeedValue(seed)
+        self.pushRunSettings()
+
+    def loadElementErrors(self, file):
+        self.runSetup.loadElementErrors(file)
+        self.pushRunSettings()
+
+    def setElementScan(self, name, item, scanrange, multiplicative=False):
+        '''define a parameter scan for a single parameter of a given machine element'''
+        self.runSetup.setElementScan(name=name, item=item, scanrange=scanrange, multiplicative=multiplicative)
+        self.pushRunSettings()
+
 class frameworkDirectory(Munch):
 
     def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml'):
@@ -671,7 +700,6 @@ class frameworkDirectory(Munch):
         def general_plot(self, *args, **kwargs):
             return groupplot.general_plot(self, *args, **kwargs)
 
-
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
 
@@ -687,7 +715,6 @@ class frameworkDirectory(Munch):
             disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
             return pprint({k.replace('object',''):v for k,v in elem.items() if k not in disallowed})
         return elem
-
 
 def load_directory(directory='.', twiss=True, beams=False, **kwargs):
     fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs)
