@@ -92,8 +92,9 @@ class fitnessFunc(object):
                 # print(n, p)
                 if not hasattr(self, 'framework'):
                     self.framework = fw.Framework(None)
+                if len(self.framework.elementObjects.keys()) < 1:
                     self.framework.loadSettings(self.lattice_file)
-                print(n,p)
+                # print(self.framework.elementObjects, n,p)
                 best.append(self.framework[n][p])
             self.best = best
         return best

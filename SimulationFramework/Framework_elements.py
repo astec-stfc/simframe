@@ -508,9 +508,9 @@ class cavity(frameworkElement):
                     # If using rftmez0 or similar
                     # value = ((90+value)/360.0)*(2*3.14159) if key.lower() == 'phase' else value
                     # In ELEGANT the voltages  need to be compensated
-                    value = (self.cells+4.8) * self.cell_length * (1 / np.sqrt(2)) * value if key.lower() == 'volt' else value
+                    value = abs((self.cells+4.8) * self.cell_length * (1 / np.sqrt(2)) * value) if key.lower() == 'volt' else value
                     # If using rftmez0 or similar
-                    value = 1/(np.sqrt(2)) * value if key.lower() == 'ez' else value
+                    value = abs(1/(np.sqrt(2)) * value) if key.lower() == 'ez' else value
                     # In CAVITY NKICK = n_cells
                     value = 3*self.cells if key.lower() == 'n_kicks' else value
                     if key.lower() == 'n_bins' and value > 0:
