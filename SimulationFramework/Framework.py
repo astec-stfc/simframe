@@ -180,7 +180,7 @@ class Framework(Munch):
             self.settings = settings
 
         self.globalSettings = self.settings['global']
-        master_run_no = self.globalSettings['run_no'] if 'run_no' in self.globalSettings else 1
+        master_run_no = self.globalSettings['run_no'] if isinstance(self.globalSettings, list) and 'run_no' in self.globalSettings else 1
         if 'generator' in self.settings:
             self.generatorSettings = self.settings['generator']
             self.add_Generator(**self.generatorSettings)
@@ -655,7 +655,7 @@ class Framework(Munch):
     def pushRunSettings(self):
         for l, latticeObject in self.latticeObjects.items():
             if isinstance(latticeObject, tuple(latticeClasses)):
-                latticeObject.updateRunSettings(self.runSetup)  
+                latticeObject.updateRunSettings(self.runSetup)
 
     def setNRuns(self, nruns):
         '''sets the number of simulation runs to a new value for all lattice objects'''
@@ -675,6 +675,18 @@ class Framework(Munch):
         '''define a parameter scan for a single parameter of a given machine element'''
         self.runSetup.setElementScan(name=name, item=item, scanrange=scanrange, multiplicative=multiplicative)
         self.pushRunSettings()
+
+    def addLists(self, list1, list2):
+        return [a+b for a, b in zip(list1, list2)]
+
+    def offsetElements(self, x=0, y=0, z=0):
+        offset = [x, y, z]
+        for latt in self.lines:
+            if self.latticeObjects[latt].file_block is not None and 'output' in self.latticeObjects[latt].file_block and 'zstart' in self.latticeObjects[latt].file_block['output']:
+                self.latticeObjects[latt].file_block['output']['zstart'] += z
+        for elem in self.elements:
+            self.elementObjects[elem].position_start = self.addLists(self.elementObjects[elem].position_start, offset)
+            self.elementObjects[elem].position_end = self.addLists(self.elementObjects[elem].position_end, offset)
 
 class frameworkDirectory(Munch):
 
