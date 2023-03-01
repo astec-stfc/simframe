@@ -13,7 +13,7 @@ class dipole(frameworkElement):
         self.add_default('deltaL', 0)
         self.add_default('csr_enable', 1)
         self.add_default('isr_enable', True)
-        self.add_default('n_kicks', 30)
+        self.add_default('n_kicks', 8)
         self.add_default('sr_enable', True)
         self.add_default('integration_order', 4)
         self.add_default('nonlinear', 1)
@@ -337,7 +337,7 @@ class quadrupole(frameworkElement):
     def __init__(self, name=None, type='quadrupole', **kwargs):
         super().__init__(name, type, **kwargs)
         self.add_default('k1l', 0)
-        self.add_default('n_kicks', 20)
+        self.add_default('n_kicks', 4)
         self.strength_errors = [0]
 
 
@@ -423,6 +423,8 @@ class cavity(frameworkElement):
     def __init__(self, name=None, type='cavity', **kwargs):
         super().__init__(name, type, **kwargs)
         self.add_default('tcolumn', '"t"')
+        self.add_default('zcolumn', '"Z"')
+        self.add_default('ezcolumn', '"Ez"')
         self.add_default('wzcolumn', '"W"')
         self.add_default('wxcolumn', '"W"')
         self.add_default('wycolumn', '"W"')
@@ -497,23 +499,30 @@ class cavity(frameworkElement):
         if (not hasattr(self, 'longitudinal_wakefield_sdds') or self.longitudinal_wakefield_sdds == None) and (not hasattr(self, 'transverse_wakefield_sdds') or self.transverse_wakefield_sdds == None):
             # print('cavity ', self.objectname, ' is an RFCA!')
             etype = 'rfca'
+        if self.field_definition_sdds is not None:
+            etype = 'rftmez0'
+            self.ez_peak = self.field_amplitude
         string = self.objectname+': '+ etype
         for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
             if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeword_Elegant(key).lower()
+                if etype == 'rftmez0' and key == 'freq':
+                    key = 'frequency'
                 if self.objecttype == 'cavity':
-                    # In ELEGANT all phases are +90degrees!!
-                    value = 90 - value if key.lower() == 'phase' else value
+                    if etype == 'rftmez0':
+                        # If using rftmez0 or similar
+                        value = ((value)/360.0)*(2*3.14159) if key == 'phase' else value
+                    else:
+                        # In ELEGANT all phases are +90degrees!!
+                        value = 90 - value if key == 'phase' else value
+                    # In ELEGANT the voltages need to be compensated
+                    value = abs((self.cells+4.1) * self.cell_length * (1 / np.sqrt(2)) * value) if key == 'volt' else value
                     # If using rftmez0 or similar
-                    # value = ((90+value)/360.0)*(2*3.14159) if key.lower() == 'phase' else value
-                    # In ELEGANT the voltages  need to be compensated
-                    value = abs((self.cells+4.8) * self.cell_length * (1 / np.sqrt(2)) * value) if key.lower() == 'volt' else value
-                    # If using rftmez0 or similar
-                    value = abs(1/(np.sqrt(2)) * value) if key.lower() == 'ez' else value
+                    value = abs(1e-3/(np.sqrt(2)) * value) if key == 'ez_peak' else value
                     # In CAVITY NKICK = n_cells
-                    value = 3*self.cells if key.lower() == 'n_kicks' else value
-                    if key.lower() == 'n_bins' and value > 0:
+                    value = 3*self.cells if key == 'n_kicks' else value
+                    if key == 'n_bins' and value > 0:
                         print('WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!')
                     value = 1 if value is True else value
                     value = 0 if value is False else value

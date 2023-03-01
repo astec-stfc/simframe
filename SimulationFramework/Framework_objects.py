@@ -40,8 +40,8 @@ class frameworkLattice(Munch):
         self.allElements = list(self.allElementObjects.keys())
         self.file_block = file_block
         self.settings = settings
-        self.globalSettings = settings['global']
-        self.groupSettings = file_block['groups'] if 'groups' in file_block else {}
+        self.globalSettings = settings['global'] if settings['global'] is not None else {}
+        self.groupSettings = file_block['groups'] if 'groups' in file_block and file_block['groups'] is not None else {}
         self.update_groups()
         self.executables = executables
         self._csr_enable = True
@@ -944,7 +944,7 @@ class runSetup(object):
             self.nruns = int(nruns)
         else:
             raise TypeError('Argument nruns passed to runSetup instance must be an integer')
-    
+
     def setSeedValue(self, seed):
         '''sets the random number seed to a new value for all lattice objects'''
         # enforce integer argument type
@@ -976,12 +976,12 @@ class runSetup(object):
         '''define a parameter scan for a single parameter of a given machine element'''
         if not (isinstance(name, str) and isinstance(item, str)):
             raise TypeError('Machine element name and item (parameter) must be defined as strings')
-        
+
         if isinstance(scanrange, (list, tuple, np.ndarray)) and (len(scanrange) == 2) and all([isinstance(x, (float, int)) for x in scanrange]):
             minval, maxval = scanrange
         else:
             raise TypeError('Scan range (min. and max.) must be defined as floats')
-        
+
         if not isinstance(multiplicative, bool):
             raise ValueError('Argument multiplicative passed to runSetup.setElementScan must be a boolean')
 
