@@ -7,7 +7,6 @@ general:
   horizontal_size: x_max
   vertical_size: y_max
   field_amplitude: volt
-  frequency: freq
   output_filename: filename
   csr_bins: bins
   hangle: hkick
@@ -39,6 +38,7 @@ sextupole:
   sr_enable: synch_rad
   n_kicks: n_slices
 cavity:
+  frequency: freq
   field_amplitude: volt
   longitudinal_wakefield_sdds: zwakefile
   transverse_wakefield_sdds: trwakefile

@@ -1,3 +1,4 @@
+import shutil
 from .ASTRARules import *
 from ...Framework_objects import *
 from ...Framework_elements import *
@@ -28,21 +29,25 @@ class astraLattice(frameworkLattice):
         self.starting_rotation = -1*self.allElementObjects[self.start].global_rotation[2] if self.allElementObjects[self.start].global_rotation is not None else 0
         # print 'self.starting_rotation = ', self.starting_rotation
         # Calculate the correct starting offset by adding up the dipole angles
-        for d in self.dipoles:
-            self.starting_rotation -= d.angle
-        # print 'self.starting_rotation after subtraction = ', self.starting_rotation
+        # for d in self.dipoles:
+        #     self.starting_rotation += d.angle
+        # print('self.starting_rotation after subtraction = ', self.starting_rotation)
         self.starting_rotation = eval(expand_substitution(self, str(self.file_block['starting_rotation']))) if 'starting_rotation' in self.file_block else self.starting_rotation
-        # print 'self.starting_rotation at end = ', self.starting_rotation
+        # print('self.starting_rotation at end = ', self.starting_rotation)
 
         # Create a "newrun" block
         if 'input' not in self.file_block:
             self.file_block['input'] = {}
-        self.headers['newrun'] = astra_newrun(self.starting_offset, self.starting_rotation, global_parameters=self.global_parameters, **merge_two_dicts(self.file_block['input'],self.globalSettings['ASTRAsettings']))
+        if 'ASTRAsettings' not in self.globalSettings:
+            self.globalSettings['ASTRAsettings'] = {}
+        self.headers['newrun'] = astra_newrun(self.starting_offset, self.starting_rotation, global_parameters=self.global_parameters, **merge_two_dicts(self.file_block['input'], self.globalSettings['ASTRAsettings']))
         # If the initial distribution is derived from a generator file, we should use that
         if self.headers['newrun']['particle_definition'] == 'initial_distribution':
-            self.headers['newrun']['particle_definition'] = 'laser.astra'
+            self.headers['newrun'].input_particle_definition = 'laser.astra'
+            self.headers['newrun'].output_particle_definition = 'laser_input.astra'
         else:
-            self.headers['newrun']['particle_definition'] = self.allElementObjects[self.start].objectname+'.astra'
+            self.headers['newrun'].input_particle_definition = self.allElementObjects[self.start].objectname+'.astra'
+            self.headers['newrun'].output_particle_definition = self.objectname+'_input.astra'
 
         # Create an "output" block
         if 'output' not in self.file_block:
@@ -186,17 +191,18 @@ class astra_newrun(astra_header):
 
     def framework_dict(self):
         return OrderedDict([
-            ['Distribution', {'value': '\''+self.particle_definition+'\''}],
+            ['Distribution', {'value': '\''+self.output_particle_definition+'\''}],
             ['high_res', {'value': self.high_res, 'default': True}],
             ['n_red', {'value': self.sample_interval, 'default': 1}],
             ['auto_phase', {'value': self.auto_phase, 'default': True}]
         ])
 
     def hdf5_to_astra(self, prefix=''):
-        HDF5filename = prefix+self.particle_definition.replace('.astra','')+'.hdf5'
+        HDF5filename = prefix+self.input_particle_definition.replace('.astra','')+'.hdf5'
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
         rbf.hdf5.rotate_beamXZ(self.global_parameters['beam'], self.starting_rotation, preOffset=self.starting_offset)
-        astrabeamfilename = self.particle_definition
+        # shutil.copyfile(self.global_parameters['master_subdir'] + '/' + HDF5filename, self.global_parameters['master_subdir'] + '/' + self.output_particle_definition.replace('.astra','')+'.hdf5') #copy src to dst
+        astrabeamfilename = self.output_particle_definition
         rbf.astra.write_astra_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + astrabeamfilename, normaliseZ=False)
 
 class astra_output(astra_header):

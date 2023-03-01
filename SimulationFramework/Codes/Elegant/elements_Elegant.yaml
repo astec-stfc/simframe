@@ -1711,6 +1711,7 @@ rftm110:
 rftmez0:
   l: double
   frequency: double
+  freq: double
   phase: double
   ez_peak: double
   time_offset: double

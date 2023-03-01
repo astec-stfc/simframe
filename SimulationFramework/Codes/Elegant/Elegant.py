@@ -1,4 +1,4 @@
-import os, sdds
+import os, sdds, shutil
 from ...Framework_objects import *
 from ...Framework_elements import *
 from ...Modules import Beams as rbf
@@ -198,6 +198,7 @@ class elegantLattice(frameworkLattice):
         else:
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.global_parameters['beam'].Q)})
         # print('mean cpz = ', np.mean(self.global_parameters['beam'].cpz), ' prefix = ', prefix)
+        # shutil.copyfile(self.global_parameters['master_subdir'] + '/' + HDF5filename, self.global_parameters['master_subdir'] + '/' + self.objectname+'.hdf5') #copy src to dst
         sddsbeamfilename = self.objectname+'.sdds'
         rbf.sdds.write_SDDS_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
 
@@ -301,7 +302,7 @@ class elegantTrackFile(elegantCommandFile):
         Z0 = lattice.startObject['position_start'][2],
         theta0 = 0,
         magnet_centers = 0)
-        mat = self.addCommand(type='matrix_output', SDDS_output="%s.mat",
+        mat = self.addCommand(objecttype='matrix_output', SDDS_output="%s.mat",
         full_matrix_only=0, SDDS_output_order=2)
         if self.trackBeam:
             if (elementErrors is not None) or (elementScan is not None):
