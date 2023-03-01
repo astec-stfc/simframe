@@ -93,6 +93,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             parameternames = copy(self.parameter_names)
         self.inputlist = [a[0]+[a[1]] for a in zip(parameternames, inputargs)]
 
+        self.linac_names = np.array([i[0] for i in self.inputlist if i[1] == 'field_amplitude'])
         self.linac_fields = np.array([i[2] for i in self.inputlist if i[1] == 'field_amplitude'])
         self.linac_phases = np.array([i[2] for i in self.inputlist if i[1] == 'phase'])
         self.vbc_angle = np.array([i[2] for i in self.inputlist if i[1] == 'angle'])
