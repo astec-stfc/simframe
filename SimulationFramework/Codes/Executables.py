@@ -32,6 +32,8 @@ class executable:
                 self.executable = location
         elif socket.gethostname() in self.settings:
             self.executable = self._subsitute_variables(self.settings[socket.gethostname()][name])
+        elif socket.gethostname().split(".")[0] in self.settings:
+            self.executable = self._subsitute_variables(self.settings[socket.gethostname().split(".")[0]][name])
         elif os.name in self.settings:
             self.executable = self._subsitute_variables(self.settings[os.name][name])
         else:
