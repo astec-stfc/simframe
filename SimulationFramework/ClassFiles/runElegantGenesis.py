@@ -34,7 +34,7 @@ parser.add_argument('-p', '--postinjector', default=True)
 
 class FEL_sim(FEL_simulation_block.FEL_simulation_block):
     def __init__(self, initial_data, alphax=-0.189, betax=3.76, alphay=0, betay=1.44, **kwargs):
-       print ('initial_data = ', (initial_data))
+       print('initial_data = ', (initial_data))
        super(FEL_sim,self).__init__((initial_data),**kwargs)
        self.alphax = alphax
        self.betax = betax
@@ -46,12 +46,12 @@ class FEL_sim(FEL_simulation_block.FEL_simulation_block):
         inp_out = inp
         beam = rbf.beam()
         beam.read_HDF5_beam_file(filename)
-        print 'beta_x = ', beam.beta_x, ' alpha_x = ', beam.alpha_x
-        print 'beta_y = ', beam.beta_y, ' alpha_y = ', beam.alpha_y
+        print('beta_x = ', beam.beta_x, ' alpha_x = ', beam.alpha_x)
+        print('beta_y = ', beam.beta_y, ' alpha_y = ', beam.alpha_y)
         beam.rematchXPlane(beta=self.betax, alpha=self.alphax)
         beam.rematchYPlane(beta=self.betay, alpha=self.alphay)
-        print 'beta_x = ', beam.beta_x, ' alpha_x = ', beam.alpha_x
-        print 'beta_y = ', beam.beta_y, ' alpha_y = ', beam.alpha_y
+        print('beta_x = ', beam.beta_x, ' alpha_x = ', beam.alpha_x)
+        print('beta_y = ', beam.beta_y, ' alpha_y = ', beam.alpha_y)
         edist = GenesisElectronDist()
         edist.x = beam.x
         edist.y = beam.y
@@ -63,7 +63,7 @@ class FEL_sim(FEL_simulation_block.FEL_simulation_block):
         edist.cp = beam.cp
         edist.g = beam.gamma - np.mean(beam.gamma) + 1000/0.511
         edist.part_charge = abs(self.startcharge)*1e-12 / len(beam.x)
-        print ('self.startcharge = ', self.startcharge)
+        print('self.startcharge = ', self.startcharge)
         self.bunch_length = np.std(beam.t)
 
         if center:
