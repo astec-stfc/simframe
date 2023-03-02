@@ -70,7 +70,7 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         array = np.array([self.x + xoffset, self.y + yoffset, self.z + zoffset, self.cpx, self.cpy, self.cpz, self.t + toffset, chargevector, self.nmacro]).transpose()
         beamgrp['columns'] = np.array(['x','y','z', 'cpx', 'cpy', 'cpz', 't', 'q', 'w'], dtype='S')
         beamgrp['units'] = np.array(['m','m','m','eV','eV','eV','s','e', ''], dtype='S')
-        beamgrp.create_dataset("beam", data=array)
+        beamgrp.create_dataset("beam", data=array, compression='gzip', compression_opts=9)
 
 def write_HDF5_summary_file(filename, beams=[], clean=False):
     if isinstance(beams, str):
