@@ -2,6 +2,7 @@ import os, subprocess, yaml ,copy
 from munch import Munch, unmunchify
 from collections import OrderedDict
 from .Modules.merge_two_dicts import merge_two_dicts
+from .Modules.MathParser import MathParser
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
@@ -388,6 +389,9 @@ class frameworkObject(Munch):
         for key, value in list(kwargs.items()):
             self.add_property(key, value)
 
+    def change_Parameter(self, key, value):
+        setattr(self, key, value)
+
     def add_property(self, key, value):
         key = key.lower()
         if key in self.allowedkeywords:
@@ -465,13 +469,16 @@ class frameworkGroup(object):
         self.objectname = name
         self.type = type
         self.elements = elements
-        self.allElementObjects = elementObjects
+        self.allElementObjects = elementObjects.elementObjects
+        self.allGroupObjects = elementObjects.groupObjects
 
     def get_Parameter(self, p):
         try:
             isinstance(type(self).p, p)
             return getattr(self, p)
         except:
+            if self.elements[0] in self.allGroupObjects:
+                return self.allGroupObjects[self.elements[0]][p]
             return self.allElementObjects[self.elements[0]][p]
 
     def change_Parameter(self, p, v):
@@ -501,7 +508,41 @@ class frameworkGroup(object):
 
 class element_group(frameworkGroup):
     def __init__(self, name, elementObjects, type, elements, **kwargs):
-        super(element_group, self).__init__(name, elementObjects, type, elements, **kwargs)
+        super().__init__(name, elementObjects, type, elements, **kwargs)
+
+class r56_group(frameworkGroup):
+    def __init__(self, name, elementObjects, type, elements, ratios, keys, **kwargs):
+        super().__init__(name, elementObjects, type, elements, **kwargs)
+        self.ratios = ratios
+        self.keys = keys
+        self._r56 = None
+
+    def get_Parameter(self, p):
+        if str(p) == 'r56':
+            return self.r56
+        else:
+            super().get_Parameter(p)
+
+    @property
+    def r56(self):
+        return self._r56
+    @r56.setter
+    def r56(self, r56):
+        self._r56 = r56
+        data = {'r56': self._r56}
+        parser = MathParser(data)
+        values = [parser.parse(e) for e in self.ratios]
+        for e, k, v in zip(*[self.elements, self.keys, values]):
+            self.updateElements(e, k, v)
+
+    def updateElements(self, element, key, value):
+        if isinstance(element, (list, tuple)):
+            [self.updateElements(e, key, value) for e in elements]
+        else:
+            if element in self.allElementObjects:
+                self.allElementObjects[element].change_Parameter(key, value)
+            if element in self.allGroupObjects:
+                self.allGroupObjects[element].change_Parameter(key, value)
 
 class chicane(frameworkGroup):
     def __init__(self, name, elementObjects, type, elements, **kwargs):
