@@ -833,13 +833,14 @@ class screen(frameworkElement):
             if self.global_parameters['delete_tracking_files']:
                 os.remove((self.global_parameters['master_subdir'] + '/' + astrabeamfilename).strip('\"'))
 
-    def sdds_to_hdf5(self):
+    def sdds_to_hdf5(self, sddsindex=1):
+        beam = rbf.beam(sddsindex=sddsindex)
         elegantbeamfilename = self.output_filename.replace('.sdds','.SDDS').strip('\"')
-        rbf.sdds.read_SDDS_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
+        rbf.sdds.read_SDDS_beam_file(beam, self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
         HDF5filename = self.output_filename.replace('.sdds','.hdf5').replace('.SDDS','.hdf5').strip('\"')
-        rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
+        rbf.hdf5.write_HDF5_beam_file(beam, self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
         if self.global_parameters['delete_tracking_files']:
-            os.remove(self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
+            os.remove((self.global_parameters['master_subdir'] + '/' + elegantbeamfilename).strip('\"'))
 
     def gdf_to_hdf5(self, gptbeamfilename, cathode=False, gdfbeam=None):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
@@ -850,6 +851,8 @@ class screen(frameworkElement):
             rbf.hdf5.write_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=gptbeamfilename, pos=self.middle, xoffset=self.end[0], cathode=cathode, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
         # except:
         #     print('Error with screen', self.objectname,'at', self.gpt_screen_position)
+            if self.global_parameters['delete_tracking_files']:
+                os.remove((self.global_parameters['master_subdir'] + '/' + gptbeamfilename).strip('\"'))
 
 class monitor(screen):
 
