@@ -270,7 +270,8 @@ class elegantTrackFile(elegantCommandFile):
         if not os.name == 'nt':
             self.addCommand(objecttype='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
         else:
-            self.addCommand(objecttype='global_settings', inhibit_fsync=1)
+            self.addCommand(objecttype='global_settings', inhibit_fsync=0, mpi_io_force_file_sync=0, mpi_io_read_buffer_size=16777216, \
+                            mpi_io_write_buffer_size=16777216, usleep_mpi_io_kludge=0)
         self.addCommand(objecttype='run_setup',lattice=self.lattice_filename, \
             use_beamline=lattice.objectname,p_central=np.mean(self.global_parameters['beam'].BetaGamma), \
             random_number_seed=seed, \
