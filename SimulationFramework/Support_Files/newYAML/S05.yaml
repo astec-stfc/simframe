@@ -167,6 +167,33 @@ elements:
     - 0
     - 0
     - 25.1794
+  CLA-S05-DIA-BAM-01:
+    type: beam_arrival_monitor
+    length: 0.08
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 25.2563
+    start:
+    - 0.0
+    - 0.0
+    - 25.2163
+    end:
+    - 0.0
+    - 0.0
+    - 25.2963
+    datum:
+    - 0.0
+    - 0.0
+    - 25.2963
+    old_datum:
+    - 0
+    - 0
+    - 25.2963
   CLA-S05-MAG-QUAD-02:
     type: quadrupole
     length: 0.162

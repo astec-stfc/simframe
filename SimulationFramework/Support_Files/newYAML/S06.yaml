@@ -141,8 +141,35 @@ elements:
     - 0
     - 0
     - 31.9278
+  CLA-S06-DIA-BAM-01:
+    type: beam_arrival_monitor
+    length: 0.08
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 32.09316
+    start:
+    - 0.0
+    - 0.0
+    - 32.05316
+    end:
+    - 0.0
+    - 0.0
+    - 32.13316
+    datum:
+    - 0.0
+    - 0.0
+    - 32.13316
+    old_datum:
+    - 0
+    - 0
+    - 32.13316
   CLA-S06-DIA-EOM-01:
-    type: monitor
+    type: beam_arrival_monitor
     length: 0.2885
     fit_point: 1.0
     global_rotation:
