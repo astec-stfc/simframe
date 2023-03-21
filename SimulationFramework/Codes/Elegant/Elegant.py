@@ -191,9 +191,9 @@ class elegantLattice(frameworkLattice):
 
     def postProcess(self):
         if self.trackBeam:
-            for i,s in enumerate(self.screens):
+            for i,s in enumerate(self.screens_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
-            if not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens]:
+            if not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens_and_bpms]:
                 self.screen_threaded_function.scatter(self.w, len(self.screens))
         results = self.screen_threaded_function.gather()
 

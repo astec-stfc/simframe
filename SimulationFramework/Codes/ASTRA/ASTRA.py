@@ -125,8 +125,8 @@ class astraLattice(frameworkLattice):
         self.headers['charge'].npart = len(self.global_parameters['beam'].x)
 
     @lox.thread
-    def screen_threaded_function(self, screen, objectname, cathode=cathode):
-        return screen.astra_to_hdf5(objectname, cathode=cathode)
+    def screen_threaded_function(self, screen, objectname, cathode):
+        return screen.astra_to_hdf5(objectname, cathode)
 
     def postProcess(self):
         cathode = self.headers['newrun']['particle_definition'] == 'laser'

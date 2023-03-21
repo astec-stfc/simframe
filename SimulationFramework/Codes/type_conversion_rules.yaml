@@ -2,7 +2,7 @@ elegant:
   dipole: csrcsbend
   quadrupole: kquad
   sextupole: ksext
-  beam_position_monitor: moni
+  beam_position_monitor: watch
   beam_arrival_monitor: moni
   screen: watch
   rcollimator: rcol
