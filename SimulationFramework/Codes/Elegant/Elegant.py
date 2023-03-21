@@ -1,4 +1,5 @@
 import os, sdds, shutil
+import lox
 from ...Framework_objects import *
 from ...Framework_elements import *
 from ...Modules import Beams as rbf
@@ -184,11 +185,17 @@ class elegantLattice(frameworkLattice):
         elementScan=elementScan
         )
 
+    @lox.thread
+    def screen_threaded_function(self, screen, sddsindex):
+        return screen.sdds_to_hdf5(sddsindex)
+
     def postProcess(self):
         if self.trackBeam:
-            for s in self.screens:
-                s.sdds_to_hdf5()
-            self.w.sdds_to_hdf5()
+            for i,s in enumerate(self.screens):
+                self.screen_threaded_function.scatter(s, i)
+            if not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens]:
+                self.screen_threaded_function.scatter(self.w, len(self.screens))
+        results = self.screen_threaded_function.gather()
 
     def hdf5_to_sdds(self, prefix=''):
         HDF5filename = prefix+self.particle_definition+'.hdf5'
