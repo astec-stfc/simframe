@@ -30,7 +30,7 @@ elements:
     - 6.7485
   CLA-L02-CAV:
     type: cavity
-    length: 4.06667
+    length: 4.0839
     Structure_Type: TravellingWave
     cell_length: 0.0333333333333333
     coupling_cell_length: 0.0495
@@ -92,7 +92,7 @@ elements:
     centre:
     - 0.0
     - 0.0
-    - 8.822375
+    - 8.83099
     start:
     - 0.0
     - 0.0
@@ -100,11 +100,11 @@ elements:
     end:
     - 0.0
     - 0.0
-    - 10.85571
+    - 10.87294
     datum:
     - 0.0
     - 0.0
-    - 10.85571
+    - 10.87294
     old_datum:
     - 0
     - 0

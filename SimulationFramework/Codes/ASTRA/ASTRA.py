@@ -1,4 +1,5 @@
 import shutil
+import lox
 from .ASTRARules import *
 from ...Framework_objects import *
 from ...Framework_elements import *
@@ -123,20 +124,20 @@ class astraLattice(frameworkLattice):
         self.headers['newrun'].hdf5_to_astra(prefix)
         self.headers['charge'].npart = len(self.global_parameters['beam'].x)
 
+    @lox.thread
+    def screen_threaded_function(self, screen, objectname, cathode):
+        return screen.astra_to_hdf5(objectname, cathode)
+
     def postProcess(self):
-        # print('ASTRA/postProcess', 'starting')
         cathode = self.headers['newrun']['particle_definition'] == 'laser'
-        # print('ASTRA/postProcess', cathode)
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0,0,0]:
                 e.zstart = self.allElementObjects[self.start].start
             else:
                 e.zstart = [0,0,0]
-            # print(e.objectname, cathode)
-            e.astra_to_hdf5(self.objectname, cathode=cathode)
-        # print('ASTRA/postProcess', 'finished elems')
+            self.screen_threaded_function.scatter(e, self.objectname, cathode=cathode)
+        results = self.screen_threaded_function.gather()
         self.astra_to_hdf5(cathode=cathode)
-        # print('ASTRA/postProcess', 'finished')
 
     def astra_to_hdf5(self, cathode=False):
         # print('ASTRA/astra_to_hdf5', cathode)
