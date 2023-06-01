@@ -169,6 +169,7 @@ def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=
             lines += a
             labels += b
         ax_plot[0].legend(lines, labels, loc='best')
+    return fig
 
 def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], cmap=None, **kwargs):
     """
@@ -262,6 +263,8 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     # Set labels on joint
     ax_joint.set_xlabel(labelx)
     ax_joint.set_ylabel(labely)
+
+    return fig
 
 def plot(self, keys=None, bins=None, type='density', **kwargs):
 
@@ -449,3 +452,5 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
     plt.suptitle(file)
     # Show the final image
     plt.draw()
+
+    return fig

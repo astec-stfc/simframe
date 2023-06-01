@@ -307,13 +307,13 @@ class beam(munch.Munch):
 
     if use_matplotlib:
         def plot(self, **kwargs):
-            plot.plot(self, **kwargs)
+            return plot.plot(self, **kwargs)
 
         def slice_plot(self, *args, **kwargs):
-            plot.slice_plot(self, *args, **kwargs)
+            return plot.slice_plot(self, *args, **kwargs)
 
         def plotScreenImage(self, **kwargs):
-            plot.plotScreenImage(self, **kwargs)
+            return plot.plotScreenImage(self, **kwargs)
 
 def load_directory(directory='.', types={'SimFrame':'.hdf5'}, verbose=False):
     bg = beamGroup()
