@@ -61,6 +61,7 @@ class Framework(Munch):
         self.commandObjects = OrderedDict()
         self.groupObjects = OrderedDict()
         self.progress = 0
+        self.tracking = False
         self.basedirectory = os.getcwd()
         self.filedirectory = os.path.dirname(os.path.abspath(__file__))
         self.overwrite = overwrite
@@ -566,9 +567,10 @@ class Framework(Munch):
                 allZ = allZ + zelems
         return list(sorted(allZ, key=lambda x: x[2][0]))
 
-    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True):
+    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True, frameworkDirectory=False):
         self.save_lattice(directory=self.subdirectory, filename='lattice.yaml')
         self.save_settings(directory=self.subdirectory, filename='settings.def', elements={'filename': 'lattice.yaml'})
+        self.tracking = True
         self.progress = 0
         if files is None:
             files = ['generator'] + self.lines if not hasattr(self, 'generator') else self.lines
@@ -640,6 +642,9 @@ class Framework(Munch):
             if save_summary:
                 self.save_summary_files()
             self.progress = 100
+            self.tracking = False
+            if frameworkDirectory:
+                return frameworkDirectory(directory=self.subdirectory, twiss=True, beams=True, verbose=self.verbose)
 
     def save_summary_files(self, twiss=True, beams=True):
         t = rtf.load_directory(self.subdirectory)
@@ -718,6 +723,12 @@ class frameworkDirectory(Munch):
     def getScreen(self, screen):
         if self.beams:
             return self.beams.getScreen(screen)
+
+    def getScreens(self):
+        screens = self.framework.getElementType('screen', 'objectname')
+        if self.beams:
+            print('getScreens',screens)
+            return {screen: self.beams.getScreen(screen) for screen in screens}
 
     def element(self, element, field=None):
         elem = self.framework.getElement(element)

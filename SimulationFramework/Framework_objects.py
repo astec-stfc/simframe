@@ -662,6 +662,11 @@ class frameworkElement(frameworkObject):
         return repr({k.replace('object',''):v for k,v in self.items() if k not in disallowed})
 
     @property
+    def propertiesDict(self):
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'subelement']
+        return {k.replace('object',''):v for k,v in self.items() if k not in disallowed}
+
+    @property
     def x(self):
         return self.position_start[0]
     @x.setter

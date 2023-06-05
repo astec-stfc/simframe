@@ -118,7 +118,7 @@ class twiss(munch.Munch):
             return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
 
     def __repr__(self):
-        return repr([k for k in self.properties if len(self[k]) > 0])
+        return repr([k.val for k in self.properties if len(self[k]) > 0])
 
     def stat(self, key):
         if key in self.properties:
