@@ -206,6 +206,7 @@ class Framework(Munch):
         self.original_elementObjects = {}
         for e in self.elementObjects:
             self.original_elementObjects[e] = unmunchify(self.elementObjects[e])
+        self.original_elementObjects['generator'] = unmunchify(self['generator'])
 
     def save_settings(self, filename=None, directory='.', elements=None):
         if filename is None:
@@ -225,16 +226,6 @@ class Framework(Munch):
         code = lattice['code'] if 'code' in lattice else 'astra'
         self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
-    def convert_numpy_types(self, v):
-        if isinstance(v, (np.ndarray, list, tuple)):
-            return [self.convert_numpy_types(l) for l in v]
-        elif isinstance(v, (np.float64, np.float32, np.float16, np.float_ )):
-            return float(v)
-        elif isinstance(v, (np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)):
-            return int(v)
-        else:
-            return v
-
     def detect_changes(self, elementtype=None, elements=None, function=None):
         disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
         start = time.time()
@@ -244,7 +235,7 @@ class Framework(Munch):
         elif elements is not None:
             changeelements = elements
         else:
-            changeelements = list(self.elementObjects.keys())
+            changeelements = ['generator'] + list(self.elementObjects.keys())
         # print('changeelements = ', changeelements)
         # print(changeelements[0])
         if len(changeelements) > 0 and isinstance(changeelements[0], (list, tuple, dict)) and len(changeelements[0]) > 1:
@@ -260,15 +251,20 @@ class Framework(Munch):
                         # print (new)
                         if e not in changedict:
                             changedict[e] = {}
-                        changedict[e][k] = self.convert_numpy_types(new[k])
+                        changedict[e][k] = convert_numpy_types(new[k])
         else:
             for e in changeelements:
-                if not self.original_elementObjects[e] == unmunchify(self.elementObjects[e]):
+                if e in self.elementObjects:
+                    unmunched_element = unmunchify(self.elementObjects[e])
+                elif e == 'generator':
+                    unmunched_element = unmunchify(self['generator'])
+                if not self.original_elementObjects[e] == unmunched_element:
                     orig = self.original_elementObjects[e]
-                    new = unmunchify(self.elementObjects[e])
+                    new = unmunched_element
+
                     try:
-                        changedict[e] = {k: self.convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
-                        changedict[e].update({k: self.convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
+                        changedict[e] = {k: convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
+                        changedict[e].update({k: convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
                         if changedict[e] == {}:
                             del changedict[e]
                     except:
@@ -276,16 +272,19 @@ class Framework(Munch):
                         pass
         return changedict
 
-    def save_changes_file(self, filename=None, type=None, elements=None, function=None):
+    def save_changes_file(self, filename=None, type=None, elements=None, function=None, dictionary=False):
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
             filename =  pre     + '_changes.yaml'
         changedict = self.detect_changes(elementtype=type, elements=elements, function=function)
-        with open(filename,"w") as yaml_file:
-            yaml.default_flow_style=True
-            yaml.dump(changedict, yaml_file)
+        if dictionary:
+            return changedict
+        else:
+            with open(filename,"w") as yaml_file:
+                yaml.default_flow_style=True
+                yaml.dump(changedict, yaml_file)
 
-    def save_lattice(self, lattice=None, filename=None, directory='.'):
+    def save_lattice(self, lattice=None, filename=None, directory='.', dictionary=False):
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
@@ -305,18 +304,21 @@ class Framework(Munch):
             new = unmunchify(self.elementObjects[e])
             try:
                 if ('subelement' in new and not new['subelement']) or not 'subelement' in new:
-                    latticedict[e] = {k.replace('object',''): self.convert_numpy_types(new[k]) for k in new if not k in disallowed}
+                    latticedict[e] = {k.replace('object',''): convert_numpy_types(new[k]) for k in new if not k in disallowed}
                     if 'sub_elements' in new:
                         for subelem in new['sub_elements']:
                             newsub = self.elementObjects[subelem]
-                            latticedict[e]['sub_elements'][subelem] = {k.replace('object',''): self.convert_numpy_types(newsub[k]) for k in newsub if not k in disallowed}
+                            latticedict[e]['sub_elements'][subelem] = {k.replace('object',''): convert_numpy_types(newsub[k]) for k in newsub if not k in disallowed}
             except:
                 print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                 pass
         # print('#### Saving Lattice - ', filename)
-        with open(directory + '/' + filename,"w") as yaml_file:
-            yaml.default_flow_style = True
-            yaml.dump(dic, yaml_file)
+        if dictionary:
+            return dic
+        else:
+            with open(directory + '/' + filename,"w") as yaml_file:
+                yaml.default_flow_style = True
+                yaml.dump(dic, yaml_file)
 
     def load_changes_file(self, filename=None, apply=True):
         if isinstance(filename, (tuple, list)):
@@ -432,6 +434,8 @@ class Framework(Munch):
     def getElementType(self, type, param=None):
         if isinstance(type, (list, tuple)):
             return [self.getElementType(t, param=param) for t in type]
+        if isinstance(param, (list, tuple)):
+            return zip(*[self.getElementType(type, param=p) for p in param])
             # return [item for sublist in all_elements for item in sublist]
         return [self.elementObjects[element] if param is None else self.elementObjects[element][param] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
 
@@ -695,11 +699,14 @@ class Framework(Munch):
 
 class frameworkDirectory(Munch):
 
-    def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml'):
+    def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml', framework=None):
         super(frameworkDirectory, self).__init__()
         directory = os.path.abspath(directory)
-        self.framework = Framework(directory, clean=False, verbose=verbose)
-        self.framework.loadSettings(directory+'/'+settings)
+        if framework is None:
+            self.framework = Framework(directory, clean=False, verbose=verbose)
+            self.framework.loadSettings(directory+'/'+settings)
+        else:
+            self.framework = framework
         if os.path.exists(directory+'/'+changes):
             self.framework.load_changes_file(directory+'/'+changes)
         if twiss:
@@ -707,7 +714,10 @@ class frameworkDirectory(Munch):
         else:
             self.twiss = None
         if beams:
-            self.beams = rbf.load_directory(directory)
+            self.beams = rbf.load_HDF5_summary_file(os.path.join(directory,'Beam_Summary.hdf5'))
+            if len(self.beams) < 1:
+                print('No Summary File! Globbing...')
+                self.beams = rbf.load_directory(directory)
         else:
             self.beams = None
 
@@ -724,11 +734,10 @@ class frameworkDirectory(Munch):
         if self.beams:
             return self.beams.getScreen(screen)
 
-    def getScreens(self):
-        screens = self.framework.getElementType('screen', 'objectname')
+    def getScreenNames(self):
         if self.beams:
-            print('getScreens',screens)
-            return {screen: self.beams.getScreen(screen) for screen in screens}
+            return self.beams.getScreens()
+        return []
 
     def element(self, element, field=None):
         elem = self.framework.getElement(element)

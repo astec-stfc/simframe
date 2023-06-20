@@ -153,6 +153,9 @@ class beamGroup(munch.Munch):
                 return self.beams[b]
         return None
 
+    def getScreens(self):
+        return {os.path.splitext(os.path.basename(b))[0]: b for b in self.beams.keys()}
+
 class stats(object):
 
     def __init__(self, beam, function):
@@ -341,3 +344,12 @@ def save_HDF5_summary_file(directory='.', filename='./Beam_Summary.hdf5', files=
                 if "/beam/beam" in f:
                     files.append(bf)
     hdf5.write_HDF5_summary_file(filename, files)
+
+def load_HDF5_summary_file(filename):
+    dir = os.path.dirname(filename)
+    bg = beamGroup()
+    with h5py.File(filename, "r") as f:
+        for screen in list(f.keys()):
+            bg.add(os.path.join(dir,screen+'.hdf5'))
+    bg.sort()
+    return bg

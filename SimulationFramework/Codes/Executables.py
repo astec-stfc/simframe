@@ -27,9 +27,9 @@ class executable:
         self.ncpu = ncpu
         if location is not None:
             if isinstance(location,str):
-                self.executable = [location]
+                self.executable = self._subsitute_variables([location])
             elif isinstance(location,list):
-                self.executable = location
+                self.executable = self._subsitute_variables(location)
         elif socket.gethostname() in self.settings:
             self.executable = self._subsitute_variables(self.settings[socket.gethostname()][name])
         elif socket.gethostname().split(".")[0] in self.settings:

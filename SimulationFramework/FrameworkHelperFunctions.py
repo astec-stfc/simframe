@@ -199,3 +199,13 @@ def copylink(source, destination):
         copyfile(source, destination)
     except SameFileError:
         pass
+
+def convert_numpy_types( v):
+    if isinstance(v, (np.ndarray, list, tuple)):
+        return [convert_numpy_types(l) for l in v]
+    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_ )):
+        return float(v)
+    elif isinstance(v, (np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)):
+        return int(v)
+    else:
+        return v

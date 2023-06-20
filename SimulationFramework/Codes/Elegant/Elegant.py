@@ -194,7 +194,7 @@ class elegantLattice(frameworkLattice):
             for i,s in enumerate(self.screens_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
             if not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens_and_bpms]:
-                self.screen_threaded_function.scatter(self.w, len(self.screens))
+                self.screen_threaded_function.scatter(self.w, len(self.screens_and_bpms))
         results = self.screen_threaded_function.gather()
 
     def hdf5_to_sdds(self, prefix=''):

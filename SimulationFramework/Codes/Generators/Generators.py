@@ -1,7 +1,7 @@
 import os
 import subprocess
 from collections import OrderedDict
-from munch import Munch
+from munch import Munch, unmunchify
 from ...FrameworkHelperFunctions import *
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import constants
@@ -203,6 +203,15 @@ class frameworkGenerator(Munch):
 
     def postProcess(self):
         pass
+
+    @property
+    def save_lattice(self):
+        dic = OrderedDict({'elements': OrderedDict()})
+        latticedict = dic['elements']
+        disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters', 'objectname', 'subelement']
+        new = unmunchify(self)
+        latticedict = {k.replace('object',''): convert_numpy_types(new[k]) for k in new if not k in disallowed}
+        return dic
 
 class ASTRAGenerator(frameworkGenerator):
     def __init__(self, executables, global_parameters, **kwargs):
