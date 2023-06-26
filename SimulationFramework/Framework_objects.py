@@ -110,8 +110,13 @@ class frameworkLattice(Munch):
             print(( 'WARNING: Element ', element,' does not exist'))
             return {}
 
-    def getElementType(self, type, setting=None):
-        return [self.elements[element] if setting is None else self.elements[element][setting] for element in list(self.elements.keys()) if self.elements[element].objecttype.lower() == type.lower()]
+    def getElementType(self, type, param=None):
+        if isinstance(type, (list, tuple)):
+            return [self.getElementType(t, param=param) for t in type]
+        if isinstance(param, (list, tuple)):
+            return zip(*[self.getElementType(type, param=p) for p in param])
+        return [self.elements[element] if param is None else self.elements[element][param] for element in list(self.elements.keys()) if self.elements[element].objecttype.lower() == type.lower()]
+
 
     def setElementType(self, type, setting, values):
         elems = self.getElementType(type)
