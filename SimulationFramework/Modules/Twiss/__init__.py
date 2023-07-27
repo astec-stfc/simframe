@@ -1,6 +1,7 @@
 import os
 import math
 import warnings
+import copy
 import numpy as np
 try:
     from scipy import interpolate
@@ -198,6 +199,24 @@ class twiss(munch.Munch):
             else:
                 # print('interpolate!', z, self['z'])
                 return self.interpolate(z=z, value=param, index='z')
+
+    def get_parameter_at_element(self, param, element_name):
+        if element_name in self['element_name']:
+            idx = list(self['element_name']).index(element_name)
+            return self[param][idx]
+        return None
+
+    def get_twiss_at_element(self, element_name):
+        if element_name in self['element_name']:
+            idx = list(self['element_name']).index(element_name)
+            twissdict = {}
+            for param in self.properties.keys():
+                try:
+                    twissdict[param] = (self[param].val)[idx]
+                except:
+                    pass
+            return twissdict
+        return None
 
     if use_matplotlib:
         def plot(self, *args, **kwargs):

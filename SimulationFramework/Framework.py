@@ -699,14 +699,17 @@ class Framework(Munch):
 
 class frameworkDirectory(Munch):
 
-    def __init__(self, directory='.', twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml', framework=None):
+    def __init__(self, directory=None, twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml', framework=None):
         super(frameworkDirectory, self).__init__()
-        directory = os.path.abspath(directory)
         if framework is None:
+            directory = '.' if directory is None else os.path.abspath(directory)
             self.framework = Framework(directory, clean=False, verbose=verbose)
             self.framework.loadSettings(directory+'/'+settings)
         else:
             self.framework = framework
+            if directory is None:
+                directory = os.path.abspath(self.framework.subdirectory)
+        print('directory = ', directory)
         if os.path.exists(directory+'/'+changes):
             self.framework.load_changes_file(directory+'/'+changes)
         if twiss:
