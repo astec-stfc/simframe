@@ -259,7 +259,7 @@ class frameworkLattice(Munch):
         drifttype = lscdrift
 
         for e, d in driftdata:
-            if e[1]['objecttype'] == 'screen' and e[1]['length'] > 0:
+            if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and e[1]['length'] > 0:
                 name = e[0]+'-drift-01'
                 newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': e[1]['length']/2,
                  'csr_enable': csr,
