@@ -705,7 +705,7 @@ class solenoid(frameworkElement):
             ['S_pos', {'value': self.start[2] + self.dz, 'default': 0}],
             efield_def,
             ['MaxB', {'value': self.get_field_amplitude, 'default': 0}],
-            ['S_smooth', {'value': self.smooth, 'default': 0}],
+            ['S_smooth', {'value': self.smooth, 'default': 10}],
             ['S_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
             ['S_yoff', {'value': self.start[1] + self.dy, 'default': 0}],
             ['S_xrot', {'value': self.y_rot + self.dy_rot, 'default': 0}],
@@ -903,13 +903,17 @@ class screen(frameworkElement):
             output = 'screen( ' + ccs.name + ', "I", '+ str(relpos[2]) + ',' + ccs.name + ');\n'
         return output
 
-    def astra_to_hdf5(self, lattice, cathode=False):
-        master_run_no = self.global_parameters['run_no'] if 'run_no' in self.global_parameters else 1
-        astrabeamfilename = None
+    def find_ASTRA_filename(self, lattice, master_run_no, mult):
         for i in [0, -0.001, 0.001]:
-            tempfilename = lattice + '.' + str(int(round((self.middle[2]+i-self.zstart[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
+            tempfilename = lattice + '.' + str(int(round((self.middle[2]+i-self.zstart[2])*mult))).zfill(4) + '.' + str(master_run_no).zfill(3)
+            # print(self.middle[2]+i-self.zstart[2], tempfilename, os.path.isfile(self.global_parameters['master_subdir'] + '/' + tempfilename))
             if os.path.isfile(self.global_parameters['master_subdir'] + '/' + tempfilename):
-                astrabeamfilename = tempfilename
+                return tempfilename
+        return None
+
+    def astra_to_hdf5(self, lattice, cathode=False, mult=100):
+        master_run_no = self.global_parameters['run_no'] if 'run_no' in self.global_parameters else 1
+        astrabeamfilename = self.find_ASTRA_filename(lattice, master_run_no, mult)
         if astrabeamfilename is None:
             print(( 'Screen Error: ', lattice, self.middle[2], self.zstart[2]))
         else:
