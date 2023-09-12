@@ -147,7 +147,7 @@ class fitnessFunc(object):
     def before_tracking(self):
         pass
 
-    def track(self, endfile=None):
+    def track(self, endfile=None,  **kwargs):
         ### Have we defined where the base files are?
         if self.base_files is not None:
             if self.verbose:
@@ -175,7 +175,7 @@ class fitnessFunc(object):
         if self.doTracking:
             if self.verbose:
                 print('Tracking from', self.start_lattice,'to', endfile)
-            self.framework.track(startfile=self.start_lattice, endfile=endfile)
+            self.framework.track(startfile=self.start_lattice, endfile=endfile,  **kwargs)
 
 def optfunc(inputargs, dir=None, *args, **kwargs):
     global bestfit

@@ -86,7 +86,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
     def set_start_file(self, file):
         self.start_lattice = file
 
-    def OptimisingFunction(self, inputargs, *args, track=True, endfile=None, **kwargs):
+    def OptimisingFunction(self, inputargs, *args, endfile=None, **kwargs):
         if not self.POST_INJECTOR:
             parameternames = self.injector_parameter_names + self.parameter_names
         else:
@@ -114,10 +114,11 @@ class Optimise_Elegant(runEle.fitnessFunc):
             save_state = True
             dir = self.optdir+str(self.opt_iteration)
 
+        print('dir = ', dir)
         self.setup_lattice(self.inputlist, dir)
         self.before_tracking()
-        if track:
-            fitvalue = self.track(endfile=endfile)
+        # if not 'track' in kwargs or ('track' in kwargs and not kwargs['track']):
+        fitvalue = self.track(endfile=endfile,  **kwargs)
         constraintsList = self.calculate_constraints()
         fitvalue = self.cons.constraints(constraintsList)
         # except:
