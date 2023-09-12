@@ -9,8 +9,8 @@ def readFile(fname):
         content = f.readlines()
     return content
 
-def saveFile(filename, lines=[]):
-    stream = open(filename, 'w')
+def saveFile(filename, lines=[], mode='w'):
+    stream = open(filename, mode)
     for line in lines:
         stream.write(line)
     stream.close()
