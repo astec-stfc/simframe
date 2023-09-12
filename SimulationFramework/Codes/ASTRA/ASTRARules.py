@@ -2,10 +2,10 @@ ASTRARules = {}
 
 ASTRARules["NEWRUN"] = ["NLoop", "ion_mass", "N_red",
 "Xoff", "Yoff", "xp", "yp", "Zoff", "Toff", "Xrms", "Yrms", "XYrms",
-"Zrms", "Trms", "Tau", "cor_px", "cor_py",
+"Zrms", "Trms", "Tau", "cor_px", "cor_py", "Qbunch",
 "SRT_Q_Schottky", "Q_Schottky", "debunch", "Track_All",
 "Track_On_Axis", "Auto_Phase", "Phase_Scan", "check_ref_part",
-"L_rm_back", "Z_min", "Z_Cathode", "H_max", "H_min", "Max_step", 
+"L_rm_back", "Z_min", "Z_Cathode", "H_max", "H_min", "Max_step",
 "Lmonitor", "Lprompt"]
 
 ASTRARules["OUTPUT"] = ["ZSTART", "ZSTOP", "ZEMIT", "ZPHASE",

@@ -22,7 +22,8 @@ class astraLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(astraLattice, self).__init__(*args, **kwargs)
         self.code = 'astra'
-        self.bunch_charge = None
+        self._bunch_charge = None
+        self._toffset = None
         self.headers = OrderedDict()
         self.starting_offset = eval(expand_substitution(self, self.file_block['starting_offset'])) if 'starting_offset' in self.file_block else [0,0,0]
 
@@ -80,6 +81,24 @@ class astraLattice(frameworkLattice):
         self.headers['newrun'].sample_interval = interval
         self.headers['charge'].sample_interval = interval
 
+    @property
+    def bunch_charge(self):
+        return self._bunch_charge
+    @bunch_charge.setter
+    def bunch_charge(self, charge):
+        # print('Setting new ASTRA sample_interval = ', interval)
+        self._bunch_charge = charge
+        self.headers['newrun'].bunch_charge = charge
+
+    @property
+    def toffset(self):
+        return self._toffset
+    @toffset.setter
+    def toffset(self, toffset):
+        # print('Setting new ASTRA sample_interval = ', interval)
+        self._toffset = toffset
+        self.headers['newrun'].toffset = 1e9*toffset
+
     def writeElements(self):
         fulltext = ''
         # Create objects for the newrun, output and charge blocks
@@ -125,17 +144,41 @@ class astraLattice(frameworkLattice):
         self.headers['charge'].npart = len(self.global_parameters['beam'].x)
 
     @lox.thread
-    def screen_threaded_function(self, screen, objectname, cathode):
-        return screen.astra_to_hdf5(objectname, cathode)
+    def screen_threaded_function(self, screen, objectname, cathode, mult):
+        return screen.astra_to_hdf5(objectname, cathode, mult)
 
-    def postProcess(self):
-        cathode = self.headers['newrun']['particle_definition'] == 'laser'
+    def find_ASTRA_filename(self, elem, mult, lattice, master_run_no):
+        # print('find_ASTRA_filename', lattice, elem.middle[2], elem.zstart[2])
+        for i in [0, -0.001, 0.001]:
+            tempfilename = lattice + '.' + str(int(round((elem.middle[2]+i-elem.zstart[2])*mult))).zfill(4) + '.' + str(master_run_no).zfill(3)
+            # print(self.middle[2]+i-self.zstart[2], tempfilename, os.path.isfile(self.global_parameters['master_subdir'] + '/' + tempfilename))
+            if os.path.isfile(self.global_parameters['master_subdir'] + '/' + tempfilename):
+                return True
+        return False
+
+    def get_screen_scaling(self):
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0,0,0]:
                 e.zstart = self.allElementObjects[self.start].start
             else:
                 e.zstart = [0,0,0]
-            self.screen_threaded_function.scatter(e, self.objectname, cathode=cathode)
+        master_run_no = self.global_parameters['run_no'] if 'run_no' in self.global_parameters else 1
+        for mult in [100,1000,10]:
+            foundscreens = [self.find_ASTRA_filename(e, mult, self.objectname, master_run_no) for e in self.screens_and_bpms]
+            # print('get_screen_scaling', mult, foundscreens)
+            if all(foundscreens):
+                return mult
+        return 100
+
+    def postProcess(self):
+        cathode = self.headers['newrun']['particle_definition'] == 'laser'
+        mult = self.get_screen_scaling()
+        for e in self.screens_and_bpms:
+            if not self.starting_offset == [0,0,0]:
+                e.zstart = self.allElementObjects[self.start].start
+            else:
+                e.zstart = [0,0,0]
+            self.screen_threaded_function.scatter(e, self.objectname, cathode=cathode, mult=mult)
         results = self.screen_threaded_function.gather()
         self.astra_to_hdf5(cathode=cathode)
 
@@ -195,7 +238,9 @@ class astra_newrun(astra_header):
             ['Distribution', {'value': '\''+self.output_particle_definition+'\''}],
             ['high_res', {'value': self.high_res, 'default': True}],
             ['n_red', {'value': self.sample_interval, 'default': 1}],
-            ['auto_phase', {'value': self.auto_phase, 'default': True}]
+            ['auto_phase', {'value': self.auto_phase, 'default': True}],
+            ['Qbunch', {'value': 1e9*self.bunch_charge, 'default': None}],
+            ['Toff', {'value': self.toffset, 'default': None}]
         ])
 
     def hdf5_to_astra(self, prefix=''):
