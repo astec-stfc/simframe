@@ -180,16 +180,26 @@ class elegantLattice(frameworkLattice):
             nruns, seed, elementErrors, elementScan = self.processRunSettings()
             self.commandFiles['global_settings'] = elegant_global_settings_command(lattice=self)
             self.commandFiles['run_setup'] = elegant_run_setup_command(lattice=self, p_central=np.mean(self.global_parameters['beam'].BetaGamma),  seed=seed)
-            self.commandFiles['error_elements'] = elegant_error_elements_command(lattice=self, elementErrors=elementErrors, nruns=nruns)
-            self.commandFiles['scan_elements'] = elegant_scan_elements_command(lattice=self, elementScan=elementScan, nruns=nruns)
-            self.commandFiles['twiss'] = elegant_twiss_output_command(lattice=self, beam=self.global_parameters['beam'],
+            if (elementErrors is not None):
+                self.commandFiles['error_elements'] = elegant_error_elements_command(lattice=self, elementErrors=elementErrors, nruns=nruns)
+                for e in elementErrors:
+                    for item in elementErrors[e]:
+                        self.commandFiles['error_element_'+e] = elegantCommandFile(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
+            if (elementScan is not None):
+                self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=nruns, n_passes=1, n_indices=1, reset_rf_for_each_step=0, first_is_fiducial=1)
+                self.commandFiles['scan_elements'] = elegant_scan_elements_command(lattice=self, elementScan=elementScan, nruns=nruns)
+            else:
+                self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=1, n_passes=1)
+            self.commandFiles['twiss_output'] = elegant_twiss_output_command(lattice=self, beam=self.global_parameters['beam'],
                 betax=self.betax,
                 betay=self.betay,
                 alphax=self.alphax,
                 alphay=self.alphay)
+            self.commandFiles['floor_coordinates'] = elegant_floor_coordinates_command(lattice=self)
+            self.commandFiles['matrix_output'] = elegant_matrix_output_command(lattice=self)
             self.commandFiles['sdds_beam'] = elegant_sdds_beam_command(lattice=self, elegantbeamfilename=self.objectname+'.sdds', sample_interval=self.sample_interval)
             self.commandFiles['track'] = elegant_track_command(lattice=self, trackBeam=self.trackBeam)
-            self.commandFilesOrder = ['global_settings', 'run_setup', 'error_elements', 'scan_elements', 'twiss', 'sdds_beam', 'track']
+            self.commandFilesOrder = list(self.commandFiles.keys())#['global_settings', 'run_setup', 'error_elements', 'scan_elements', 'run_control', 'twiss', 'sdds_beam', 'track']
 
     def preProcess(self):
         prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block['input'] else ''
@@ -210,9 +220,10 @@ class elegantLattice(frameworkLattice):
         results = self.screen_threaded_function.gather()
         self.commandFiles = {}
 
-    def hdf5_to_sdds(self, prefix=''):
+    def hdf5_to_sdds(self, prefix='', write=True):
         HDF5filename = prefix+self.particle_definition+'.hdf5'
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
+        # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
         if self.bunch_charge is not None:
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.bunch_charge)})
         else:
@@ -220,7 +231,8 @@ class elegantLattice(frameworkLattice):
         # print('mean cpz = ', np.mean(self.global_parameters['beam'].cpz), ' prefix = ', prefix)
         # shutil.copyfile(self.global_parameters['master_subdir'] + '/' + HDF5filename, self.global_parameters['master_subdir'] + '/' + self.objectname+'.hdf5') #copy src to dst
         sddsbeamfilename = self.objectname+'.sdds'
-        rbf.sdds.write_SDDS_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
+        if write:
+            rbf.sdds.write_SDDS_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + sddsbeamfilename, xyzoffset=self.startObject.position_start)
 
     def run(self):
         """Run the code with input 'filename'"""
@@ -245,78 +257,52 @@ class elegantLattice(frameworkLattice):
                 with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
                     subprocess.call(command, stdout=f, cwd=self.global_parameters['master_subdir'], env={'RPN_DEFNS': (os.path.abspath(self.global_parameters['simcodes_location'])+'/Elegant/defns.rpn').replace('/','\\')})
 
-class elegantCommandFile(object):
-    def __init__(self, lattice='', *args, **kwargs):
-        super(elegantCommandFile, self).__init__()
-        self.kwargs = kwargs
-        self.commandObjects = OrderedDict()
-        self.lattice_filename = lattice.objectname+'.lte'
-        self.ncommands = 0
+    def elegantCommandFile(self, *args, **kwargs):
+        return elegantCommandFile(*args, **kwargs)
 
-    def addCommand(self, objectname=None, **ckwargs):
-        if objectname == None:
-            if not 'objectname' in ckwargs:
-                if not 'objecttype' in ckwargs:
-                    raise NameError('Command does not have a name')
-                else:
-                    objectname = ckwargs['objecttype']
-            else:
-                objectname = ckwargs['objectname']
-        kwargs = merge_two_dicts(ckwargs, self.kwargs)
-        command = frameworkCommand(objectname, **kwargs)
-        self.commandObjects[self.ncommands] = command
-        self.ncommands += 1
-        return command
-
-    def write(self):
-        output = ''
-        for c in list(self.commandObjects.values()):
-            output += c.write_Elegant()
-        return output
+class elegantCommandFile(frameworkCommand):
+    def __init__(self, objectname=None, lattice='', *args, **kwargs):
+        super().__init__(objectname=objectname, *args, **kwargs)
+        self.lattice = lattice
+        self.write = self.write_Elegant
 
 class elegant_global_settings_command(elegantCommandFile):
-    def __init__(self, lattice='', *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
-        if not os.name == 'nt':
-            self.addCommand(objecttype='global_settings', mpi_io_read_buffer_size=16777216, mpi_io_write_buffer_size=16777216, inhibit_fsync=1)
-        else:
-            self.addCommand(objecttype='global_settings', inhibit_fsync=0, mpi_io_force_file_sync=0, mpi_io_read_buffer_size=16777216, \
-                            mpi_io_write_buffer_size=16777216, usleep_mpi_io_kludge=0)
+    def __init__(self, lattice='', **kwargs):
+        super().__init__(objecttype='global_settings', lattice=lattice, **kwargs)
+        self.add_properties(inhibit_fsync=0, mpi_io_force_file_sync=0, mpi_io_read_buffer_size=16777216, \
+                            mpi_io_write_buffer_size=16777216, usleep_mpi_io_kludge=0, **kwargs)
 
 class elegant_run_setup_command(elegantCommandFile):
-    def __init__(self, lattice='', p_central=0, seed=0, always_change_p0 = 1, default_order=3, *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
-        self.addCommand(objecttype='run_setup',lattice=self.lattice_filename, \
+    def __init__(self, lattice='', p_central=0, seed=0, always_change_p0 = 1, default_order=3, **kwargs):
+        super().__init__(objecttype='run_setup', lattice=lattice, **kwargs)
+        self.lattice_filename = lattice.objectname+'.lte'
+        self.add_properties(lattice=self.lattice_filename, \
             use_beamline=lattice.objectname, p_central=p_central, \
             random_number_seed=seed, \
             centroid='%s.cen',always_change_p0 = always_change_p0, \
-            sigma='%s.sig', default_order=default_order)
+            sigma='%s.sig', default_order=default_order, **kwargs)
 
 class elegant_error_elements_command(elegantCommandFile):
     # build commands for randomised errors on specified elements
-    def __init__(self, lattice='', elementErrors=None, nruns=1, *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
-        if (elementErrors is not None):
-            self.addCommand(objecttype='run_control', n_steps=nruns, n_passes=1, reset_rf_for_each_step=0, first_is_fiducial=1)
-            self.addCommand(objecttype='error_control', no_errors_for_first_step=1, error_log='%s.erl')
-            for e in elementErrors:
-                for item in elementErrors[e]:
-                    self.addCommand(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
+    def __init__(self, lattice='', elementErrors=None, nruns=1, **kwargs):
+        super().__init__(objecttype='error_control', lattice=lattice, **kwargs)
+        self.add_properties(objecttype='error_control', no_errors_for_first_step=1, error_log='%s.erl')
 
 class elegant_scan_elements_command(elegantCommandFile):
     # build command for a systematic parameter scan
-    def __init__(self, lattice='', elementScan=None, nruns=1, index_number=0, *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
-        if (elementScan is not None):
-            self.addCommand(objecttype='run_control', n_steps=nruns, n_passes=1, n_indices=1, reset_rf_for_each_step=0, first_is_fiducial=1)
-            self.addCommand(objecttype='vary_element', index_number=0, **elementScan)
-        else:
-            self.addCommand(objecttype='run_control', n_steps=1, n_passes=1)
+    def __init__(self, lattice='', elementScan=None, nruns=1, index_number=0, **kwargs):
+        super().__init__(objecttype='vary_element', lattice=lattice, **kwargs)
+        self.add_properties(objecttype='vary_element', index_number=0, **elementScan)
+
+class elegant_run_control_command(elegantCommandFile):
+    def __init__(self, lattice='', **kwargs):
+        super().__init__(objecttype='run_control', lattice=lattice, **kwargs)
+        self.add_properties(**kwargs)
 
 class elegant_twiss_output_command(elegantCommandFile):
     # build command for a systematic parameter scan
-    def __init__(self, lattice='', beam=None, betax=None, betay=None, alphax=None, alphay=None, etax=None, etaxp=None, *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
+    def __init__(self, lattice='', beam=None, betax=None, betay=None, alphax=None, alphay=None, etax=None, etaxp=None, **kwargs):
+        super().__init__(objecttype='twiss_output', lattice=lattice, **kwargs)
         self.betax = betax if betax is not None else beam.twiss.beta_x_corrected
         self.betay = betay if betay is not None else beam.twiss.beta_y_corrected
         self.alphax = alphax if alphax is not None else beam.twiss.alpha_x_corrected
@@ -324,36 +310,40 @@ class elegant_twiss_output_command(elegantCommandFile):
         self.etax = etax if etax is not None else beam.twiss.eta_x
         self.etaxp = etaxp if etaxp is not None else beam.twiss.eta_xp
 
-        self.addCommand(objecttype='twiss_output',matched = 0,output_at_each_step=0,radiation_integrals=1,statistics=1,filename="%s.twi",
+        self.add_properties(matched = 0,output_at_each_step=0,radiation_integrals=1,statistics=1,filename="%s.twi",
                         beta_x  = self.betax,
                         alpha_x = self.alphax,
                         beta_y  = self.betay,
                         alpha_y = self.alphay,
                         eta_x = self.etax,
-                        etap_x = self.etaxp)
-        flr = self.addCommand(objecttype='floor_coordinates', filename="%s.flr",
+                        etap_x = self.etaxp, **kwargs)
+
+class elegant_floor_coordinates_command(elegantCommandFile):
+    def __init__(self, lattice='', **kwargs):
+        super().__init__(objecttype='floor_coordinates', lattice=lattice, **kwargs)
+        flr = self.add_properties(filename="%s.flr",
                         X0  = lattice.startObject['position_start'][0],
                         Z0 = lattice.startObject['position_start'][2],
                         theta0 = 0,
-                        magnet_centers = 0)
-        mat = self.addCommand(objecttype='matrix_output', SDDS_output="%s.mat",
-                        full_matrix_only=0, SDDS_output_order=2)
+                        magnet_centers = 0, **kwargs)
+
+class elegant_matrix_output_command(elegantCommandFile):
+    def __init__(self, lattice='', **kwargs):
+        super().__init__(objecttype='matrix_output', lattice=lattice, **kwargs)
+        mat = self.add_properties(SDDS_output="%s.mat",
+                        full_matrix_only=0, SDDS_output_order=2, **kwargs)
 
 class elegant_sdds_beam_command(elegantCommandFile):
-    def __init__(self, lattice='', elegantbeamfilename='', *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
+    def __init__(self, lattice='', elegantbeamfilename='', sample_interval=1, **kwargs):
+        super().__init__(objecttype='sdds_beam', lattice=lattice, **kwargs)
         self.elegantbeamfilename = elegantbeamfilename
-        self.sample_interval = kwargs['sample_interval'] if 'sample_interval' in kwargs else 1
-
-        self.addCommand(objecttype='sdds_beam', input=self.elegantbeamfilename, sample_interval=self.sample_interval, reuse_bunch=1)
+        self.add_properties(input=self.elegantbeamfilename, reuse_bunch=1, **kwargs)
 
 class elegant_track_command(elegantCommandFile):
-    def __init__(self, lattice='', trackBeam=True, elegantbeamfilename='',
-                 nruns=1, seed=0, elementErrors=None, elementScan=None, *args, **kwargs):
-        super().__init__(lattice, *args, **kwargs)
-
+    def __init__(self, lattice='', trackBeam=True, **kwargs):
+        super().__init__(objecttype='track', lattice=lattice, **kwargs)
         if trackBeam:
-            self.addCommand(objecttype='track')
+            self.add_properties(**kwargs)
 
 class elegantOptimisation(elegantCommandFile):
 
