@@ -350,6 +350,7 @@ class Framework(Munch):
                     # print ('modifying ',e,'[',k,']', ' = ', v)
 
     def check_lattice(self, decimals=4):
+        noerror = True
         for elem in self.elementObjects.values():
             start = elem.position_start
             end = elem.position_end
@@ -363,7 +364,9 @@ class Framework(Munch):
                 clength = np.array([0, 0, length])
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
-                print (elem.objectname, cend - end)
+                noerror = False
+                print (elem.objectname, cend, end, cend - end)
+        return noerror
 
     def change_Lattice_Code(self, name, code, exclude=None):
         if name == 'All':
@@ -571,7 +574,10 @@ class Framework(Munch):
                 allZ = allZ + zelems
         return list(sorted(allZ, key=lambda x: x[2][0]))
 
-    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True, frameworkDirectory=False):
+    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True, frameworkDirectory=False, check_lattice=True):
+        if check_lattice:
+            if not self.check_lattice():
+                raise Exception("Lattice Error - check definitions")
         self.save_lattice(directory=self.subdirectory, filename='lattice.yaml')
         self.save_settings(directory=self.subdirectory, filename='settings.def', elements={'filename': 'lattice.yaml'})
         self.tracking = True
