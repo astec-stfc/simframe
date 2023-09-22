@@ -114,7 +114,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             save_state = True
             dir = self.optdir+str(self.opt_iteration)
 
-        print('dir = ', dir)
+        # print('dir = ', dir)
         self.setup_lattice(self.inputlist, dir)
         self.before_tracking()
         # if not 'track' in kwargs or ('track' in kwargs and not kwargs['track']):
@@ -127,6 +127,8 @@ class Optimise_Elegant(runEle.fitnessFunc):
         if isinstance(self.opt_iteration, int):
             self.opt_iteration += 1
             print('fitvalue[', self.opt_iteration-1, '] = ', fitvalue)
+        elif constraintsList is None:
+            pass
         else:
             print('fitvalue = ', fitvalue)
 
