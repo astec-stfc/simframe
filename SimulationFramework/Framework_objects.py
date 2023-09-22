@@ -405,6 +405,16 @@ class frameworkObject(Munch):
             except Exception as e:
                 print((self.objecttype,'[', key, ']: ', e))
 
+    def add_properties(self, **keyvalues):
+        for key, value in keyvalues.items():
+            key = key.lower()
+            if key in self.allowedkeywords:
+                try:
+                    setattr(self, key, value)
+                except Exception as e:
+                    print((self.objecttype,'[', key, ']: ', e))
+
+
     def add_default(self, key, value):
         self.objectdefaults[key] = value
 
@@ -442,6 +452,8 @@ class frameworkObject(Munch):
 class frameworkCommand(frameworkObject):
 
     def __init__(self, objectname=None, objecttype=None, **kwargs):
+        if objectname is None:
+            objectname = objecttype
         super(frameworkCommand, self).__init__(objectname, objecttype, **kwargs)
         if not objecttype in commandkeywords:
             raise NameError('Command \'%s\' does not exist' % objecttype)
