@@ -181,6 +181,13 @@ class SDDSParameter(SDDSObject):
             raise Exception('Wrong data type for SDDS Parameter!', type(data))
         return self._data
 
+    @property
+    def fieldlength(self):
+        if self._fieldlength != 0:
+            return self._fieldlength
+        else:
+            return ""
+
 class SDDSArray(munch.Munch):
 
     def __init__(self, columns):
@@ -261,6 +268,14 @@ class SDDSFile(object):
     def save(self, *args, **kwargs):
         return self.write_file(*args, **kwargs)
 
+    def dimensions(self, list):
+        l = list
+        for i in range(5):
+            try:
+                l = l[0]
+            except:
+                return i
+
     def write_file(self, filename):
         for name, param in self._parameters.items():
             self._sddsObject.defineParameter(param.name, param.symbol, param.unit, param.description, param.formatstring, param.type, param.fieldlength)
@@ -275,15 +290,12 @@ class SDDSFile(object):
     def load(self, *args, **kwargs):
         return self.read_file(*args, **kwargs)
 
-    def read_file(self, filename):
+    def read_file(self, filename, page=-1):
         self._sddsObject.load(filename)
         sddsref = self._sddsObject
         for col in range(len(sddsref.columnName)):
             symbol, unit, description, formatString, type, fieldLength = sddsref.columnDefinition[col]
-            if len(sddsref.columnData[col]) == 1:
-                column_data = np.array(sddsref.columnData[col][0])
-            else:
-                column_data = np.array(sddsref.columnData[col])
+            column_data = np.array(sddsref.columnData[col][page])
             self.add_column(sddsref.columnName[col], column_data, type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
         # sddsobject.SDDSparameterNames = list()
         for param in range(len(sddsref.parameterName)):

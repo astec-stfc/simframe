@@ -53,7 +53,7 @@ def interpret_astra_data(self, data, normaliseZ=False):
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
     self._beam['x'] = x + (self.Bx * constants.speed_of_light) * self.t
     self._beam['y'] = y + (self.By * constants.speed_of_light) * self.t
-    self._beam['total_charge'] = np.sum(self._beam['charge'])
+    self._beam['total_charge'] = np.sum(1.0e-9*charge)
     self._beam['nmacro'] = np.array(np.array(self._beam['charge']) / (-1*constants.elementary_charge)).astype(int)
 
 def read_csrtrack_beam_file(self, file):

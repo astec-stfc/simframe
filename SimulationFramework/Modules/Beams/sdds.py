@@ -5,11 +5,11 @@ from ..units import UnitValue
 from ..SDDSFile import SDDSFile, SDDS_Types
 
 
-def read_SDDS_beam_file(self, fileName, charge=None, ascii=False):
+def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
     self.reset_dicts()
     self.sddsindex += 1
     elegantObject = SDDSFile(index=(self.sddsindex), ascii=ascii)
-    elegantObject.read_file(fileName)
+    elegantObject.read_file(fileName, page=page)
     elegantData = elegantObject.data
     for k, v in elegantData.items():
         # case handling for multiple ELEGANT runs per file
