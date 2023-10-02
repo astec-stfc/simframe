@@ -234,14 +234,17 @@ class astra_newrun(astra_header):
             self.add_property('lprompt', False)
 
     def framework_dict(self):
-        return OrderedDict([
+        dict = OrderedDict([
             ['Distribution', {'value': '\''+self.output_particle_definition+'\''}],
             ['high_res', {'value': self.high_res, 'default': True}],
             ['n_red', {'value': self.sample_interval, 'default': 1}],
             ['auto_phase', {'value': self.auto_phase, 'default': True}],
-            ['Qbunch', {'value': 1e9*self.bunch_charge, 'default': None}],
             ['Toff', {'value': self.toffset, 'default': None}]
         ])
+        if self.bunch_charge is not None:
+            dict['Qbunch'] = {'value': 1e9*self.bunch_charge, 'default': None}
+        return dict
+
 
     def hdf5_to_astra(self, prefix=''):
         HDF5filename = prefix+self.input_particle_definition.replace('.astra','')+'.hdf5'
