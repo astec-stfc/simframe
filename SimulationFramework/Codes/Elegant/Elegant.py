@@ -334,10 +334,10 @@ class elegant_matrix_output_command(elegantCommandFile):
                         full_matrix_only=0, SDDS_output_order=2, **kwargs)
 
 class elegant_sdds_beam_command(elegantCommandFile):
-    def __init__(self, lattice='', elegantbeamfilename='', sample_interval=1, **kwargs):
+    def __init__(self, lattice='', elegantbeamfilename='', **kwargs):
         super().__init__(objecttype='sdds_beam', lattice=lattice, **kwargs)
         self.elegantbeamfilename = elegantbeamfilename
-        self.add_properties(input=self.elegantbeamfilename, reuse_bunch=1, **kwargs)
+        self.add_properties(input=self.elegantbeamfilename, **kwargs)
 
 class elegant_track_command(elegantCommandFile):
     def __init__(self, lattice='', trackBeam=True, **kwargs):

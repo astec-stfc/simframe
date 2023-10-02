@@ -116,13 +116,17 @@ class Optimise_Elegant(runEle.fitnessFunc):
 
         # print('dir = ', dir)
         self.setup_lattice(self.inputlist, dir)
+        print('New run = ', list(inputargs), dir)
         self.before_tracking()
         # if not 'track' in kwargs or ('track' in kwargs and not kwargs['track']):
-        fitvalue = self.track(endfile=endfile,  **kwargs)
-        constraintsList = self.calculate_constraints()
-        fitvalue = self.cons.constraints(constraintsList)
-        # except:
-        #     fitvalue = 1e26
+        constraintsList = None
+        try:
+            fitvalue = self.track(endfile=endfile,  **kwargs)
+            constraintsList = self.calculate_constraints()
+            fitvalue = self.cons.constraints(constraintsList)
+        except Exception as e:
+            print(e.message, e.args)
+            fitvalue = 1e26
 
         if isinstance(self.opt_iteration, int):
             self.opt_iteration += 1
