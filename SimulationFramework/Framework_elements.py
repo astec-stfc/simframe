@@ -183,7 +183,8 @@ class dipole(frameworkElement):
 
     def _write_Elegant(self):
         wholestring=''
-        etype = self._convertType_Elegant(self.objecttype)
+        # etype = self._convertType_Elegant(self.objecttype)
+        etype = 'csrcsbend' if self.csr_enable or self.csr_enable > 0 else 'csbend'
         string = self.objectname+': '+ etype
         k1 = self.k1 if self.k1 is not None else 0
         for key, value in list(merge_two_dicts({'k1': k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)).items()):
@@ -278,7 +279,7 @@ class dipole(frameworkElement):
             relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
             coord = self.gpt_coordinates(relpos, relrot)
             new_ccs = self.gpt_ccs(ccs).name
-            b1 = 1.0 / (2 * self.check_value(self.half_gap, default=0.016) * self.check_value(self.edge_field_integral, default=0.5)) if abs(self.check_value(self.half_gap, default=0.02)) > 0 else 10000
+            b1 = np.round(1.0 / (2 * self.check_value('half_gap', default=0.016) * self.check_value('edge_field_integral', default=0.5)) if abs(self.check_value('half_gap', default=0.016)) > 0 else 10000,2)
             dl = 0 if self.deltaL is None else self.deltaL
             e1 = self.e1 if self.angle >= 0 else -1*self.e1
             e2 = self.e2 if self.angle >= 0 else -1*self.e2

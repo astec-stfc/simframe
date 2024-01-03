@@ -26,7 +26,8 @@ class gptLattice(frameworkLattice):
         self.time_step_size = '0.1/c'
         self.override_meanBz = None
         self.override_tout = None
-        # self.headers['tout'] = gpt_tout(startpos=0, endpos=self.allElementObjects[self.end].end[2], step=0.1)
+        self.space_charge_mode = self.file_block['charge']['space_charge_mode']
+        self.accuracy = 6
 
     def endScreen(self, **kwargs):
         return screen(name=self.endObject.objectname, type='screen', position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
@@ -34,8 +35,9 @@ class gptLattice(frameworkLattice):
     def writeElements(self):
         ccs = gpt_ccs("wcs", [0,0,0], [0,0,0])
         fulltext = ''
-        if self.particle_definition == 'laser' and self.file_block['charge']['space_charge_mode'] is not None:
-            self.file_block['charge']['space_charge_mode'] = 'cathode'
+        self.headers['accuracy'] = gpt_accuracy(self.accuracy)
+        if self.particle_definition == 'laser' and self.space_charge_mode is not None:
+            self.space_charge_mode = 'cathode'
             self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
             self.headers['spacecharge'].npart = len(self.global_parameters['beam'].x)
             self.headers['spacecharge'].sample_interval = self.sample_interval
@@ -102,8 +104,8 @@ class gptLattice(frameworkLattice):
         post_command_traj = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'traj.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz']
         with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.bat'), "w") as batfile:
             for command in [main_command, post_command, post_command_t, post_command_traj]:
-                output = ""
-                for c in command:
+                output = "\"" + command[0] + "\" "
+                for c in command[1:]:
                     output += c + ' '
                 output += "\n"
                 batfile.write(output)
@@ -147,7 +149,7 @@ class gptLattice(frameworkLattice):
         gdfbeamfilename = self.objectname+'.gdf'
         cathode = self.particle_definition == 'laser'
         rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.objectname+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
-        subprocess.call([self.executables[self.code][0].replace('gpt','asci2gdf'), '-o', gdfbeamfilename, self.objectname+'.txt'], cwd=self.global_parameters['master_subdir'])
+        subprocess.call([os.path.abspath(self.executables[self.code][0].replace('gpt','asci2gdf')), '-o', gdfbeamfilename, self.objectname+'.txt'], cwd=self.global_parameters['master_subdir'])
         self.Brho = self.global_parameters['beam'].Brho
 
 class gpt_element(frameworkElement):
@@ -204,6 +206,16 @@ class gpt_setreduce(gpt_element):
         output = str(self.objectname) + '('
         output += str(self.set) + ','
         output += str(self.setreduce) + ');\n'
+        return output
+
+class gpt_accuracy(gpt_element):
+
+    def __init__(self, accuracy=6, **kwargs):
+        super(gpt_accuracy, self).__init__(elementName='accuracy', elementType='gpt_accuracy', **kwargs)
+        self.accuracy = accuracy
+
+    def write_GPT(self, *args, **kwargs):
+        output = 'accuracy(' + str(self.accuracy) + ');\n'#'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
         return output
 
 class gpt_spacecharge(gpt_element):

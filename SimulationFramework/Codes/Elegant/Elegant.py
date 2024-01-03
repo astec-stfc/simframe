@@ -178,8 +178,8 @@ class elegantLattice(frameworkLattice):
         if not isinstance(self.commandFiles, dict) or self.commandFiles == {}:
             # print('createCommandFiles is creating new command files!')
             nruns, seed, elementErrors, elementScan = self.processRunSettings()
-            self.commandFiles['global_settings'] = elegant_global_settings_command(lattice=self)
-            self.commandFiles['run_setup'] = elegant_run_setup_command(lattice=self, p_central=np.mean(self.global_parameters['beam'].BetaGamma),  seed=seed)
+            self.commandFiles['global_settings'] = elegant_global_settings_command(lattice=self, warning_limit=0)
+            self.commandFiles['run_setup'] = elegant_run_setup_command(lattice=self, p_central=np.mean(self.global_parameters['beam'].BetaGamma),  seed=seed, losses="%s.loss")
             if (elementErrors is not None):
                 self.commandFiles['error_elements'] = elegant_error_elements_command(lattice=self, elementErrors=elementErrors, nruns=nruns)
                 for e in elementErrors:
@@ -222,7 +222,7 @@ class elegantLattice(frameworkLattice):
 
     def hdf5_to_sdds(self, prefix='', write=True):
         HDF5filename = prefix+self.particle_definition+'.hdf5'
-        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], os.path.abspath(self.global_parameters['master_subdir'] + '/' + HDF5filename))
         # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
         if self.bunch_charge is not None:
             self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.bunch_charge)})

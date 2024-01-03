@@ -4,7 +4,7 @@ nt:
   Pelegant: ['mpiexec.exe','-np',$ncpu$, '$simcodes$/Elegant/Pelegant.exe']
   elegant: [$simcodes$/Elegant/elegant]
   csrtrack: [$simcodes$/CSRTrack/csrtrack]
-  gpt: ['$simcodes$/GPT/gpt.exe','-j',$ncpu$]
+  gpt: ['C:\Program Files\General Particle Tracer\bin\gpt.exe','-j',$ncpu$]
 apclara1:
   astragenerator: ['/opt/ASTRA/generator.sh']
   astra: ['mpiexec','-np',$ncpu$,'/opt/ASTRA/astra_MPICH2.sh']

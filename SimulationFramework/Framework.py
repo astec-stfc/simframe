@@ -320,7 +320,7 @@ class Framework(Munch):
                 yaml.default_flow_style = True
                 yaml.dump(dic, yaml_file)
 
-    def load_changes_file(self, filename=None, apply=True):
+    def load_changes_file(self, filename=None, apply=True, verbose=False):
         if isinstance(filename, (tuple, list)):
             for c in filename:
                 self.load_changes_file(c)
@@ -331,23 +331,23 @@ class Framework(Munch):
             with open(filename,"r") as infile:
                 changes = dict(yaml.safe_load(infile))
             if apply:
-                self.apply_changes(changes)
+                self.apply_changes(changes, verbose=verbose)
             else:
                 return changes
 
-    def apply_changes(self, changes):
+    def apply_changes(self, changes, verbose=False):
         for e, d in list(changes.items()):
             # print 'found change element = ', e
             if e in self.elementObjects:
                 # print 'change element exists!'
                 for k, v in list(d.items()):
                     self.modifyElement(e, k, v)
-                    # print ('modifying ',e,'[',k,']', ' = ', v)
+                    if verbose: print ('modifying ',e,'[',k,']', ' = ', v)
             if e in self.groupObjects:
                 # print ('change group exists!')
                 for k, v in list(d.items()):
                     self.groupObjects[e].change_Parameter(k, v)
-                    # print ('modifying ',e,'[',k,']', ' = ', v)
+                    if verbose: print ('modifying ',e,'[',k,']', ' = ', v)
 
     def check_lattice(self, decimals=4):
         noerror = True

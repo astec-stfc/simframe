@@ -125,7 +125,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             constraintsList = self.calculate_constraints()
             fitvalue = self.cons.constraints(constraintsList)
         except Exception as e:
-            print(e.message, e.args)
+            print(e)
             fitvalue = 1e26
 
         if isinstance(self.opt_iteration, int):

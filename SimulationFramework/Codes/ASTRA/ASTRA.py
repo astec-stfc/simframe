@@ -178,8 +178,12 @@ class astraLattice(frameworkLattice):
                 e.zstart = self.allElementObjects[self.start].start
             else:
                 e.zstart = [0,0,0]
-            self.screen_threaded_function.scatter(e, self.objectname, cathode=cathode, mult=mult)
-        results = self.screen_threaded_function.gather()
+            if not os.name == 'nt':
+                self.screen_threaded_function(e, self.objectname, cathode=cathode, mult=mult)
+            else:
+                self.screen_threaded_function.scatter(e, self.objectname, cathode=cathode, mult=mult)
+        if os.name == 'nt':
+            results = self.screen_threaded_function.gather()
         self.astra_to_hdf5(cathode=cathode)
 
     def astra_to_hdf5(self, cathode=False):

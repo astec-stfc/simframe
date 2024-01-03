@@ -237,6 +237,7 @@ csbend:
   reference_correction: long
   tracking_matrix: long
   group: string
+  fse_correction: double
 
 csrcsbend:
   l: double
@@ -311,6 +312,7 @@ csrcsbend:
   wff_real_column: string
   wff_imag_column: string
   group: string
+  fse_correction: double
 
 csrdrift:
   l: double

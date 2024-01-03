@@ -302,7 +302,7 @@ class SDDSFile(object):
             name = sddsref.parameterName[param]
             symbol, unit, description, formatString, type, fieldLength = sddsref.parameterDefinition[param]
             parameter_data = sddsref.parameterData[param]
-            self.add_parameter(sddsref.parameterName[param], parameter_data[0], type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
+            self.add_parameter(sddsref.parameterName[param], parameter_data[page], type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
 
     @property
     def data(self):

@@ -1,4 +1,5 @@
 import copy
+from functools import partial
 
 '''
     Pure Python/Numpy implementation of the Nelder-Mead algorithm.
@@ -7,11 +8,11 @@ import copy
 '''
 
 
-def nelder_mead(f, x_start,
+def nelder_mead(func, x_start,
                 step=0.1, no_improve_thr=10e-6,
                 no_improv_break=10, max_iter=0,
                 alpha=1., gamma=2., rho=-0.5, sigma=0.5,
-                converged=None):
+                converged=None, *args, **kwargs):
     '''
         @param f (function): function to optimize, must return a scalar score
             and operate over a numpy array of the same dimensions as x_start
@@ -28,6 +29,10 @@ def nelder_mead(f, x_start,
     '''
 
     # init
+
+    # define function call as a partial with kwargs as input
+    print('Creating opt func as', func.__name__, args, kwargs)
+    f = partial(func, *args, **kwargs)
     dim = len(x_start)
     prev_best = f(x_start)
     no_improv = 0

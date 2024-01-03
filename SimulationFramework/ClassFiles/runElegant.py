@@ -128,7 +128,7 @@ class fitnessFunc(object):
         if self.changes is not None:
             if isinstance(self.changes, (tuple, list)):
                 for c in self.changes:
-                    self.framework.load_changes_file(c)
+                    self.framework.load_changes_file(c, verbose=False)
             else:
                 self.framework.load_changes_file(self.changes)
 

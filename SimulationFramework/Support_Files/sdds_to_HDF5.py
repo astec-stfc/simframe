@@ -25,4 +25,4 @@ class convertSDDS():
 if __name__ == "__main__":
     args = parser.parse_args()
     converter = convertSDDS()
-    converter.sdds_to_hdf5(args.filename, [0,0,3.37147], [0,0,3.37147])
+    converter.sdds_to_hdf5(args.filename, [0,0,0], [0,0,0])

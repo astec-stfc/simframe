@@ -331,6 +331,10 @@ gpt_setreduce:
     set,
     setreduce,
   }
+gpt_accuracy:
+  keywords: {
+    accuracy,
+  }
 gpt_spacecharge:
   keywords: {
     grids,
