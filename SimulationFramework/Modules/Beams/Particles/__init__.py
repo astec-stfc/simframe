@@ -7,6 +7,7 @@ from .twiss import twiss as twissobject
 from .slice import slice as sliceobject
 from .sigmas import sigmas as sigmasobject
 from .centroids import centroids as centroidsobject
+from .kde import kde as kdeobject
 try:
     from .mve import MVE as MVEobject
 except ImportError:
@@ -75,6 +76,12 @@ class Particles(Munch):
         if not hasattr(self, '_mean'):
             self._mean = centroidsobject(self)
         return self._mean
+
+    @property
+    def kde(self):
+        if not hasattr(self, '_kde'):
+            self._kde = kdeobject(self)
+        return self._kde
 
     @property
     def mve(self):
@@ -226,21 +233,7 @@ class Particles(Munch):
         return UnitValue(np.mean(self.kinetic_energy), 'J')
 
     def computeCorrelations(self, x, y):
-        xAve = np.mean(x)
-        yAve = np.mean(y)
-        C11 = 0
-        C12 = 0
-        C22 = 0
-        for i, ii in enumerate(x):
-            dx = x[i] - xAve
-            dy = y[i] - yAve
-            C11 += dx*dx
-            C12 += dx*dy
-            C22 += dy*dy
-        C11 /= len(x)
-        C12 /= len(x)
-        C22 /= len(x)
-        return C11, C12, C22
+        return self.covariance(x,x), self.covariance(x,y), self.covariance(y,y)
 
     def performTransformation(self, x, xp, beta=False, alpha=False, nEmit=False):
         p = self.cp

@@ -41,5 +41,9 @@ class sigmas(munch.Munch):
         return np.std(self.beam.cp)
         # return self.beam.cp.std()/np.mean(self.beam.cp)
     @property
+    def linear_chirp_t_pz(self):
+        return -1*np.std(self.beam.t)/(max(self.pz) - min(self.pz))
+
+    @property
     def linear_chirp_z(self):
         return -1*np.std(self.beam.Bz*self.beam.speed_of_light*self.beam.t)/self.momentum_spread/100

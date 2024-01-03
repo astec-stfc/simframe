@@ -27,6 +27,7 @@ from .Particles.twiss import twiss as twissobject
 from .Particles.slice import slice as sliceobject
 from .Particles.sigmas import sigmas as sigmasobject
 from .Particles.centroids import centroids as centroidsobject
+from .Particles.kde import kde as kdeobject
 try:
     from .Particles.mve import MVE as MVEobject
     imported_mve = True
@@ -42,6 +43,7 @@ parameters = {
 'slice': get_properties(sliceobject),
 'sigmas': get_properties(sigmasobject),
 'centroids': get_properties(centroidsobject),
+'kde': get_properties(kdeobject),
 'mve': get_properties(MVEobject) if imported_mve else [],
 }
 
@@ -118,6 +120,9 @@ class beamGroup(munch.Munch):
     @property
     def emittance(self):
         return particlesGroup([b._beam.emittance for b in self.beams.values()])
+    @property
+    def kde(self):
+        return particlesGroup([b._beam.kde for b in self.beams.values()])
     @property
     def mve(self):
         return particlesGroup([b._beam.mve for b in self.beams.values()])
@@ -210,6 +215,9 @@ class beam(munch.Munch):
     @property
     def emittance(self):
         return self._beam.emittance
+    @property
+    def kde(self):
+        return self._beam.kde
     @property
     def mve(self):
         return self._beam.mve
@@ -317,6 +325,25 @@ class beam(munch.Munch):
 
         def plotScreenImage(self, **kwargs):
             return plot.plotScreenImage(self, **kwargs)
+
+    def resample(self, npart, **kwargs):
+        postbeam = self.kde.resample(npart, **kwargs)
+        newbeam = beam()
+        newbeam.x = postbeam[0]
+        newbeam.y = postbeam[1]
+        newbeam.z = postbeam[2]
+        newbeam.px = postbeam[3]
+        newbeam.py = postbeam[4]
+        newbeam.pz = postbeam[5]
+        newbeam.t = newbeam.z / (-1 * newbeam.Bz * constants.speed_of_light)
+        newbeam.total_charge = self.total_charge
+        single_charge = newbeam.total_charge / (len(newbeam.x))
+        newbeam.charge = np.full(len(newbeam.x), single_charge)
+        newbeam.nmacro = np.full(len(newbeam.x), 1)
+        newbeam.code = 'KDE'
+        newbeam['longitudinal_reference'] = 'z'
+
+        return newbeam
 
 def load_directory(directory='.', types={'SimFrame':'.hdf5'}, verbose=False):
     bg = beamGroup()

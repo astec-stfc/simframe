@@ -299,4 +299,4 @@ class slice():
         for index in slice_current_centroid_indices:
             slice_momentum_centroid.append(slicemomentum[index])
         chirp = ((slice_momentum_centroid[-1] - slice_momentum_centroid[0]) / (len(slice_momentum_centroid) * self.slice_length))
-        return UnitsFloat(chirp, 'eV/s')
+        return UnitValue(chirp, 'eV/s')
