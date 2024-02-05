@@ -20,7 +20,7 @@ class elegantLattice(frameworkLattice):
         self.commandFiles = {}
 
     def endScreen(self, **kwargs):
-        return screen(name='end', type='screen', position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
+        return screen(name='end', type='screen', centre=self.endObject.centre, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
 
     def writeElements(self):
         self.w = None
