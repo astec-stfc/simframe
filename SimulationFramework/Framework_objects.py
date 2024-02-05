@@ -256,7 +256,7 @@ class frameworkLattice(Munch):
         lscbins = self.lsc_bins if self.lscDrifts is True else 0
         csr = 1 if self.csrDrifts is True else 0
         lsc = 1 if self.lscDrifts is True else 0
-        drifttype = lscdrift
+        drifttype = lscdrift if self.csrDrifts or self.lscDrifts else edrift
 
         for e, d in driftdata:
             if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and e[1]['length'] > 0:
@@ -290,7 +290,7 @@ class frameworkLattice(Munch):
             else:
                 newelements[e[0]] = e[1]
             if e[1]['objecttype'] == 'dipole':
-                drifttype = csrdrift if self.csrDrifts else lscdrift
+                drifttype = csrdrift if self.csrDrifts else lscdrift if self.lscDrifts else edrift
             if len(d) > 1:
                 x1, y1, z1 = d[0]
                 x2, y2, z2 = d[1]
@@ -941,7 +941,7 @@ class getGrids(object):
 class csrdrift(frameworkElement):
 
     def __init__(self, name=None, type='csrdrift', **kwargs):
-        super(csrdrift, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
         self.add_default('lsc_interpolate', 1)
 
     def _write_Elegant(self):
@@ -964,30 +964,15 @@ class csrdrift(frameworkElement):
         wholestring+=string+';\n'
         return wholestring
 
-class lscdrift(frameworkElement):
+class lscdrift(csrdrift):
 
     def __init__(self, name=None, type='lscdrift', **kwargs):
-        super(lscdrift, self).__init__(name, type, **kwargs)
+        super().__init__(name, type, **kwargs)
 
-    def _write_Elegant(self):
-        wholestring=''
-        etype = self._convertType_Elegant(self.objecttype)
-        string = self.objectname+': '+ etype
-        for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
-                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                key = self._convertKeword_Elegant(key)
-                value = 1 if value is True else value
-                value = 0 if value is False else value
-                tmpstring = ', '+key+' = '+str(value)
-                if len(string+tmpstring) > 76:
-                    wholestring+=string+',&\n'
-                    string=''
-                    string+=tmpstring[2::]
-                else:
-                    string+= tmpstring
-        wholestring+=string+';\n'
-        return wholestring
+class edrift(csrdrift):
+
+    def __init__(self, name=None, type='edrift', **kwargs):
+        super().__init__(name, type, **kwargs)
 
 class runSetup(object):
     '''class defining settings for simulations that include multiple runs'''

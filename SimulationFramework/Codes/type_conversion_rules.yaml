@@ -13,7 +13,6 @@ elegant:
   integrated_current_transformer: moni
   cavity: rfcw
   rf_deflecting_cavity: rfdf
-  drift: csrdrift
   longitudinal_wakefield: wake
   modulator: lsrmdltr
   scatter: scatter

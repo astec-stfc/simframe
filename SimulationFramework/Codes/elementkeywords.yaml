@@ -225,6 +225,8 @@ csrdrift:
 lscdrift:
   keywords: {'lsc_bins', 'lsc_enable', 'lsc_low_frequency_cutoff_start', 'lsc_low_frequency_cutoff_end',
   'lsc_high_frequency_cutoff_start', 'lsc_high_frequency_cutoff_end', 'smoothing'}
+edrift:
+  keywords: {}
 charge:
   keywords: {"TOTAL"}
 astra_newrun:
