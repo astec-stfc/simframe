@@ -1,205 +1,183 @@
 elements:
   CLA-L04-APER:
-    name: CLA-L04-APER
-    type: aperture
-    shape: rectangular
+    centre: [0.0, 0.0, 34.118]
+    datum: [0.0, 0.0, 34.118]
+    global_rotation: [0, 0, 0]
     horizontal_size: 0.01
+    shape: rectangular
+    type: aperture
     vertical_size: 0.01
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 34.118]
-    datum: [-0.0, 0, 34.117967]
   CLA-L04X-MAG-QUAD-01:
-    name: CLA-L04X-MAG-QUAD-01
-    type: quadrupole
-    length: 0.15
-    k1l: 0.157575
-    sr_enable: true
-    isr_enable: true
+    centre: [0.0, 0.0, 35.189]
+    datum: [0.0, 0.0, 35.264]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 35.189]
-    datum: [0, 0, 35.264]
+    isr_enable: true
+    k1l: 0.157575
+    length: 0.15
+    sr_enable: true
+    type: quadrupole
   CLA-L04-CAV-01:
-    name: CLA-L04-CAV-01
-    type: cavity
-    length: 4.06667
     cell_length: 0.00833333
+    centre: [0.0, 0.0, 37.497335]
+    datum: [0.0, 0.0, 39.53067]
     field_amplitude: 80000000.0
-    frequency: 11994000000.0
-    phase: 0
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
-    longitudinal_wakefield_enable: true
-    transverse_wakefield_enable: true
     field_definition: $master_lattice_location$Data_Files/TWS_X-DL.dat
-    lsc_enable: true
+    frequency: 11994000000.0
+    global_rotation: [0, 0, 0]
+    length: 4.06667
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     lsc_bins: 100.0
     lsc_cutoff_high: [0.2, 0.25]
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 37.497335]
-    datum: [0, 0, 39.5307]
+    lsc_enable: true
+    phase: 0
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
   CLA-S07-CAV-01-SCR:
-    name: CLA-S07-CAV-01-SCR
-    type: screen
-    length: 0.0
-    output_filename: CLA-S07-CAV-01-SCR.SDDS
+    centre: [0.0, 0.0, 39.6]
+    datum: [0.0, 0.0, 39.6]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 39.6]
-    datum: [0, 0, 39.6]
+    length: 0.0
+    type: screen
   CLA-L04X-MAG-QUAD-02:
-    name: CLA-L04X-MAG-QUAD-02
-    type: quadrupole
-    length: 0.15
-    k1l: 0.157575
-    sr_enable: true
-    isr_enable: true
+    centre: [0.0, 0.0, 39.8057]
+    datum: [0.0, 0.0, 39.8807]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 39.8057]
-    datum: [0, 0, 39.8807]
+    isr_enable: true
+    k1l: 0.157575
+    length: 0.15
+    sr_enable: true
+    type: quadrupole
   CLA-L04-CAV-02:
-    name: CLA-L04-CAV-02
-    type: cavity
-    length: 4.06667
     cell_length: 0.00833333
+    centre: [0.0, 0.0, 42.114035]
+    datum: [0.0, 0.0, 44.14737]
     field_amplitude: 80000000.0
-    frequency: 11994000000.0
-    phase: 0
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
     field_definition: $master_lattice_location$Data_Files/TWS_X-DL.dat
+    frequency: 11994000000.0
+    global_rotation: [0, 0, 0]
+    length: 4.06667
     longitudinal_wakefield_enable: true
-    transverse_wakefield_enable: true
-    lsc_enable: true
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     lsc_bins: 100.0
     lsc_cutoff_high: [0.2, 0.25]
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 42.114035]
-    datum: [0, 0, 44.1473]
+    lsc_enable: true
+    phase: 0
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
   CLA-S07-CAV-02-SCR:
-    name: CLA-S07-CAV-02-SCR
-    type: screen
-    length: 0.0
-    output_filename: CLA-S07-CAV-02-SCR.SDDS
+    centre: [0.0, 0.0, 44.2]
+    datum: [0.0, 0.0, 44.2]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 44.2]
-    datum: [0, 0, 44.2]
+    length: 0.0
+    type: screen
   CLA-L04X-MAG-QUAD-03:
-    name: CLA-L04X-MAG-QUAD-03
-    type: quadrupole
-    length: 0.15
-    k1l: 0.157575
-    sr_enable: true
-    isr_enable: true
+    centre: [0.0, 0.0, 44.4223]
+    datum: [0.0, 0.0, 44.4973]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 44.4223]
-    datum: [0, 0, 44.4973]
+    isr_enable: true
+    k1l: 0.157575
+    length: 0.15
+    sr_enable: true
+    type: quadrupole
   CLA-L04-CAV-03:
-    name: CLA-L04-CAV-03
-    type: cavity
-    length: 4.06667
     cell_length: 0.00833333
+    centre: [0.0, 0.0, 46.730635]
+    datum: [0.0, 0.0, 48.76397]
     field_amplitude: 80000000.0
-    frequency: 11994000000.0
-    phase: 0
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
     field_definition: $master_lattice_location$Data_Files/TWS_X-DL.dat
+    frequency: 11994000000.0
+    global_rotation: [0, 0, 0]
+    length: 4.06667
     longitudinal_wakefield_enable: true
-    transverse_wakefield_enable: true
-    lsc_enable: true
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     lsc_bins: 100.0
     lsc_cutoff_high: [0.2, 0.25]
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 46.730635]
-    datum: [0, 0, 48.764]
+    lsc_enable: true
+    phase: 0
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
   CLA-S07-CAV-03-SCR:
-    name: CLA-S07-CAV-03-SCR
-    type: screen
+    centre: [0.0, 0.0, 48.8]
+    datum: [0.0, 0.0, 48.8]
+    global_rotation: [0, 0, 0]
     length: 0.0
-    output_filename: CLA-S07-CAV-03-SCR.SDDS
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 48.8]
-    datum: [0, 0, 48.8]
+    type: screen
   CLA-L04X-MAG-QUAD-04:
-    name: CLA-L04X-MAG-QUAD-04
-    type: quadrupole
-    length: 0.15
-    k1l: 0.157575
-    sr_enable: true
-    isr_enable: true
+    centre: [0.0, 0.0, 49.039]
+    datum: [0.0, 0.0, 49.114]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 49.039]
-    datum: [0, 0, 49.114]
+    isr_enable: true
+    k1l: 0.157575
+    length: 0.15
+    sr_enable: true
+    type: quadrupole
   CLA-L04-CAV-04:
-    name: CLA-L04-CAV-04
-    type: cavity
-    length: 4.06667
     cell_length: 0.00833333
+    centre: [0.0, 0.0, 51.347335]
+    datum: [0.0, 0.0, 53.38067]
     field_amplitude: 80000000.0
-    frequency: 11994000000.0
-    phase: 0
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
     field_definition: $master_lattice_location$Data_Files/TWS_X-DL.dat
+    frequency: 11994000000.0
+    global_rotation: [0, 0, 0]
+    length: 4.06667
     longitudinal_wakefield_enable: true
-    transverse_wakefield_enable: true
-    lsc_enable: true
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     lsc_bins: 100.0
     lsc_cutoff_high: [0.2, 0.25]
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 51.347335]
-    datum: [0, 0, 53.3807]
+    lsc_enable: true
+    phase: 0
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
   CLA-S07-CAV-04-SCR:
-    name: CLA-S07-CAV-04-SCR
-    type: screen
+    centre: [0.0, 0.0, 53.4]
+    datum: [0.0, 0.0, 53.4]
+    global_rotation: [0, 0, 0]
     length: 0.0
-    output_filename: CLA-S07-CAV-04-SCR.SDDS
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 53.4]
-    datum: [0, 0, 53.4]
+    type: screen
   CLA-L04X-MAG-QUAD-05:
-    name: CLA-L04X-MAG-QUAD-05
-    type: quadrupole
-    length: 0.15
-    k1l: 0.157575
-    sr_enable: true
-    isr_enable: true
+    centre: [0.0, 0.0, 53.6557]
+    datum: [0.0, 0.0, 53.7307]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 53.6557]
-    datum: [0, 0, 53.7307]
+    isr_enable: true
+    k1l: 0.157575
+    length: 0.15
+    sr_enable: true
+    type: quadrupole
   CLA-S07-DCP-01:
-    name: CLA-S07-DCP-01
-    type: longitudinal_wakefield
-    length: 0.596
-    cell_length: 0.596
-    n_cells: 1
-    field_definition_sdds: $master_lattice_location$Data_Files/DCP_200um_G1200um.sdds
-    field_definition: $master_lattice_location$Data_Files/DCP_200um_G1200um.txt
-    tcolumn: t
-    wcolumn: Ez
-    factor: 1
-    scale_kick: 1
-    interpolate: 1
-    change_momentum: 1
     allow_long_beam: 1
     bunched_beam: 0
+    cell_length: 0.596
+    centre: [0.0, 0.0, 54.298]
+    change_momentum: 1
+    datum: [0.0, 0.0, 54.596]
+    factor: 1
+    field_definition: $master_lattice_location$Data_Files/DCP_200um_G1200um.txt
+    field_definition_sdds: $master_lattice_location$Data_Files/DCP_200um_G1200um.sdds
+    global_rotation: [0, 0, 0]
+    interpolate: 1
+    length: 0.596
     n_bins: 0
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 54.298]
-    datum: [0, 0, 54.596]
+    n_cells: 1
+    scale_kick: 1
+    tcolumn: t
+    type: longitudinal_wakefield
+    wcolumn: Ez
   CLA-S07-DCP-01-SCR:
-    name: CLA-S07-DCP-01-SCR
-    type: screen
+    centre: [0.0, 0.0, 54.8]
+    datum: [0.0, 0.0, 54.8]
+    global_rotation: [0, 0, 0]
     length: 0.0
-    output_filename: CLA-S07-DCP-01-SCR.SDDS
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 54.8]
-    datum: [0, 0, 54.8]
+    type: screen
   CLA-S07-APER-01:
-    name: CLA-S07-APER-01
-    type: aperture
-    shape: rectangular
-    horizontal_size: 0.017
-    vertical_size: 0.017
+    centre: [0.0, 0.0, 55.0]
+    datum: [0.0, 0.0, 55.0]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 55.0]
-    datum: [0, 0, 55.0]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017

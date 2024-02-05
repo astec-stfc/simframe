@@ -1,280 +1,70 @@
 elements:
   CLA-S05-APER:
-    type: aperture
-    shape: rectangular
+    centre: [0.0, 0.0, 24.4222]
+    datum: [0.0, 0.0, 24.4222]
+    global_rotation: [0, 0, 0]
     horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
     vertical_size: 0.017
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 24.4222
-    start:
-    - 0.0
-    - 0.0
-    - 24.4222
-    end:
-    - 0.0
-    - 0.0
-    - 24.4222
-    datum:
-    - 0.0
-    - 0.0
-    - 24.4222
-    old_datum:
-    - 0
-    - 0
-    - 24.4222
   CLA-S05-MAG-QUAD-01:
-    type: quadrupole
-    length: 0.162
+    centre: [0.0, 0.0, 24.7342]
+    datum: [0.0, 0.0, 24.8152]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     k1l: -0.126655
-    sr_enable: true
-    isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 24.7342
-    start:
-    - 0.0
-    - 0.0
-    - 24.6532
-    end:
-    - 0.0
-    - 0.0
-    - 24.8152
-    datum:
-    - 0.0
-    - 0.0
-    - 24.8152
-    old_datum:
-    - 0
-    - 0
-    - 24.8152
-  CLA-S05-DIA-ICT-01:
-    type: integrated_current_transformer
-    length: 0.05
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 24.8869
-    start:
-    - 0.0
-    - 0.0
-    - 24.8619
-    end:
-    - 0.0
-    - 0.0
-    - 24.9119
-    datum:
-    - 0.0
-    - 0.0
-    - 24.9119
-    old_datum:
-    - 0
-    - 0
-    - 24.9119
-  CLA-S05-MAG-HVCOR-01:
-    type: kicker
-    length: 0.05
-    sr_enable: true
-    isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.0509
-    start:
-    - 0.0
-    - 0.0
-    - 25.0259
-    end:
-    - 0.0
-    - 0.0
-    - 25.0759
-    datum:
-    - 0.0
-    - 0.0
-    - 25.0759
-    old_datum:
-    - 0
-    - 0
-    - 25.0759
-  CLA-S05-DIA-BPM-01:
-    type: beam_position_monitor
-    length: 0.021
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.1256
-    start:
-    - 0.0
-    - 0.0
-    - 25.1151
-    end:
-    - 0.0
-    - 0.0
-    - 25.1361
-    datum:
-    - 0.0
-    - 0.0
-    - 25.1361
-    old_datum:
-    - 0
-    - 0
-    - 25.1361
-  CLA-S05-DIA-SCR-01:
-    type: screen
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.1794
-    start:
-    - 0.0
-    - 0.0
-    - 25.1794
-    end:
-    - 0.0
-    - 0.0
-    - 25.1794
-    datum:
-    - 0.0
-    - 0.0
-    - 25.1794
-    old_datum:
-    - 0
-    - 0
-    - 25.1794
-  CLA-S05-DIA-BAM-01:
-    type: beam_arrival_monitor
-    length: 0.08
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.2563
-    start:
-    - 0.0
-    - 0.0
-    - 25.2163
-    end:
-    - 0.0
-    - 0.0
-    - 25.2963
-    datum:
-    - 0.0
-    - 0.0
-    - 25.2963
-    old_datum:
-    - 0
-    - 0
-    - 25.2963
-  CLA-S05-MAG-QUAD-02:
-    type: quadrupole
     length: 0.162
-    k1l: 0.209366
     sr_enable: true
+    type: quadrupole
+  CLA-S05-DIA-ICT-01:
+    centre: [0.0, 0.0, 24.8869]
+    datum: [0.0, 0.0, 24.9119]
+    global_rotation: [0, 0, 0]
+    length: 0.05
+    type: integrated_current_transformer
+  CLA-S05-MAG-HVCOR-01:
+    centre: [0.0, 0.0, 25.0509]
+    datum: [0.0, 0.0, 25.0759]
+    global_rotation: [0, 0, 0]
     isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.4841
-    start:
-    - 0.0
-    - 0.0
-    - 25.4031
-    end:
-    - 0.0
-    - 0.0
-    - 25.5651
-    datum:
-    - 0.0
-    - 0.0
-    - 25.5651
-    old_datum:
-    - 0
-    - 0
-    - 25.5651
-  CLA-S05-DIA-BPM-02:
+    length: 0.05
+    sr_enable: true
+    type: kicker
+  CLA-S05-DIA-BPM-01:
+    centre: [0.0, 0.0, 25.1256]
+    datum: [0.0, 0.0, 25.1361]
+    global_rotation: [0, 0, 0]
+    length: 0.021
     type: beam_position_monitor
+  CLA-S05-DIA-SCR-01:
+    centre: [0.0, 0.0, 25.1794]
+    datum: [0.0, 0.0, 25.1794]
+    global_rotation: [0, 0, 0]
+    type: screen
+  CLA-S05-DIA-BAM-01:
+    centre: [0.0, 0.0, 25.2563]
+    datum: [0.0, 0.0, 25.2963]
+    global_rotation: [0, 0, 0]
+    length: 0.08
+    type: beam_arrival_monitor
+  CLA-S05-MAG-QUAD-02:
+    centre: [0.0, 0.0, 25.4841]
+    datum: [0.0, 0.0, 25.5651]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1l: 0.209366
+    length: 0.162
+    sr_enable: true
+    type: quadrupole
+  CLA-S05-DIA-BPM-02:
+    centre: [0.0, 0.0, 25.7201]
+    datum: [0.0, 0.0, 25.8251]
+    global_rotation: [0, 0, 0]
     length: 0.21
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.7201
-    start:
-    - 0.0
-    - 0.0
-    - 25.6151
-    end:
-    - 0.0
-    - 0.0
-    - 25.8251
-    datum:
-    - 0.0
-    - 0.0
-    - 25.8251
-    old_datum:
-    - 0
-    - 0
-    - 25.8251
+    type: beam_position_monitor
   CLA-S05-MARK-01:
-    type: marker
+    centre: [0.0, 0.0, 25.8251]
+    datum: [0.0, 0.0, 25.8251]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 25.8251
-    start:
-    - 0.0
-    - 0.0
-    - 25.8251
-    end:
-    - 0.0
-    - 0.0
-    - 25.8251
-    datum:
-    - 0.0
-    - 0.0
-    - 25.8251
-    old_datum:
-    - 0
-    - 0
-    - 25.8251
+    global_rotation: [0, 0, 0]
+    type: marker

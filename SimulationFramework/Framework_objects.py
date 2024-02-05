@@ -599,15 +599,15 @@ class chicane(frameworkGroup):
                 elem_angle = obj[i].angle
             else:
                 elem_angle = obj[i].angle if obj[i].angle is not None else 0
-            obj[i].position_end = list(obj[i].end)
+            obj[i].centre = list(obj[i].middle)
             xstart, ystart, zstart = obj[i].position_end
             if i < len(obj)-1:
                 xend, yend, zend = obj[i+1].position_start
                 angle = starting_angle + elem_angle
                 # print('angle = ', angle, starting_angle, obj[i+1].objectname)
-                length = float((-zstart + zend))
-                endx = chop(float(xstart - np.tan(angle)*length))
-                obj[i+1].position_start[0] =  endx
+                length = float((zend - zstart))
+                endx = chop(float(xstart - np.tan(angle)*(length/2.0)))
+                obj[i+1].centre[0] =  endx
                 obj[i+1].global_rotation[2] =  angle
                 starting_angle += elem_angle
 
@@ -796,26 +796,33 @@ class frameworkElement(frameworkObject):
             return chop(np.dot(np.array(pos) - np.array(offset), _rotation_matrix(theta)), 1e-6)
 
     @property
-    def start(self):
-        start = np.array(self.position_start)
+    def start(self): return self.position_start
+    @property
+    def position_start(self):
+        middle = np.array(self.centre)
+        start = middle - self.rotated_position(np.array([0,0, self.length / 2.0]), offset=self.starting_offset, theta=self.y_rot)
         return start
 
     @property
+    def position_middle(self):
+        return self.centre
+    @property
     def middle(self):
-        start = np.array(self.position_start)
-        return start + self.rotated_position(np.array([0,0, self.length / 2.0]), offset=self.starting_offset, theta=self.y_rot)
+        return self.centre
 
     @property
-    def end(self):
+    def end(self): return self.position_end
+    @property
+    def position_end(self):
         start = np.array(self.position_start)
-        # print(self.objectName, start, start + self.rotated_position(np.array([0,0, self.length]), offset=self.starting_offset, theta=-self.y_rot))
-        return start + self.rotated_position(np.array([0,0, self.length]), offset=self.starting_offset, theta=self.y_rot)
+        end = start + self.rotated_position(np.array([0,0, self.length]), offset=self.starting_offset, theta=self.y_rot)
+        return end
 
     def relative_position_from_centre(self, vec=[0,0,0]):
-        start = np.array(self.start)
-        return start + self.rotated_position(np.array([0,0, self.length / 2.0]) + np.array(vec), offset=self.starting_offset, theta=self.y_rot)
+        middle = np.array(self.centre)
+        return middle + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
     def relative_position_from_start(self, vec=[0,0,0]):
-        start = np.array(self.start)
+        start = np.array(self.position_start)
         return start + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     def _write_ASTRA(self, d, n=1):

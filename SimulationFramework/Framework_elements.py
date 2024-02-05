@@ -108,7 +108,7 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
-    def end(self):
+    def position_end(self):
         start = self.position_start
         angle = -self.angle
         if abs(angle) > 1e-9:

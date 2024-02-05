@@ -1,666 +1,575 @@
 elements:
   CLA-LRG1-APER:
-    name: CLA-LRG1-APER
-    type: aperture
-    shape: rectangular
+    centre: [0, 0, 0]
+    datum: [0, 0, 0]
+    global_rotation: [0, 0, 0]
     horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
     vertical_size: 0.017
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 0]
-    datum: [0.0, 0, 0.0]
   CLA-LRG1-GUN-CAV:
-    name: CLA-LRG1-GUN-CAV
-    type: cavity
-    length: 0
-    field_amplitude: 70000000.0
-    frequency: 2997440000.0
-    phase: -16
-    field_definition: ../bas_gun.txt
-    lsc_cutoff_high: [0, 0]
-    global_rotation: [0, 0, 0]
     centre: [0, 0, 0]
-    datum: [0.0, 0, 0.0]
-  CLA-LRG1-GUN-SOL:
-    name: CLA-LRG1-GUN-SOL
-    type: solenoid
+    datum: [0, 0, 0]
+    field_amplitude: 70000000.0
+    field_definition: ../bas_gun.txt
+    frequency: 2997440000.0
+    global_rotation: [0, 0, 0]
     length: 0
+    lsc_cutoff_high: [0, 0]
+    phase: -16
+    type: cavity
+  CLA-LRG1-GUN-SOL:
+    centre: [0, 0, 0]
+    datum: [0, 0, 0]
     field_amplitude: 0.237
     field_definition: ../bas_sol.txt
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 0]
-    datum: [0.0, 0, 0.0]
+    length: 0
+    type: solenoid
   CLA-S01-APER:
-    name: CLA-S01-APER
-    type: aperture
-    shape: rectangular
-    horizontal_size: 0.017
-    vertical_size: 0.017
+    centre: [0.0, 0.0, 0.32482]
+    datum: [0.0, 0.0, 0.32482]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 0.32482]
-    datum: [0.0, 0, 0.32482]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-S01-MAG-HVCOR-01:
-    name: CLA-S01-MAG-HVCOR-01
-    type: kicker
-    length: 0.03
-    sr_enable: true
-    isr_enable: true
     Horizontal_PV: CLA-S01-MAG-HCOR-01
     Vertcal_PV: CLA-S01-MAG-VCOR-01
-    global_rotation: [0, 0, 0]
     centre: [0.0, 0.0, 0.33982]
-    datum: [0.0, 0, 0.35482]
-  CLA-S01-DIA-WCM-01:
-    name: CLA-S01-DIA-WCM-01
-    type: wall_current_monitor
-    length: 0.05
-    PV: CLA-S01-DIA-WCM-01
+    datum: [0.0, 0.0, 0.35482]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 0.7027]
-    datum: [0.0, 0, 0.7277]
-  CLA-S01-MAG-HVCOR-02:
-    name: CLA-S01-MAG-HVCOR-02
-    type: kicker
-    length: 0.102
-    sr_enable: true
     isr_enable: true
+    length: 0.03
+    sr_enable: true
+    type: kicker
+  CLA-S01-DIA-WCM-01:
+    PV: CLA-S01-DIA-WCM-01
+    centre: [0.0, 0.0, 0.7027]
+    datum: [0.0, 0.0, 0.7277]
+    global_rotation: [0, 0, 0]
+    length: 0.05
+    type: wall_current_monitor
+  CLA-S01-MAG-HVCOR-02:
     Horizontal_PV: CLA-S01-MAG-HCOR-02
     Vertcal_PV: CLA-S01-MAG-VCOR-02
-    global_rotation: [0, 0, 0]
     centre: [0.0, 0.0, 0.7787]
-    datum: [0.0, 0, 0.8297]
+    datum: [0.0, 0.0, 0.8297]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    length: 0.102
+    sr_enable: true
+    type: kicker
   CLA-S01-DIA-BPM-01:
-    name: CLA-S01-DIA-BPM-01
-    type: beam_position_monitor
-    length: 0.108
     PV: CLA-S01-DIA-BPM-01
+    centre: [0.0, 0.0, 0.8837]
+    datum: [0.0, 0.0, 0.9377]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 0.8837]
-    datum: [0.0, 0, 0.9377]
-  CLA-S01-DIA-SCR-01-W:
-    name: CLA-S01-DIA-SCR-01-W
+    length: 0.108
+    type: beam_position_monitor
+  CLA-S01-DIA-SCR-01:
+    centre: [0.0, 0.0, 0.981033]
+    datum: [0.0, 0.0, 0.981033]
+    global_rotation: [0, 0, 0]
     type: screen
-    output_filename: '"CLA-S01-DIA-SCR-01.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 0.981033]
-    datum: [0.0, 0, 0.981033]
   CLA-L01-APER:
-    name: CLA-L01-APER
-    type: aperture
-    shape: rectangular
-    horizontal_size: 0.01
-    vertical_size: 0.01
+    centre: [0.0, 0.0, 1.0577]
+    datum: [0.0, 0.0, 1.0577]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 1.0577]
-    datum: [0.0, 0, 1.0577]
+    horizontal_size: 0.01
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.01
   CLA-L01-CAV:
-    name: CLA-L01-CAV
-    type: cavity
-    length: 2.03333
+    PV: CLA-L01-LRF-CTRL-01
     cell_length: 0.0333333
+    centre: [0.0, 0.0, 2.210235]
+    datum: [0.0, 0.0, 3.2269]
     field_amplitude: 21000000.0
-    frequency: 2998500000.0
-    phase: -16
-    longitudinal_wakefield_input: '"Sz5um10mm.sdds"'
-    transverse_wakefield_input: '"Sx5um10mm.sdds"'
     field_definition: ../TWS_S-DL.dat
-    lsc_enable: true
+    frequency: 2998500000.0
+    global_rotation: [0, 0, 0]
+    length: 2.03333
+    longitudinal_wakefield_input: '"Sz5um10mm.sdds"'
     lsc_bins: 20.0
     lsc_cutoff_high: [0.2, 0.25]
-    PV: CLA-L01-LRF-CTRL-01
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 2.210235]
-    datum: [0.0, 0, 3.226903]
+    lsc_enable: true
+    phase: -16
+    transverse_wakefield_input: '"Sx5um10mm.sdds"'
+    type: cavity
   CLA-S02-APER-01:
-    name: CLA-S02-APER-01
-    type: aperture
-    shape: rectangular
-    horizontal_size: 0.017
-    vertical_size: 0.017
+    centre: [0.0, 0.0, 3.37147]
+    datum: [0.0, 0.0, 3.37147]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 3.37147]
-    datum: [0, 0, 3.37147]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-S02-MAG-HVCOR-01:
-    name: CLA-S02-MAG-HVCOR-01
-    type: kicker
-    length: 0.076607
-    sr_enable: true
-    isr_enable: true
     Horizontal_PV: CLA-S02-MAG-HCOR-01
     Vertcal_PV: CLA-S02-MAG-VCOR-01
-    global_rotation: [0, 0, 0]
     centre: [0.0, 0.0, 3.409774]
-    datum: [0, 0, 3.44808]
-  CLA-S02-MAG-QUAD-01:
-    name: CLA-S02-MAG-QUAD-01
-    type: quadrupole
-    length: 0.1007
-    k1: -3.09253
-    sr_enable: true
+    datum: [0.0, 0.0, 3.448077]
+    global_rotation: [0, 0, 0]
     isr_enable: true
-    PV: CLA-S02-MAG-QUAD-01
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 3.52715]
-    datum: [0.0, 0, 3.5775]
-  CLA-S02-DIA-BPM-01:
-    name: CLA-S02-DIA-BPM-01
-    type: beam_position_monitor
-    length: 0.04528
-    PV: CLA-S02-DIA-BPM-01
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 3.60014]
-    datum: [0.0, 0, 3.62278]
-  CLA-S02-MAG-QUAD-02:
-    name: CLA-S02-MAG-QUAD-02
-    type: quadrupole
-    length: 0.1007
-    k1: 6.34871
+    length: 0.076607
     sr_enable: true
-    isr_enable: true
-    PV: CLA-S02-MAG-QUAD-02
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 3.92715]
-    datum: [0.0, 0, 3.9775]
-  CLA-S02-DIA-SCR-01-W:
-    name: CLA-S02-DIA-SCR-01-W
-    type: screen
-    output_filename: '"CLA-S02-DIA-SCR-01.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 4.08983]
-    datum: [0.0, 0, 4.089833]
-  CLA-S02-MAG-HVCOR-02:
-    name: CLA-S02-MAG-HVCOR-02
     type: kicker
-    length: 0.03
-    sr_enable: true
+  CLA-S02-MAG-QUAD-01:
+    PV: CLA-S02-MAG-QUAD-01
+    centre: [0.0, 0.0, 3.52715]
+    datum: [0.0, 0.0, 3.5775]
+    global_rotation: [0, 0, 0]
     isr_enable: true
+    k1: -3.09253
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-S02-DIA-BPM-01:
+    PV: CLA-S02-DIA-BPM-01
+    centre: [0.0, 0.0, 3.60014]
+    datum: [0.0, 0.0, 3.62278]
+    global_rotation: [0, 0, 0]
+    length: 0.04528
+    type: beam_position_monitor
+  CLA-S02-MAG-QUAD-02:
+    PV: CLA-S02-MAG-QUAD-02
+    centre: [0.0, 0.0, 3.92715]
+    datum: [0.0, 0.0, 3.9775]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1: 6.34871
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-S02-DIA-SCR-01:
+    centre: [0.0, 0.0, 4.08983]
+    datum: [0.0, 0.0, 4.08983]
+    global_rotation: [0, 0, 0]
+    type: screen
+  CLA-S02-MAG-HVCOR-02:
     Horizontal_PV: CLA-S02-MAG-HCOR-02
     Vertcal_PV: CLA-S02-MAG-VCOR-02
-    global_rotation: [0, 0, 0]
     centre: [0.0, 0.0, 4.25307]
-    datum: [0.0, 0, 4.26807]
-  CLA-S02-COL-01:
-    name: CLA-S02-COL-01
-    type: collimator
-    length: 0.35
-    shape: elliptical
-    horizontal_size: 0.01
-    vertical_size: 0.01
+    datum: [0.0, 0.0, 4.26807]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 4.51862]
-    datum: [0.0, 0, 4.69362]
-  CLA-S02-APER-02:
-    name: CLA-S02-APER-02
-    type: aperture
-    shape: rectangular
-    horizontal_size: 0.017
-    vertical_size: 0.017
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 4.69362]
-    datum: [0.0, 0, 4.69362]
-  CLA-S02-MAG-HVCOR-03:
-    name: CLA-S02-MAG-HVCOR-03
-    type: kicker
+    isr_enable: true
     length: 0.03
     sr_enable: true
-    isr_enable: true
+    type: kicker
+  CLA-S02-COL-01:
+    centre: [0.0, 0.0, 4.51862]
+    datum: [0.0, 0.0, 4.69362]
     global_rotation: [0, 0, 0]
+    horizontal_size: 0.01
+    length: 0.35
+    shape: elliptical
+    type: collimator
+    vertical_size: 0.01
+  CLA-S02-APER-02:
+    centre: [0.0, 0.0, 4.69362]
+    datum: [0.0, 0.0, 4.69362]
+    global_rotation: [0, 0, 0]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
+  CLA-S02-MAG-HVCOR-03:
     centre: [0.0, 0.0, 4.83056]
-    datum: [0.0, 0, 4.84556]
-  CLA-S02-DIA-SCR-02-W:
-    name: CLA-S02-DIA-SCR-02-W
+    datum: [0.0, 0.0, 4.84556]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    length: 0.03
+    sr_enable: true
+    type: kicker
+  CLA-S02-DIA-SCR-02:
+    centre: [0.0, 0.0, 5.01083]
+    datum: [0.0, 0.0, 5.01083]
+    global_rotation: [0, 0, 0]
     type: screen
-    output_filename: '"CLA-S02-DIA-SCR-02.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [0, 0, 5.01083]
-    datum: [0.0, 0, 5.010833]
   CLA-S02-MAG-QUAD-03:
-    name: CLA-S02-MAG-QUAD-03
-    type: quadrupole
-    length: 0.1007
-    k1: -4.07613
-    sr_enable: true
-    isr_enable: true
     PV: CLA-S02-MAG-QUAD-03
+    centre: [0.0, 0.0, 5.22715]
+    datum: [0.0, 0.0, 5.2775]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 5.22715]
-    datum: [0.0, 0, 5.2775]
-  CLA-S02-MAG-QUAD-04:
-    name: CLA-S02-MAG-QUAD-04
-    type: quadrupole
-    length: 0.1007
-    k1: -4.07613
-    sr_enable: true
     isr_enable: true
+    k1: -4.07613
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-S02-MAG-QUAD-04:
     PV: CLA-S02-MAG-QUAD-04
+    centre: [0.0, 0.0, 5.62715]
+    datum: [0.0, 0.0, 5.6775]
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 5.62715]
-    datum: [0.0, 0, 5.6775]
+    isr_enable: true
+    k1: -4.07613
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
   CLA-C2V-MARK-01:
-    name: CLA-C2V-MARK-01
-    type: marker
+    centre: [0.0, 0.0, 5.72687]
+    datum: [0.0, 0.0, 5.72687]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [0, 0, 5.72687]
-    datum: [0, 0, 5.72687]
+    type: marker
   CLA-C2V-MAG-DIP-01:
-    name: CLA-C2V-MAG-DIP-01
-    type: dipole
-    length: 0.400003
-    angle: 0.785398
-    half_gap: 0.005
-    edge_field_integral: 0.4
-    csr_bins: 20.0
-    sr_enable: true
-    isr_enable: true
-    csr_output_filename: '"C2V-MAG-DIP-01-D.CSR"'
     PV: CLA-C2V-MAG-DIP-01
+    angle: 0.785398
+    centre: [0.0, 0.0, 6.037829]
+    csr_bins: 20.0
+    datum: [-0.14917, 0.0, 6.186999]
+    edge_field_integral: 0.4
     global_rotation: [0, 0, 0]
-    centre: [0.0, 0.0, 6.026872]
-    datum: [-0.149171, 0, 6.187]
-  CLA-C2V-MAG-HVCOR-01:
-    name: CLA-C2V-MAG-HVCOR-01
-    type: kicker
-    length: 0.21
-    sr_enable: true
+    half_gap: 0.005
     isr_enable: true
+    length: 0.400003
+    sr_enable: true
+    type: dipole
+  CLA-C2V-MAG-HVCOR-01:
     Horizontal_PV: CLA-C2V-MAG-HCOR-01
     Vertcal_PV: CLA-C2V-MAG-VCOR-01
+    centre: [-0.294166, 0.0, 6.331996]
+    datum: [-0.368412, 0.0, 6.406242]
     global_rotation: [0, 0, 0.785398]
-    centre: [-0.32492, 0.0, 6.25775]
-    datum: [-0.368412, 0, 6.40624]
-  CLA-C2V-DIA-BPM-01:
-    name: CLA-C2V-DIA-BPM-01
-    type: beam_position_monitor
-    PV: CLA-C2V-DIA-BPM-01
-    global_rotation: [0, 0, 0.785398]
-    centre: [-4.790402, 0, 4.26939]
-    datum: [-0.368412, 0, 6.40624]
-  CLA-C2V-MAG-QUAD-01:
-    name: CLA-C2V-MAG-QUAD-01
-    type: quadrupole
-    length: 0.1007
-    k1: 55.9853
-    sr_enable: true
     isr_enable: true
-    PV: CLA-C2V-MAG-QUAD-01
-    global_rotation: [0, 0, 0.785398]
-    centre: [-4.863276, 0, 4.269394]
-    datum: [-0.455542, 0, 6.49337]
-  CLA-C2V-MAG-QUAD-02:
-    name: CLA-C2V-MAG-QUAD-02
-    type: quadrupole
-    length: 0.1007
-    k1: -50.2792
+    length: 0.21
     sr_enable: true
-    isr_enable: true
-    PV: CLA-C2V-MAG-QUAD-02
-    global_rotation: [0, 0, 0.785398]
-    centre: [-5.153275, 0, 4.269394]
-    datum: [-0.660603, 0, 6.69843]
-  CLA-C2V-MAG-QUAD-03:
-    name: CLA-C2V-MAG-QUAD-03
-    type: quadrupole
-    length: 0.1007
-    k1: 55.9853
-    sr_enable: true
-    isr_enable: true
-    PV: CLA-C2V-MAG-QUAD-03
-    global_rotation: [0, 0, 0.785398]
-    centre: [-5.443275, 0, 4.269393]
-    datum: [-0.865664, 0, 6.90349]
-  CLA-C2V-DIA-SCR-01-W:
-    name: CLA-C2V-DIA-SCR-01-W
-    type: screen
-    output_filename: '"C2V-DIA-SCR-01.SDDS"'
-    global_rotation: [0, 0, 0.785398]
-    centre: [-5.604505, 0, 4.269393]
-    datum: [-0.944068, 0, 6.9819]
-  CLA-C2V-MAG-DIP-02:
-    name: CLA-C2V-MAG-DIP-02
-    type: dipole
-    length: 0.400003
-    angle: -0.785398
-    half_gap: 0.005
-    edge_field_integral: 0.4
-    csr_bins: 20.0
-    sr_enable: true
-    isr_enable: true
-    csr_output_filename: '"CLA-C2V-MAG-DIP-02-D.CSR"'
-    PV: CLA-C2V-MAG-DIP-03
-    global_rotation: [0, 0, 0.785398]
-    centre: [-1.300831, 0.0, 7.13866]
-    datum: [-1.25, 0, 7.49879]
-  EBT-INJ-DIA-YAG-05:
-    name: EBT-INJ-DIA-YAG-05
-    type: watch_point
-    output_filename: '"EBT-INJ-DIA-YAG-05.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 7.83179]
-    datum: [-1.25, 0, 7.83179]
-  EBT-INJ-MAG-HVCOR-06:
-    name: EBT-INJ-MAG-HVCOR-06
     type: kicker
+  CLA-C2V-DIA-BPM-01:
+    PV: CLA-C2V-DIA-BPM-01
+    centre: [-0.368412, 0.0, 6.40624]
+    datum: [-0.368412, 0.0, 6.40624]
+    global_rotation: [0, 0, 0.785398]
+    type: beam_position_monitor
+  CLA-C2V-MAG-QUAD-01:
+    PV: CLA-C2V-MAG-QUAD-01
+    centre: [-0.419939, 0.0, 6.457773]
+    datum: [-0.455542, 0.0, 6.493376]
+    global_rotation: [0, 0, 0.785398]
+    isr_enable: true
+    k1: 55.9853
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-C2V-MAG-QUAD-02:
+    PV: CLA-C2V-MAG-QUAD-02
+    centre: [-0.625, 0.0, 6.662833]
+    datum: [-0.660603, 0.0, 6.698436]
+    global_rotation: [0, 0, 0.785398]
+    isr_enable: true
+    k1: -50.2792
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-C2V-MAG-QUAD-03:
+    PV: CLA-C2V-MAG-QUAD-03
+    centre: [-0.830061, 0.0, 6.867893]
+    datum: [-0.865664, 0.0, 6.903496]
+    global_rotation: [0, 0, 0.785398]
+    isr_enable: true
+    k1: 55.9853
+    length: 0.1007
+    sr_enable: true
+    type: quadrupole
+  CLA-C2V-DIA-SCR-01:
+    centre: [-0.944068, 0.0, 6.9819]
+    datum: [-0.944068, 0.0, 6.9819]
+    global_rotation: [0, 0, 0.785398]
+    type: screen
+  CLA-C2V-MAG-DIP-02:
+    PV: CLA-C2V-MAG-DIP-03
+    angle: -0.785398
+    centre: [-1.25, 0.0, 7.28783]
+    csr_bins: 20.0
+    datum: [-1.25, 0.0, 7.498789]
+    edge_field_integral: 0.4
+    global_rotation: [0, 0, 0.785398]
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.400003
+    sr_enable: true
+    type: dipole
+  EBT-INJ-DIA-YAG-05:
+    centre: [-1.25, 0.0, 7.83179]
+    datum: [-1.25, 0.0, 7.83179]
+    global_rotation: [0, 0, 0]
+    type: watch_point
+  EBT-INJ-MAG-HVCOR-06:
+    centre: [-1.25, 0.0, 8.13079]
+    datum: [-1.25, 0.0, 8.16279]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.064
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0.0, 8.13079]
-    datum: [-1.25, 0, 8.16279]
-  EBT-INJ-MAG-QUAD-07:
-    name: EBT-INJ-MAG-QUAD-07
-    type: quadrupole
-    length: 0.1
-    k1: 17.0945
-    sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 8.21279]
-    datum: [-1.25, 0, 8.26279]
-  EBT-INJ-MAG-QUAD-08:
-    name: EBT-INJ-MAG-QUAD-08
-    type: quadrupole
-    length: 0.1
-    k1: -17.8686
-    sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 8.48279]
-    datum: [-1.25, 0, 8.53279]
-  EBT-INJ-DIA-YAG-06:
-    name: EBT-INJ-DIA-YAG-06
-    type: watch_point
-    output_filename: '"EBT-INJ-DIA-YAG-06.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 9.53979]
-    datum: [-1.25, 0, 9.53979]
-  EBT-INJ-DIA-FCUP-02:
-    name: EBT-INJ-DIA-FCUP-02
-    type: watch_point
-    output_filename: '"EBT-INJ-DIA-FCUP-02.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 9.88979]
-    datum: [-1.25, 0, 9.88979]
-  EBT-INJ-MAG-HVCOR-07:
-    name: EBT-INJ-MAG-HVCOR-07
     type: kicker
+  EBT-INJ-MAG-QUAD-07:
+    centre: [-1.25, 0.0, 8.21279]
+    datum: [-1.25, 0.0, 8.26279]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1: 17.0945
+    length: 0.1
+    sr_enable: true
+    type: quadrupole
+  EBT-INJ-MAG-QUAD-08:
+    centre: [-1.25, 0.0, 8.48279]
+    datum: [-1.25, 0.0, 8.53279]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1: -17.8686
+    length: 0.1
+    sr_enable: true
+    type: quadrupole
+  EBT-INJ-DIA-YAG-06:
+    centre: [-1.25, 0.0, 9.53979]
+    datum: [-1.25, 0.0, 9.53979]
+    global_rotation: [0, 0, 0]
+    type: watch_point
+  EBT-INJ-DIA-FCUP-02:
+    centre: [-1.25, 0.0, 9.88979]
+    datum: [-1.25, 0.0, 9.88979]
+    global_rotation: [0, 0, 0]
+    type: watch_point
+  EBT-INJ-MAG-HVCOR-07:
+    centre: [-1.25, 0.0, 10.24855]
+    datum: [-1.25, 0.0, 10.3398]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.1825
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0.0, 10.24855]
-    datum: [-1.25, 0, 10.3398]
+    type: kicker
   EBT-INJ-MAG-QUAD-09:
-    name: EBT-INJ-MAG-QUAD-09
-    type: quadrupole
-    length: 0.075
+    centre: [-1.25, 0.0, 10.3773]
+    datum: [-1.25, 0.0, 10.4148]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     k1: 4.14677
+    length: 0.075
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 10.3773]
-    datum: [-1.25, 0, 10.4148]
+    type: quadrupole
   EBT-INJ-DIA-BPM-04:
-    name: EBT-INJ-DIA-BPM-04
-    type: beam_position_monitor
+    centre: [-1.25, 0.0, 10.5363]
+    datum: [-1.25, 0.0, 10.6578]
+    global_rotation: [0, 0, 0]
     length: 0.243
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 10.5363]
-    datum: [-1.25, 0, 10.6578]
-  EBT-INJ-DIA-YAG-07:
-    name: EBT-INJ-DIA-YAG-07
-    type: watch_point
-    output_filename: '"EBT-INJ-DIA-YAG-07.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 12.0898]
-    datum: [-1.25, 0, 12.0898]
-  EBT-INJ-MAG-HVCOR-08:
-    name: EBT-INJ-MAG-HVCOR-08
-    type: kicker
-    length: 0.2
-    sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0.0, 12.1898]
-    datum: [-1.25, 0, 12.2898]
-  EBT-INJ-MAG-QUAD-10:
-    name: EBT-INJ-MAG-QUAD-10
-    type: quadrupole
-    length: 0.075
-    k1: -4.2847
-    sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 12.5293]
-    datum: [-1.25, 0, 12.5668]
-  EBT-INJ-DIA-BPM-05:
-    name: EBT-INJ-DIA-BPM-05
     type: beam_position_monitor
-    length: 0.2
+  EBT-INJ-DIA-YAG-07:
+    centre: [-1.25, 0.0, 12.0898]
+    datum: [-1.25, 0.0, 12.0898]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 13.9118]
-    datum: [-1.25, 0, 14.0118]
-  EBT-INJ-MAG-QUAD-11:
-    name: EBT-INJ-MAG-QUAD-11
-    type: quadrupole
-    length: 0.075
-    k1: 5.66182
-    sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 14.6773]
-    datum: [-1.25, 0, 14.7148]
-  EBT-INJ-DIA-YAG-08:
-    name: EBT-INJ-DIA-YAG-08
     type: watch_point
-    output_filename: '"EBT-INJ-DIA-YAG-08.SDDS"'
+  EBT-INJ-MAG-HVCOR-08:
+    centre: [-1.25, 0.0, 12.1898]
+    datum: [-1.25, 0.0, 12.2898]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 15.5898]
-    datum: [-1.25, 0, 15.5898]
-  EBT-INJ-MAG-HVCOR-09:
-    name: EBT-INJ-MAG-HVCOR-09
+    isr_enable: true
+    length: 0.2
+    sr_enable: true
     type: kicker
+  EBT-INJ-MAG-QUAD-10:
+    centre: [-1.25, 0.0, 12.5293]
+    datum: [-1.25, 0.0, 12.5668]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1: -4.2847
+    length: 0.075
+    sr_enable: true
+    type: quadrupole
+  EBT-INJ-DIA-BPM-05:
+    centre: [-1.25, 0.0, 13.9118]
+    datum: [-1.25, 0.0, 14.0118]
+    global_rotation: [0, 0, 0]
+    length: 0.2
+    type: beam_position_monitor
+  EBT-INJ-MAG-QUAD-11:
+    centre: [-1.25, 0.0, 14.6773]
+    datum: [-1.25, 0.0, 14.7148]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
+    k1: 5.66182
+    length: 0.075
+    sr_enable: true
+    type: quadrupole
+  EBT-INJ-DIA-YAG-08:
+    centre: [-1.25, 0.0, 15.5898]
+    datum: [-1.25, 0.0, 15.5898]
+    global_rotation: [0, 0, 0]
+    type: watch_point
+  EBT-INJ-MAG-HVCOR-09:
+    centre: [-1.25, 0.0, 15.67355]
+    datum: [-1.25, 0.0, 15.7573]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.1675
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0.0, 15.67355]
-    datum: [-1.25, 0, 15.7573]
+    type: kicker
   EBT-INJ-DIA-ICT-03:
-    name: EBT-INJ-DIA-ICT-03
-    type: marker
+    centre: [-1.25, 0.0, 17.1398]
+    datum: [-1.25, 0.0, 17.1398]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 17.1398]
-    datum: [-1.25, 0, 17.1398]
+    type: marker
   EBT-INJ-DIA-YAG-10:
-    name: EBT-INJ-DIA-YAG-10
-    type: watch_point
-    output_filename: '"EBT-INJ-DIA-YAG-10.SDDS"'
+    centre: [-1.25, 0.0, 17.1398]
+    datum: [-1.25, 0.0, 17.1398]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 17.1398]
-    datum: [-1.25, 0, 17.1398]
+    type: watch_point
   EBT-INJ-MAG-QUAD-15:
-    name: EBT-INJ-MAG-QUAD-15
-    type: quadrupole
-    length: 0.075
+    centre: [-1.25, 0.0, 17.7723]
+    datum: [-1.25, 0.0, 17.8098]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     k1: 4.0731
+    length: 0.075
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 17.7723]
-    datum: [-1.25, 0, 17.8098]
+    type: quadrupole
   EBT-INJ-PSS-SHUT-02:
-    name: EBT-INJ-PSS-SHUT-02
-    type: marker
+    centre: [-1.25, 0.0, 18.2448]
+    datum: [-1.25, 0.0, 18.2448]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 18.2448]
-    datum: [-1.25, 0, 18.2448]
+    type: marker
   EBT-BA1-DIA-BPM-01:
-    name: EBT-BA1-DIA-BPM-01
-    type: beam_position_monitor
-    length: 0.235
+    centre: [-1.25, 0.0, 21.2713]
+    datum: [-1.25, 0.0, 21.3888]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 21.2713]
-    datum: [-1.25, 0, 21.3888]
+    length: 0.235
+    type: beam_position_monitor
   EBT-BA1-DIA-YAG-01:
-    name: EBT-BA1-DIA-YAG-01
-    type: watch_point
-    output_filename: '"EBT-BA1-DIA-YAG-01.SDDS"'
+    centre: [-1.25, 0.0, 21.3888]
+    datum: [-1.25, 0.0, 21.3888]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 21.3888]
-    datum: [-1.25, 0, 21.3888]
+    type: watch_point
   EBT-BA1-MAG-QUAD-01:
-    name: EBT-BA1-MAG-QUAD-01
-    type: quadrupole
+    centre: [-1.25, 0.0, 22.4698]
+    datum: [-1.25, 0.0, 22.5498]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 22.4698]
-    datum: [-1.25, 0, 22.5498]
+    type: quadrupole
   EBT-BA1-MAG-QUAD-02:
-    name: EBT-BA1-MAG-QUAD-02
-    type: quadrupole
+    centre: [-1.25, 0.0, 22.8698]
+    datum: [-1.25, 0.0, 22.9498]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 22.8698]
-    datum: [-1.25, 0, 22.9498]
+    type: quadrupole
   EBT-BA1-DIA-BPM-02:
-    name: EBT-BA1-DIA-BPM-02
-    type: beam_position_monitor
-    length: 0.235
+    centre: [-1.25, 0.0, 23.0673]
+    datum: [-1.25, 0.0, 23.1848]
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 23.0673]
-    datum: [-1.25, 0, 23.1848]
+    length: 0.235
+    type: beam_position_monitor
   EBT-BA1-MAG-QUAD-03:
-    name: EBT-BA1-MAG-QUAD-03
-    type: quadrupole
+    centre: [-1.25, 0.0, 23.2648]
+    datum: [-1.25, 0.0, 23.3448]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 23.2648]
-    datum: [-1.25, 0, 23.3448]
+    type: quadrupole
   EBT-BA1-LASERBOX-BEG:
-    name: EBT-BA1-LASERBOX-BEG
-    type: marker
+    centre: [-1.25, 0.0, 23.6848]
+    datum: [-1.25, 0.0, 23.6848]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 23.6848]
-    datum: [-1.25, 0, 23.6848]
+    type: marker
   EBT-BA1-LASERBOX-END:
-    name: EBT-BA1-LASERBOX-END
-    type: marker
+    centre: [-1.25, 0.0, 24.3348]
+    datum: [-1.25, 0.0, 24.3348]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 24.3348]
-    datum: [-1.25, 0, 24.3348]
+    type: marker
   EBT-BA1-COFFIN-BEG:
-    name: EBT-BA1-COFFIN-BEG
-    type: marker
+    centre: [-1.25, 0.0, 24.4348]
+    datum: [-1.25, 0.0, 24.4348]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 24.4348]
-    datum: [-1.25, 0, 24.4348]
+    type: marker
   EBT-BA1-COFFIN-FOC:
-    name: EBT-BA1-COFFIN-FOC
-    type: marker
+    centre: [-1.25, 0.0, 25.4848]
+    datum: [-1.25, 0.0, 25.4848]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 25.4848]
-    datum: [-1.25, 0, 25.4848]
+    type: marker
   EBT-BA1-COFFIN-END:
-    name: EBT-BA1-COFFIN-END
-    type: marker
+    centre: [-1.25, 0.0, 26.7948]
+    datum: [-1.25, 0.0, 26.7948]
     fit_point: 1.0
     global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 26.7948]
-    datum: [-1.25, 0, 26.7948]
+    type: marker
   EBT-BA1-DIA-BPM-03:
-    name: EBT-BA1-DIA-BPM-03
-    type: beam_position_monitor
+    centre: [-1.25, 0.0, 26.9123]
+    datum: [-1.25, 0.0, 27.0298]
+    global_rotation: [0, 0, 0]
     length: 0.235
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 26.9123]
-    datum: [-1.25, 0, 27.0298]
+    type: beam_position_monitor
   EBT-BA1-MAG-QUAD-04:
-    name: EBT-BA1-MAG-QUAD-04
-    type: quadrupole
+    centre: [-1.25, 0.0, 27.1098]
+    datum: [-1.25, 0.0, 27.1898]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 27.1098]
-    datum: [-1.25, 0, 27.1898]
+    type: quadrupole
   EBT-BA1-MAG-QUAD-05:
-    name: EBT-BA1-MAG-QUAD-05
-    type: quadrupole
+    centre: [-1.25, 0.0, 27.5428]
+    datum: [-1.25, 0.0, 27.6228]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 27.5428]
-    datum: [-1.25, 0, 27.6228]
+    type: quadrupole
   EBT-BA1-MAG-QUAD-06:
-    name: EBT-BA1-MAG-QUAD-06
-    type: quadrupole
+    centre: [-1.25, 0.0, 27.9758]
+    datum: [-1.25, 0.0, 28.0558]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.16
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 27.9758]
-    datum: [-1.25, 0, 28.0558]
-  EBT-BA1-DIA-YAG-02:
-    name: EBT-BA1-DIA-YAG-02
-    type: watch_point
-    output_filename: '"EBT-BA1-DIA-YAG-02.SDDS"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0, 28.1558]
-    datum: [-1.25, 0, 28.1558]
-  EBT-BA1-MAG-DIP-01:
-    name: EBT-BA1-MAG-DIP-01
-    type: dipole
-    length: 0.500037
-    angle: 1.0472
-    half_gap: 0.005
-    edge_field_integral: 0.4
-    csr_bins: 20.0
-    sr_enable: true
-    isr_enable: true
-    csr_output_filename: '"CLA-C2V-MAG-DIP-01-D.CSR"'
-    global_rotation: [0, 0, 0]
-    centre: [-1.25, 0.0, 28.803818]
-    datum: [-1.48875, 0, 28.9673]
-  EBT-BA1-MAG-QUAD-07:
-    name: EBT-BA1-MAG-QUAD-07
     type: quadrupole
+  EBT-BA1-DIA-YAG-02:
+    centre: [-1.25, 0.0, 28.1558]
+    datum: [-1.25, 0.0, 28.1558]
+    global_rotation: [0, 0, 0]
+    type: watch_point
+  EBT-BA1-MAG-DIP-01:
+    angle: 1.0472
+    centre: [-1.25, 0.0, 28.829485]
+    csr_bins: 20.0
+    datum: [-1.488751, 0.0, 28.967327]
+    edge_field_integral: 0.4
+    global_rotation: [0, 0, 0]
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.500037
+    sr_enable: true
+    type: dipole
+  EBT-BA1-MAG-QUAD-07:
+    centre: [-1.941684, 0.0, 29.2288]
+    datum: [-2.071588, 0.0, 29.303799]
+    global_rotation: [0, 0, 1.0472]
+    isr_enable: true
     length: 0.3
     sr_enable: true
-    isr_enable: true
-    global_rotation: [0, 0, 1.0472]
-    centre: [-26.283757, 0, 12.932788]
-    datum: [-2.07159, 0, 29.3038]
+    type: quadrupole
   EBT-BA1-DIA-BPM-04:
-    name: EBT-BA1-DIA-BPM-04
-    type: beam_position_monitor
+    centre: [-2.409768, 0.0, 29.49905]
+    datum: [-2.511526, 0.0, 29.5578]
+    global_rotation: [0, 0, 1.0472]
     length: 0.235
-    global_rotation: [0, 0, 1.0472]
-    centre: [-26.751842, 0, 12.662539]
-    datum: [-2.51153, 0, 29.5578]
+    type: beam_position_monitor
   EBT-BA1-DIA-YAG-03:
-    name: EBT-BA1-DIA-YAG-03
-    type: watch_point
-    output_filename: '"EBT-BA1-DIA-YAG-03.SDDS"'
+    centre: [-3.19136, 0.0, 29.9503]
+    datum: [-3.19136, 0.0, 29.9503]
     global_rotation: [0, 0, 1.0472]
-    centre: [-27.533431, 0, 12.211284]
-    datum: [-3.19136, 0, 29.9503]
+    type: watch_point
   EBT-BA1-DIA-FCUP-01:
-    name: EBT-BA1-DIA-FCUP-01
-    type: watch_point
-    output_filename: '"EBT-BA1-DIA-FCUP-01.SDDS"'
+    centre: [-3.19136, 0.0, 29.9503]
+    datum: [-3.19136, 0.0, 29.9503]
     global_rotation: [0, 0, 1.0472]
-    centre: [-27.533431, 0, 12.211284]
-    datum: [-3.19136, 0, 29.9503]
+    type: watch_point

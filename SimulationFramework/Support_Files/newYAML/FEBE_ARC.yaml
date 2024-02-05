@@ -1,1267 +1,359 @@
 elements:
   CLA-FEA-START-01:
-    type: marker
+    centre: [0.0, 0.0, 48.2978]
+    datum: [0.0, 0.0, 48.2978]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 48.2978
-    start:
-    - 0.0
-    - 0.0
-    - 48.2978
-    end:
-    - 0.0
-    - 0.0
-    - 48.2978
-    datum:
-    - 0.0
-    - 0.0
-    - 48.2978
-    old_datum:
-    - 0
-    - 0
-    - 48.2978
+    global_rotation: [0, 0, 0]
+    type: marker
+  CLA-FEA-APER-01:
+    centre: [0.0, 0.0, 48.2978]
+    datum: [0.0, 0.0, 48.2978]
+    global_rotation: [0, 0, 0]
+    horizontal_size: 0.034
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-DIP-01:
-    type: dipole
-    length: 0.2
     angle: -0.2443460953
+    centre: [0.0, 0.0, 48.398301]
+    datum: [0.0, 0.0, 48.398301]
     entrance_edge_angle: -0.1221730476
     exit_edge_angle: -0.1221730476
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 48.398301
-    start:
-    - 0.0
-    - 0.0
-    - 48.2978
-    end:
-    - 0.024313
-    - 0.0
-    - 48.495816
-    datum:
-    - 0.0
-    - 0.0
-    - 48.398301
-    arc_centre:
-    - -0.006101
-    - 0.0
-    - 48.397551
-    line_centre:
-    - -0.012157
-    - 0.0
-    - 48.396808
-    TD_centre:
-    - -0.009129
-    - 0.0
-    - 48.39718
-    old_datum:
-    - 0.024313
-    - 0
-    - 48.495816
+    global_rotation: [0, 0, 0]
+    length: 0.2
+    type: dipole
   CLA-FEA-DIP-01-END:
-    type: marker
+    centre: [0.024313, 0.0, 48.495816]
+    datum: [0.024313, 0.0, 48.495816]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.024313
-    - 0.0
-    - 48.495816
-    start:
-    - 0.024313
-    - 0.0
-    - 48.495816
-    end:
-    - 0.024313
-    - 0.0
-    - 48.495816
-    datum:
-    - 0.024313
-    - 0.0
-    - 48.495816
-    old_datum:
-    - 0.024313
-    - 0
-    - 48.495816
+    global_rotation: [0, 0, -0.2443460953]
+    type: marker
+  CLA-FEA-APER-02:
+    centre: [0.024313, 0.0, 48.495816]
+    datum: [0.024313, 0.0, 48.495816]
+    global_rotation: [0, 0, -0.2443460953]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-QUAD-01:
-    type: quadrupole
-    length: 0.21
+    centre: [0.196077, 0.0, 49.184718]
+    datum: [0.196077, 0.0, 49.184718]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.196077
-    - 0.0
-    - 49.184718
-    start:
-    - 0.170675
-    - 0.0
-    - 49.082837
-    end:
-    - 0.221479
-    - 0.0
-    - 49.286599
-    datum:
-    - 0.196077
-    - 0.0
-    - 49.184718
-    old_datum:
-    - 0.221479
-    - 0
-    - 49.286599
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-QUAD-02:
-    type: quadrupole
-    length: 0.21
+    centre: [0.329134, 0.0, 49.71838]
+    datum: [0.329134, 0.0, 49.71838]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.329134
-    - 0.0
-    - 49.71838
-    start:
-    - 0.303732
-    - 0.0
-    - 49.616499
-    end:
-    - 0.354536
-    - 0.0
-    - 49.820261
-    datum:
-    - 0.329134
-    - 0.0
-    - 49.71838
-    old_datum:
-    - 0.354536
-    - 0
-    - 49.820261
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-HVCOR-01:
+    centre: [0.400501, 0.0, 50.00463]
+    datum: [0.400501, 0.0, 50.00463]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: kicker
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.400501
-    - 0.0
-    - 50.00463
-    start:
-    - 0.376309
-    - 0.0
-    - 49.9076
-    end:
-    - 0.424693
-    - 0.0
-    - 50.101659
-    datum:
-    - 0.400501
-    - 0.0
-    - 50.00463
-    old_datum:
-    - 0.424693
-    - 0
-    - 50.101659
   CLA-FEA-DIA-BPM-01:
-    type: beam_position_monitor
+    centre: [0.485174, 0.0, 50.34423]
+    datum: [0.468312, 0.0, 50.2766]
+    global_rotation: [0, 0, -0.2443460953]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.485174
-    - 0.0
-    - 50.34423
-    start:
-    - 0.460982
-    - 0.0
-    - 50.2472
-    end:
-    - 0.509366
-    - 0.0
-    - 50.441259
-    datum:
-    - 0.468312
-    - 0.0
-    - 50.2766
-    old_datum:
-    - 0.509366
-    - 0
-    - 50.441259
+    type: beam_position_monitor
   CLA-FEA-DIA-SCR-01:
+    centre: [0.573476, 0.0, 50.69833]
+    datum: [0.569436, 0.0, 50.682126]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: screen
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.573476
-    - 0.0
-    - 50.69833
-    start:
-    - 0.549284
-    - 0.0
-    - 50.6013
-    end:
-    - 0.597668
-    - 0.0
-    - 50.795359
-    datum:
-    - 0.569436
-    - 0.0
-    - 50.682126
-    old_datum:
-    - 0.597668
-    - 0
-    - 50.795359
   CLA-FEA-MAG-QUAD-03:
-    type: quadrupole
-    length: 0.21
+    centre: [0.662986, 0.0, 51.057388]
+    datum: [0.662986, 0.0, 51.057388]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.662986
-    - 0.0
-    - 51.057388
-    start:
-    - 0.637584
-    - 0.0
-    - 50.955507
-    end:
-    - 0.688388
-    - 0.0
-    - 51.159269
-    datum:
-    - 0.662986
-    - 0.0
-    - 51.057388
-    old_datum:
-    - 0.688388
-    - 0
-    - 51.159269
-  CLA-FEA-MAG-SEXT-01:
-    type: sextupole
-    length: 0.1
-    k2l: -22.6172
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.708874
-    - 0.0
-    - 51.241413
-    start:
-    - 0.696778
-    - 0.0
-    - 51.192898
-    end:
-    - 0.72097
-    - 0.0
-    - 51.289928
-    datum:
-    - 0.708874
-    - 0.0
-    - 51.241413
-    old_datum:
-    - 0.72097
-    - 0
-    - 51.289928
-  CLA-FEA-MAG-QUAD-04:
-    type: quadrupole
     length: 0.21
+    type: quadrupole
+  CLA-FEA-MAG-SEXT-01:
+    centre: [0.708874, 0.0, 51.241413]
+    datum: [0.708874, 0.0, 51.241413]
+    global_rotation: [0, 0, -0.2443460953]
+    k2l: -22.6172
+    length: 0.1
+    type: sextupole
+  CLA-FEA-MAG-QUAD-04:
+    centre: [0.796043, 0.0, 51.591051]
+    datum: [0.796043, 0.0, 51.591051]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.796043
-    - 0.0
-    - 51.591051
-    start:
-    - 0.770641
-    - 0.0
-    - 51.48917
-    end:
-    - 0.821445
-    - 0.0
-    - 51.692932
-    datum:
-    - 0.796043
-    - 0.0
-    - 51.591051
-    old_datum:
-    - 0.821445
-    - 0
-    - 51.692932
+    length: 0.21
+    type: quadrupole
   CLA-FEA-DIA-BPM-02:
+    centre: [0.862572, 0.0, 51.85793]
+    datum: [0.84571, 0.0, 51.7903]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: beam_position_monitor
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.862572
-    - 0.0
-    - 51.85793
-    start:
-    - 0.83838
-    - 0.0
-    - 51.7609
-    end:
-    - 0.886764
-    - 0.0
-    - 51.954959
-    datum:
-    - 0.84571
-    - 0.0
-    - 51.7903
-    old_datum:
-    - 0.886764
-    - 0
-    - 51.954959
+  CLA-FEA-APER-03:
+    centre: [0.909747, 0.0, 52.04709]
+    datum: [0.909747, 0.0, 52.04709]
+    global_rotation: [0, 0, -0.2443460953]
+    horizontal_size: 0.034
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-DIP-02:
-    type: dipole
-    length: 0.2
     angle: -0.2443460953
+    centre: [0.93406, 0.0, 52.144605]
+    datum: [0.93406, 0.0, 52.144605]
     entrance_edge_angle: -0.1221730476
     exit_edge_angle: -0.1221730476
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 0.93406
-    - 0.0
-    - 52.144605
-    start:
-    - 0.909747
-    - 0.0
-    - 52.04709
-    end:
-    - 0.981242
-    - 0.0
-    - 52.233342
-    datum:
-    - 0.93406
-    - 0.0
-    - 52.144605
-    arc_centre:
-    - 0.927959
-    - 0.0
-    - 52.145354
-    line_centre:
-    - 0.921904
-    - 0.0
-    - 52.146098
-    TD_centre:
-    - 0.924931
-    - 0.0
-    - 52.145726
-    old_datum:
-    - 0.981242
-    - 0
-    - 52.233342
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
+    type: dipole
   CLA-FEA-DIP-02-END:
-    type: marker
+    centre: [0.981243, 0.0, 52.233342]
+    datum: [0.981243, 0.0, 52.233342]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 0.981243
-    - 0.0
-    - 52.233342
-    start:
-    - 0.981243
-    - 0.0
-    - 52.233342
-    end:
-    - 0.981243
-    - 0.0
-    - 52.233342
-    datum:
-    - 0.981243
-    - 0.0
-    - 52.233342
-    old_datum:
-    - 0.981243
-    - 0
-    - 52.233342
+    global_rotation: [0, 0, -0.4886921906]
+    type: marker
+  CLA-FEA-APER-04:
+    centre: [0.981243, 0.0, 52.233342]
+    datum: [0.981243, 0.0, 52.233342]
+    global_rotation: [0, 0, -0.4886921906]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-QUAD-05:
-    type: quadrupole
-    length: 0.21
+    centre: [1.314568, 0.0, 52.860234]
+    datum: [1.314568, 0.0, 52.860234]
+    global_rotation: [0, 0, -0.4886921906]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 1.314568
-    - 0.0
-    - 52.860234
-    start:
-    - 1.265273
-    - 0.0
-    - 52.767525
-    end:
-    - 1.363862
-    - 0.0
-    - 52.952944
-    datum:
-    - 1.314568
-    - 0.0
-    - 52.860234
-    old_datum:
-    - 1.363862
-    - 0
-    - 52.952944
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-QUAD-06:
-    type: quadrupole
-    length: 0.21
+    centre: [1.572777, 0.0, 53.345855]
+    datum: [1.572777, 0.0, 53.345855]
+    global_rotation: [0, 0, -0.4886921906]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 1.572777
-    - 0.0
-    - 53.345855
-    start:
-    - 1.523482
-    - 0.0
-    - 53.253146
-    end:
-    - 1.622071
-    - 0.0
-    - 53.438565
-    datum:
-    - 1.572777
-    - 0.0
-    - 53.345855
-    old_datum:
-    - 1.622071
-    - 0
-    - 53.438565
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-HVCOR-02:
-    type: kicker
+    centre: [1.718317, 0.0, 53.619595]
+    datum: [1.718317, 0.0, 53.619595]
+    global_rotation: [0, 0, -0.4886921906]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 1.718317
-    - 0.0
-    - 53.619595
-    start:
-    - 1.67137
-    - 0.0
-    - 53.5313
-    end:
-    - 1.765264
-    - 0.0
-    - 53.70789
-    datum:
-    - 1.718317
-    - 0.0
-    - 53.619595
-    old_datum:
-    - 1.765264
-    - 0
-    - 53.70789
+    type: kicker
   CLA-FEA-DIA-BPM-03:
-    type: beam_position_monitor
+    centre: [1.882627, 0.0, 53.928595]
+    datum: [1.849905, 0.0, 53.867053]
+    global_rotation: [0, 0, -0.4886921906]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 1.882627
-    - 0.0
-    - 53.928595
-    start:
-    - 1.83568
-    - 0.0
-    - 53.8403
-    end:
-    - 1.929574
-    - 0.0
-    - 54.01689
-    datum:
-    - 1.849905
-    - 0.0
-    - 53.867053
-    old_datum:
-    - 1.929574
-    - 0
-    - 54.01689
+    type: beam_position_monitor
   CLA-FEA-DIA-SCR-02:
-    type: screen
+    centre: [2.046947, 0.0, 54.237595]
+    datum: [2.039107, 0.0, 54.22285]
+    global_rotation: [0, 0, -0.4886921906]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 2.046947
-    - 0.0
-    - 54.237595
-    start:
-    - 2.0
-    - 0.0
-    - 54.1493
-    end:
-    - 2.093894
-    - 0.0
-    - 54.32589
-    datum:
-    - 2.039107
-    - 0.0
-    - 54.22285
-    old_datum:
-    - 2.093894
-    - 0
-    - 54.32589
+    type: screen
   CLA-FEA-MAG-QUAD-07:
-    type: quadrupole
-    length: 0.21
+    centre: [2.220648, 0.0, 54.564323]
+    datum: [2.220648, 0.0, 54.564323]
+    global_rotation: [0, 0, -0.4886921906]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 2.220648
-    - 0.0
-    - 54.564323
-    start:
-    - 2.171353
-    - 0.0
-    - 54.471614
-    end:
-    - 2.269942
-    - 0.0
-    - 54.657033
-    datum:
-    - 2.220648
-    - 0.0
-    - 54.564323
-    old_datum:
-    - 2.269942
-    - 0
-    - 54.657033
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-QUAD-08:
-    type: quadrupole
-    length: 0.21
+    centre: [2.478858, 0.0, 55.049944]
+    datum: [2.478858, 0.0, 55.049944]
+    global_rotation: [0, 0, -0.4886921906]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 2.478858
-    - 0.0
-    - 55.049944
-    start:
-    - 2.429563
-    - 0.0
-    - 54.957235
-    end:
-    - 2.528152
-    - 0.0
-    - 55.142654
-    datum:
-    - 2.478858
-    - 0.0
-    - 55.049944
-    old_datum:
-    - 2.528152
-    - 0
-    - 55.142654
+    length: 0.21
+    type: quadrupole
   CLA-FEA-DIA-BPM-04:
-    type: beam_position_monitor
+    centre: [2.607957, 0.0, 55.292795]
+    datum: [2.575235, 0.0, 55.231253]
+    global_rotation: [0, 0, -0.4886921906]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 2.607957
-    - 0.0
-    - 55.292795
-    start:
-    - 2.56101
-    - 0.0
-    - 55.2045
-    end:
-    - 2.654904
-    - 0.0
-    - 55.38109
-    datum:
-    - 2.575235
-    - 0.0
-    - 55.231253
-    old_datum:
-    - 2.654904
-    - 0
-    - 55.38109
+    type: beam_position_monitor
+  CLA-FEA-APER-05:
+    centre: [2.699509, 0.0, 55.46493]
+    datum: [2.699509, 0.0, 55.46493]
+    global_rotation: [0, 0, -0.4886921906]
+    horizontal_size: 0.034
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-DIP-03:
-    type: dipole
-    length: 0.2
     angle: 0.2443460953
+    centre: [2.746691, 0.0, 55.553667]
+    datum: [2.746691, 0.0, 55.553667]
     entrance_edge_angle: 0.1221730476
     exit_edge_angle: 0.1221730476
-    global_rotation:
-    - 0
-    - 0
-    - -0.4886921906
-    centre:
-    - 2.746691
-    - 0.0
-    - 55.553667
-    start:
-    - 2.699509
-    - 0.0
-    - 55.46493
-    end:
-    - 2.771004
-    - 0.0
-    - 55.651182
-    datum:
-    - 2.746691
-    - 0.0
-    - 55.553667
-    arc_centre:
-    - 2.751726
-    - 0.0
-    - 55.550141
-    line_centre:
-    - 2.756724
-    - 0.0
-    - 55.546642
-    TD_centre:
-    - 2.754225
-    - 0.0
-    - 55.548391
-    old_datum:
-    - 2.771004
-    - 0
-    - 55.651182
+    global_rotation: [0, 0, -0.4886921906]
+    length: 0.2
+    type: dipole
   CLA-FEA-DIP-03-END:
-    type: marker
+    centre: [2.771004, 0.0, 55.651182]
+    datum: [2.771004, 0.0, 55.651182]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 2.771004
-    - 0.0
-    - 55.651182
-    start:
-    - 2.771004
-    - 0.0
-    - 55.651182
-    end:
-    - 2.771004
-    - 0.0
-    - 55.651182
-    datum:
-    - 2.771004
-    - 0.0
-    - 55.651182
-    old_datum:
-    - 2.771004
-    - 0
-    - 55.651182
+    global_rotation: [0, 0, -0.2443460953]
+    type: marker
+  CLA-FEA-APER-06:
+    centre: [2.771004, 0.0, 55.651182]
+    datum: [2.771004, 0.0, 55.651182]
+    global_rotation: [0, 0, -0.2443460953]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-QUAD-09:
-    type: quadrupole
-    length: 0.21
+    centre: [2.942768, 0.0, 56.340092]
+    datum: [2.942768, 0.0, 56.340092]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 2.942768
-    - 0.0
-    - 56.340092
-    start:
-    - 2.917366
-    - 0.0
-    - 56.238211
-    end:
-    - 2.96817
-    - 0.0
-    - 56.441973
-    datum:
-    - 2.942768
-    - 0.0
-    - 56.340092
-    old_datum:
-    - 2.96817
-    - 0
-    - 56.441973
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-QUAD-10:
-    type: quadrupole
-    length: 0.21
+    centre: [3.075825, 0.0, 56.873755]
+    datum: [3.075825, 0.0, 56.873755]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.075825
-    - 0.0
-    - 56.873755
-    start:
-    - 3.050423
-    - 0.0
-    - 56.771874
-    end:
-    - 3.101227
-    - 0.0
-    - 56.975636
-    datum:
-    - 3.075825
-    - 0.0
-    - 56.873755
-    old_datum:
-    - 3.101227
-    - 0
-    - 56.975636
+    length: 0.21
+    type: quadrupole
   CLA-FEA-MAG-HVCOR-03:
+    centre: [3.150822, 0.0, 57.17453]
+    datum: [3.150822, 0.0, 57.17453]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: kicker
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.150822
-    - 0.0
-    - 57.17453
-    start:
-    - 3.12663
-    - 0.0
-    - 57.0775
-    end:
-    - 3.175014
-    - 0.0
-    - 57.271559
-    datum:
-    - 3.150822
-    - 0.0
-    - 57.17453
-    old_datum:
-    - 3.175014
-    - 0
-    - 57.271559
   CLA-FEA-DIA-BPM-05:
-    type: beam_position_monitor
+    centre: [3.235492, 0.0, 57.51413]
+    datum: [3.21863, 0.0, 57.4465]
+    global_rotation: [0, 0, -0.2443460953]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.235492
-    - 0.0
-    - 57.51413
-    start:
-    - 3.2113
-    - 0.0
-    - 57.4171
-    end:
-    - 3.259684
-    - 0.0
-    - 57.611159
-    datum:
-    - 3.21863
-    - 0.0
-    - 57.4465
-    old_datum:
-    - 3.259684
-    - 0
-    - 57.611159
+    type: beam_position_monitor
   CLA-FEA-PREMASK:
-    type: marker
+    centre: [3.294942, 0.0, 57.752576]
+    datum: [3.294942, 0.0, 57.752576]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    start:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    end:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    datum:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    old_datum:
-    - 3.294942
-    - 0
-    - 57.752576
+    global_rotation: [0, 0, -0.2443460953]
+    type: marker
   CLA-FEA-DIA-COL-03-MASK:
-    type: rcollimator
-    length: 0.0
+    centre: [3.294942, 0.0, 57.752576]
+    datum: [3.294942, 0.0, 57.752576]
+    global_rotation: [0, 0, -0.2443460953]
     horizontal_size: 1
+    length: 0.0
+    type: rcollimator
     vertical_size: 1
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    start:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    end:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    datum:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    old_datum:
-    - 3.294942
-    - 0
-    - 57.752576
   CLA-FEA-DIA-SCR-03-MASK:
+    centre: [3.319134, 0.0, 57.849606]
+    datum: [3.319134, 0.0, 57.849606]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: screen
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.319134
-    - 0.0
-    - 57.849606
-    start:
-    - 3.294942
-    - 0.0
-    - 57.752576
-    end:
-    - 3.343326
-    - 0.0
-    - 57.946635
-    datum:
-    - 3.319134
-    - 0.0
-    - 57.849606
-    old_datum:
-    - 3.343326
-    - 0
-    - 57.946635
   CLA-FEA-MAG-QUAD-11:
-    type: quadrupole
-    length: 0.21
+    centre: [3.409677, 0.0, 58.212763]
+    datum: [3.409677, 0.0, 58.212763]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: 1.59249
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.409677
-    - 0.0
-    - 58.212763
-    start:
-    - 3.384275
-    - 0.0
-    - 58.110882
-    end:
-    - 3.435079
-    - 0.0
-    - 58.314644
-    datum:
-    - 3.409677
-    - 0.0
-    - 58.212763
-    old_datum:
-    - 3.435079
-    - 0
-    - 58.314644
-  CLA-FEA-MAG-SEXT-02:
-    type: sextupole
-    length: 0.1
-    k2l: 22.6172
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.453134
-    - 0.0
-    - 58.387048
-    start:
-    - 3.441038
-    - 0.0
-    - 58.338533
-    end:
-    - 3.46523
-    - 0.0
-    - 58.435563
-    datum:
-    - 3.453134
-    - 0.0
-    - 58.387048
-    old_datum:
-    - 3.46523
-    - 0
-    - 58.435563
-  CLA-FEA-MAG-QUAD-12:
-    type: quadrupole
     length: 0.21
+    type: quadrupole
+  CLA-FEA-MAG-SEXT-02:
+    centre: [3.453134, 0.0, 58.387048]
+    datum: [3.453134, 0.0, 58.387048]
+    global_rotation: [0, 0, -0.2443460953]
+    k2l: 22.6172
+    length: 0.1
+    type: sextupole
+  CLA-FEA-MAG-QUAD-12:
+    centre: [3.542734, 0.0, 58.746425]
+    datum: [3.542734, 0.0, 58.746425]
+    global_rotation: [0, 0, -0.2443460953]
     k1l: -1.10639
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.542734
-    - 0.0
-    - 58.746425
-    start:
-    - 3.517332
-    - 0.0
-    - 58.644544
-    end:
-    - 3.568136
-    - 0.0
-    - 58.848306
-    datum:
-    - 3.542734
-    - 0.0
-    - 58.746425
-    old_datum:
-    - 3.568136
-    - 0
-    - 58.848306
+    length: 0.21
+    type: quadrupole
   CLA-FEA-DIA-BPM-06:
+    centre: [3.609262, 0.0, 59.01323]
+    datum: [3.5924, 0.0, 58.9456]
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
     type: beam_position_monitor
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.609262
-    - 0.0
-    - 59.01323
-    start:
-    - 3.58507
-    - 0.0
-    - 58.9162
-    end:
-    - 3.633454
-    - 0.0
-    - 59.110259
-    datum:
-    - 3.5924
-    - 0.0
-    - 58.9456
-    old_datum:
-    - 3.633454
-    - 0
-    - 59.110259
+  CLA-FEA-APER-07:
+    centre: [3.656438, 0.0, 59.202464]
+    datum: [3.656438, 0.0, 59.202464]
+    global_rotation: [0, 0, -0.2443460953]
+    horizontal_size: 0.034
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-MAG-DIP-04:
-    type: dipole
-    length: 0.2
     angle: 0.2443460953
+    centre: [3.680751, 0.0, 59.299979]
+    datum: [3.680751, 0.0, 59.299979]
     entrance_edge_angle: 0.1221730476
     exit_edge_angle: 0.1221730476
-    global_rotation:
-    - 0
-    - 0
-    - -0.2443460953
-    centre:
-    - 3.680751
-    - 0.0
-    - 59.299979
-    start:
-    - 3.656438
-    - 0.0
-    - 59.202464
-    end:
-    - 3.680751
-    - 0.0
-    - 59.40048
-    datum:
-    - 3.680751
-    - 0.0
-    - 59.299979
-    arc_centre:
-    - 3.68649
-    - 0.0
-    - 59.297776
-    line_centre:
-    - 3.692186
-    - 0.0
-    - 59.29559
-    TD_centre:
-    - 3.689338
-    - 0.0
-    - 59.296683
-    old_datum:
-    - 3.680751
-    - 0
-    - 59.40048
+    global_rotation: [0, 0, -0.2443460953]
+    length: 0.2
+    type: dipole
   CLA-FEA-DIP-04-END:
-    type: marker
+    centre: [3.680751, 0.0, 59.400479]
+    datum: [3.680751, 0.0, 59.400479]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 59.400479
-    start:
-    - 3.680751
-    - 0.0
-    - 59.400479
-    end:
-    - 3.680751
-    - 0.0
-    - 59.400479
-    datum:
-    - 3.680751
-    - 0.0
-    - 59.400479
-    old_datum:
-    - 3.680751
-    - 0
-    - 59.400479
+    global_rotation: [0, 0, 0]
+    type: marker
+  CLA-FEA-APER-08:
+    centre: [3.680751, 0.0, 59.400479]
+    datum: [3.680751, 0.0, 59.400479]
+    global_rotation: [0, 0, 0]
+    horizontal_size: 0.017
+    shape: rectangular
+    type: aperture
+    vertical_size: 0.017
   CLA-FEA-BAM-01:
+    centre: [3.68075, 0.0, 59.7005]
+    datum: [3.68075, 0.0, 59.7005]
+    global_rotation: [0, 0, 0]
+    length: 0.2
     type: beam_arrival_monitor
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.68075
-    - 0.0
-    - 59.7005
-    start:
-    - 3.68075
-    - 0.0
-    - 59.6005
-    end:
-    - 3.68075
-    - 0.0
-    - 59.8005
-    datum:
-    - 3.68075
-    - 0.0
-    - 59.7005
-    old_datum:
-    - 3.68075
-    - 0
-    - 59.8005
   CLA-FEA-MAG-QUAD-13:
-    type: quadrupole
-    length: 0.21
+    centre: [3.680751, 0.0, 60.110479]
+    datum: [3.680751, 0.0, 60.110479]
+    global_rotation: [0, 0, 0]
     k1l: 2.76203
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 60.110479
-    start:
-    - 3.680751
-    - 0.0
-    - 60.005479
-    end:
-    - 3.680751
-    - 0.0
-    - 60.215479
-    datum:
-    - 3.680751
-    - 0.0
-    - 60.110479
-    old_datum:
-    - 3.680751
-    - 0
-    - 60.215479
-  CLA-FEA-DIA-BPM-07:
-    type: beam_position_monitor
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 60.385479
-    start:
-    - 3.680751
-    - 0.0
-    - 60.285479
-    end:
-    - 3.680751
-    - 0.0
-    - 60.485479
-    datum:
-    - 3.680751
-    - 0.0
-    - 60.315779
-    old_datum:
-    - 3.680751
-    - 0
-    - 60.485479
-  CLA-FEA-MAG-QUAD-14:
-    type: quadrupole
     length: 0.21
+    type: quadrupole
+  CLA-FEA-DIA-BPM-07:
+    centre: [3.680751, 0.0, 60.385479]
+    datum: [3.680751, 0.0, 60.315779]
+    global_rotation: [0, 0, 0]
+    length: 0.2
+    type: beam_position_monitor
+  CLA-FEA-MAG-QUAD-14:
+    centre: [3.680751, 0.0, 60.660479]
+    datum: [3.680751, 0.0, 60.660479]
+    global_rotation: [0, 0, 0]
     k1l: -1.263412
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 60.660479
-    start:
-    - 3.680751
-    - 0.0
-    - 60.555479
-    end:
-    - 3.680751
-    - 0.0
-    - 60.765479
-    datum:
-    - 3.680751
-    - 0.0
-    - 60.660479
-    old_datum:
-    - 3.680751
-    - 0
-    - 60.765479
+    length: 0.21
+    type: quadrupole
   CLA-FEA-DIA-ICT-01:
-    type: integrated_current_transformer
+    centre: [3.680751, 0.0, 60.95]
+    datum: [3.680751, 0.0, 60.95]
+    global_rotation: [0, 0, 0]
     length: 0.1
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 60.95
-    start:
-    - 3.680751
-    - 0.0
-    - 60.9
-    end:
-    - 3.680751
-    - 0.0
-    - 61.0
-    datum:
-    - 3.680751
-    - 0.0
-    - 60.95
-    old_datum:
-    - 3.680751
-    - 0
-    - 61
+    type: integrated_current_transformer
   CLA-FEA-DIA-SCR-04-CTR:
+    centre: [3.680751, 0.0, 61.208709]
+    datum: [3.680751, 0.0, 61.208709]
+    global_rotation: [0, 0, 0]
+    length: 0.2
     type: screen
-    length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 61.208709
-    start:
-    - 3.680751
-    - 0.0
-    - 61.108709
-    end:
-    - 3.680751
-    - 0.0
-    - 61.308709
-    datum:
-    - 3.680751
-    - 0.0
-    - 61.208709
-    old_datum:
-    - 3.680751
-    - 0
-    - 61.308709
   CLA-FEA-MAG-HVCOR-04:
-    type: kicker
+    centre: [3.680751, 0.0, 61.497979]
+    datum: [3.680751, 0.0, 61.497979]
+    global_rotation: [0, 0, 0]
     length: 0.2
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 3.680751
-    - 0.0
-    - 61.497979
-    start:
-    - 3.680751
-    - 0.0
-    - 61.397979
-    end:
-    - 3.680751
-    - 0.0
-    - 61.597979
-    datum:
-    - 3.680751
-    - 0.0
-    - 61.497979
-    old_datum:
-    - 3.680751
-    - 0
-    - 61.597979
+    type: kicker

@@ -1,23 +1,37 @@
 import time, os, subprocess, re, sys
-from ruamel.yaml import YAML
+import yaml
 sys.path.append('../..')
 from SimulationFramework.Framework import *
+#from SimulationFramework.FrameworkHelperFunctions import convert_numpy_types
 from collections import OrderedDict
 from munch import Munch, unmunchify
-# import mysql.connector as mariadb
 import csv
 from difflib import get_close_matches
 
-_mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+class noflow_list(list):
+    pass
 
-def dict_representer(dumper, data):
-    return dumper.represent_dict(iter(list(data.items())))
+def noflow_list_rep(dumper, data):
+    return dumper.represent_sequence("tag:yaml.org,2002:seq", data, flow_style=False)
 
-def dict_constructor(loader, node):
-    return OrderedDict(loader.construct_pairs(node))
+class flow_list(list):
+    pass
 
-yaml.add_representer(OrderedDict, dict_representer)
-yaml.add_constructor(_mapping_tag, dict_constructor)
+def flow_list_rep(dumper, data):
+    return dumper.represent_sequence("tag:yaml.org,2002:seq", data, flow_style=True)
+
+yaml.add_representer(noflow_list, noflow_list_rep)
+yaml.add_representer(flow_list, flow_list_rep)
+
+def convert_numpy_types( v):
+    if isinstance(v, (np.ndarray, list, tuple)):
+        return flow_list([convert_numpy_types(l) for l in v])
+    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_ )):
+        return float(v)
+    elif isinstance(v, (np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)):
+        return int(v)
+    else:
+        return v
 
 class Converter(Framework):
 
@@ -124,14 +138,7 @@ class Converter(Framework):
             for name, elem in list(elements.items()):
                 self.read_Element(name, elem)
             with open(self.currentfile.replace('YAML/','newYAML/'), 'w') as outfile:
-                yaml.default_flow_style = False
-                yaml.dump({'elements': self.all_data[self.currentfile]}, outfile)
-
-    def FSlist(self, l):  # concert list into flow-style (default is block style)
-        from ruamel.yaml.comments import CommentedSeq
-        cs = CommentedSeq(l)
-        cs.fa.set_block_style()
-        return cs
+                yaml.dump({'elements': self.all_data[self.currentfile]}, outfile, default_flow_style=False)
 
     def insert_element(self, element):
         element['centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].middle]
@@ -165,10 +172,10 @@ class Converter(Framework):
             element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].end ]
         if not 'global_rotation' in element:
             element['global_rotation'] = [0,0,0]
-        if element['type'] == 'dipole' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
-            element['arc_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].arc_middle ]
-            element['line_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].line_middle ]
-            element['TD_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].TD_middle ]
+        # if element['type'] == 'dipole' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
+        #     element['arc_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].arc_middle ]
+        #     element['line_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].line_middle ]
+        #     element['TD_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].TD_middle ]
         if element['type'] == 'screen' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname) and not 'mask' in lname and not 'ctr' in lname and not 'fed-dia-scr-02-wide' in lname:
             element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0167]) ]
         if element['type'] == 'beam_position_monitor' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
@@ -176,15 +183,17 @@ class Converter(Framework):
                 element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_start([0,0,0.0353]) ]
             else:
                 element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0697]) ]
-        if finalmatch is None or mdiff > 0.001 or True:
-            # print('No Match found  ', lname, finalmatch)
-            element['old_datum'] = [ round(elem, 6) for elem in element['position_end']]
-        else:
-            element['old_datum'] = [ round(elem, 6) for elem in self.datums[finalmatch.lower()]]
+        # if finalmatch is None or mdiff > 0.001 or True:
+        #     # print('No Match found  ', lname, finalmatch)
+        #     element['old_datum'] = [ round(elem, 6) for elem in element['position_end']]
+        # else:
+        #     element['old_datum'] = [ round(elem, 6) for elem in self.datums[finalmatch.lower()]]
+        del element['start']
+        del element['end']
 
         subelem = element['subelement']
-        newelement = OrderedDict()
-        [newelement.update({k: self.convert_numpy_types(element[k])}) for k in element.keys() if not 'position' in k and not 'buffer' in k and not 'subelement' in k and not 'Online_Model_Name' in k and not 'Controller_Name' in k and not 'name' in k]
+        newelement = dict()
+        [newelement.update({k: convert_numpy_types(element[k])}) for k in element.keys() if not 'position' in k and not 'buffer' in k and not 'subelement' in k and not 'Online_Model_Name' in k and not 'Controller_Name' in k and not 'name' in k]
         name = element['name']
         element = newelement
         if not subelem == '':
@@ -216,18 +225,24 @@ class Converter(Framework):
 
 fw = Converter(master_lattice='C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice')
 # fw.loadSettings('Lattices/clara400_v12_FEBE.def')
-
-fw.read_Element('filename', ['YAML/Injector400.yaml', 'YAML/S02.yaml','YAML/L02.yaml',
-             'YAML/S03.yaml', 'YAML/L03.yaml', 'YAML/S04.yaml', 'YAML/L4H.yaml',
-             'YAML/S05.yaml', 'YAML/VBC.yaml', 'YAML/S06.yaml', 'YAML/L04.yaml',
-             'YAML/S07_FEBE.yaml', 'YAML/FEBE_ARC.yaml', 'YAML/FEBE5_long_laser_input.yaml',
-             'YAML/S07_FEBE_STRAIGHT_ON.yaml'])
-
-# fw.read_Element('filename', ['YAML/VBC.yaml'])
-
-exit()
+#
+# fw.read_Element('filename', ['YAML/Injector400.yaml', 'YAML/S02.yaml','YAML/L02.yaml',
+#              'YAML/S03.yaml', 'YAML/L03.yaml', 'YAML/S04.yaml', 'YAML/L4H.yaml',
+#              'YAML/S05.yaml', 'YAML/VBC.yaml', 'YAML/S06.yaml', 'YAML/L04.yaml',
+#              'YAML/S07_FEBE.yaml', 'YAML/FEBE_ARC.yaml', 'YAML/FEBE5_long_laser_input.yaml',
+#              'YAML/S07_FEBE_STRAIGHT_ON.yaml'])
+#
+# # fw.read_Element('filename', ['YAML/VBC.yaml'])
+#
+# exit()
 
 import glob
-dir = '../../MasterLattice/YAML/'
-filenames = [a.replace('../../MasterLattice/','').replace('\\', '/') for a in glob.glob(dir+'*.yaml')]
-fw.read_Element('filename', filenames)
+basedir = '../../../MasterLattice/MasterLattice/'
+print(os.path.abspath(basedir))
+print(glob.glob(basedir+'YAML/*.yaml'))
+filenames = [a.replace(basedir,'').replace('\\', '/') for a in glob.glob(basedir+'YAML/*.yaml') if not 'FRS' in a]
+for f in filenames:
+    try:
+        fw.read_Element('filename', f)
+    except Exception as e:
+        print('Error - ', f, e)

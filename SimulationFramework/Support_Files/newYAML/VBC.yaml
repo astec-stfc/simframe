@@ -1,273 +1,84 @@
 elements:
   CLA-VBC-MAG-DIP-01:
-    type: dipole
-    length: 0.200981
     angle: -0.095
+    centre: [0.0, 0.0, 26.165666]
+    datum: [0.009539, 0.0, 26.265779]
+    edge_field_integral: 0.4
     exit_edge_angle: angle
+    global_rotation: [0, 0, 0]
     half_gap: 0.005
-    edge_field_integral: 0.4
-    sr_enable: true
     isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 26.165666
-    start:
-    - 0.0
-    - 0.0
-    - 26.0651
-    end:
-    - 0.009539
-    - 0.0
-    - 26.265779
-    datum:
-    - 0.009539
-    - 0.0
-    - 26.265779
-    old_datum:
-    - 0.009539
-    - 0
-    - 26.2658
-  CLA-VBC-MAG-DIP-02:
-    type: dipole
     length: 0.200981
-    angle: 0.095
-    entrance_edge_angle: angle
-    half_gap: 0.005
-    edge_field_integral: 0.4
     sr_enable: true
+    type: dipole
+  CLA-VBC-MAG-DIP-02:
+    angle: 0.095
+    centre: [0.162009, 0.0, 27.865913]
+    datum: [0.162009, 0.0, 27.966479]
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation: [0, 0, -0.095]
+    half_gap: 0.005
     isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - -0.095
-    centre:
-    - 0.162009
-    - 0.0
-    - 27.865913
-    start:
-    - 0.15247
-    - 0.0
-    - 27.7658
-    end:
-    - 0.162009
-    - 0.0
-    - 27.966479
-    datum:
-    - 0.162009
-    - 0.0
-    - 27.966479
-    old_datum:
-    - 0.162009
-    - 0
-    - 27.9664
+    length: 0.200981
+    sr_enable: true
+    type: dipole
   CLA-VBC-MAG-VCOR-01:
-    type: kicker
+    centre: [0.162009, 0.0, 28.2881]
+    datum: [0.162009, 0.0, 28.3131]
+    global_rotation: [0, 0, 0]
+    isr_enable: true
     length: 0.05
     sr_enable: true
-    isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.162009
-    - 0.0
-    - 28.2881
-    start:
-    - 0.162009
-    - 0.0
-    - 28.2631
-    end:
-    - 0.162009
-    - 0.0
-    - 28.3131
-    datum:
-    - 0.162009
-    - 0.0
-    - 28.3131
-    old_datum:
-    - 0.162009
-    - 0
-    - 28.3131
+    type: kicker
   CLA-VBC-DIA-BPM-01:
-    type: beam_position_monitor
+    centre: [0.162009, 0.0, 28.3713]
+    datum: [0.162009, 0.0, 28.3869]
+    global_rotation: [0, 0, 0]
     length: 0.0312
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.162009
-    - 0.0
-    - 28.3713
-    start:
-    - 0.162009
-    - 0.0
-    - 28.3557
-    end:
-    - 0.162009
-    - 0.0
-    - 28.3869
-    datum:
-    - 0.162009
-    - 0.0
-    - 28.3869
-    old_datum:
-    - 0.162009
-    - 0
-    - 28.3869
+    type: beam_position_monitor
   CLA-VBC-RCOL-01:
-    type: collimator
-    length: 0.48
-    shape: rectangular
+    centre: [0.162009, 0.0, 28.6393]
+    datum: [0.162009, 0.0, 28.8793]
+    global_rotation: [0, 0, 0]
     horizontal_size: 1
-    vertical_size: 1
+    length: 0.48
     open_side: '"+x"'
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.162009
-    - 0.0
-    - 28.6393
-    start:
-    - 0.162009
-    - 0.0
-    - 28.3993
-    end:
-    - 0.162009
-    - 0.0
-    - 28.8793
-    datum:
-    - 0.162009
-    - 0.0
-    - 28.8793
-    old_datum:
-    - 0.162009
-    - 0
-    - 28.8793
+    shape: rectangular
+    type: collimator
+    vertical_size: 1
   CLA-VBC-DIA-SCR-01:
+    centre: [0.162009, 0.0, 28.9048]
+    datum: [0.162009, 0.0, 28.9048]
+    global_rotation: [0, 0, 0]
     type: screen
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.162009
-    - 0.0
-    - 28.9048
-    start:
-    - 0.162009
-    - 0.0
-    - 28.9048
-    end:
-    - 0.162009
-    - 0.0
-    - 28.9048
-    datum:
-    - 0.162009
-    - 0.0
-    - 28.9048
-    old_datum:
-    - 0.162009
-    - 0
-    - 28.9048
   CLA-VBC-MAG-DIP-03:
-    type: dipole
-    length: 0.200981
     angle: 0.095
+    centre: [0.162009, 0.0, 29.366966]
+    datum: [0.15247, 0.0, 29.467079]
+    edge_field_integral: 0.4
     exit_edge_angle: angle
+    global_rotation: [0, 0, 0]
     half_gap: 0.005
-    edge_field_integral: 0.4
-    sr_enable: true
     isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.162009
-    - 0.0
-    - 29.366966
-    start:
-    - 0.162009
-    - 0.0
-    - 29.2664
-    end:
-    - 0.15247
-    - 0.0
-    - 29.467079
-    datum:
-    - 0.15247
-    - 0.0
-    - 29.467079
-    old_datum:
-    - 0.15247
-    - 0
-    - 29.4671
-  CLA-VBC-MAG-DIP-04:
-    type: dipole
     length: 0.200981
-    angle: -0.095
-    entrance_edge_angle: angle
-    half_gap: 0.005
-    edge_field_integral: 0.4
     sr_enable: true
+    type: dipole
+  CLA-VBC-MAG-DIP-04:
+    angle: -0.095
+    centre: [0.0, 0.0, 31.067213]
+    datum: [0.0, 0.0, 31.167779]
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation: [0, 0, 0.095]
+    half_gap: 0.005
     isr_enable: true
-    global_rotation:
-    - 0
-    - 0
-    - 0.095
-    centre:
-    - 0.0
-    - 0.0
-    - 31.067213
-    start:
-    - 0.009539
-    - 0.0
-    - 30.9671
-    end:
-    - 0.0
-    - 0.0
-    - 31.167779
-    datum:
-    - 0.0
-    - 0.0
-    - 31.167779
-    old_datum:
-    - 0.0
-    - 0
-    - 31.1678
+    length: 0.200981
+    sr_enable: true
+    type: dipole
   CLA-VBC-MARK-01:
-    type: marker
+    centre: [0.0, 0.0, 31.2678]
+    datum: [0.0, 0.0, 31.2678]
     fit_point: 1.0
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 31.2678
-    start:
-    - 0.0
-    - 0.0
-    - 31.2678
-    end:
-    - 0.0
-    - 0.0
-    - 31.2678
-    datum:
-    - 0.0
-    - 0.0
-    - 31.2678
-    old_datum:
-    - 0
-    - 0
-    - 31.2678
+    global_rotation: [0, 0, 0]
+    type: marker

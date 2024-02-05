@@ -1,107 +1,42 @@
 elements:
   CLA-L03-APER:
-    type: aperture
-    shape: rectangular
+    centre: [0.0, 0.0, 12.0502]
+    datum: [0.0, 0.0, 12.0502]
+    global_rotation: [0, 0, 0]
     horizontal_size: 0.01
+    shape: rectangular
+    type: aperture
     vertical_size: 0.01
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 12.0502
-    start:
-    - 0.0
-    - 0.0
-    - 12.0502
-    end:
-    - 0.0
-    - 0.0
-    - 12.0502
-    datum:
-    - 0.0
-    - 0.0
-    - 12.0502
-    old_datum:
-    - 0
-    - 0
-    - 12.0502
   CLA-L03-CAV:
-    type: cavity
-    length: 4.06667
     Structure_Type: TravellingWave
     cell_length: 0.0333333333333333
+    centre: [0.0, 0.0, 14.125235]
     coupling_cell_length: 0.0495
-    n_cells: 121
-    field_amplitude: 27000000.0
-    frequency: 2998500000.0
-    phase: 8
     crest: 88.381
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
-    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
+    datum: [0.0, 0.0, 16.15857]
+    field_amplitude: 27000000.0
     field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
     field_definition_gdf: $master_lattice_location$Data_Files/mockup4m_moved.gdf
-    lsc_enable: true
+    frequency: 2998500000.0
+    global_rotation: [0, 0, 0]
+    length: 4.06667
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
     lsc_bins: 20.0
-    lsc_cutoff_high:
-    - 0.2
-    - 0.25
-    global_rotation:
-    - 0
-    - 0
-    - 0
+    lsc_cutoff_high: [0.2, 0.25]
+    lsc_enable: true
+    n_cells: 121
+    phase: 8
     sub_elements:
       CLA-L03-WAKE:
-        type: longitudinal_wakefield
-        length: 4.06667
         cell_length: 0.0333333
+        centre: [0.0, 0.0, 14.125235]
         coupling_cell_length: 0.0495
+        datum: [0.0, 0.0, 16.15857]
         field_definition: $master_lattice_location$Data_Files/SzSx5um10mm.dat
-        global_rotation:
-        - 0
-        - 0
-        - 0
+        global_rotation: [0, 0, 0]
+        length: 4.06667
         scale_kick: 1
-        centre:
-        - 0.0
-        - 0.0
-        - 14.125235
-        start:
-        - 0.0
-        - 0.0
-        - 12.0919
-        end:
-        - 0.0
-        - 0.0
-        - 16.15857
-        datum:
-        - 0.0
-        - 0.0
-        - 16.15857
-        old_datum:
-        - 0
-        - 0
-        - 16.1586
-    centre:
-    - 0.0
-    - 0.0
-    - 14.125235
-    start:
-    - 0.0
-    - 0.0
-    - 12.0919
-    end:
-    - 0.0
-    - 0.0
-    - 16.15857
-    datum:
-    - 0.0
-    - 0.0
-    - 16.15857
-    old_datum:
-    - 0
-    - 0
-    - 16.1586
+        type: longitudinal_wakefield
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf

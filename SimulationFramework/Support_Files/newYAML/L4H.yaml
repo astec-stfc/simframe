@@ -1,108 +1,43 @@
 elements:
   CLA-L4H-APER:
-    type: aperture
-    shape: rectangular
+    centre: [0.0, 0.0, 23.4572]
+    datum: [0.0, 0.0, 23.4572]
+    global_rotation: [0, 0, 0]
     horizontal_size: 0.0041195
+    shape: rectangular
+    type: aperture
     vertical_size: 0.0041195
-    global_rotation:
-    - 0
-    - 0
-    - 0
-    centre:
-    - 0.0
-    - 0.0
-    - 23.4572
-    start:
-    - 0.0
-    - 0.0
-    - 23.4572
-    end:
-    - 0.0
-    - 0.0
-    - 23.4572
-    datum:
-    - 0.0
-    - 0.0
-    - 23.4572
-    old_datum:
-    - 0
-    - 0
-    - 23.4572
   CLA-L4H-CAV:
-    type: cavity
-    length: 0.75
     Structure_Type: TravellingWave
     cell_length: 0.00833333
+    centre: [0.0, 0.0, 23.9397]
     coupling_cell_length: 0.012375
-    n_cells: 89
-    field_amplitude: 24000000.0
-    frequency: 11994000000.0
-    phase: -184
     crest: 250.639
-    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz20um25mmxband.sdds
-    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx50um10mmxband.sdds
-    longitudinal_wakefield_gdf: $master_lattice_location$Data_Files/Sz20um25mmxband.gdf
-    transverse_wakefield_gdf: $master_lattice_location$Data_Files/Sx50um10mmxband.gdf
+    datum: [0.0, 0.0, 24.3147]
+    field_amplitude: 24000000.0
     field_definition: $master_lattice_location$Data_Files/TWS_X-DL.dat
     field_definition_gdf: $master_lattice_location$Data_Files/mockupl4h_moved.gdf
-    lsc_enable: true
+    frequency: 11994000000.0
+    global_rotation: [0, 0, 0]
+    length: 0.75
+    longitudinal_wakefield_gdf: $master_lattice_location$Data_Files/Sz20um25mmxband.gdf
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz20um25mmxband.sdds
     lsc_bins: 20.0
-    lsc_cutoff_high:
-    - 0.2
-    - 0.25
-    global_rotation:
-    - 0
-    - 0
-    - 0
+    lsc_cutoff_high: [0.2, 0.25]
+    lsc_enable: true
+    n_cells: 89
+    phase: -184
     sub_elements:
       CLA-L4H-WAKE:
-        type: longitudinal_wakefield
-        length: 0.75
         cell_length: 0.00833333
+        centre: [0.0, 0.0, 23.9397]
         coupling_cell_length: 0.012375
+        datum: [0.0, 0.0, 24.3147]
         field_definition: $master_lattice_location$Data_Files/SzSx20um25mmxband.dat
-        global_rotation:
-        - 0
-        - 0
-        - 0
+        global_rotation: [0, 0, 0]
+        length: 0.75
         scale_kick: 1
-        centre:
-        - 0.0
-        - 0.0
-        - 23.9397
-        start:
-        - 0.0
-        - 0.0
-        - 23.5647
-        end:
-        - 0.0
-        - 0.0
-        - 24.3147
-        datum:
-        - 0.0
-        - 0.0
-        - 24.3147
-        old_datum:
-        - 0
-        - 0
-        - 24.3147
-    centre:
-    - 0.0
-    - 0.0
-    - 23.9397
-    start:
-    - 0.0
-    - 0.0
-    - 23.5647
-    end:
-    - 0.0
-    - 0.0
-    - 24.3147
-    datum:
-    - 0.0
-    - 0.0
-    - 24.3147
-    old_datum:
-    - 0
-    - 0
-    - 24.3147
+        type: longitudinal_wakefield
+    transverse_wakefield_gdf: $master_lattice_location$Data_Files/Sx50um10mmxband.gdf
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx50um10mmxband.sdds
+    type: cavity
