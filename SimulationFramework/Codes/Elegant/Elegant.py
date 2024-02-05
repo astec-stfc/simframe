@@ -23,7 +23,9 @@ class elegantLattice(frameworkLattice):
         return screen(name='end', type='screen', position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
 
     def writeElements(self):
-        self.w = self.endScreen(output_filename=self.objectname+'_end.SDDS')
+        self.w = None
+        if not self.endObject in self.screens_and_bpms:
+            self.w = self.endScreen(output_filename=self.endObject.objectname+'.sdds')
         elements = self.createDrifts()
         fulltext = ''
         fulltext += self.q.write_Elegant()
@@ -31,14 +33,15 @@ class elegantLattice(frameworkLattice):
             # print(element.write_Elegant())
             if not element.subelement:
                 fulltext += element.write_Elegant()
-        fulltext += self.w.write_Elegant()
+        fulltext += self.w.write_Elegant() if self.w is not None else ''
         fulltext += self.objectname+': Line=(START, '
         for e, element in list(elements.items()):
             if not element.subelement:
                 if len((fulltext + e).splitlines()[-1]) > 60:
                     fulltext += '&\n'
                 fulltext += e+', '
-        return fulltext[:-2] + ', END )\n'
+        fulltext = fulltext[:-2] + ', END )\n' if self.w is not None else fulltext[:-2] + ')\n'
+        return fulltext
 
     def processRunSettings(self):
         '''process the runSettings object to extract the number of runs and the random number seed,
@@ -215,7 +218,7 @@ class elegantLattice(frameworkLattice):
         if self.trackBeam:
             for i,s in enumerate(self.screens_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
-            if not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens_and_bpms]:
+            if self.w is not None and not self.w['output_filename'].lower() in [s['output_filename'].lower() for s in self.screens_and_bpms]:
                 self.screen_threaded_function.scatter(self.w, len(self.screens_and_bpms))
         results = self.screen_threaded_function.gather()
         self.commandFiles = {}

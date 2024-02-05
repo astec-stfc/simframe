@@ -356,7 +356,7 @@ class Framework(Munch):
             end = elem.position_end
             length = elem.length
             theta = elem.global_rotation[2]
-            if elem.objecttype == 'dipole':
+            if elem.objecttype == 'dipole' and abs(float(elem.angle)) > 0:
                 angle = float(elem.angle)
                 rho = length / angle
                 clength = np.array([rho * (np.cos(angle) - 1), 0, rho * np.sin(angle)])
