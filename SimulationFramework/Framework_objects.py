@@ -587,19 +587,23 @@ class chicane(frameworkGroup):
         indices = list(sorted([list(self.allElementObjects).index(e) for e in self.elements]))
         dipole_objs = [self.allElementObjects[e] for e in self.elements]
         obj = [self.allElementObjects[list(self.allElementObjects)[e]] for e in range(indices[0],indices[-1]+1)]
-        # ratios = [np.sign(dip.angle) for dip in dipole_objs]
         starting_angle = obj[0].theta
         dipole_number = 0
         for i in range(len(obj)):
-            x1 = np.transpose([obj[i].position_start])
+            start = obj[i].position_start
+            x1 = np.transpose([start])
             obj[i].global_rotation[2] = starting_angle
             if obj[i] in dipole_objs:
+                start_angle = obj[i].angle
                 obj[i].angle = a*self.ratios[dipole_number]
+                scale = (np.tan(obj[i].angle/2.0) / obj[i].angle) / (np.tan(start_angle/2.0) / start_angle) if abs(obj[i].angle) > 0 else 1
+                obj[i].length = obj[i].length / scale
                 dipole_number += 1
                 elem_angle = obj[i].angle
             else:
                 elem_angle = obj[i].angle if obj[i].angle is not None else 0
-            obj[i].centre = list(obj[i].middle)
+            if not obj[i] in dipole_objs:
+                obj[i].centre = list(obj[i].middle)
             xstart, ystart, zstart = obj[i].position_end
             if i < len(obj)-1:
                 xend, yend, zend = obj[i+1].position_start

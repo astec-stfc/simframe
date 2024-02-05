@@ -30,20 +30,20 @@ class dipole(frameworkElement):
     #     # print(self.objectname, self.theta, self.starting_rotation, self.rotated_position(starting_middle, offset=self.starting_offset, theta=self.starting_rotation)[0])
     #     return np.array(start) + self.rotated_position(starting_middle, offset=self.starting_offset, theta=self.starting_rotation)
 
-    @property
-    def middle(self):
-        sx, sy, sz = self.position_start
-        angle = -self.angle
-        l = self.length
-        if abs(angle) > 0:
-            cx = 0
-            cy = 0
-            cz = (l * np.tan(angle/2.0)) / angle
-            vec = [cx, cy, cz]
-        else:
-            vec = [0,0,l/2.0]
-        # print (vec)
-        return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
+    # @property
+    # def middle(self):
+    #     sx, sy, sz = self.position_start
+    #     angle = -self.angle
+    #     l = self.length
+    #     if abs(angle) > 0:
+    #         cx = 0
+    #         cy = 0
+    #         cz = (l * np.tan(angle/2.0)) / angle
+    #         vec = [cx, cy, cz]
+    #     else:
+    #         vec = [0,0,l/2.0]
+    #     # print (vec)
+    #     return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
     def arc_middle(self):
