@@ -164,12 +164,12 @@ class Converter(Framework):
                         mdiff = diff
                 if mdiff > 0.001:
                     print('Match found but diff big', mdiff, ez, dz , ex, dx, lname, finalmatch)
-        element['start'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].start ]
-        element['end'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].end ]
+        element['start'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].start ]
+        element['end'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].end ]
         if ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
-            element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].middle ]
+            element['datum'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].middle ]
         else:
-            element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].end ]
+            element['datum'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].end ]
         if not 'global_rotation' in element:
             element['global_rotation'] = [0,0,0]
         # if element['type'] == 'dipole' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
@@ -177,12 +177,12 @@ class Converter(Framework):
         #     element['line_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].line_middle ]
         #     element['TD_centre'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].TD_middle ]
         if element['type'] == 'screen' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname) and not 'mask' in lname and not 'ctr' in lname and not 'fed-dia-scr-02-wide' in lname:
-            element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0167]) ]
+            element['datum'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0167]) ]
         if element['type'] == 'beam_position_monitor' and ('-fea-' in lname or '-feh-' in lname or '-fed-' in lname):
             if 'inside' in lname:
-                element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_start([0,0,0.0353]) ]
+                element['datum'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].relative_position_from_start([0,0,0.0353]) ]
             else:
-                element['datum'] = [ round(elem, 6) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0697]) ]
+                element['datum'] = [ round(elem, 7) for elem in self.elementObjects[element['name']].relative_position_from_centre([0,0,-0.0697]) ]
         # if finalmatch is None or mdiff > 0.001 or True:
         #     # print('No Match found  ', lname, finalmatch)
         #     element['old_datum'] = [ round(elem, 6) for elem in element['position_end']]
@@ -223,7 +223,7 @@ class Converter(Framework):
         # print (c)
         return [c[0] for c in self.cursor]
 
-fw = Converter(master_lattice='C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice')
+fw = Converter(master_lattice='C:/Users/jkj62/Documents/GitHub/20240205 masterlattice/MasterLattice')
 # fw.loadSettings('Lattices/clara400_v12_FEBE.def')
 #
 # fw.read_Element('filename', ['YAML/Injector400.yaml', 'YAML/S02.yaml','YAML/L02.yaml',
@@ -237,7 +237,7 @@ fw = Converter(master_lattice='C:/Users/jkj62/Documents/GitHub/MasterLattice/Mas
 # exit()
 
 import glob
-basedir = '../../../MasterLattice/MasterLattice/'
+basedir = '../../../20240205 masterlattice/MasterLattice/'
 print(os.path.abspath(basedir))
 print(glob.glob(basedir+'YAML/*.yaml'))
 filenames = [a.replace(basedir,'').replace('\\', '/') for a in glob.glob(basedir+'YAML/*.yaml') if not 'FRS' in a]

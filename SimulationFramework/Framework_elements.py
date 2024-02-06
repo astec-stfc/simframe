@@ -108,6 +108,22 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
+    def position_start(self):
+        middle = self.centre
+        angle = -self.angle
+        l = self.length
+        if abs(angle) > 0:
+            cx = 0
+            cy = 0
+            cz = -l * np.tan(0.5 * angle) / angle
+            vec = [cx, cy, cz]
+        else:
+            vec = [0,0, -l/2.0]
+        print(self.objectname, 'start', np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
+        return np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
+
+
+    @property
     def position_end(self):
         start = self.position_start
         angle = -self.angle
@@ -115,9 +131,11 @@ class dipole(frameworkElement):
             ex = (self.length * (1 - np.cos(angle))) / angle
             ey = 0
             ez = (self.length * (np.sin(angle))) / angle
-            return np.array(self.position_start) + self.rotated_position(np.array([ex, ey, ez]), offset=self.starting_offset, theta=self.y_rot)
+            vec = [ex, ey, ez]
         else:
-            return np.array(self.position_start) + self.rotated_position(np.array([0,0,self.length]), offset=self.starting_offset, theta=self.y_rot)
+            vec = [0,0,self.length]
+        print(self.objectname, 'end', np.array(start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
+        return np.array(start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
     def astra_end(self):

@@ -246,12 +246,12 @@ class frameworkLattice(Munch):
         for name in list(self.elements.keys()):
             if not self.elements[name].subelement:
                 originalelements[name] = self.elements[name]
-                pos = np.array(self.allElementObjects[name].position_start)
-                positions.append(pos)
+                positions.append(self.allElementObjects[name].position_start)
+                positions.append(self.allElementObjects[name].position_middle)
                 positions.append(self.allElementObjects[name].position_end)
         positions = positions[1:]
         positions.append(positions[-1])
-        driftdata = list(zip(iter(list(originalelements.items())), list(chunks(positions, 2))))
+        driftdata = list(zip(iter(list(originalelements.items())), list(chunks(positions, 3))))
 
         lscbins = self.lsc_bins if self.lscDrifts is True else 0
         csr = 1 if self.csrDrifts is True else 0
@@ -259,9 +259,10 @@ class frameworkLattice(Munch):
         drifttype = lscdrift if self.csrDrifts or self.lscDrifts else edrift
 
         for e, d in driftdata:
-            if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and e[1]['length'] > 0:
+            if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and round(e[1]['length']/2, 6) > 0:
                 name = e[0]+'-drift-01'
-                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': e[1]['length']/2,
+                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(e[1]['length']/2, 6),
+                 'centre': list(e[1].relative_position_from_centre(-1.0*round(e[1]['length']/2))),
                  'csr_enable': csr,
                  'lsc_enable': lsc,
                  'use_stupakov': 1,
@@ -275,7 +276,8 @@ class frameworkLattice(Munch):
                 newelements[name] = newdrift
                 newelements[e[0]] = e[1]
                 name = e[0]+'-drift-02'
-                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': e[1]['length']/2,
+                newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(e[1]['length']/2, 6),
+                 'centre': list(e[1].relative_position_from_centre(round(e[1]['length']/2))),
                  'csr_enable': csr,
                  'lsc_enable': lsc,
                  'use_stupakov': 1,
@@ -293,19 +295,18 @@ class frameworkLattice(Munch):
                 drifttype = csrdrift if self.csrDrifts else lscdrift if self.lscDrifts else edrift
             if len(d) > 1:
                 x1, y1, z1 = d[0]
-                x2, y2, z2 = d[1]
+                x2, y2, z2 = d[2]
                 try:
                     length = np.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
                 except Exception as exc:
                     print('Element with error = ', e[0])
                     print(d)
                     raise exc
-                if length > 0:
+                if round(length, 6) > 0:
                     elementno += 1
                     name = 'drift'+str(elementno)
-                    newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': length,
-                     'position_start': list(d[0]),
-                     'position_end': list(d[1]),
+                    newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(length, 6),
+                     'centre': list(d[1]),
                      'csr_enable': csr,
                      'lsc_enable': lsc,
                      'use_stupakov': 1,
