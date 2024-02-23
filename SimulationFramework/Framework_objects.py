@@ -246,12 +246,12 @@ class frameworkLattice(Munch):
         for name in list(self.elements.keys()):
             if not self.elements[name].subelement:
                 originalelements[name] = self.elements[name]
-                positions.append(self.allElementObjects[name].position_start)
-                positions.append(self.allElementObjects[name].position_middle)
+                pos = np.array(self.allElementObjects[name].position_start)
+                positions.append(pos)
                 positions.append(self.allElementObjects[name].position_end)
         positions = positions[1:]
         positions.append(positions[-1])
-        driftdata = list(zip(iter(list(originalelements.items())), list(chunks(positions, 3))))
+        driftdata = list(zip(iter(list(originalelements.items())), list(chunks(positions, 2))))
 
         lscbins = self.lsc_bins if self.lscDrifts is True else 0
         csr = 1 if self.csrDrifts is True else 0
@@ -262,7 +262,6 @@ class frameworkLattice(Munch):
             if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and round(e[1]['length']/2, 6) > 0:
                 name = e[0]+'-drift-01'
                 newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(e[1]['length']/2, 6),
-                 'centre': list(e[1].relative_position_from_centre(-1.0*round(e[1]['length']/2))),
                  'csr_enable': csr,
                  'lsc_enable': lsc,
                  'use_stupakov': 1,
@@ -277,7 +276,6 @@ class frameworkLattice(Munch):
                 newelements[e[0]] = e[1]
                 name = e[0]+'-drift-02'
                 newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(e[1]['length']/2, 6),
-                 'centre': list(e[1].relative_position_from_centre(round(e[1]['length']/2))),
                  'csr_enable': csr,
                  'lsc_enable': lsc,
                  'use_stupakov': 1,
@@ -295,7 +293,7 @@ class frameworkLattice(Munch):
                 drifttype = csrdrift if self.csrDrifts else lscdrift if self.lscDrifts else edrift
             if len(d) > 1:
                 x1, y1, z1 = d[0]
-                x2, y2, z2 = d[2]
+                x2, y2, z2 = d[1]
                 try:
                     length = np.sqrt((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)
                 except Exception as exc:
@@ -306,7 +304,8 @@ class frameworkLattice(Munch):
                     elementno += 1
                     name = 'drift'+str(elementno)
                     newdrift = drifttype(name, global_parameters=self.global_parameters, **{'length': round(length, 6),
-                     'centre': list(d[1]),
+                     'position_start': list(d[0]),
+                     'position_end': list(d[1]),
                      'csr_enable': csr,
                      'lsc_enable': lsc,
                      'use_stupakov': 1,
@@ -584,37 +583,66 @@ class chicane(frameworkGroup):
         'using setter! angle = ', theta
         self.set_angle(theta)
 
+    # def set_angle2(self, a):
+    #     indices = list(sorted([list(self.allElementObjects).index(e) for e in self.elements]))
+    #     dipole_objs = [self.allElementObjects[e] for e in self.elements]
+    #     obj = [self.allElementObjects[list(self.allElementObjects)[e]] for e in range(indices[0],indices[-1]+1)]
+    #     starting_angle = obj[0].theta
+    #     dipole_number = 0
+    #     for i in range(len(obj)):
+    #         start = obj[i].position_start
+    #         x1 = np.transpose([start])
+    #         obj[i].global_rotation[2] = starting_angle
+    #         if obj[i] in dipole_objs:
+    #             start_angle = obj[i].angle
+    #             obj[i].angle = a*self.ratios[dipole_number]
+    #             if abs(obj[i].angle) > 0:
+    #                 scale = (np.tan(obj[i].angle/2.0) / obj[i].angle) / (np.tan(start_angle/2.0) / start_angle)
+    #             else:
+    #                 scale = 1
+    #             obj[i].length = obj[i].length / scale
+    #             dipole_number += 1
+    #             elem_angle = obj[i].angle
+    #         else:
+    #             elem_angle = obj[i].angle if obj[i].angle is not None else 0
+    #         if not obj[i] in dipole_objs:
+    #             obj[i].centre = list(obj[i].middle)
+    #         xstart, ystart, zstart = obj[i].position_end
+    #         if i < len(obj)-1:
+    #             xend, yend, zend = obj[i+1].position_start
+    #             angle = starting_angle + elem_angle
+    #             # print('angle = ', angle, starting_angle, obj[i+1].objectname)
+    #             length = float((zend - zstart))
+    #             endx = chop(float(xstart - np.tan(angle)*(length/2.0)))
+    #             obj[i+1].centre[0] =  endx
+    #             obj[i+1].global_rotation[2] =  angle
+    #             starting_angle += elem_angle
+
     def set_angle(self, a):
         indices = list(sorted([list(self.allElementObjects).index(e) for e in self.elements]))
         dipole_objs = [self.allElementObjects[e] for e in self.elements]
         obj = [self.allElementObjects[list(self.allElementObjects)[e]] for e in range(indices[0],indices[-1]+1)]
         starting_angle = obj[0].theta
         dipole_number = 0
+        # print('\n\n\n')
         for i in range(len(obj)):
-            start = obj[i].position_start
-            x1 = np.transpose([start])
-            obj[i].global_rotation[2] = starting_angle
+            if dipole_number > 0:
+                # print('before',obj[i])
+                adj = obj[i].centre[2] - ref_pos[2]
+                # print('  adj', adj)
+                # print('  ref_angle', ref_angle)
+                obj[i].centre = [ref_pos[0] + np.tan(-1.0*ref_angle)*adj, 0, obj[i].centre[2]]
+                obj[i].global_rotation[2] =  ref_angle
+                # print('after',obj[i])
             if obj[i] in dipole_objs:
+                # print('DIPOLE before',obj[i])
+                ref_pos = obj[i].middle
                 start_angle = obj[i].angle
                 obj[i].angle = a*self.ratios[dipole_number]
-                scale = (np.tan(obj[i].angle/2.0) / obj[i].angle) / (np.tan(start_angle/2.0) / start_angle) if abs(obj[i].angle) > 0 else 1
-                obj[i].length = obj[i].length / scale
+                ref_angle = obj[i].global_rotation[2] + obj[i].angle
                 dipole_number += 1
-                elem_angle = obj[i].angle
-            else:
-                elem_angle = obj[i].angle if obj[i].angle is not None else 0
-            if not obj[i] in dipole_objs:
-                obj[i].centre = list(obj[i].middle)
-            xstart, ystart, zstart = obj[i].position_end
-            if i < len(obj)-1:
-                xend, yend, zend = obj[i+1].position_start
-                angle = starting_angle + elem_angle
-                # print('angle = ', angle, starting_angle, obj[i+1].objectname)
-                length = float((zend - zstart))
-                endx = chop(float(xstart - np.tan(angle)*(length/2.0)))
-                obj[i+1].centre[0] =  endx
-                obj[i+1].global_rotation[2] =  angle
-                starting_angle += elem_angle
+                # print('DIPOLE after',obj[i])
+        # print('\n\n\n')
 
     def __str__(self):
         return str([[self.allElementObjects[e].objectname, self.allElementObjects[e].angle, self.allElementObjects[e].global_rotation[2], self.allElementObjects[e].position_start, self.allElementObjects[e].position_end] for e in self.elements])

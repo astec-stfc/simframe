@@ -119,9 +119,8 @@ class dipole(frameworkElement):
             vec = [cx, cy, cz]
         else:
             vec = [0,0, -l/2.0]
-        print(self.objectname, 'start', np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
+        # print(self.objectname, 'start', np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
         return np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
-
 
     @property
     def position_end(self):
@@ -134,7 +133,7 @@ class dipole(frameworkElement):
             vec = [ex, ey, ez]
         else:
             vec = [0,0,self.length]
-        print(self.objectname, 'end', np.array(start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
+        # print(self.objectname, 'start', start, 'end', np.array(start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
         return np.array(start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     @property
