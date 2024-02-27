@@ -30,12 +30,11 @@ def unrotate_beamXZ(self):
         self.rotate_beamXZ(-1*self['rotation'], -1*offset)
 
 def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sourcefilename=None, pos=None, rotation=None, longitudinal_reference='t', xoffset=0, yoffset=0, zoffset=0, toffset=0, cathode=False):
-    # print('zoffset = ', zoffset, type(zoffset))
     if isinstance(zoffset,(list, np.ndarray)) and len(zoffset) == 3:
         xoffset = zoffset[0]
         yoffset = zoffset[1]
         zoffset = zoffset[2]
-    with h5py.File(filename, "w") as f:
+    with h5py.File(filename, "w", rdcc_nbytes=1024**3) as f:
         inputgrp = f.create_group("Parameters")
         if not 'total_charge' in self._beam or self._beam['total_charge'] == 0:
             self._beam['total_charge'] = np.sum(self._beam['charge'])
@@ -62,7 +61,6 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
             beamgrp['status'] = self._beam['status']
         beamgrp['longitudinal_reference'] = longitudinal_reference
         beamgrp['cathode'] = cathode
-        # print('hdf5 write cathode', cathode, np.array(beamgrp['cathode']))
         if len(self._beam['charge']) == len(self.x):
             chargevector = self._beam['charge']
         else:
@@ -70,7 +68,7 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         array = np.array([self.x + xoffset, self.y + yoffset, self.z + zoffset, self.cpx, self.cpy, self.cpz, self.t + toffset, chargevector, self.nmacro]).transpose()
         beamgrp['columns'] = np.array(['x','y','z', 'cpx', 'cpy', 'cpz', 't', 'q', 'w'], dtype='S')
         beamgrp['units'] = np.array(['m','m','m','eV','eV','eV','s','e', ''], dtype='S')
-        beamgrp.create_dataset("beam", data=array, compression='gzip', compression_opts=9)
+        beamgrp.create_dataset("beam", data=array, compression='lzf', rdcc_nbytes=1024**3)
 
 def write_HDF5_summary_file(filename, beams=[], clean=False):
     if isinstance(beams, str):

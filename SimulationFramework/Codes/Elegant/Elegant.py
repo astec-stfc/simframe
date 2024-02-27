@@ -208,6 +208,9 @@ class elegantLattice(frameworkLattice):
         prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block['input'] else ''
         if self.trackBeam:
             self.hdf5_to_sdds(prefix)
+        else:
+            HDF5filename = prefix+self.particle_definition+'.hdf5'
+            rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], os.path.abspath(self.global_parameters['master_subdir'] + '/' + HDF5filename))
         self.createCommandFiles()
 
     @lox.thread
