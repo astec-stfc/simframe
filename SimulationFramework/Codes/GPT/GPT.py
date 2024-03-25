@@ -30,7 +30,7 @@ class gptLattice(frameworkLattice):
         self.accuracy = 6
 
     def endScreen(self, **kwargs):
-        return screen(name=self.endObject.objectname, type='screen', position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
+        return screen(name=self.endObject.objectname, type='screen', centre=self.endObject.centre, position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
 
     def writeElements(self):
         ccs = gpt_ccs("wcs", [0,0,0], [0,0,0])
@@ -223,11 +223,10 @@ class gpt_spacecharge(gpt_element):
     def __init__(self, **kwargs):
         super(gpt_spacecharge, self).__init__(elementName='spacecharge', elementType='gpt_spacecharge', **kwargs)
         self.grids = getGrids()
-        self.add_default('accuracy', 6)
         self.add_default('ngrids', None)
 
     def write_GPT(self, *args, **kwargs):
-        output = 'accuracy(' + str(self.accuracy) + ');\n'#'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
+        output = ''#'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
         if isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == 'cathode':
             if self.ngrids is None:
                 self.ngrids = self.grids.getGridSizes((self.npart/self.sample_interval))

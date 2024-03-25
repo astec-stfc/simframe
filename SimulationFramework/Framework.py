@@ -399,9 +399,10 @@ class Framework(Munch):
                 raise NameError('Element does not have a name')
             else:
                 name = kwargs['name']
-        # try:
-        element = globals()[type](name, type, global_parameters=self.global_parameters, **kwargs)
-        # print element
+        try:
+            element = globals()[type](name, type, global_parameters=self.global_parameters, **kwargs)
+        except:
+            print(type, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:
