@@ -183,16 +183,24 @@ class elegantLattice(frameworkLattice):
             nruns, seed, elementErrors, elementScan = self.processRunSettings()
             self.commandFiles['global_settings'] = elegant_global_settings_command(lattice=self, warning_limit=0)
             self.commandFiles['run_setup'] = elegant_run_setup_command(lattice=self, p_central=np.mean(self.global_parameters['beam'].BetaGamma),  seed=seed, losses="%s.loss")
+
+            # generate commands for monte carlo jitter runs
             if (elementErrors is not None):
+                self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=nruns, n_passes=1, reset_rf_for_each_step=0, first_is_fiducial=1)
                 self.commandFiles['error_elements'] = elegant_error_elements_command(lattice=self, elementErrors=elementErrors, nruns=nruns)
                 for e in elementErrors:
                     for item in elementErrors[e]:
                         self.commandFiles['error_element_'+e] = elegantCommandFile(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
-            if (elementScan is not None):
+
+            # generate commands for parameter scans without fiducialisation (i.e. jitter scans)
+            elif (elementScan is not None):
                 self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=nruns, n_passes=1, n_indices=1, reset_rf_for_each_step=0, first_is_fiducial=1)
                 self.commandFiles['scan_elements'] = elegant_scan_elements_command(lattice=self, elementScan=elementScan, nruns=nruns)
+
+            # run_control for standard runs with no jitter
             else:
                 self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=1, n_passes=1)
+                        
             self.commandFiles['twiss_output'] = elegant_twiss_output_command(lattice=self, beam=self.global_parameters['beam'],
                 betax=self.betax,
                 betay=self.betay,
@@ -200,7 +208,10 @@ class elegantLattice(frameworkLattice):
                 alphay=self.alphay)
             self.commandFiles['floor_coordinates'] = elegant_floor_coordinates_command(lattice=self)
             self.commandFiles['matrix_output'] = elegant_matrix_output_command(lattice=self)
-            self.commandFiles['sdds_beam'] = elegant_sdds_beam_command(lattice=self, elegantbeamfilename=self.objectname+'.sdds', sample_interval=self.sample_interval)
+            self.commandFiles['sdds_beam'] = elegant_sdds_beam_command(
+                lattice=self, elegantbeamfilename=self.objectname+'.sdds', sample_interval=self.sample_interval,
+                reuse_bunch=1, fiducialization_bunch=0, center_arrival_time=0
+                )
             self.commandFiles['track'] = elegant_track_command(lattice=self, trackBeam=self.trackBeam)
             self.commandFilesOrder = list(self.commandFiles.keys())#['global_settings', 'run_setup', 'error_elements', 'scan_elements', 'run_control', 'twiss', 'sdds_beam', 'track']
 
