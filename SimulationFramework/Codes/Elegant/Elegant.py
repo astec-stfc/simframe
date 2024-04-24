@@ -190,7 +190,7 @@ class elegantLattice(frameworkLattice):
                 self.commandFiles['error_elements'] = elegant_error_elements_command(lattice=self, elementErrors=elementErrors, nruns=nruns)
                 for e in elementErrors:
                     for item in elementErrors[e]:
-                        self.commandFiles['error_element_'+e] = elegantCommandFile(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
+                        self.commandFiles['error_element_'+e+'_'+item] = elegantCommandFile(objecttype='error_element', name=e, item=item, allow_missing_elements=1, **elementErrors[e][item])
 
             # generate commands for parameter scans without fiducialisation (i.e. jitter scans)
             elif (elementScan is not None):
@@ -200,7 +200,7 @@ class elegantLattice(frameworkLattice):
             # run_control for standard runs with no jitter
             else:
                 self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=1, n_passes=1)
-                        
+
             self.commandFiles['twiss_output'] = elegant_twiss_output_command(lattice=self, beam=self.global_parameters['beam'],
                 betax=self.betax,
                 betay=self.betay,
