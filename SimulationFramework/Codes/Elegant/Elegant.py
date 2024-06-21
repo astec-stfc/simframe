@@ -1,4 +1,11 @@
-import os, sdds, shutil
+import os, shutil
+try:
+    import ASTeCsdds.sdds as sdds
+except:
+    try:
+        import sdds
+    except:
+        print('No SDDS available!')
 import lox
 from ...Framework_objects import *
 from ...Framework_elements import *
