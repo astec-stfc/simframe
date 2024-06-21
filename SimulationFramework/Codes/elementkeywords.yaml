@@ -405,3 +405,13 @@ cleaner:
     tlimit,
     deltalimit,
     }
+center:
+  keywords: {
+    center_x,
+    center_y,
+    center_xp,
+    center_yp,
+    center_s,
+    center_delta,
+    center_t
+  }

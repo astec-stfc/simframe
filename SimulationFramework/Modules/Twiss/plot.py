@@ -122,4 +122,4 @@ def plot(twiss_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
             labels += b
         ax_plot[0].legend(lines, labels, loc='best')
 
-    return fig
+    # return fig

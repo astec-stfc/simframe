@@ -90,3 +90,11 @@ rcollimator:
 collimator:
   horizontal_size: x_max
   vertical_size: y_max
+center:
+  center_x: x,
+  center_y: y,
+  center_xp: xp,
+  center_yp: yp,
+  center_s: s,
+  center_delta: delta,
+  center_t: t

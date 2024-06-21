@@ -142,13 +142,19 @@ class elegantLattice(frameworkLattice):
             # the first scan step is always the baseline simulation, for fiducialization
             multiplicative = elementScan['multiplicative']
             if multiplicative:
-                scan_values = [1.] + list(scan_values)
+                if not 1. in list(scan_values):
+                    scan_values = [1.] + list(scan_values)
             else:
-                scan_values = [0.] + list(scan_values)
+                if not 0. in list(scan_values):
+                    scan_values = [0.] + list(scan_values)
 
             # build the SDDS file with the scan values
             scan_fname = '%s-%s.sdds' % (ele, param)
             scanSDDS = sddsFile()
+            scanSDDS.add_parameter('name', [ele], type=sdds.SDDS(0).SDDS_STRING)
+            scanSDDS.add_parameter('item', [keyword], type=sdds.SDDS(0).SDDS_STRING)
+            scanSDDS.add_parameter('multiplicative', [int(multiplicative)])
+            scanSDDS.add_parameter('nominal', [self.elements[ele][param]])
             scanSDDS.add_column('values', scan_values)
             scanSDDS.save(self.global_parameters['master_subdir']+'/'+scan_fname)
 
@@ -194,7 +200,7 @@ class elegantLattice(frameworkLattice):
 
             # generate commands for parameter scans without fiducialisation (i.e. jitter scans)
             elif (elementScan is not None):
-                self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=nruns, n_passes=1, n_indices=1, reset_rf_for_each_step=0, first_is_fiducial=1)
+                self.commandFiles['run_control'] = elegant_run_control_command(lattice=self, n_steps=nruns-1, n_passes=1, n_indices=1, reset_rf_for_each_step=0, first_is_fiducial=1)
                 self.commandFiles['scan_elements'] = elegant_scan_elements_command(lattice=self, elementScan=elementScan, nruns=nruns)
 
             # run_control for standard runs with no jitter
@@ -399,6 +405,25 @@ class sddsFile(object):
             self.sdds.setColumnValueList(name, list(data), page=1)
         else:
             raise TypeError('Column data must be a list, tuple or array-like type')
+
+    def add_parameter(self, name, data, **kwargs):
+        '''add a parameter of floating point numbers to the file'''
+        if not isinstance(name, str):
+            raise TypeError('Parameter names must be string types')
+        if 'type' in kwargs:
+            type = kwargs['type']
+        else:
+            type = self.sdds.SDDS_DOUBLE
+        self.sdds.defineParameter(name,
+                               symbol=kwargs['symbol'] if ('symbol' in kwargs) else '',
+                               units=kwargs['units'] if ('units' in kwargs) else '',
+                               description=kwargs['description'] if ('description' in kwargs) else '',
+                               formatString='', type=type, fixedValue="")
+
+        if isinstance(data, (tuple, list, np.ndarray)):
+            self.sdds.setParameterValueList(name, list(data))
+        else:
+            raise TypeError('Parameter data must be a list, tuple or array-like type')
 
     def save(self, fname):
         '''save the sdds data structure to file'''

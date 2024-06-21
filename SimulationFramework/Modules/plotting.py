@@ -114,7 +114,7 @@ def load_elements(lattice, bounds=None, sections='All', types=['cavity', 'soleno
         if bounds is not None:
             elements = [e for e in elements if e.position_start[2] <= bounds[1] and e.position_end[2] >= bounds[0]-0.1]
         for e in elements:
-            if t == 'cavity' or t == 'solenoid':
+            if (t == 'cavity' or t == 'solenoid') and hasattr(e, 'field_definition') and e.field_definition is not None:
                 fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
             elif hasattr(magnet_plotting_data, t):
                 fmap[t][e.objectname] = getattr(magnet_plotting_data(), t)(e)
@@ -231,7 +231,7 @@ def plot(framework_object, ykeys=['sigma_x', 'sigma_y'], ykeys2=['sigma_z'],
         ax_plot = [all_axis]
 
     if grid:
-        ax_plot[0].grid(b=True, which='major', color='#666666', linestyle='-')
+        ax_plot[0].grid(visible=True, which='major', color='#666666', linestyle='-')
 
     # collect axes
     if isinstance(ykeys, str):

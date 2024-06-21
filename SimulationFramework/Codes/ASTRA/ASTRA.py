@@ -171,7 +171,7 @@ class astraLattice(frameworkLattice):
         return 100
 
     def postProcess(self):
-        cathode = self.headers['newrun']['particle_definition'] == 'laser'
+        cathode = self.headers['newrun']['particle_definition'] == 'initial_distribution'
         mult = self.get_screen_scaling()
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0,0,0]:

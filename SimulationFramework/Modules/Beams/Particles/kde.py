@@ -1,5 +1,8 @@
 import numpy as np
-from scipy.stats import gaussian_kde
+try:
+    from scipy.stats import gaussian_kde
+except ImportError:
+    pass
 from copy import deepcopy
 from SimulationFramework.Modules import constants
 

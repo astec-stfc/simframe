@@ -18,7 +18,6 @@ class gptLattice(frameworkLattice):
             self.particle_definition = self.allElementObjects[self.start].objectname
         self.headers['setfile'] = gpt_setfile(set="\"beam\"", filename="\"" + self.objectname + ".gdf\"")
         self.headers['floorplan'] = gpt_writefloorplan(filename="\"" + self.objectname + "_floor.gdf\"")
-        # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=250e-12)
         start = self.allElementObjects[self.start].start[2]
         end = self.allElementObjects[self.end].end[2]
         self.ignore_start_screen = None
@@ -37,11 +36,10 @@ class gptLattice(frameworkLattice):
         fulltext = ''
         self.headers['accuracy'] = gpt_accuracy(self.accuracy)
         if self.particle_definition == 'laser' and self.space_charge_mode is not None:
-            self.space_charge_mode = 'cathode'
             self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
             self.headers['spacecharge'].npart = len(self.global_parameters['beam'].x)
             self.headers['spacecharge'].sample_interval = self.sample_interval
-            # self.headers['dtmaxt'] = gpt_dtmaxt(tstart=0, tend="0.25/c", dtmax="0.25/1000/c")
+            self.headers['spacecharge'].space_charge_mode = 'cathode'
         else:
             self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
         if self.csr_enable and len(self.dipoles) > 0 and max([abs(d.angle) for d in self.dipoles]) > 0:# and not os.name == 'nt':

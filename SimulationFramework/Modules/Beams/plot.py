@@ -171,7 +171,7 @@ def slice_plot(particle_group, xkey='t', ykey='slice_current',  xlim=None, nice=
         ax_plot[0].legend(lines, labels, loc='best')
     return fig
 
-def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], cmap=None, **kwargs):
+def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], scale=[1,1], subtract_mean=[False, False], cmap=None, limits=None, **kwargs):
     """
     Density plot and projections
 
@@ -195,7 +195,8 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     # Scale to nice units and get the factor, unit prefix
     x, f1, p1 = nice_array(scale[0] * (particle_group[key1] - subtract_mean[0] * np.mean(particle_group[key1])))
     y, f2, p2 = nice_array(scale[1] * (particle_group[key2] - subtract_mean[1] * np.mean(particle_group[key2])))
-
+    x = x / scale[0]
+    y = y / scale[1]
 
     w = np.full(len(x), 1)#
     charge = particle_group['charge']
@@ -219,6 +220,8 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
 
     # Proper weighting
     ax_joint.hexbin(x, y, C=w, reduce_C_function=np.sum, gridsize=bins, cmap=cmap, vmin=1e-20)
+    if limits is not None:
+        ax_joint.axis(limits)
 
     # Manual histogramming version
     #H, xedges, yedges = np.histogram2d(x, y, weights=w, bins=bins)
@@ -234,16 +237,24 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     hist, bin_edges = np.histogram(x, bins=bins, weights=w)
     hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
     hist_width =  np.diff(bin_edges)
-    hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
-    ax_marg_x.bar(hist_x, hist_y, hist_width, color='gray')
     # Special label for C/s = A
-    if u1 == 's':
+    if u1 == 's' and abs(np.sum(charge).val) > 0:
+        hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
+        ax_marg_x.bar(hist_x, hist_y, hist_width, color='gray')
         _, hist_prefix = nice_scale_prefix(hist_f/f1)
         # print(np.sum(charge).val, hist_f, f1)
         ax_marg_x.set_ylabel(f'{hist_prefix}A')
     else:
-        ax_marg_x.set_ylabel(f'{hist_prefix}C/{ux}')
-
+        if abs(np.sum(charge).val) > 0:
+            hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
+            ax_marg_x.bar(hist_x, hist_y, hist_width, color='gray')
+            ax_marg_x.set_ylabel(f'{hist_prefix}C/{uy}')
+        else:
+            hist_y, hist_f, hist_prefix = nice_array(hist)
+            ax_marg_x.bar(hist_x, hist_y, hist_width, color='gray')
+            ax_marg_x.set_ylabel(f'{hist_prefix}Counts/{uy}')
+    if not limits is None:
+        ax_marg_x.set_xlim(limits[0:2])
 
     # Side histogram
     # Old method:
@@ -252,9 +263,21 @@ def marginal_plot(particle_group, key1='t', key2='p', bins=None, units=['',''], 
     hist, bin_edges = np.histogram(y, bins=bins, weights=w)
     hist_x = bin_edges[:-1] + np.diff(bin_edges) / 2
     hist_width =  np.diff(bin_edges)
-    hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
-    ax_marg_y.barh(hist_x, hist_y, hist_width, color='gray')
-    ax_marg_y.set_xlabel(f'{hist_prefix}C/{uy}')
+    if u1 == 's' and abs(np.sum(charge).val) > 0:
+        hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
+        ax_marg_y.barh(hist_x, hist_y, hist_width, color='gray')
+        ax_marg_y.set_xlabel(f'{hist_prefix}C/{uy}')
+    else:
+        if abs(np.sum(charge).val) > 0:
+            hist_y, hist_f, hist_prefix = nice_array(-np.sum(charge).val*hist/hist_width/len(charge))
+            ax_marg_y.barh(hist_x, hist_y, hist_width, color='gray')
+            ax_marg_y.set_xlabel(f'{hist_prefix}C/{uy}')
+        else:
+            hist_y, hist_f, hist_prefix = nice_array(hist)
+            ax_marg_y.barh(hist_x, hist_y, hist_width, color='gray')
+            ax_marg_y.set_xlabel(f'{hist_prefix}Counts/{uy}')
+    if not limits is None:
+        ax_marg_y.set_ylim(limits[2:])
 
     # Turn off tick labels on marginals
     plt.setp(ax_marg_x.get_xticklabels(), visible=False)
@@ -301,7 +324,7 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
     labely = f'{key2} ({uy})'
 
     if fastKDE_installed and not use_scipy:
-        myPDF,axes = fastKDE.pdf(x,y, **kwargs)
+        myPDF,axes = fastKDE.pdf(x,y, use_xarray=False, **kwargs)
         v1,v2 = axes
     elif SciPy_installed:
         xmin = x.min()
@@ -453,4 +476,4 @@ def plotScreenImage(beam, keys=['x','y'], scale=[1,1], iscale=1, colormap=plt.cm
     # Show the final image
     plt.draw()
 
-    return fig
+    # return fig

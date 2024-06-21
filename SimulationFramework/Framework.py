@@ -218,6 +218,7 @@ class Framework(Munch):
         settings = self.settings.copy()
         if elements is not None:
             settings['elements'] = elements
+        settings = convert_numpy_types(settings)
         with open(directory + '/' + filename,"w") as yaml_file:
             yaml.default_flow_style=True
             yaml.safe_dump(settings, yaml_file, sort_keys=False)
@@ -441,7 +442,7 @@ class Framework(Munch):
         if isinstance(param, (list, tuple)):
             return zip(*[self.getElementType(type, param=p) for p in param])
             # return [item for sublist in all_elements for item in sublist]
-        return [self.elementObjects[element] if param is None else self.elementObjects[element][param] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
+        return [{'name': element, **self.elementObjects[element]} if param is None else self.elementObjects[element][param] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
 
     def setElementType(self, type, setting, values):
         elems = self.getElementType(type)
@@ -657,6 +658,22 @@ class Framework(Munch):
             if frameworkDirectory:
                 return frameworkDirectory(directory=self.subdirectory, twiss=True, beams=True, verbose=self.verbose)
 
+    def postProcess(self, files=None, startfile=None, endfile=None):
+        if files is None:
+            files = ['generator'] + self.lines if not hasattr(self, 'generator') else self.lines
+        if startfile is not None and startfile in files:
+            index = files.index(startfile)
+            files = files[index:]
+        if endfile is not None and endfile in files:
+            index = files.index(endfile)
+            files = files[:index+1]
+        for i in range(len(files)):
+            l = files[i]
+            if l == 'generator' and hasattr(self, 'generator'):
+                self.generator.postProcess()
+            else:
+                self.latticeObjects[l].postProcess()
+
     def save_summary_files(self, twiss=True, beams=True):
         t = rtf.load_directory(self.subdirectory)
         try:
@@ -739,6 +756,9 @@ class frameworkDirectory(Munch):
 
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
+
+    def save_summary_files(self, twiss=True, beams=True):
+        self.framework.save_summary_files(twiss=twiss, beams=beams)
 
     def getScreen(self, screen):
         if self.beams:

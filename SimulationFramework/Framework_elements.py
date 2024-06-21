@@ -1010,6 +1010,11 @@ class apcontour(frameworkElement):
         super().__init__(name, type, **kwargs)
         self.add_default('resolution', 0.001)
 
+class center(frameworkElement):
+
+    def __init__(self, name=None, type='center', **kwargs):
+        super().__init__(name, type, **kwargs)
+
 class marker(screen):
 
     def __init__(self, name=None, type='marker', **kwargs):
