@@ -2,6 +2,8 @@ import os
 import math
 import warnings
 import copy
+from pydantic import BaseModel, ConfigDict
+from typing import List, Dict
 import numpy as np
 try:
     from scipy import interpolate
@@ -23,55 +25,62 @@ except ImportError:
 
 from ..units import UnitValue
 
+class twissParameter(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    name: str
+    unit: str
+    dtype: str = 'f'
+
 class twiss(munch.Munch):
 
     properties = {
-    'z': 'm',
-    't': 's',
-    'kinetic_energy': 'J',
-    'gamma': '',
-    'cp': 'eV/c',
-    'cp_eV': 'eV/c',
-    'p': 'kg*m/s',
-    'enx': 'm-radians',
-    'ex': 'm-radians',
-    'eny': 'm-radians',
-    'ey': 'm-radians',
-    'enz': 'eV*s',
-    'ez': 'eV*s',
-    'beta_x': 'm',
-    'gamma_x': '',
-    'alpha_x': '',
-    'beta_y': 'm',
-    'gamma_y': '',
-    'alpha_y': '',
-    'beta_z': 'm',
-    'gamma_z': '',
-    'alpha_z': '',
-    'sigma_x': 'm',
-    'sigma_y': 'm',
-    'sigma_z': 'm',
-    'sigma_t': 's',
-    'sigma_p': 'kg * m/s',
-    'sigma_cp': 'eV/c',
-    'sigma_cp_eV': 'eV/c',
-    'mean_x': 'm',
-    'mean_y': 'm',
-    'mux': '2 pi',
-    'muy': '2 pi',
-    'eta_x': 'm',
-    'eta_xp': 'mrad',
-    'element_name': '',
-    'ecnx': 'm-mrad',
-    'ecny': 'm-mrad',
-    'eta_x_beam': 'm',
-    'eta_xp_beam': 'radians',
-    'eta_y_beam': 'm',
-    'eta_yp_beam': 'radians',
-    'beta_x_beam': 'm',
-    'beta_y_beam': 'm',
-    'alpha_x_beam': '',
-    'alpha_y_beam': '',
+        'z': twissParameter(name='z', unit='m'),
+        't':twissParameter(name='t', unit='s'),
+        'kinetic_energy': twissParameter(name='kinetic_energy', unit='J'),
+        'gamma': twissParameter(name='gamma', unit=''),
+        'cp': twissParameter(name='cp', unit='eV/c'),
+        'cp_eV': twissParameter(name='cp_eV', unit='eV/c'),
+        'p': twissParameter(name='p', unit='kg*m/s'),
+        'enx': twissParameter(name='enx', unit='m-radians'),
+        'ex': twissParameter(name='ex', unit='m-radians'),
+        'eny': twissParameter(name='eny', unit='m-radians'),
+        'ey': twissParameter(name='ey', unit='m-radians'),
+        'enz': twissParameter(name='enz', unit='eV*s'),
+        'ez': twissParameter(name='ez', unit='eV*s'),
+        'beta_x': twissParameter(name='beta_x', unit='m'),
+        'gamma_x': twissParameter(name='gamma_x', unit=''),
+        'alpha_x': twissParameter(name='alpha_x', unit=''),
+        'beta_y': twissParameter(name='beta_y', unit='m'),
+        'gamma_y': twissParameter(name='gamma_y', unit=''),
+        'alpha_y': twissParameter(name='alpha_y', unit=''),
+        'beta_z': twissParameter(name='beta_z', unit='m'),
+        'gamma_z': twissParameter(name='gamma_z', unit=''),
+        'alpha_z': twissParameter(name='alpha_z', unit=''),
+        'sigma_x': twissParameter(name='sigma_x', unit='m'),
+        'sigma_y': twissParameter(name='sigma_y', unit='m'),
+        'sigma_z': twissParameter(name='sigma_z', unit='m'),
+        'sigma_t': twissParameter(name='sigma_t', unit='s'),
+        'sigma_p': twissParameter(name='sigma_p', unit='kg * m/s'),
+        'sigma_cp': twissParameter(name='sigma_cp', unit='eV/c'),
+        'sigma_cp_eV': twissParameter(name='sigma_cp_eV', unit='eV/c'),
+        'mean_x': twissParameter(name='mean_x', unit='m'),
+        'mean_y': twissParameter(name='mean_y', unit='m'),
+        'mux': twissParameter(name='mux', unit='2 pi'),
+        'muy': twissParameter(name='muy', unit='2 pi'),
+        'eta_x': twissParameter(name='eta_x', unit='m'),
+        'eta_xp': twissParameter(name='eta_xp', unit='mrad'),
+        'element_name': twissParameter(name='element_name', unit='', dtype='U'),
+        'ecnx': twissParameter(name='ecnx', unit='m-mrad'),
+        'ecny': twissParameter(name='ecny', unit='m-mrad'),
+        'eta_x_beam': twissParameter(name='eta_x_beam', unit='m'),
+        'eta_xp_beam': twissParameter(name='eta_xp_beam', unit='radians'),
+        'eta_y_beam': twissParameter(name='eta_y_beam', unit='m'),
+        'eta_yp_beam': twissParameter(name='eta_yp_beam', unit='radians'),
+        'beta_x_beam': twissParameter(name='beta_x_beam', unit='m'),
+        'beta_y_beam': twissParameter(name='beta_y_beam', unit='m'),
+        'alpha_x_beam': twissParameter(name='alpha_x_beam', unit=''),
+        'alpha_y_beam': twissParameter(name='alpha_y_beam', unit=''),
     }
 
     E0 = constants.m_e * constants.speed_of_light**2
@@ -88,7 +97,6 @@ class twiss(munch.Munch):
             'astra': astra.read_astra_twiss_files
         }
         self.code_signatures = [['elegant','.twi'], ['elegant','.flr'], ['elegant','.sig'], ['GPT', 'emit.gdf'], ['astra', 'Xemit.001']]
-
     # def __getitem__(self, key):
     #     if key in super(twiss, self).__getitem__('data') and super(twiss, self).__getitem__('data') is not None:
     #         return self.get(key)
@@ -118,8 +126,14 @@ class twiss(munch.Munch):
             warnings.simplefilter("ignore")
             return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
 
+    def read_HDF5_twiss_file(self, *args, **kwargs):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return hdf5.read_HDF5_twiss_file(self, *args, **kwargs)
+
+
     def __repr__(self):
-        return repr([k.val for k in self.properties if len(self[k]) > 0])
+        return repr({k.name:self[k.name].val for k in self.properties.values() if len(self[k.name]) > 0})
 
     def stat(self, key):
         if key in self.properties:
@@ -138,13 +152,13 @@ class twiss(munch.Munch):
 
     def reset_dicts(self):
         self.sddsindex = 0
-        for k, v in self.properties.items():
-            self[k] = UnitValue([], units=v)
+        for name, prop in self.properties.items():
+            self[prop.name] = UnitValue([], units=prop.unit)
         self.elegantTwiss = {}
 
     def sort(self, key='z', reverse=False):
         index = self[key].argsort()
-        for k in self.properties:
+        for k in [p for p in self.properties]:
             if len(self[k]) > 0:
                 if reverse:
                     self[k] = self[k][index[::-1]]

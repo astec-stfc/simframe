@@ -373,16 +373,24 @@ class UnitValue(np.ndarray):
             pass
         return target
 
+    @property
+    def _isint(self):
+        return 'int' in str(self.val.dtype)
+
+    @property
+    def _isfloat(self):
+        return 'float' in str(self.val.dtype)
+
     def __repr__(self):
-        if self.shape == ():
-            if isinstance(self.item(), int):
-                f, prefix = nice_scale_prefix(self.item())
-                return int.__repr__(int(self/f))+' '+prefix+self.units
-            elif isinstance(self.item(), float):
-                f, prefix = nice_scale_prefix(self.item())
-                return np.float64.__repr__(np.float64(self/f))+' '+prefix+self.units
+        if self.val.shape == ():
+            if self._isint or self._isfloat:
+                f, prefix = nice_scale_prefix(self.val)
+                if self._isint:
+                    return str(int.__repr__(int(self.val/f))+' '+prefix+self.units)
+                return str(float.__repr__(float(self.val/f))+' '+prefix+self.units)
+            return str.__repr__(str(self.val))
         else:
-            return np.ndarray.__repr__(self)[:-1] + ', units=\'' + self.units + '\')'
+            return str(np.ndarray.__repr__(self.val)[:-1] + ', units=\'' + self.units + '\')')
 
     def __getitem__(self, key):
         if isinstance(key, slice):
@@ -469,3 +477,17 @@ class UnitValue(np.ndarray):
     @property
     def val(self):
         return np.asarray(self, dtype=self.dtype)
+
+    @property
+    def nice(self):
+        f, prefix = nice_scale_prefix(self.val)
+        return self.val/f, prefix
+
+    def in_units_of(self, prefix):
+        prefix = prefix+'-' if prefix[-1] != '-' else prefix
+        f = 1
+        if prefix in SHORT_PREFIX_FACTOR:
+            f = SHORT_PREFIX_FACTOR[prefix]
+        elif prefix in PREFIX_FACTOR:
+            f = PREFIX_FACTOR[prefix]
+        return self.val/f
