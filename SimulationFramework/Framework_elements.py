@@ -324,6 +324,7 @@ class dipole(frameworkElement):
 
 class kicker(dipole):
 
+
     def __init__(self, name=None, type='kicker', **kwargs):
         super().__init__(name, type, **kwargs)
 
@@ -349,6 +350,29 @@ class kicker(dipole):
 
     def gpt_ccs(self, ccs):
         return ccs
+
+    def _write_Elegant(self):
+        wholestring=''
+        etype = self._convertType_Elegant(self.objecttype)
+        string = self.objectname+': '+ etype
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        for key, value in keydict.items():
+            if not key == 'name' and not key == 'type' and not key == 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                key = self._convertKeword_Elegant(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                tmpstring = ', '+key+' = '+str(value)
+                if len(string+tmpstring) > 76:
+                    wholestring+=string+',&\n'
+                    string=''
+                    string+=tmpstring[2::]
+                else:
+                    string+= tmpstring
+        wholestring+=string+';\n'
+        return wholestring
 
 class quadrupole(frameworkElement):
 
@@ -987,6 +1011,14 @@ class beam_position_monitor(screen):
         ]), n)
 
 class beam_arrival_monitor(screen):
+
+    def __init__(self, name=None, type='beam_arrival_monitor', **kwargs):
+        super().__init__(name, type, **kwargs)
+
+    def write_ASTRA(self, n, **kwargs):
+        return ''
+
+class bunch_length_monitor(screen):
 
     def __init__(self, name=None, type='beam_arrival_monitor', **kwargs):
         super().__init__(name, type, **kwargs)

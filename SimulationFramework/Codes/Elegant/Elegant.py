@@ -239,7 +239,10 @@ class elegantLattice(frameworkLattice):
 
     @lox.thread
     def screen_threaded_function(self, screen, sddsindex):
-        return screen.sdds_to_hdf5(sddsindex)
+        try:
+            return screen.sdds_to_hdf5(sddsindex)
+        except:
+            return None
 
     def postProcess(self):
         if self.trackBeam:
