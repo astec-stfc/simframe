@@ -1,6 +1,7 @@
 import time, os, subprocess, re
 import yaml
 import copy
+from typing import Any
 from pprint import pprint
 from collections import OrderedDict
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -450,15 +451,53 @@ class Framework(Munch):
             for e, v  in zip(elems, values):
                 e[setting] = v
         else:
-            # print(( len(elems), len(values)))
             raise ValueError
 
-    def modifyElement(self, elementName, parameter, value):
-        if elementName in self.groupObjects:
+    def modifyElement(self, elementName: str, parameter: str|list|dict, value: Any = None) -> None:
+        if isinstance(parameter, dict) and value is None:
+            for p,v in parameter.items():
+                self.modifyElement(elementName, p, v)
+        elif isinstance(parameter, (list, set)) and value is None:
+            for p,v in parameter:
+                self.modifyElement(elementName, p, v)
+        elif elementName in self.groupObjects:
             self.groupObjects[elementName].change_Parameter(parameter,value)
+            # print('modifyElement(groupObject):', elementName, parameter, value)
         elif elementName in self.elementObjects:
             setattr(self.elementObjects[elementName], parameter, value)
-        # set(getattr(self.elementObjects[elementName], parameter), value)
+        #     print('modifyElement(elementObject):', elementName, parameter, value)
+        # else:
+        #     print('modifyElement ERROR:', elementName, parameter, value)
+
+    def modifyElements(self, elementNames: str|list, parameter: str|list|dict, value: Any = None) -> None:
+        if isinstance(elementNames, str) and  elementNames.lower() == "all":
+            elementNames = self.elementObjects.keys()
+        for elem in elementNames:
+            self.modifyElement(elem, parameter, value)
+
+    def modifyElementType(self, elementType: str, parameter: str, value: Any) -> None:
+        elems = self.getElementType(elementType)
+        for elementName in [e['name'] for e in elems]:
+            self.modifyElement(elementName, parameter, value)
+
+    def modifyLattice(self, latticeName: str, parameter: str|list|dict, value: Any = None) -> None:
+        if isinstance(parameter, dict) and value is None:
+            for p,v in parameter.items():
+                self.modifyLattice(latticeName, p, v)
+        elif isinstance(parameter, (list, set)) and value is None:
+            for p,v in parameter:
+                self.modifyLattice(latticeName, p, v)
+        elif latticeName in self.latticeObjects:
+            setattr(self.latticeObjects[latticeName], parameter, value)
+            # print('modifyLattice(latticeObject):', latticeName, parameter, value)
+        # else:
+        #     print('modifyLattice ERROR:', latticeName, parameter, value)
+
+    def modifyLattices(self, latticeNames: str|list, parameter: str|list|dict, value: Any = None) -> None:
+        if isinstance(latticeNames, str) and  latticeNames.lower() == "all":
+            latticeNames = self.latticeObjects.keys()
+        for latt in latticeNames:
+            self.modifyLattice(latt, parameter, value)
 
     def add_Generator(self, default=None, **kwargs):
         if 'code' in generator_keywords:
@@ -709,7 +748,7 @@ class Framework(Munch):
         self.runSetup.setElementScan(name=name, item=item, scanrange=scanrange, multiplicative=multiplicative)
         self.pushRunSettings()
 
-    def addLists(self, list1, list2):
+    def _addLists(self, list1, list2):
         return [a+b for a, b in zip(list1, list2)]
 
     def offsetElements(self, x=0, y=0, z=0):
@@ -718,8 +757,8 @@ class Framework(Munch):
             if self.latticeObjects[latt].file_block is not None and 'output' in self.latticeObjects[latt].file_block and 'zstart' in self.latticeObjects[latt].file_block['output']:
                 self.latticeObjects[latt].file_block['output']['zstart'] += z
         for elem in self.elements:
-            self.elementObjects[elem].position_start = self.addLists(self.elementObjects[elem].position_start, offset)
-            self.elementObjects[elem].position_end = self.addLists(self.elementObjects[elem].position_end, offset)
+            self.elementObjects[elem].position_start = self._addLists(self.elementObjects[elem].position_start, offset)
+            self.elementObjects[elem].position_end = self._addLists(self.elementObjects[elem].position_end, offset)
 
 class frameworkDirectory(Munch):
 
