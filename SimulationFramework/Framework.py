@@ -589,7 +589,7 @@ class Framework(Munch):
             try:
                 latticeS = [a + s0 for a in l.getSValues()]
                 allS = allS + latticeS
-                s0 = alls[-1]
+                s0 = allS[-1]
             except:
                 pass
         return allS

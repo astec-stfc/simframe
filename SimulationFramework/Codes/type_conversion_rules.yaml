@@ -4,6 +4,7 @@ elegant:
   sextupole: ksext
   beam_position_monitor: watch
   beam_arrival_monitor: moni
+  bunch_length_monitor: moni
   screen: watch
   rcollimator: rcol
   collimator: ecol
@@ -11,6 +12,7 @@ elegant:
   solenoid: sole
   wall_current_monitor: moni
   integrated_current_transformer: moni
+  faraday_cup: moni
   cavity: rfcw
   rf_deflecting_cavity: rfdf
   longitudinal_wakefield: wake

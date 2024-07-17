@@ -554,7 +554,7 @@ class r56_group(frameworkGroup):
 
     def updateElements(self, element, key, value):
         if isinstance(element, (list, tuple)):
-            [self.updateElements(e, key, value) for e in elements]
+            [self.updateElements(e, key, value) for e in self.elements]
         else:
             if element in self.allElementObjects:
                 self.allElementObjects[element].change_Parameter(key, value)

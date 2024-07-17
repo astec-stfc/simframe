@@ -17,6 +17,10 @@ beam_position_monitor:
   keywords: {}
 beam_arrival_monitor:
   keywords: {}
+bunch_length_monitor:
+  keywords: {}
+faraday_cup:
+  keywords: {}
 cavity:
   keywords: {
     n_cells,
@@ -130,7 +134,6 @@ common:
     buffer_end_length,
     position_errors,
     rotation_errors,
-    centre,
   }
 dipole:
   keywords: {
@@ -222,196 +225,63 @@ integrated_current_transformer:
 drift:
   keywords: {}
 csrdrift:
-  keywords: {'csrdz', 'use_stupakov', 'lsc_bins', 'use_saldin54', 'saldin54points', 'lsc_enable', 'lsc_low_frequency_cutoff_start', 'lsc_low_frequency_cutoff_end',
-  'lsc_high_frequency_cutoff_start', 'lsc_high_frequency_cutoff_end','csr_enable','spread', 'lsc_interpolate'}
+  keywords: {'csrdz', 'use_stupakov', 'lsc_bins', 'use_saldin54', 'saldin54points', 'lsc_enable', 'lsc_low_frequency_cutoff_start', 'lsc_low_frequency_cutoff_end', 'lsc_high_frequency_cutoff_start', 'lsc_high_frequency_cutoff_end','csr_enable','spread', 'lsc_interpolate'}
 lscdrift:
-  keywords: {'lsc_bins', 'lsc_enable', 'lsc_low_frequency_cutoff_start', 'lsc_low_frequency_cutoff_end',
-  'lsc_high_frequency_cutoff_start', 'lsc_high_frequency_cutoff_end', 'smoothing'}
+  keywords: {'lsc_bins', 'lsc_enable', 'lsc_low_frequency_cutoff_start', 'lsc_low_frequency_cutoff_end', 'lsc_high_frequency_cutoff_start', 'lsc_high_frequency_cutoff_end', 'smoothing'}
 edrift:
   keywords: {}
 charge:
   keywords: {"TOTAL"}
 astra_newrun:
-  keywords: {"NLoop", "ion_mass", "N_red",
-  "Xoff", "Yoff", "xp", "yp", "Zoff", "Toff", "Xrms", "Yrms", "XYrms",
-  "Zrms", "Trms", "Tau", "cor_px", "cor_py",
-  "SRT_Q_Schottky", "Q_Schottky", "debunch", "Track_All",
-  "Track_On_Axis", "Auto_Phase", "Phase_Scan", "check_ref_part",
-  "L_rm_back", "Z_min", "Z_Cathode", "H_max", "H_min", "Max_step",
-  "Lmonitor", 'RUN', 'HEAD', 'lprompt'}
+  keywords: {"NLoop", "ion_mass", "N_red", "Xoff", "Yoff", "xp", "yp", "Zoff", "Toff", "Xrms", "Yrms", "XYrms", "Zrms", "Trms", "Tau", "cor_px", "cor_py", "SRT_Q_Schottky", "Q_Schottky", "debunch", "Track_All", "Track_On_Axis", "Auto_Phase", "Phase_Scan", "check_ref_part", "L_rm_back", "Z_min", "Z_Cathode", "H_max", "H_min", "Max_step", "Lmonitor", 'RUN', 'HEAD', 'lprompt'}
   framework_keywords: {"particle_definition"}
 astra_output:
-  keywords: {"ZSTART", "ZSTOP", "ZEMIT", "ZPHASE",
-    "SCREEN", "SCR_XROT", "SCR_YROT", "STEP_WIDTH", "STEP_MAX",
-    "LPROJECT_EMIT", "LOCAL_EMIT", "LMAGNETIZED", "LSUB_ROT",
-    "LSUB_LARMOR", "LSUB_COUP", "ROT_ANG", "LSUB_COR", "REFS", "EMITS",
-    "C_EMITS", "c99_EMITS", "TR_EMITS", "SUB_EMITS", "CROSS_START",
-    "CROSS_END", "PHASES", "T_PHASES", "HIGH_RES", "BINARY", "TRACKS",
-    "TCHECKS", "SIGMAS", "CATHODES", "LANDFS", "LARMORS"}
+  keywords: {"ZSTART", "ZSTOP", "ZEMIT", "ZPHASE", "SCREEN", "SCR_XROT", "SCR_YROT", "STEP_WIDTH", "STEP_MAX", "LPROJECT_EMIT", "LOCAL_EMIT", "LMAGNETIZED", "LSUB_ROT", "LSUB_LARMOR", "LSUB_COUP", "ROT_ANG", "LSUB_COR", "REFS", "EMITS", "C_EMITS", "c99_EMITS", "TR_EMITS", "SUB_EMITS", "CROSS_START", "CROSS_END", "PHASES", "T_PHASES", "HIGH_RES", "BINARY", "TRACKS", "TCHECKS", "SIGMAS", "CATHODES", "LANDFS", "LARMORS"}
   framework_keywords: {"start_element", "end_element"}
 astra_charge:
-  keywords: {"L2D_3D",
-     "LMIRROR", "L_CURVED_CATHODE", "CATHODE_CONTOUR", "R_ZERO",
-      "CELL_VAR", "N_MIN", "MIN_GRID", "MERGE_1", "MERGE_2",
-      "MERGE_3", "MERGE_4", "MERGE_5", "MERGE_6", "MERGE_7", "MERGE_8",
-     "MERGE_9", "MERGE_10", "Z_TRANS", "MIN_GIRD_TRANS", "NX0",
-     "NY0", "NZF", "SMOOTH_X", "SMOOTH_Y", "SMOOTH_Z",
-     "MAX_SCALE", "MAX_COUNT", "EXP_CONTROL"}
+  keywords: {"L2D_3D", "LMIRROR", "L_CURVED_CATHODE", "CATHODE_CONTOUR", "R_ZERO", "CELL_VAR", "N_MIN", "MIN_GRID", "MERGE_1", "MERGE_2", "MERGE_3", "MERGE_4", "MERGE_5", "MERGE_6", "MERGE_7", "MERGE_8", "MERGE_9", "MERGE_10", "Z_TRANS", "MIN_GIRD_TRANS", "NX0", "NY0", "NZF", "SMOOTH_X", "SMOOTH_Y", "SMOOTH_Z", "MAX_SCALE", "MAX_COUNT", "EXP_CONTROL"}
   framework_keywords: {"cathode", "space_charge_mode"}
 csrtrack_particles:
-  keywords: {
-    reference_momentum,
-    reference_point_x,
-    reference_point_y,
-    reference_point_phi,
-    format,
-    array,
-  }
-  framework_keywords: {
-  particles,
-  }
+  keywords: {reference_momentum, reference_point_x, reference_point_y, reference_point_phi, format, array}
+  framework_keywords: {particles}
 csrtrack_online_monitor:
-  keywords: {
-    name,
-    type,
-    start_time_c0,
-    end_time_marker,
-    start_time_marker,
-    start_time_shift_c0,
-    end_time_shift_c0,
-    time_step_c0,
-    particle,
-    format,
-  }
+  keywords: {name, type, start_time_c0, end_time_marker, start_time_marker, start_time_shift_c0, end_time_shift_c0, time_step_c0, particle, format}
 csrtrack_forces:
-  keywords: {
-    type,
-    shape,
-    sigma_long,
-    relative_long,
-  }
+  keywords: {type, shape, sigma_long, relative_long}
 csrtrack_track_step:
-  keywords: {
-    precondition,
-    iterative,
-    error_per_ct,
-    error_weight_momentum,
-    ct_step_min,
-    ct_step_max,
-    ct_step_first,
-    increase_factor,
-    arc_factor,
-    duty_steps,
-  }
+  keywords: {precondition, iterative, error_per_ct, error_weight_momentum, ct_step_min, ct_step_max, ct_step_first, increase_factor, arc_factor, duty_steps}
 csrtrack_tracker:
-  keywords: {
-    end_time_marker,
-    end_time_shift_c0,
-  }
+  keywords: {end_time_marker, end_time_shift_c0}
 csrtrack_monitor:
-  keywords: {
-    format,
-    name,
-  }
+  keywords: {format, name}
 gpt_setfile:
-  keywords: {
-    set,
-    filename
-  }
+  keywords: {set, filename}
 gpt_charge:
-  keywords: {
-    set,
-    charge,
-  }
+  keywords: {set, charge}
 gpt_tout:
-  keywords: {
-    startpos,
-    endpos,
-    step,
-    starttime,
-  }
+  keywords: {startpos, endpos, step, starttime}
 gpt_setreduce:
-  keywords: {
-    set,
-    setreduce,
-  }
+  keywords: {set, setreduce}
 gpt_accuracy:
-  keywords: {
-    accuracy,
-  }
+  keywords: {accuracy}
 gpt_spacecharge:
-  keywords: {
-    grids,
-    space_charge_mode,
-    accuracy,
-    ngrids
-  }
+  keywords: {grids, space_charge_mode, accuracy, ngrids}
 gpt_csr1d:
-  keywords: {
-  }
+  keywords: {}
 gpt_writefloorplan:
-  keywords: {
-    filename,
-  }
+  keywords: {filename}
 gpt_Zminmax:
-  keywords: {
-    ECS,
-    zmin,
-    zmax,
-  }
+  keywords: {ECS, zmin, zmax}
 gpt_forwardscatter:
-  keywords: {
-    ECS,
-    name,
-    probability,
-  }
+  keywords: {ECS, name, probability}
 gpt_scatterplate:
-  keywords: {
-    ECS,
-    a,
-    b,
-    model,
-  }
+  keywords: {ECS, a, b, model}
 gpt_dtmaxt:
-  keywords: {
-    tstart,
-    tend,
-    dtmax,
-  }
+  keywords: {tstart, tend, dtmax}
 global_error:
-  keywords: {
-    'Log_Error', 'Suppress_output', 'generate_output', 'global_errors',
-    'charge', 'initial_x', 'initial_y', 'initial_t', 'initial_sigma_x', 'initial_sigma_y', 'initial_sigma_t', 'initial_sigma_z', 'initial_sigma_xy',
-    'cavity_x','cavity_y','cavity_xrot', 'cavity_yrot', 'cavity_zrot', 'cavity_phase', 'cavity_gradient',
-    'solenoid_x', 'solenoid_y', 'solenoid_xrot', 'solenoid_yrot', 'solenoid_field',
-    'quadrupole_x', 'quadrupole_y', 'quadrupole_xrot', 'quadrupole_yrot', 'quadrupole_zrot', 'quadrupole_gradient', 'quadrupole_k',
-    'dipole_x', 'dipole_y', 'dipole_z', 'dipole_xrot', 'dipole_yrot', 'dipole_zrot', 'dipole_field', 'dipole_radius',
-  }
-  astra_keywords: {
-    'Log_Error', 'Suppress_output', 'ErrorS', 'Lerror',
-    'Err_Qbunch', 'Err_Xoff', 'Err_Yoff', 'Err_Toff', 'Err_Xrms', 'Err_Yrms', 'Err_Trms', 'Err_Zrms', 'Err_XYrms',
-    'Err_C_xoff', 'Err_C_yoff', 'Err_C_xrot', 'Err_C_yrot', 'Err_C_zrot', 'Err_phi', 'Err_MaxE',
-    'Err_S_xoff', 'Err_S_yoff', 'Err_S_xrot', 'Err_S_yrot', 'Err_MaxB',
-    'Err_Q_xoff', 'Err_Q_yoff', 'Err_Q_xrot', 'Err_Q_yrot', 'Err_Q_zrot', 'Err_Q_Grad', 'Err_Q_K',
-    'Err_D_xoff', 'Err_D_yoff', 'Err_D_zoff', 'Err_D_xrot', 'Err_D_yrot', 'Err_D_zrot', 'Err_D_Strength', 'Err_D_Radius',
-    }
+  keywords: {'Log_Error', 'Suppress_output', 'generate_output', 'global_errors', 'charge', 'initial_x', 'initial_y', 'initial_t', 'initial_sigma_x', 'initial_sigma_y', 'initial_sigma_t', 'initial_sigma_z', 'initial_sigma_xy', 'cavity_x','cavity_y','cavity_xrot', 'cavity_yrot', 'cavity_zrot', 'cavity_phase', 'cavity_gradient', 'solenoid_x', 'solenoid_y', 'solenoid_xrot', 'solenoid_yrot', 'solenoid_field', 'quadrupole_x', 'quadrupole_y', 'quadrupole_xrot', 'quadrupole_yrot', 'quadrupole_zrot', 'quadrupole_gradient', 'quadrupole_k', 'dipole_x', 'dipole_y', 'dipole_z', 'dipole_xrot', 'dipole_yrot', 'dipole_zrot', 'dipole_field', 'dipole_radius'}
+  astra_keywords: {'Log_Error', 'Suppress_output', 'ErrorS', 'Lerror', 'Err_Qbunch', 'Err_Xoff', 'Err_Yoff', 'Err_Toff', 'Err_Xrms', 'Err_Yrms', 'Err_Trms', 'Err_Zrms', 'Err_XYrms', 'Err_C_xoff', 'Err_C_yoff', 'Err_C_xrot', 'Err_C_yrot', 'Err_C_zrot', 'Err_phi', 'Err_MaxE', 'Err_S_xoff', 'Err_S_yoff', 'Err_S_xrot', 'Err_S_yrot', 'Err_MaxB', 'Err_Q_xoff', 'Err_Q_yoff', 'Err_Q_xrot', 'Err_Q_yrot', 'Err_Q_zrot', 'Err_Q_Grad', 'Err_Q_K', 'Err_D_xoff', 'Err_D_yoff', 'Err_D_zoff', 'Err_D_xrot', 'Err_D_yrot', 'Err_D_zrot', 'Err_D_Strength', 'Err_D_Radius'}
 cleaner:
-  keywords: {
-    mode,
-    xlimit,
-    xplimit,
-    ylimit,
-    yplimit,
-    tlimit,
-    deltalimit,
-    }
+  keywords: {mode, xlimit, xplimit, ylimit, yplimit, tlimit, deltalimit}
 center:
-  keywords: {
-    center_x,
-    center_y,
-    center_xp,
-    center_yp,
-    center_s,
-    center_delta,
-    center_t
-  }
+  keywords: {center_x, center_y, center_xp, center_yp, center_s, center_delta, center_t}

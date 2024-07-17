@@ -891,6 +891,11 @@ class integrated_current_transformer(wall_current_monitor):
     def __init__(self, name=None, type='integrated_current_transformer', **kwargs):
         super().__init__(name, type, **kwargs)
 
+class faraday_cup(wall_current_monitor):
+
+    def __init__(self, name=None, type='faraday_cup', **kwargs):
+        super().__init__(name, type, **kwargs)
+
 class screen(frameworkElement):
 
     def __init__(self, name=None, type='screen', **kwargs):
