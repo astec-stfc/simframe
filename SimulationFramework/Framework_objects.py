@@ -93,7 +93,9 @@ class frameworkLattice(Munch):
     def update_groups(self):
         for g in list(self.groupSettings.keys()):
             if g in self.groupObjects:
-                self.groupObjects[g].update(**self.groupSettings[g])
+                setattr(self, g, self.groupObjects[g])
+                if self.groupSettings[g] is not None:
+                    self.groupObjects[g].update(**self.groupSettings[g])
 
     def getElement(self, element, param=None):
         if element in self.allElements:
@@ -488,6 +490,9 @@ class frameworkGroup(object):
         self.elements = elements
         self.allElementObjects = elementObjects.elementObjects
         self.allGroupObjects = elementObjects.groupObjects
+
+    def update(self, **kwargs):
+        pass
 
     def get_Parameter(self, p):
         try:
