@@ -6,7 +6,6 @@ general:
   half_gap: hgap
   horizontal_size: x_max
   vertical_size: y_max
-  field_amplitude: volt
   output_filename: filename
   csr_bins: bins
   hangle: hkick
@@ -17,6 +16,7 @@ general:
   bunched_beam: bunched_beam_mode
   current_bins: n_bins
   lsc_enable: lsc
+  tilt_angle: tilt
 dipole:
   isr_enable: isr
   sr_enable: synch_rad
@@ -48,6 +48,9 @@ cavity:
   interpolate_current_bins: interpolate
   smooth_current_bins: smoothing
   smoothing_half_width: sg_halfwidth
+rf_deflecting_cavity:
+  frequency: frequency
+  field_amplitude: voltage
 solenoid:
   field_amplitude: B
 scatter:

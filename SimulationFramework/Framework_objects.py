@@ -249,6 +249,11 @@ class frameworkLattice(Munch):
             if not self.elements[name].subelement:
                 originalelements[name] = self.elements[name]
                 pos = np.array(self.allElementObjects[name].position_start)
+                # If element is a cavity, we need to offset the cavity by the coupling cell length
+                # to make it consistent with ASTRA
+                if originalelements[name].objecttype == 'cavity' and hasattr(originalelements[name], 'coupling_cell_length'):
+                    pos += originalelements[name].coupling_cell_length
+                    # print('Adding coupling_cell_length of ', originalelements[name].coupling_cell_length,'to the start position')
                 positions.append(pos)
                 positions.append(self.allElementObjects[name].position_end)
         positions = positions[1:]
@@ -528,9 +533,15 @@ class frameworkGroup(object):
     def __getitem__(self, key):
         return self.get_Parameter(key)
 
+    def __setitem__(self, key, value):
+        return self.change_Parameter(key, value)
+
 class element_group(frameworkGroup):
     def __init__(self, name, elementObjects, type, elements, **kwargs):
         super().__init__(name, elementObjects, type, elements, **kwargs)
+
+    def __str__(self):
+        return str([self.allElementObjects[e] for e in self.elements])
 
 class r56_group(frameworkGroup):
     def __init__(self, name, elementObjects, type, elements, ratios, keys, **kwargs):
@@ -538,6 +549,9 @@ class r56_group(frameworkGroup):
         self.ratios = ratios
         self.keys = keys
         self._r56 = None
+
+    def __str__(self):
+        return str({e:k for e, k in zip(self.elements,self.keys)})
 
     def get_Parameter(self, p):
         if str(p) == 'r56':
@@ -550,20 +564,25 @@ class r56_group(frameworkGroup):
         return self._r56
     @r56.setter
     def r56(self, r56):
+        # print('Changing r56!', self._r56)
         self._r56 = r56
         data = {'r56': self._r56}
         parser = MathParser(data)
         values = [parser.parse(e) for e in self.ratios]
-        for e, k, v in zip(*[self.elements, self.keys, values]):
+        # print('\t', list(zip(self.elements, self.keys, values)))
+        for e, k, v in zip(self.elements, self.keys, values):
             self.updateElements(e, k, v)
 
     def updateElements(self, element, key, value):
+        # print('R56 : updateElements', element, key, value)
         if isinstance(element, (list, tuple)):
             [self.updateElements(e, key, value) for e in self.elements]
         else:
             if element in self.allElementObjects:
+                # print('R56 : updateElements : element', element, key, value)
                 self.allElementObjects[element].change_Parameter(key, value)
             if element in self.allGroupObjects:
+                # print('R56 : updateElements : group', element, key, value)
                 self.allGroupObjects[element].change_Parameter(key, value)
 
 class chicane(frameworkGroup):

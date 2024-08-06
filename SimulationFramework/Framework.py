@@ -191,16 +191,16 @@ class Framework(Munch):
         self.groups = self.settings['groups'] if 'groups' in self.settings and self.settings['groups'] is not None else {}
         changes = self.settings['changes'] if 'changes' in self.settings and self.settings['changes'] is not None else {}
 
-        for name, elem in list(self.groups.items()):
-            if 'type' in elem:
-                group = globals()[elem['type']](name, self, global_parameters=self.global_parameters, **elem)
-                self.groupObjects[name] = group
-
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
 
         for name, lattice in list(self.fileSettings.items()):
             self.read_Lattice(name, lattice)
+
+        for name, elem in list(self.groups.items()):
+            if 'type' in elem:
+                group = globals()[elem['type']](name, self, global_parameters=self.global_parameters, **elem)
+                self.groupObjects[name] = group
 
         self.apply_changes(changes)
 
