@@ -49,7 +49,7 @@ latticeClasses = [globals()[x] for x in globals() if (('Lattice' in x) and ('Mas
 
 class Framework(Munch):
 
-    def __init__(self, directory='test', master_lattice=None, simcodes=None, overwrite=None, runname='CLARA_240', clean=False, verbose=True, sddsindex=0, delete_output_files=False):
+    def __init__(self, directory: str = 'test', master_lattice: str|None = None, simcodes: str|None = None, overwrite: bool|None = None, runname: str = 'CLARA_240', clean: bool = False, verbose: bool = True, sddsindex: int = 0, delete_output_files: bool = False):
         super(Framework, self).__init__()
         gptlicense = os.environ['GPTLICENSE'] if 'GPTLICENSE' in os.environ else ''
         astra_use_wsl = os.environ['WSL_ASTRA'] if 'WSL_ASTRA' in os.environ else 1
@@ -82,10 +82,11 @@ class Framework(Munch):
         # object encoding settings for simulations with multiple runs
         self.runSetup = runSetup()
 
-    def __repr__(self):
+    def __repr__(self) -> repr:
         return repr({'master_lattice_location': self.global_parameters['master_lattice_location'], 'subdirectory': self.subdirectory, 'settingsFilename': self.settingsFilename})
 
-    def setSubDirectory(self, dir):
+    def setSubDirectory(self, dir: str) -> None:
+        """ Set subdirectory for tracking """
         self.subdirectory = os.path.abspath(dir)
         self.global_parameters['master_subdir'] = self.subdirectory
         if not os.path.exists(self.subdirectory):
@@ -96,7 +97,8 @@ class Framework(Munch):
         if self.overwrite == None:
             self.overwrite = True
 
-    def setMasterLatticeLocation(self, master_lattice=None):
+    def setMasterLatticeLocation(self, master_lattice: str|None = None) -> None:
+        """ Set the location of the MasterLattice package """
         global MasterLatticeLocation
         if master_lattice is None:
             if MasterLatticeLocation is not None:
@@ -123,7 +125,8 @@ class Framework(Munch):
             self.global_parameters['master_lattice_location'] = os.path.join(os.path.abspath(master_lattice),'./')
         MasterLatticeLocation = self.global_parameters['master_lattice_location']
 
-    def setSimCodesLocation(self, simcodes=None):
+    def setSimCodesLocation(self, simcodes: str|None = None) -> None:
+        """ Set the location of the SimCodes package """
         global SimCodesLocation
         if simcodes is None:
             if SimCodesLocation is not None:
@@ -150,7 +153,8 @@ class Framework(Munch):
             self.global_parameters['simcodes_location'] = os.path.join(os.path.abspath(simcodes),'./')
         SimCodesLocation = self.global_parameters['simcodes_location']
 
-    def load_Elements_File(self, input):
+    def load_Elements_File(self, input: str|list|tuple) -> None:
+        """ Load a file with element definitions """
         if isinstance(input,(list,tuple)):
             filename = input
         else:
@@ -167,8 +171,8 @@ class Framework(Munch):
                     elements = yaml.safe_load(stream)['elements']
             for name, elem in list(elements.items()):
                 self.read_Element(name, elem)
-
-    def loadSettings(self, filename=None, settings=None):
+ 
+    def loadSettings(self, filename: str|None = None, settings: FrameworkSettings|None = None) -> None:
         """Load Lattice Settings from file or dictionary"""
         if isinstance(filename, str):
             self.settingsFilename = filename
@@ -209,7 +213,8 @@ class Framework(Munch):
             self.original_elementObjects[e] = unmunchify(self.elementObjects[e])
         self.original_elementObjects['generator'] = unmunchify(self['generator'])
 
-    def save_settings(self, filename=None, directory='.', elements=None):
+    def save_settings(self, filename: str|None = None, directory: str = '.', elements: dict|None = None)-> None:
+        """ Save Lattice Settings to a file """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
@@ -224,13 +229,14 @@ class Framework(Munch):
             yaml.default_flow_style=True
             yaml.safe_dump(settings, yaml_file, sort_keys=False)
 
-    def read_Lattice(self, name, lattice):
+    def read_Lattice(self, name: str, lattice: dict) -> None:
+        """ Create an instance of a <code>Lattice class """
         code = lattice['code'] if 'code' in lattice else 'astra'
-        self.latticeObjects[name] = globals()[lattice['code'].lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
+        self.latticeObjects[name] = globals()[code.lower()+'Lattice'](name, lattice, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
-    def detect_changes(self, elementtype=None, elements=None, function=None):
+    def detect_changes(self, elementtype: str|None = None, elements: list|None = None) -> dict:
+        """ Detect lattice changes from the original loaded lattice and return a dictionary of changes """
         disallowed = ['allowedkeywords', 'keyword_conversion_rules_elegant', 'objectdefaults', 'global_parameters']
-        start = time.time()
         changedict = {}
         if elementtype is not None:
             changeelements = self.getElementType(elementtype, 'objectname')
@@ -238,8 +244,6 @@ class Framework(Munch):
             changeelements = elements
         else:
             changeelements = ['generator'] + list(self.elementObjects.keys())
-        # print('changeelements = ', changeelements)
-        # print(changeelements[0])
         if len(changeelements) > 0 and isinstance(changeelements[0], (list, tuple, dict)) and len(changeelements[0]) > 1:
                 for ek in changeelements:
                     new = None
@@ -248,9 +252,7 @@ class Framework(Munch):
                         new = unmunchify(self.elementObjects[e])
                     elif e in self.groupObjects:
                         new = self.groupObjects[e]
-                        # print 'detecting group = ', e, new, new[k]
                     if new is not None:
-                        # print (new)
                         if e not in changedict:
                             changedict[e] = {}
                         changedict[e][k] = convert_numpy_types(new[k])
@@ -263,7 +265,6 @@ class Framework(Munch):
                 if not self.original_elementObjects[e] == unmunched_element:
                     orig = self.original_elementObjects[e]
                     new = unmunched_element
-
                     try:
                         changedict[e] = {k: convert_numpy_types(new[k]) for k in new if k in orig and not new[k] == orig[k] and not k in disallowed}
                         changedict[e].update({k: convert_numpy_types(new[k]) for k in new if k not in orig and not k in disallowed})
@@ -274,11 +275,12 @@ class Framework(Munch):
                         pass
         return changedict
 
-    def save_changes_file(self, filename=None, type=None, elements=None, function=None, dictionary=False):
+    def save_changes_file(self, filename: str|None = None, type: str|None = None, elements: dict|None = None, dictionary: bool = False) -> dict|None:
+        """ Save a file, or returns a dictionary, of detected changes in the lattice from the loaded version """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
             filename =  pre     + '_changes.yaml'
-        changedict = self.detect_changes(elementtype=type, elements=elements, function=function)
+        changedict = self.detect_changes(elementtype=type, elements=elements)
         if dictionary:
             return changedict
         else:
@@ -286,7 +288,8 @@ class Framework(Munch):
                 yaml.default_flow_style=True
                 yaml.dump(changedict, yaml_file)
 
-    def save_lattice(self, lattice=None, filename=None, directory='.', dictionary=False):
+    def save_lattice(self, lattice: str|None = None, filename: str|None = None, directory: str = '.', dictionary: bool=False) -> dict|None:
+        """ Save to a file, or returns a dictionary, of a lattice """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
@@ -314,7 +317,6 @@ class Framework(Munch):
             except:
                 print ('##### ERROR IN CHANGE ELEMS: ', e, new)
                 pass
-        # print('#### Saving Lattice - ', filename)
         if dictionary:
             return dic
         else:
@@ -322,10 +324,12 @@ class Framework(Munch):
                 yaml.default_flow_style = True
                 yaml.dump(dic, yaml_file)
 
-    def load_changes_file(self, filename=None, apply=True, verbose=False):
+    def load_changes_file(self, filename: str|None = None, apply: bool = True, verbose: bool = False) -> dict:
+        """ Loads a saved changes file and applies the settings to the current lattice. 
+            Returns a list of changes.
+        """
         if isinstance(filename, (tuple, list)):
-            for c in filename:
-                self.load_changes_file(c)
+            return [self.load_changes_file(c) for c in filename]
         else:
             if filename is None:
                 pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
@@ -334,10 +338,10 @@ class Framework(Munch):
                 changes = dict(yaml.safe_load(infile))
             if apply:
                 self.apply_changes(changes, verbose=verbose)
-            else:
-                return changes
+            return changes
 
-    def apply_changes(self, changes, verbose=False):
+    def apply_changes(self, changes: dict, verbose: bool = False) -> None:
+        """ Applies a dictionary of changes to the current lattice """
         for e, d in list(changes.items()):
             # print 'found change element = ', e
             if e in self.elementObjects:
@@ -351,7 +355,8 @@ class Framework(Munch):
                     self.groupObjects[e].change_Parameter(k, v)
                     if verbose: print ('modifying ',e,'[',k,']', ' = ', v)
 
-    def check_lattice(self, decimals=4):
+    def check_lattice(self, decimals: int = 4) -> bool:
+        """ Checks that there are no positioning errors in the lattice and returns True/False """
         noerror = True
         for elem in self.elementObjects.values():
             start = elem.position_start
@@ -370,32 +375,35 @@ class Framework(Munch):
                 print (elem.objectname, cend, end, cend - end)
         return noerror
 
-    def change_Lattice_Code(self, name, code, exclude=None):
-        if name == 'All':
+    def change_Lattice_Code(self, latticename: str, code: str, exclude: str|list|tuple|None = None) -> None:
+        """ Changes the tracking code for a given lattice """
+        if latticename == 'All':
             [self.change_Lattice_Code(l, code, exclude) for l in self.latticeObjects]
-        elif isinstance(name, (tuple, list)):
-            [self.change_Lattice_Code(l, code, exclude) for l in name]
+        elif isinstance(latticename, (tuple, list)):
+            [self.change_Lattice_Code(l, code, exclude) for l in latticename]
         else:
-            if not name == 'generator' and not (name == exclude or (isinstance(exclude, (list, tuple)) and name in exclude)):
+            if not latticename == 'generator' and not (latticename == exclude or (isinstance(exclude, (list, tuple)) and latticename in exclude)):
                 # print('Changing lattice ', name, ' to ', code.lower())
-                currentLattice = self.latticeObjects[name]
-                self.latticeObjects[name] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
+                currentLattice = self.latticeObjects[latticename]
+                self.latticeObjects[latticename] = globals()[code.lower()+'Lattice'](currentLattice.objectname, currentLattice.file_block, self.elementObjects, self.groupObjects, self.runSetup, self.settings, self.executables, self.global_parameters)
 
-    def read_Element(self, name, element, subelement=False):
-        if name == 'filename':
+    def read_Element(self, elementname: str, element: dict, subelement: bool = False) -> None:
+        """ Reads an element definition and creates the element and any sub-elements """
+        if elementname == 'filename':
             self.load_Elements_File(element)
         else:
             if subelement:
                 if 'subelement' in element:
                     del element['subelement']
-                self.add_Element(name, subelement=True, **element)
+                self.add_Element(elementname, subelement=True, **element)
             else:
-                self.add_Element(name, **element)
+                self.add_Element(elementname, **element)
             if 'sub_elements' in element:
                 for name, elem in list(element['sub_elements'].items()):
                     self.read_Element(name, elem, subelement=True)
 
-    def add_Element(self, name=None, type=None, **kwargs):
+    def add_Element(self, name: str|None = None, type: str|None = None, **kwargs) -> dict:
+        """ Instantiates and adds the element definition to the list of all elements """
         if name == None:
             if not 'name' in kwargs:
                 raise NameError('Element does not have a name')
@@ -410,7 +418,8 @@ class Framework(Munch):
         # except Exception as e:
         #     raise NameError('Element \'%s\' does not exist' % type)
 
-    def replace_Element(self, name=None, type=None, **kwargs):
+    def replace_Element(self, name: str|None = None, type: str|None = None, **kwargs) -> dict:
+        """ Replaces and element type with a new type and updates the definitions """
         if name == None:
             if not 'name' in kwargs:
                 raise NameError('Element does not have a name')
@@ -426,7 +435,8 @@ class Framework(Munch):
         # except Exception as e:
         #     raise NameError('Element \'%s\' does not exist' % type)
 
-    def getElement(self, element, param=None):
+    def getElement(self, element: str, param: str|None = None) -> dict|Any:
+        """ Returns the element object or a parameter of that element """
         if self.__getitem__(element) is not None:
             if param is not None:
                 param = param.lower()
@@ -437,7 +447,8 @@ class Framework(Munch):
             print(( 'WARNING: Element ', element,' does not exist'))
             return {}
 
-    def getElementType(self, type, param=None):
+    def getElementType(self, type: str, param: str|None = None) -> dict|Any:
+        """ Gets all elements of the specified type, or the parameter of each of those elements """
         if isinstance(type, (list, tuple)):
             return [self.getElementType(t, param=param) for t in type]
         if isinstance(param, (list, tuple)):
@@ -445,7 +456,8 @@ class Framework(Munch):
             # return [item for sublist in all_elements for item in sublist]
         return [{'name': element, **self.elementObjects[element]} if param is None else self.elementObjects[element][param] for element in list(self.elementObjects.keys()) if self.elementObjects[element].objecttype.lower() == type.lower()]
 
-    def setElementType(self, type, setting, values):
+    def setElementType(self, type: str, setting: str, values: Any) -> None:
+        """ Modifies the specified parameter of each element of a given type """
         elems = self.getElementType(type)
         if len(elems) == len(values):
             for e, v  in zip(elems, values):
@@ -454,6 +466,7 @@ class Framework(Munch):
             raise ValueError
 
     def modifyElement(self, elementName: str, parameter: str|list|dict, value: Any = None) -> None:
+        """ Modifies an element parameter """
         if isinstance(parameter, dict) and value is None:
             for p,v in parameter.items():
                 self.modifyElement(elementName, p, v)
@@ -470,17 +483,20 @@ class Framework(Munch):
         #     print('modifyElement ERROR:', elementName, parameter, value)
 
     def modifyElements(self, elementNames: str|list, parameter: str|list|dict, value: Any = None) -> None:
+        """ Modifies an element parameter for a list of elements """
         if isinstance(elementNames, str) and  elementNames.lower() == "all":
             elementNames = self.elementObjects.keys()
         for elem in elementNames:
             self.modifyElement(elem, parameter, value)
 
     def modifyElementType(self, elementType: str, parameter: str, value: Any) -> None:
+        """ Modifies an element for a list of elements of a given type """
         elems = self.getElementType(elementType)
         for elementName in [e['name'] for e in elems]:
             self.modifyElement(elementName, parameter, value)
 
     def modifyLattice(self, latticeName: str, parameter: str|list|dict, value: Any = None) -> None:
+        """ Modify a lattice definition """
         if isinstance(parameter, dict) and value is None:
             for p,v in parameter.items():
                 self.modifyLattice(latticeName, p, v)
@@ -494,14 +510,16 @@ class Framework(Munch):
         #     print('modifyLattice ERROR:', latticeName, parameter, value)
 
     def modifyLattices(self, latticeNames: str|list, parameter: str|list|dict, value: Any = None) -> None:
+        """ Modify a lattice definition for a list of lattices """
         if isinstance(latticeNames, str) and  latticeNames.lower() == "all":
             latticeNames = self.latticeObjects.keys()
         for latt in latticeNames:
             self.modifyLattice(latt, parameter, value)
 
-    def add_Generator(self, default=None, **kwargs):
-        if 'code' in generator_keywords:
-            if generator_keywords['code'].lower() == "gpt":
+    def add_Generator(self, default: str|None = None, **kwargs) -> None:
+        """ Add a file generator based on a keyword dictionary """
+        if 'code' in kwargs:
+            if kwargs['code'].lower() == "gpt":
                 code = GPTGenerator
             else:
                 code = ASTRAGenerator
@@ -513,7 +531,8 @@ class Framework(Munch):
             self.generator = code(self.executables, self.global_parameters, **kwargs)
         self.latticeObjects['generator'] = self.generator
 
-    def change_generator(self, generator):
+    def change_generator(self, generator: str) -> None:
+        """ Changes the generator from one type to another """
         old_kwargs = self.generator.kwargs
         if generator.lower() == "gpt":
             generator = GPTGenerator(self.executables, self.global_parameters, **old_kwargs)
@@ -524,7 +543,8 @@ class Framework(Munch):
     def loadParametersFile(self, file):
         pass
 
-    def saveParametersFile(self, file, parameters):
+    def saveParametersFile(self, file: str, parameters: dict|list|tuple) -> None:
+        """ Saves a list of parameters to a file """
         output = {}
         if isinstance(parameters, dict):
             for k,v in list(parameters.items()):
@@ -549,15 +569,17 @@ class Framework(Munch):
         # elem = self.getelement(k, v)
         # outputfile.write(k+' '+v+' ')
 
-    def set_lattice_prefix(self, lattice, prefix):
+    def set_lattice_prefix(self, lattice: str, prefix: str) -> None:
+        """ Sets the 'prefix' parameter for a lattice, which determines where it looks for its starting beam distribution """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].prefix = prefix
 
-    def set_lattice_sample_interval(self, lattice, interval):
+    def set_lattice_sample_interval(self, lattice: str, interval: int) -> None:
+        """ Sets the 'sample_interval' parameter for a lattice, which determines the sampling of the distribution """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].sample_interval = interval
 
-    def __getitem__(self,key):
+    def __getitem__(self, key: str) -> Any:
         if key in super(Framework, self).__getitem__('elementObjects'):
             return self.elementObjects.get(key)
         elif key in super(Framework, self).__getitem__('latticeObjects'):
@@ -571,18 +593,22 @@ class Framework(Munch):
                 return None
 
     @property
-    def elements(self):
+    def elements(self) -> list:
+        """ Returns a list of all element objects """
         return list(self.elementObjects.keys())
 
     @property
-    def lines(self):
+    def lines(self) -> list:
+        """ Returns a list of all lattice objects """
         return list(self.latticeObjects.keys())
 
     @property
-    def commands(self):
+    def commands(self) -> list:
+        """ Returns a list of all command objects """
         return list(self.commandObjects.keys())
 
-    def getSValues(self):
+    def getSValues(self) -> list:
+        """ returns a list of S values for the current machine """
         s0 = 0
         allS = []
         for l in self.latticeObjects.values():
@@ -594,7 +620,8 @@ class Framework(Munch):
                 pass
         return allS
 
-    def getSValuesElements(self):
+    def getSValuesElements(self) -> list:
+        """ Returns a list of (name, element, s) tuples for the current machine """
         s0 = 0
         allS = []
         for l in self.latticeObjects:
@@ -606,7 +633,8 @@ class Framework(Munch):
                 s0 = latticeS[-1]
         return allS
 
-    def getZValuesElements(self):
+    def getZValuesElements(self) -> list:
+        """ Returns a list of (name, element, Z) tuples for the current machine """
         allZ = []
         for l in self.latticeObjects:
             if not l == 'generator':
@@ -615,7 +643,8 @@ class Framework(Munch):
                 allZ = allZ + zelems
         return list(sorted(allZ, key=lambda x: x[2][0]))
 
-    def track(self, files=None, startfile=None, endfile=None, preprocess=True, write=True, track=True, postprocess=True, save_summary=True, frameworkDirectory=False, check_lattice=True):
+    def track(self, files: list|None = None, startfile: str|None = None, endfile: str|None = None, preprocess: bool = True, write: bool = True, track: bool = True, postprocess: bool = True, save_summary: bool = True, frameworkDirectory: bool = False, check_lattice: bool = True) -> None:
+        """ Tracks the current machine, or a subset based on the 'files' list"""
         if check_lattice:
             if not self.check_lattice():
                 raise Exception("Lattice Error - check definitions")
@@ -697,7 +726,8 @@ class Framework(Munch):
             if frameworkDirectory:
                 return frameworkDirectory(directory=self.subdirectory, twiss=True, beams=True, verbose=self.verbose)
 
-    def postProcess(self, files=None, startfile=None, endfile=None):
+    def postProcess(self, files: list|None = None, startfile: str|None = None, endfile: str|None = None) -> None:
+        """ Post-processes the tracking files and converts them to HDF5 """
         if files is None:
             files = ['generator'] + self.lines if not hasattr(self, 'generator') else self.lines
         if startfile is not None and startfile in files:
@@ -713,7 +743,8 @@ class Framework(Munch):
             else:
                 self.latticeObjects[l].postProcess()
 
-    def save_summary_files(self, twiss=True, beams=True):
+    def save_summary_files(self, twiss: bool = True, beams: bool = True) -> None:
+        """ Saves HDF5 summary files for the Twiss and/or Beam files """
         t = rtf.load_directory(self.subdirectory)
         try:
             t.save_HDF5_twiss_file(self.subdirectory+'/'+'Twiss_Summary.hdf5')
@@ -724,34 +755,37 @@ class Framework(Munch):
         except:
             pass
 
-    def pushRunSettings(self):
+    def pushRunSettings(self) -> None:
+        """ Updates the 'Run Settings' in each of the lattices """
         for l, latticeObject in self.latticeObjects.items():
             if isinstance(latticeObject, tuple(latticeClasses)):
                 latticeObject.updateRunSettings(self.runSetup)
 
-    def setNRuns(self, nruns):
+    def setNRuns(self, nruns: int) -> None:
         '''sets the number of simulation runs to a new value for all lattice objects'''
         self.runSetup.setNRuns(nruns)
         self.pushRunSettings()
 
-    def setSeedValue(self, seed):
+    def setSeedValue(self, seed: int) -> None:
         '''sets the random number seed to a new value for all lattice objects'''
         self.runSetup.setSeedValue(seed)
         self.pushRunSettings()
 
-    def loadElementErrors(self, file):
+    def loadElementErrors(self, file: str) -> None:
         self.runSetup.loadElementErrors(file)
         self.pushRunSettings()
 
-    def setElementScan(self, name, item, scanrange, multiplicative=False):
+    def setElementScan(self, name:str, item: str, scanrange: list, multiplicative: bool = False) -> None:
         '''define a parameter scan for a single parameter of a given machine element'''
         self.runSetup.setElementScan(name=name, item=item, scanrange=scanrange, multiplicative=multiplicative)
         self.pushRunSettings()
 
-    def _addLists(self, list1, list2):
+    def _addLists(self, list1: list, list2: list) -> list:
+        """ Adds elements piecewise in two lists """
         return [a+b for a, b in zip(list1, list2)]
 
-    def offsetElements(self, x=0, y=0, z=0):
+    def offsetElements(self, x: int|float = 0, y: int|float = 0, z: int|float = 0) -> None:
+        """ Moves all elements by the set amount in (x, y, z) space """
         offset = [x, y, z]
         for latt in self.lines:
             if self.latticeObjects[latt].file_block is not None and 'output' in self.latticeObjects[latt].file_block and 'zstart' in self.latticeObjects[latt].file_block['output']:
@@ -761,8 +795,9 @@ class Framework(Munch):
             self.elementObjects[elem].position_end = self._addLists(self.elementObjects[elem].position_end, offset)
 
 class frameworkDirectory(Munch):
+    """ Class to load a tracking run from a directory and read the Beam and Twiss files and make them available"""
 
-    def __init__(self, directory=None, twiss=True, beams=False, verbose=False, settings='settings.def', changes='changes.yaml', framework=None):
+    def __init__(self, directory: str|None = None, twiss: bool = True, beams: bool = False, verbose: bool = False, settings: str = 'settings.def', changes: str = 'changes.yaml', framework: Framework|None = None) -> None:
         super(frameworkDirectory, self).__init__()
         if framework is None:
             directory = '.' if directory is None else os.path.abspath(directory)
@@ -789,26 +824,32 @@ class frameworkDirectory(Munch):
 
     if use_matplotlib:
         def plot(self, *args, **kwargs):
+            """ Return a plot object """
             return groupplot.plot(self, *args, **kwargs)
         def general_plot(self, *args, **kwargs):
+            """ Return a general_plot object """
             return groupplot.general_plot(self, *args, **kwargs)
 
     def __repr__(self):
         return repr({'framework': self.framework, 'twiss': self.twiss, 'beams': self.beams})
 
-    def save_summary_files(self, twiss=True, beams=True):
+    def save_summary_files(self, twiss: bool = True, beams: bool = True):
+        """ Save summary files in framework directory """
         self.framework.save_summary_files(twiss=twiss, beams=beams)
 
-    def getScreen(self, screen):
+    def getScreen(self, screen: str) -> dict:
+        """ Get a beam object for the given screen """
         if self.beams:
             return self.beams.getScreen(screen)
 
-    def getScreenNames(self):
+    def getScreenNames(self) -> list:
+        """ Get all screen names in the beam object """
         if self.beams:
             return self.beams.getScreens()
         return []
 
-    def element(self, element, field=None):
+    def element(self, element: str, field: str|None = None) -> dict:
+        """ Get an element definition from the framework object """
         elem = self.framework.getElement(element)
         if field:
             return elem[field]
@@ -817,6 +858,7 @@ class frameworkDirectory(Munch):
             return pprint({k.replace('object',''):v for k,v in elem.items() if k not in disallowed})
         return elem
 
-def load_directory(directory='.', twiss=True, beams=False, **kwargs):
+def load_directory(directory: str = '.', twiss: bool = True, beams: bool = False, **kwargs) -> frameworkDirectory:
+    """ Load a directory from a SimFrame tracking run and return a frameworkDirectory object """
     fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs)
     return fw
