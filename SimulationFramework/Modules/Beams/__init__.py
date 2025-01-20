@@ -174,11 +174,36 @@ class stats(object):
 
 class beam(munch.Munch):
 
-    particle_mass = UnitValue(constants.m_e, 'kg')
-    E0 = UnitValue(particle_mass * constants.speed_of_light**2, 'J')
-    E0_eV = UnitValue(E0 / constants.elementary_charge, 'eV/c')
-    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, 'C/c')
-    speed_of_light = UnitValue(constants.speed_of_light, 'm/s')
+    # particle_mass = UnitValue(constants.m_e, "kg")
+    # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
+    # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
+    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    speed_of_light = UnitValue(constants.speed_of_light, "m/s")
+
+    mass_index = {
+        1: constants.m_e,  # electron
+        2: constants.m_e,  # positron
+        3: constants.m_p,  # proton
+        4: constants.m_p,  # hydrogen ion
+    }
+    charge_sign_index = {
+        1: -1,
+        2: 1,
+        3: 1,
+        4: 1
+    }
+
+    @property
+    def E0_eV(self):
+        if hasattr(self, "particle_rest_energy_eV"):
+            return self.particle_rest_energy_eV
+        elif hasattr(self, "particle_rest_energy"):
+            return self._beam["particle_rest_energy"] / constants.elementary_charge
+        else:
+            particle_mass = UnitValue(constants.m_e, "kg")
+            E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
+            E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
+            return E0_eV
 
     def __init__(self, filename=None, sddsindex=0):
         self._beam = Particles()
@@ -260,7 +285,7 @@ class beam(munch.Munch):
         return repr({'filename': self.filename, 'code': self.code, 'Particles': [k for k in self._beam.keys() if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0]})
 
     def set_particle_mass(self, mass=constants.m_e):
-        self.particle_mass = mass
+        self.particle_mass = np.full(len(self.x), mass)
 
     def normalise_to_ref_particle(self, array, index=0,subtractmean=False):
         array = copy.copy(array)

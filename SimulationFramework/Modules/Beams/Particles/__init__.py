@@ -17,21 +17,25 @@ from ...units import UnitValue, unit_multiply
 class Particles(Munch):
 
     properties = {
-    'x': 'm',
-    'y': 'm',
-    'z': 'm',
-    't': 's',
-    'px': 'kg*m/s',
-    'py': 'kg*m/s',
-    'pz': 'kg*m/s',
-    'p':  'kg*m/s'
+        "x": "m",
+        "y": "m",
+        "z": "m",
+        "t": "s",
+        "px": "kg*m/s",
+        "py": "kg*m/s",
+        "pz": "kg*m/s",
+        "p": "kg*m/s",
+        "particle_mass": "kg",
+        "particle_rest_energy": "J",
+        "particle_rest_energy_eV": "eV/c",
+        "particle_charge": "C"
     }
 
-    particle_mass = UnitValue(constants.m_e, 'kg')
-    E0 = UnitValue(particle_mass * constants.speed_of_light**2, 'J')
-    E0_eV = UnitValue(E0 / constants.elementary_charge, 'eV/c')
-    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, 'C/c')
-    speed_of_light = UnitValue(constants.speed_of_light, 'm/s')
+    # particle_mass = UnitValue(constants.m_e, "kg")
+    # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
+    # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
+    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    speed_of_light = UnitValue(constants.speed_of_light, "m/s")
 
     ''' ********************  Statistical Parameters  ************************* '''
 
@@ -175,34 +179,40 @@ class Particles(Munch):
         return UnitValue(np.mean(self.pz) / constants.elementary_charge, 'T*m')
     @property
     def gamma(self):
-        return UnitValue(np.sqrt(1+(self.cp/self.E0_eV)**2), '')
+        return UnitValue(np.sqrt(1 + (self.cp / self.particle_rest_energy_eV) ** 2), "")
+
     @property
     def BetaGamma(self):
-        return UnitValue(self.cp/self.E0_eV, '')
+        return UnitValue(self.cp / self.particle_rest_energy_eV, "")
+
     @property
     def energy(self):
-        return UnitValue(self.gamma * self.E0_eV, 'eV')
+        return UnitValue(self.gamma * self.particle_rest_energy_eV, "eV")
+
     @property
-    def vx(self):
-        velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return UnitValue(velocity_conversion * self.px, 'm*s')
+    def Ex(self):
+        return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpx**2), "eV")
+
     @property
-    def vy(self):
-        velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return UnitValue(velocity_conversion * self.py, 'm*s')
+    def Ey(self):
+        return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpy**2), "eV")
+
     @property
-    def vz(self):
-        velocity_conversion = 1 / (constants.m_e * self.gamma)
-        return UnitValue(velocity_conversion * self.pz, 'm*s')
+    def Ez(self):
+        return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpz**2), "eV")
+
     @property
     def Bx(self):
-        return UnitValue(self.vx / constants.speed_of_light, '')
+        return UnitValue(self.cpx / self.Ex, "")
+
     @property
     def By(self):
-        return UnitValue(self.vy / constants.speed_of_light, '')
+        return UnitValue(self.cpy / self.Ey, "")
+
     @property
     def Bz(self):
-        return UnitValue(self.vz / constants.speed_of_light, '')
+        return UnitValue(self.cpz / self.Ez, "")
+
     @property
     def Q(self):
         return UnitValue(self['total_charge'], 'C')
@@ -226,7 +236,7 @@ class Particles(Munch):
 
     @property
     def kinetic_energy(self):
-        return UnitValue(np.array((np.sqrt(self.E0**2 + self.cp**2) - self.E0**2)), 'J')
+        return UnitValue(np.array((np.sqrt(self.particle_rest_energy**2 + self.cp**2) - self.particle_rest_energy**2)), "J")
 
     @property
     def mean_energy(self):

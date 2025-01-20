@@ -382,6 +382,10 @@ class quadrupole(frameworkElement):
         self.add_default('n_kicks', 4)
         self.strength_errors = [0]
 
+    @property
+    def k1(self) -> float:
+        """Return the quadrupole K1 value in m^-2"""
+        return float(self.k1l) / float(self.length) if self.length > 0 else 0
 
     @property
     def k1(self):
@@ -397,22 +401,45 @@ class quadrupole(frameworkElement):
     def dk1(self, dk1):
         self.strength_errors[0] = dk1
 
-    def write_ASTRA(self, n, **kwargs):
-        if abs(self.k1 + self.dk1) > 0:
-            return self._write_ASTRA(OrderedDict([
-                ['Q_pos', {'value': self.middle[2] + self.dz, 'default': 0}],
-                ['Q_xoff', {'value': self.middle[0], 'default': 0}],
-                ['Q_yoff', {'value': self.middle[1] + self.dy, 'default': 0}],
-                ['Q_xrot', {'value': -1*self.y_rot + self.dy_rot, 'default': 0}],
-                ['Q_yrot', {'value': -1*self.x_rot + self.dx_rot, 'default': 0}],
-                ['Q_zrot', {'value': -1*self.z_rot + self.dz_rot, 'default': 0}],
-                ['Q_k', {'value': self.k1 + self.dk1, 'default': 0}],
-                ['Q_length', {'value': self.length, 'default': 0}],
-                ['Q_smooth', {'value': self.smooth, 'default': 10}],
-                ['Q_bore', {'value': self.bore, 'default': 0.016}],
-                ['Q_noscale', {'value': self.scale_field}],
-                ['Q_mult_a', {'type': 'list', 'value': self.multipoles}],
-            ]), n)
+    def update_field_definition(self) -> None:
+        """Updates the field definitions to allow for the relative sub-directory location"""
+        if hasattr(self, "field_definition") and self.field_definition is not None:
+            self.field_definition = expand_substitution(self, self.field_definition)
+
+    def write_ASTRA(self, n: int, **kwargs) -> str:
+        if self.field_definition:
+            basename = self.generate_field_file_name(self.field_definition)
+        if abs(self.k1 + self.dk1) > 0 or self.field_definition:
+            return self._write_ASTRA(
+                dict(
+                    [
+                        ["Q_pos", {"value": self.middle[2] + self.dz, "default": 0}],
+                        ["Q_xoff", {"value": self.middle[0], "default": 0}],
+                        ["Q_yoff", {"value": self.middle[1] + self.dy, "default": 0}],
+                        [
+                            "Q_xrot",
+                            {"value": -1 * self.y_rot + self.dy_rot, "default": 0},
+                        ],
+                        [
+                            "Q_yrot",
+                            {"value": -1 * self.x_rot + self.dx_rot, "default": 0},
+                        ],
+                        [
+                            "Q_zrot",
+                            {"value": -1 * self.z_rot + self.dz_rot, "default": 0},
+                        ],
+                        ["Q_k", {"value": self.k1 + self.dk1, "default": 0}],
+                        ["Q_length", {"value": self.length, "default": 0}],
+                        ["Q_smooth", {"value": self.smooth, "default": 10}],
+                        ["Q_bore", {"value": self.bore, "default": 0.016}],
+                        ["Q_noscale", {"value": self.scale_field}],
+                        ["Q_mult_a", {"type": "list", "value": self.multipoles}],
+                        ["Q_type", {"value": self.field_definition, "default": None}],
+                        ["q_grad", {"value": self.gradient, "default": None}],
+                    ]
+                ),
+                n,
+            )
         else:
             return None
 
@@ -420,11 +447,19 @@ class quadrupole(frameworkElement):
         # print(self.objectname)
         # print('self.start = ', self.position_start)
         relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
-        # relpos = relpos + [0, 0, self.length/2.]
-        coord = self.gpt_coordinates(relpos, relrot)
-        output = str(self.objecttype) + '( ' + ccs.name + ', "z", '+ str(relpos[2]) +', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
-        # coord = self.gpt_coordinates(self.middle, self.global_rotation)
-        # output = str(self.objecttype) + '( "wcs", ' + coord + ', '+str(self.length)+', '+str(-Brho*self.k1)+');\n'
+        output = (
+            str(self.objecttype)
+            + "( "
+            + ccs.name
+            + ', "z", '
+            + str(relpos[2])
+            + ", "
+            + str(self.length)
+            + ", "
+            + str((-Brho * self.k1) if not self.gradient else -1 * self.gradient)
+            + (", " + str(self.fringe_field_coefficient) if self.fringe_field_coefficient > 0 else "")
+            + ");\n"
+        )
         return output
 
 class sextupole(frameworkElement):
@@ -474,16 +509,20 @@ class cavity(frameworkElement):
         self.add_default('change_p0', 1)
         self.add_default('n_kicks', self.n_cells)
         # self.add_default('method', '"non-adaptive runge-kutta"')
-        self.add_default('end1_focus', 1)
-        self.add_default('end2_focus', 1)
-        self.add_default('body_focus_model', "SRS")
-        self.add_default('lsc_bins', 100)
-        self.add_default('current_bins', 0)
-        self.add_default('interpolate_current_bins', 1)
-        self.add_default('smooth_current_bins', 1)
+        self.add_default("end1_focus", 1)
+        self.add_default("end2_focus", 1)
+        self.add_default("body_focus_model", "SRS")
+        self.add_default("lsc_bins", 100)
+        self.add_default("current_bins", 0)
+        self.add_default("interpolate_current_bins", 1)
+        self.add_default("smooth_current_bins", 1)
+        self.add_default("coupling_cell_length", 0)
+        self.add_default("field_amplitude", 0)
+        self.add_default("crest", 0)
 
-    def update_field_definition(self):
-        if hasattr(self, 'field_definition') and self.field_definition is not None:
+    def update_field_definition(self) -> None:
+        """Updates the field definitions to allow for the relative sub-directory location"""
+        if hasattr(self, "field_definition") and self.field_definition is not None:
             self.field_definition = expand_substitution(self, self.field_definition)
         if hasattr(self, 'field_definition_sdds') and self.field_definition_sdds is not None:
             self.field_definition_sdds = expand_substitution(self, self.field_definition_sdds)
@@ -512,21 +551,26 @@ class cavity(frameworkElement):
         auto_phase = kwargs['auto_phase'] if 'auto_phase' in kwargs else True
         crest = self.crest if not auto_phase else 0
         basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ['FILE_EFieLD', {'value': '\'' + basename + '\'', 'default': ''}]
-        return self._write_ASTRA(OrderedDict([
-            ['C_pos', {'value': self.start[2] + self.dz, 'default': 0}],
-            efield_def,
-            ['C_numb', {'value': self.cells}],
-            ['Nue', {'value': self.frequency / 1e9, 'default': 2998.5}],
-            ['MaxE', {'value': self.field_amplitude / 1e6, 'default': 0}],
-            ['Phi', {'value': crest-self.phase, 'default': 0.0}],
-            ['C_smooth', {'value': self.smooth, 'default': 10}],
-            ['C_xoff', {'value': self.start[0] + self.dx, 'default': 0}],
-            ['C_yoff', {'value': self.start[1] + self.dy, 'default': 0}],
-            ['C_xrot', {'value': self.y_rot + self.dy_rot, 'default': 0}],
-            ['C_yrot', {'value': self.x_rot + self.dx_rot, 'default': 0}],
-            ['C_zrot', {'value': self.z_rot + self.dz_rot, 'default': 0}],
-        ]), n)
+        efield_def = ["FILE_EFieLD", {"value": "'" + basename + "'", "default": ""}]
+        return self._write_ASTRA(
+            dict(
+                [
+                    ["C_pos", {"value": self.start[2] + self.dz, "default": 0}],
+                    efield_def,
+                    ["C_numb", {"value": self.cells}],
+                    ["Nue", {"value": float(self.frequency) / 1e9, "default": 2998.5}],
+                    ["MaxE", {"value": float(self.field_amplitude) / 1e6, "default": 0}],
+                    ["Phi", {"value": crest - self.phase, "default": 0.0}],
+                    ["C_smooth", {"value": self.smooth, "default": 10}],
+                    ["C_xoff", {"value": self.start[0] + self.dx, "default": 0}],
+                    ["C_yoff", {"value": self.start[1] + self.dy, "default": 0}],
+                    ["C_xrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
+                    ["C_yrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
+                    ["C_zrot", {"value": self.z_rot + self.dz_rot, "default": 0}],
+                ]
+            ),
+            n,
+        )
 
     def _write_Elegant(self):
         self.update_field_definition()
@@ -595,13 +639,37 @@ class cavity(frameworkElement):
         '''
         if self.crest is None:
             self.crest = 0
-        subname = str(relpos[2]).replace('.','')
-        if expand_substitution(self,self.field_definition_gdf) is not None:
-            output = 'f'+subname+' = ' + str(self.frequency) +';\n' + \
-            'w'+subname+' = 2*pi*f'+subname+';\n' + \
-            'phi'+subname+' = ' + str((self.crest - self.phase) % 360.0) + '/deg;\n'
-            if self.Structure_Type == 'TravellingWave':
-                output += 'ffac'+subname+' = ' + str((1 + (0.005 * self.length**1.5)) * (9.0/(2.0 * np.pi)) * self.field_amplitude)+';\n'
+        subname = str(relpos[2]).replace(".", "")
+        if expand_substitution(self, self.field_definition_gdf) is not None:
+            output = (
+                "f"
+                + subname
+                + " = "
+                + str(self.frequency)
+                + ";\n"
+                + "w"
+                + subname
+                + " = 2*pi*f"
+                + subname
+                + ";\n"
+                + "phi"
+                + subname
+                + " = "
+                + str((self.crest + 90 - self.phase) % 360.0)
+                + "/deg;\n"
+            )
+            if self.Structure_Type == "TravellingWave":
+                output += (
+                    "ffac"
+                    + subname
+                    + " = "
+                    + str(
+                        (1 + (0.005 * self.length**1.5))
+                        * (9.0 / (2.0 * np.pi))
+                        * self.field_amplitude
+                    )
+                    + ";\n"
+                )
             else:
                 output += 'ffac'+subname+' = ' + str(self.field_amplitude)+';\n'
 
@@ -813,12 +881,24 @@ class aperture(frameworkElement):
         # return output
 
     def write_ASTRA_Common(self, dic):
-        dic['Ap_Z1'] = {'value': self.start[2] + self.dz, 'default': 0}
-        end = self.end[2] + self.dz if self.end[2] > self.start[2] else self.start[2] + self.dz + 1e-3
-        dic['Ap_Z2'] = {'value': end, 'default': 0}
-        dic['A_xrot'] = {'value': self.y_rot + self.dy_rot, 'default': 0}
-        dic['A_yrot'] = {'value': self.x_rot + self.dx_rot, 'default': 0}
-        dic['A_zrot'] = {'value': self.z_rot + self.dz_rot, 'default': 0}
+        if hasattr(self, "negative_extent") and self.negative_extent is not None:
+            dic["Ap_Z1"] = {"value": self.negative_extent, "default": 0}
+            dic["a_pos"] = {"value": self.start[2]}
+        else:
+            dic["Ap_Z1"] = {"value": self.start[2] + self.dz, "default": 0}
+        if hasattr(self, "positive_extent") and self.positive_extent is not None:
+            dic["Ap_Z2"] = {"value": self.positive_extent, "default": 0}
+            dic["a_pos"] = {"value": self.start[2]}
+        else:
+            end = (
+                self.end[2] + self.dz
+                if self.end[2] >= (self.start[2] + 1e-3)
+                else self.start[2] + self.dz + 1e-3
+            )
+            dic["Ap_Z2"] = {"value": end, "default": 0}
+        dic["A_xrot"] = {"value": self.y_rot + self.dy_rot, "default": 0}
+        dic["A_yrot"] = {"value": self.x_rot + self.dx_rot, "default": 0}
+        dic["A_zrot"] = {"value": self.z_rot + self.dz_rot, "default": 0}
         return dic
 
     def write_ASTRA_Circular(self, n):
@@ -843,22 +923,38 @@ class aperture(frameworkElement):
         dic['Ap_R'] = {'value': width}
         return self.write_ASTRA_Common(dic)
 
-    def write_ASTRA(self, n, **kwargs):
-        self.number_of_elements = 1
-        if self.shape == 'elliptical' or self.shape == 'circular':
+    def write_ASTRA(self, n: int, **kwargs) -> str:
+        self.number_of_elements = 0
+        if self.shape == "elliptical" or self.shape == "circular":
+            self.number_of_elements += 1
             dic = self.write_ASTRA_Circular(n)
             return self._write_ASTRA(dic, n)
-        elif self.shape == 'planar' or self.shape == 'rectangular':
-            text = ''
-            if self.horizontal_size > 0:
-                dic = self.write_ASTRA_Planar(n, 'Col_X', 1e3*self.horizontal_size)
+        elif self.shape == "planar" or self.shape == "rectangular":
+            text = ""
+            if self.horizontal_size is not None and self.horizontal_size > 0:
+                dic = self.write_ASTRA_Planar(n, "Col_X", 1e3 * self.horizontal_size)
                 text += self._write_ASTRA(dic, n)
-                n = n + 1
-                self.number_of_elements = self.number_of_elements + 1
-            if self.vertical_size > 0:
-                dic = self.write_ASTRA_Planar(n, 'Col_Y', 1e3*self.vertical_size)
-                if self.number_of_elements > 1:
-                    text += '\n'
+                self.number_of_elements += 1
+            if self.vertical_size is not None and self.vertical_size > 0:
+                dic = self.write_ASTRA_Planar(n, "Col_Y", 1e3 * self.vertical_size)
+                if self.number_of_elements > 0:
+                    self.number_of_elements += 1
+                    n = n + 1
+                    text += "\n"
+                text += self._write_ASTRA(dic, n)
+            return text
+        elif self.shape == "scraper":
+            text = ""
+            if self.horizontal_size is not None and self.horizontal_size > 0:
+                dic = self.write_ASTRA_Planar(n, "Scr_X", 1e3 * self.horizontal_size)
+                text += self._write_ASTRA(dic, n)
+                self.number_of_elements += 1
+            if self.vertical_size is not None and self.vertical_size > 0:
+                dic = self.write_ASTRA_Planar(n, "Scr_Y", 1e3 * self.vertical_size)
+                if self.number_of_elements > 0:
+                    self.number_of_elements += 1
+                    n = n + 1
+                    text += "\n"
                 text += self._write_ASTRA(dic, n)
             return text
 
@@ -1004,12 +1100,33 @@ class screen(frameworkElement):
 
     def sdds_to_hdf5(self, sddsindex=1):
         beam = rbf.beam(sddsindex=sddsindex)
-        elegantbeamfilename = self.output_filename.replace('.sdds','.SDDS').strip('\"')
-        rbf.sdds.read_SDDS_beam_file(beam, self.global_parameters['master_subdir'] + '/' + elegantbeamfilename)
-        HDF5filename = self.output_filename.replace('.sdds','.hdf5').replace('.SDDS','.hdf5').strip('\"')
-        rbf.hdf5.write_HDF5_beam_file(beam, self.global_parameters['master_subdir'] + '/' + HDF5filename, centered=False, sourcefilename=elegantbeamfilename, pos=self.middle, zoffset=self.end, toffset=(-1*np.mean(self.global_parameters['beam'].t)))
-        if self.global_parameters['delete_tracking_files']:
-            os.remove((self.global_parameters['master_subdir'] + '/' + elegantbeamfilename).strip('\"'))
+        elegantbeamfilename = self.output_filename.replace(".sdds", ".SDDS").strip('"')
+        # print('sdds_to_hdf5')
+        rbf.sdds.read_SDDS_beam_file(
+            beam, self.global_parameters["master_subdir"] + "/" + elegantbeamfilename
+        )
+        # print('sdds_to_hdf5', 'read_SDDS_beam_file')
+        HDF5filename = (
+            self.output_filename.replace(".sdds", ".hdf5")
+            .replace(".SDDS", ".hdf5")
+            .strip('"')
+        )
+        rbf.hdf5.write_HDF5_beam_file(
+            beam,
+            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+            centered=False,
+            sourcefilename=elegantbeamfilename,
+            pos=self.middle,
+            zoffset=self.end,
+            toffset=(-1 * np.mean(self.global_parameters["beam"].t)),
+        )
+        # print('sdds_to_hdf5', 'write_HDF5_beam_file')
+        if self.global_parameters["delete_tracking_files"]:
+            os.remove(
+                (
+                    self.global_parameters["master_subdir"] + "/" + elegantbeamfilename
+                ).strip('"')
+            )
 
     def gdf_to_hdf5(self, gptbeamfilename, cathode=False, gdfbeam=None):
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
@@ -1088,7 +1205,15 @@ class marker(screen):
         super().__init__(name, 'screen', **kwargs)
 
     def write_CSRTrack(self, n):
-        return ''
+        return ""
+
+    def _write_Elegant(self) -> str:
+        obj = self.objecttype
+        self.objecttype = "screen"
+        output = super()._write_Elegant()
+        self.objecttype = obj
+        return output
+
 
 class drift(frameworkElement):
 

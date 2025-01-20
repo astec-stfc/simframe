@@ -197,7 +197,8 @@ def symlink(source, link_name):
 def copylink(source, destination):
     try:
         copyfile(source, destination)
-    except SameFileError:
+    except Exception as e:
+        print('copylink error!', e)
         pass
 
 def convert_numpy_types( v):

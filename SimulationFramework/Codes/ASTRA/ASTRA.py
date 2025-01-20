@@ -316,10 +316,17 @@ class astra_charge(astra_header):
             ['LSPCH3D', {'value': self.space_charge_3D, 'default': True}]
         ])
         if self.space_charge_2D:
-            sc_n_dict = OrderedDict([
-                ['nrad', {'value': self.grid_size, 'default': 32}],
-                ['nlong_in', {'value': self.grid_size, 'default': 32}],
-            ])
+            sc_n_dict = dict(
+                [
+                    ["nrad", {"value": self.grid_size, "default": 32}],
+                    ["nlong_in", {"value": self.grid_size, "default": 32}],
+                ]
+            )
+            if hasattr(self, "nrad"):
+                sc_n_dict.update({"nrad": {"value": self.nrad}})
+            if hasattr(self, "nlong_in"):
+                sc_n_dict.update({"nlong_in": {"value": self.nlong_in}})
+
         elif self.space_charge_3D:
             sc_n_dict = OrderedDict([
                 ['nxf', {'value': self.grid_size, 'default': 8}],

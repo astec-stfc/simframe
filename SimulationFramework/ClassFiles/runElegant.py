@@ -95,7 +95,10 @@ class fitnessFunc(object):
                 if len(self.framework.elementObjects.keys()) < 1:
                     self.framework.loadSettings(self.lattice_file)
                 # print(self.framework.elementObjects, n,p)
-                best.append(self.framework[n][p])
+                try:
+                    best.append(self.framework[n][p])
+                except Exception:
+                    raise ValueError("load_best error", os.path.abspath(datadict), n, p)
             self.best = best
         return best
 

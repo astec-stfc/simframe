@@ -121,6 +121,9 @@ class Framework(Munch):
             }
         )
 
+    def change_subdirectory(self, *args, **kwargs):
+        self.setSubDirectory(*args, **kwargs)
+
     def setSubDirectory(self, dir: str) -> None:
         """Set subdirectory for tracking"""
         self.subdirectory = os.path.abspath(dir)
@@ -583,6 +586,26 @@ class Framework(Munch):
                         print("modifying ", e, "[", k, "]", " = ", v)
 
     def check_lattice(self, decimals: int = 4) -> bool:
+        """Checks that there are no positioning errors in the lattice and returns True/False"""
+        noerror = True
+        for elem in self.elementObjects.values():
+            start = elem.position_start
+            end = elem.position_end
+            length = elem.length
+            theta = elem.global_rotation[2]
+            if elem.objecttype == "dipole" and abs(float(elem.angle)) > 0:
+                angle = float(elem.angle)
+                rho = length / angle
+                clength = np.array([rho * (np.cos(angle) - 1), 0, rho * np.sin(angle)])
+            else:
+                clength = np.array([0, 0, length])
+            cend = start + np.dot(clength, _rotation_matrix(theta))
+            if not np.round(cend - end, decimals=decimals).any() == 0:
+                noerror = False
+                print(elem.objectname, cend, end, cend - end)
+        return noerror
+
+    def check_lattice_drifts(self, decimals: int = 4) -> bool:
         """Checks that there are no positioning errors in the lattice and returns True/False"""
         noerror = True
         for elem in self.elementObjects.values():

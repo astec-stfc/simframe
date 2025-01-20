@@ -66,14 +66,14 @@ def read_tfs_beam_file(self, fileName, charge=None):
     column_names, column_types, rows_list, headers = self.read_tfs(filename)
     print(column_names, column_types, rows_list, headers)
     self.filename = fileName
-    self['code'] = "SDDS"
-    cp = (self._beam['p']) * self.E0_eV
-    cpz = cp / np.sqrt(self._beam['xp']**2 + self._beam['yp']**2 + 1)
-    cpx = self._beam['xp'] * cpz
-    cpy = self._beam['yp'] * cpz
-    self._beam['px'] = cpx * self.q_over_c
-    self._beam['py'] = cpy * self.q_over_c
-    self._beam['pz'] = cpz * self.q_over_c
+    self["code"] = "tfs"
+    cp = (self._beam["p"]) * self.E0_eV
+    cpz = cp / np.sqrt(self._beam["xp"] ** 2 + self._beam["yp"] ** 2 + 1)
+    cpx = self._beam["xp"] * cpz
+    cpy = self._beam["yp"] * cpz
+    self._beam["px"] = cpx * self.q_over_c
+    self._beam["py"] = cpy * self.q_over_c
+    self._beam["pz"] = cpz * self.q_over_c
     # self._beam['t'] = self._beam['t']
     self._beam['z'] = (-1*self._beam.Bz * constants.speed_of_light) * (self._beam.t-np.mean(self._beam.t)) #np.full(len(self.t), 0)
     if 'Charge' in SDDSparameters and len(SDDSparameters['Charge']) > 0:

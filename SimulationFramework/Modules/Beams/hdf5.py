@@ -64,10 +64,31 @@ def write_HDF5_beam_file(self, filename, centered=False, mass=constants.m_e, sou
         if len(self._beam['charge']) == len(self.x):
             chargevector = self._beam['charge']
         else:
-            chargevector = np.full(len(self.x), self.charge/len(self.x))
-        array = np.array([self.x + xoffset, self.y + yoffset, self.z + zoffset, self.cpx, self.cpy, self.cpz, self.t + toffset, chargevector, self.nmacro]).transpose()
-        beamgrp['columns'] = np.array(['x','y','z', 'cpx', 'cpy', 'cpz', 't', 'q', 'w'], dtype='S')
-        beamgrp['units'] = np.array(['m','m','m','eV','eV','eV','s','e', ''], dtype='S')
+            chargevector = np.full(len(self.x), self.charge / len(self.x))
+        if len(self._beam["particle_index"]) == len(self.x):
+            indexvector = self._beam["particle_index"]
+        else:
+            indexvector = np.full(len(self.x), 1)
+        array = np.array(
+            [
+                self.x + xoffset,
+                self.y + yoffset,
+                self.z + zoffset,
+                self.cpx,
+                self.cpy,
+                self.cpz,
+                self.t + toffset,
+                indexvector,
+                chargevector,
+                self.nmacro,
+            ]
+        ).transpose()
+        beamgrp["columns"] = np.array(
+            ["x", "y", "z", "cpx", "cpy", "cpz", "t", "particle", "q", "w"], dtype="S"
+        )
+        beamgrp["units"] = np.array(
+            ["m", "m", "m", "eV", "eV", "eV", "s", "", "e", ""], dtype="S"
+        )
         beamgrp.create_dataset("beam", data=array, rdcc_nbytes=1024**3)
 
 def write_HDF5_summary_file(filename, beams=[], clean=False):
@@ -93,44 +114,39 @@ def read_HDF5_beam_file(self, filename, local=False):
         if h5file.get('beam/longitudinal_reference') is not None:
             self['longitudinal_reference'] = np.array(h5file.get('beam/longitudinal_reference'))
         else:
-            self['longitudinal_reference'] = 't'
-        hdf5beam = np.array(h5file.get('beam/beam')).transpose()
-        if len(hdf5beam) == 8:
-            x, y, z, cpx, cpy, cpz, t, charge = hdf5beam
-            nmacro = np.full(len(x), 1)
-        elif len(hdf5beam) == 9:
+            self["longitudinal_reference"] = "t"
+        hdf5beam = np.array(h5file.get("beam/beam")).transpose()
+        if len(hdf5beam) == 9:
             x, y, z, cpx, cpy, cpz, t, charge, nmacro = hdf5beam
-        cp = np.sqrt(cpx**2 + cpy**2 + cpz**2)
-        self._beam['x'] = x
-        self._beam['y'] = y
-        self._beam['z'] = z
-        # self._beam['cpx'] = cpx
-        # self._beam['cpy'] = cpy
-        # self._beam['cpz'] = cpz
-        self._beam['px'] = cpx * self.q_over_c
-        self._beam['py'] = cpy * self.q_over_c
-        self._beam['pz'] = cpz * self.q_over_c
-        # self._beam['cp'] = cp
-        # self._beam['p'] = cp * self.q_over_c
-        # self._beam['xp'] = np.arctan(self.px/self.pz)
-        # self._beam['yp'] = np.arctan(self.py/self.pz)
-        self._beam['clock'] = np.full(len(self.x), 0)
-        # self._beam['gamma'] = np.sqrt(1+(self.cp/self.E0_eV)**2)
-        # velocity_conversion = 1 / (constants.m_e * self.gamma)
-        # self._beam['vx'] = velocity_conversion * self.px
-        # self._beam['vy'] = velocity_conversion * self.py
-        # self._beam['vz'] = velocity_conversion * self.pz
-        # self._beam['Bx'] = self.vx / constants.speed_of_light
-        # self._beam['By'] = self.vy / constants.speed_of_light
-        # self._beam['Bz'] = self.vz / constants.speed_of_light
-        self._beam['t'] = t
-        self._beam['charge'] = charge
-        self._beam['total_charge'] = np.sum(self._beam['charge'])
-        if h5file.get('beam/status') is not None:
-            self._beam['status'] = np.array(h5file.get('beam/status'))
-        elif np.array(h5file.get('beam/cathode')) == True:
-            self._beam['status'] = np.full(len(self._beam['t']), -1)
-        self._beam['nmacro'] = nmacro
+            particle = np.full(len(x), 1)
+        elif len(hdf5beam) == 10:
+            x, y, z, cpx, cpy, cpz, t, particle, charge, nmacro = hdf5beam
+
+        self._beam["particle_index"] = particle
+        # print('HDF5', self._beam["particle_index"])
+        self._beam["particle_mass"] = [self.mass_index[i] for i in self._beam["particle_index"]]
+        # print('HDF5', self._beam["particle_mass"])
+        self._beam["particle_rest_energy"] = [m * constants.speed_of_light**2 for m in self._beam["particle_mass"]]
+        # print('HDF5', self._beam["particle_rest_energy"])
+        self._beam["particle_rest_energy_eV"] = [E0 / constants.elementary_charge for E0 in self._beam["particle_rest_energy"]]
+        # print('HDF5', self._beam["particle_rest_energy_eV"])
+        self._beam["particle_charge"] = [constants.elementary_charge * self.charge_sign_index[i] for i in self._beam["particle_index"]]
+        # print('HDF5', self._beam["particle_charge"])
+        self._beam["x"] = x
+        self._beam["y"] = y
+        self._beam["z"] = z
+        self._beam["px"] = cpx * self.q_over_c
+        self._beam["py"] = cpy * self.q_over_c
+        self._beam["pz"] = cpz * self.q_over_c
+        self._beam["clock"] = np.full(len(self.x), 0)
+        self._beam["t"] = t
+        self._beam["charge"] = charge
+        self._beam["total_charge"] = np.sum(self._beam["charge"])
+        if h5file.get("beam/status") is not None:
+            self._beam["status"] = np.array(h5file.get("beam/status"))
+        elif np.array(h5file.get("beam/cathode")) is True:
+            self._beam["status"] = np.full(len(self._beam["t"]), -1)
+        self._beam["nmacro"] = nmacro
         # print('hdf5 read cathode', np.array(h5file.get('beam/cathode')))
         startposition = np.array(h5file.get('/Parameters/Starting_Position'))
         startposition = startposition if startposition is not None else [0,0,0]

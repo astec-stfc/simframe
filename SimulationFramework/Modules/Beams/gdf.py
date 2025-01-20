@@ -1,16 +1,37 @@
 import numpy as np
 from .. import read_gdf_file as rgf
 from .. import constants
+from math import copysign
 
-def write_gdf_beam_file(self, filename, normaliseX=False, normaliseZ=False, cathode=False, charge=None, mass=None):
-    charge = -1 * constants.elementary_charge if charge is None else charge
-    q = np.full(len(self.x), charge)
-    mass = constants.electron_mass if mass is None else mass
-    m = np.full(len(self.x), mass)
-    if 'nmacro' in self._beam and len(self._beam['nmacro']) == len(self.x):
-        nmacro = self._beam['nmacro']
-    elif len(self._beam['charge']) == len(self.x):
-        nmacro = self._beam['charge'] / charge
+
+def sign(x):
+    return copysign(1, x)
+
+def get_particle_index(m, q):
+    if (0.9*constants.m_e) < m < (1.1*constants.m_e):
+        if sign(q) < 0:
+            return 1
+        else:
+            return 2
+    elif (0.9*constants.m_p) < m < (1.1*constants.m_p):
+        return 3
+
+def write_gdf_beam_file(
+    self,
+    filename,
+    normaliseX=False,
+    normaliseZ=False,
+    cathode=False,
+    charge=None,
+    mass=None,
+):
+    q = self._beam["particle_charge"]
+    m = self._beam["particle_mass"]
+
+    if "nmacro" in self._beam and len(self._beam["nmacro"]) == len(self.x):
+        nmacro = abs(self._beam["nmacro"])
+    elif len(self._beam["charge"]) == len(self.x):
+        nmacro = abs(self._beam["charge"] / charge)
     else:
         nmacro = np.full(len(self.x), abs(self._beam['total_charge'] / constants.elementary_charge / len(self.x)))
     toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
@@ -109,24 +130,33 @@ def read_gdf_beam_file(self, file=None, position=None, time=None, block=None, ch
         gdfbeamdata = gdfbeam.get_grab(0)
     # print(gdfbeamdata.datasets)
     self.filename = file
-    self['code'] = "GPT"
-    self._beam['x'] = gdfbeamdata.x
-    self._beam['y'] = gdfbeamdata.y
-    if hasattr(gdfbeamdata, 'G'):
-        self._beam['gamma'] = gdfbeamdata.G
-    if hasattr(gdfbeamdata, 'Bx'):
-        vx = gdfbeamdata.Bx * constants.speed_of_light
-        vy = gdfbeamdata.By * constants.speed_of_light
-        vz = gdfbeamdata.Bz * constants.speed_of_light
-        velocity_conversion = 1 / (constants.m_e * self._beam['gamma'])
-        self._beam['px'] = vx / velocity_conversion
-        self._beam['py'] = vy / velocity_conversion
-        self._beam['pz'] = vz / velocity_conversion
+    self["code"] = "GPT"
+    if hasattr(gdfbeamdata, "m"):
+        self._beam["particle_mass"] = gdfbeamdata.m
     else:
-        self._beam['px'] = gdfbeamdata.GBx * self.E0 / constants.speed_of_light
-        self._beam['py'] = gdfbeamdata.GBy * self.E0 / constants.speed_of_light
-        self._beam['pz'] = gdfbeamdata.GBz * self.E0 / constants.speed_of_light
-    if hasattr(gdfbeamdata,'z') and longitudinal_reference == 'z':
+        self._beam["particle_mass"] = np.full(len(gdfbeamdata.x), constants.electron_mass)
+    self._beam["particle_rest_energy"] = [m * constants.speed_of_light**2 for m in self._beam["particle_mass"]]
+    self._beam["particle_rest_energy_eV"] = [E0 / constants.elementary_charge for E0 in self._beam["particle_rest_energy"]]
+    self._beam["particle_charge"] = [sign(q) for q in gdfbeamdata.q]
+    self._beam["particle_index"] = [get_particle_index(m, q) for m, q in zip(self._beam["particle_mass"], self._beam["particle_charge"]) ]
+
+    self._beam["x"] = gdfbeamdata.x
+    self._beam["y"] = gdfbeamdata.y
+
+    if hasattr(gdfbeamdata, "G"):
+        self._beam["gamma"] = gdfbeamdata.G
+    if hasattr(gdfbeamdata, "Bx") and hasattr(gdfbeamdata, "G"):
+        self._beam["px"] = gdfbeamdata.G * gdfbeamdata.Bx * self._beam["particle_rest_energy"] / constants.speed_of_light
+        self._beam["py"] = gdfbeamdata.G * gdfbeamdata.By * self._beam["particle_rest_energy"] / constants.speed_of_light
+        self._beam["pz"] = gdfbeamdata.G * gdfbeamdata.Bz * self._beam["particle_rest_energy"] / constants.speed_of_light
+    elif hasattr(gdfbeamdata, "GBx"):
+        self._beam["px"] = gdfbeamdata.GBx * self._beam["particle_rest_energy"] / constants.speed_of_light
+        self._beam["py"] = gdfbeamdata.GBy * self._beam["particle_rest_energy"] / constants.speed_of_light
+        self._beam["pz"] = gdfbeamdata.GBz * self._beam["particle_rest_energy"] / constants.speed_of_light
+    else:
+        raise Exception('GDF File does not have Bx or GBx!')
+
+    if hasattr(gdfbeamdata, "z") and longitudinal_reference == "z":
         # print( 'z!')
         # print(( gdfbeamdata.z))
         self._beam['z'] = gdfbeamdata.z

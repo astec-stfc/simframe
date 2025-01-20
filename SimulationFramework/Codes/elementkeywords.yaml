@@ -82,6 +82,7 @@ cavity:
       wakefield_gdf,
       longitudinal_wakefield_gdf,
       transverse_wakefield_gdf,
+      smooth
     }
 longitudinal_wakefield:
   keywords:
@@ -118,7 +119,7 @@ collimator:
 rcollimator:
   keywords: { shape, horizontal_size, vertical_size }
 aperture:
-  keywords: { shape, horizontal_size, vertical_size, elliptical, radius }
+  keywords: { shape, horizontal_size, vertical_size, elliptical, radius, negative_extent, positive_extent }
 apcontour:
   keywords: { filename, xcolumn, ycolumn, resolution }
 dipole:
@@ -151,9 +152,9 @@ marker:
 monitor:
   keywords: {}
 quadrupole:
-  keywords: { k1l, k1 }
+  keywords: { k1l, k1, field_definition, gradient, smooth, fringe_field_coefficient}
 sextupole:
-  keywords: { k2l, k2 }
+  keywords: { k2l, k2, field_definition, smooth, fringe_field_coefficient}
 rf_deflecting_cavity:
   keywords:
     {
@@ -345,6 +346,8 @@ astra_charge:
       "MAX_SCALE",
       "MAX_COUNT",
       "EXP_CONTROL",
+      "NRAD",
+      "NLONG_IN"
     }
   framework_keywords: { "cathode", "space_charge_mode" }
 csrtrack_particles:

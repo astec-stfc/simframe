@@ -12,39 +12,45 @@ else:
     def has_symlink_privilege(): return True
 
 astra_generator_keywords = {
-    'keywords':{
-        'filename': 'FName',
-        'combine_distributions': 'add',
-        'number_of_particles': 'Ipart',
-        'probe_particle': 'probe',
-        'noise_reduction': 'noise_reduc',
-        'high_resolution': 'high_res',
-        'charge': ['q_total', 1e9],
-        'reference_position': 'ref_zpos',
-        'reference_time': 'ref_clock',
-        'distribution_type_z': 'dist_z',
-        'inital_energy': 'ref_ekin',
-        'plateau_bunch_length': ['lt', 1e9],
-        'plateau_rise_time': ['rt', 1e9],
-        'sigma_t': ['sig_clock', 1e9],
-        'sigma_z': ['sig_z', 1e3],
-        'bunch_length': ['lz', 1e3],
-        'plateau_rise_distance': ['rz', 1e3],
-        'distribution_type_pz': 'dist_pz',
-        'thermal_emittance': 'le',
-        'distribution_type_x': 'dist_x',
-        'sigma_x': ['sig_x', 1e3],
-        'distribution_type_y': 'dist_y',
-        'sigma_y': ['sig_y', 1e3],
-        'distribution_type_px': 'dist_px',
-        'distribution_type_py': 'dist_py',
-        'normalized_horizontal_emittance': ['Nemit_x', 1e6],
-        'normalized_vertical_emittance': ['Nemit_y', 1e6],
-        'guassian_cutoff_x': 'C_sig_x',
-        'guassian_cutoff_y': 'C_sig_y',
-        'guassian_cutoff_z': 'C_sig_z',
-        'offset_x': ['x_off', 1e3],
-        'offset_y': ['y_off', 1e3],
+    "keywords": {
+        "filename": "FName",
+        "combine_distributions": "add",
+        "number_of_particles": "Ipart",
+        "probe_particle": "probe",
+        "noise_reduction": "noise_reduc",
+        "high_resolution": "high_res",
+        "charge": ["q_total", 1e9],
+        "reference_position": "ref_zpos",
+        "reference_time": "ref_clock",
+        "distribution_type_z": "dist_z",
+        "inital_energy": "ref_ekin",
+        "plateau_bunch_length": ["lt", 1e9],
+        "plateau_rise_time": ["rt", 1e9],
+        "sigma_t": ["sig_clock", 1e9],
+        "sigma_z": ["sig_z", 1e3],
+        "sigma_kinetic_energy": "sig_ekin",
+        "correlation_kinetic_energy": 'cor_ekin',
+        "bunch_length": ["lz", 1e3],
+        "plateau_rise_distance": ["rz", 1e3],
+        "distribution_type_pz": "dist_pz",
+        "thermal_emittance": "le",
+        "distribution_type_x": "dist_x",
+        "sigma_x": ["sig_x", 1e3],
+        "correlation_px": 'cor_px',
+        "distribution_type_y": "dist_y",
+        "sigma_y": ["sig_y", 1e3],
+        "correlation_py": 'cor_py',
+        "distribution_type_px": "dist_px",
+        "distribution_type_py": "dist_py",
+        "normalized_horizontal_emittance": ["Nemit_x", 1e6],
+        "normalized_vertical_emittance": ["Nemit_y", 1e6],
+        "guassian_cutoff_x": "C_sig_x",
+        "guassian_cutoff_y": "C_sig_y",
+        "guassian_cutoff_z": "C_sig_z",
+        "offset_x": ["x_off", 1e3],
+        "offset_y": ["y_off", 1e3],
+        # "species": 'electron',
+        # "cathode": True,
     },
 }
 gpt_generator_keywords = {
@@ -112,21 +118,49 @@ generator_keywords = {
             'offset_x': 0, 'offset_y': 0,
         },
     },
-    'keywords': [
-        'number_of_particles', 'filename',
-        'probe_particle', 'noise_reduction', 'high_resolution', 'combine_distributions',
-        'cathode', 'cathode_radius',
-        'charge', 'species',
-        'emission_time', 'thermal_emittance', 'bunch_length', 'inital_energy',
-        'sigma_x', 'sigma_y', 'sigma_z', 'sigma_t',
-        'distribution_type_z', 'distribution_type_pz', 'distribution_type_x', 'distribution_type_px', 'distribution_type_y', 'distribution_type_py',
-        'guassian_cutoff_x', 'guassian_cutoff_y', 'guassian_cutoff_z',
-        'plateau_bunch_length', 'plateau_rise_time', 'plateau_rise_distance',
-        'offset_x', 'offset_y',
-        'reference_position', 'reference_time',
-        'normalized_horizontal_emittance', 'normalized_vertical_emittance',
-        'image_file'
-    ]
+    "keywords": [
+        "number_of_particles",
+        "filename",
+        "probe_particle",
+        "noise_reduction",
+        "high_resolution",
+        "combine_distributions",
+        "cathode",
+        "cathode_radius",
+        "charge",
+        "species",
+        "emission_time",
+        "thermal_emittance",
+        "bunch_length",
+        "inital_energy",
+        "sigma_x",
+        "sigma_y",
+        "sigma_z",
+        "sigma_t",
+        "distribution_type_z",
+        "distribution_type_pz",
+        "distribution_type_x",
+        "distribution_type_px",
+        "distribution_type_y",
+        "distribution_type_py",
+        "guassian_cutoff_x",
+        "guassian_cutoff_y",
+        "guassian_cutoff_z",
+        "plateau_bunch_length",
+        "plateau_rise_time",
+        "plateau_rise_distance",
+        "offset_x",
+        "offset_y",
+        "reference_position",
+        "reference_time",
+        "normalized_horizontal_emittance",
+        "normalized_vertical_emittance",
+        "image_file",
+        "correlation_px",
+        "correlation_py",
+        "correlation_kinetic_energy",
+        "sigma_kinetic_energy"
+    ],
 }
 
 elegant_generator_keywords = {
@@ -180,8 +214,16 @@ class frameworkGenerator(Munch):
 
     @property
     def thermal_kinetic_energy(self):
-        thermal_emittance = float(self['thermal_emittance']) if 'thermal_emittance' in self.keys() and self['thermal_emittance'] is not None else 0.9e-3
-        return float((3 * thermal_emittance**2 * self.speed_of_light**2 * self.electron_mass) / 2 / self.elementary_charge)
+        thermal_emittance = (
+            float(self["thermal_emittance"])
+            if "thermal_emittance" in self.keys()
+            else 0.9e-3
+        )
+        return float(
+            (3 * thermal_emittance**2 * self.speed_of_light**2 * self.electron_mass)
+            / 2
+            / self.elementary_charge
+        )
 
     @property
     def objectname(self):
@@ -227,9 +269,9 @@ class ASTRAGenerator(frameworkGenerator):
                     # print 'key = ', key
                     self[key] = value
                     setattr(self, key, value)
-                except:
-                    pass
-                    # print 'WARNING: Unknown keyword: ', key, value
+                except Exception:
+                    # pass
+                    print('WARNING: Unknown keyword: ', key, value)
                     # exit()
 
     def run(self):
@@ -257,13 +299,19 @@ class ASTRAGenerator(frameworkGenerator):
         except:
             npart = self.number_of_particles
         if self.filename is None:
-            self.filename = 'generator.txt'
-        framework_dict = OrderedDict([
-            ['q_total', {'value': self.charge*1e9, 'default': 0.25}],
-            ['Lprompt', {'value': False}],
-            ['le', {'value': 1e-3*self.thermal_kinetic_energy, 'default': 0.62e-3}],
-        ])
-        keyword_dict = OrderedDict()
+            self.filename = "generator.txt"
+        framework_dict = dict(
+            [
+                ["q_total", {"value": self.charge * 1e9, "default": 0.25}],
+                ["Lprompt", {"value": False}],
+            ]
+        )
+        if str(self['thermal_emittance']) == "None":
+            pass
+        else:
+            print('self[thermal_emittance]', self['thermal_emittance'])
+            framework_dict.update({"le": {"value": 1e-3 * self.thermal_kinetic_energy, "default": 0.62e-3}}),
+        keyword_dict = dict()
         for k in self.allowedKeyWords:
             m = None
             klower = k.lower()
@@ -271,8 +319,10 @@ class ASTRAGenerator(frameworkGenerator):
                 k = astra_generator_keywords['keywords'][klower]
                 if isinstance(k, list):
                     k, m = k
-            if klower not in [fk.lower() for fk in framework_dict.keys()] and k not in [fk.lower() for fk in framework_dict.keys()]:
-                if getattr(self, klower) is not None:
+            if klower not in [fk.lower() for fk in framework_dict.keys()] and k not in [
+                fk.lower() for fk in framework_dict.keys()
+            ]:
+                if getattr(self, klower) is not None and getattr(self, klower) != "None":
                     try:
                         val = eval(getattr(self, klower))
                     except:

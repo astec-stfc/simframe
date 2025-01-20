@@ -22,14 +22,24 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
         else:
             self._beam[k] = v
     self.filename = fileName
-    self['code'] = "SDDS"
-    cp = (self._beam['p']) * self.E0_eV
-    cpz = cp / np.sqrt(self._beam['xp']**2 + self._beam['yp']**2 + 1)
-    cpx = self._beam['xp'] * cpz
-    cpy = self._beam['yp'] * cpz
-    self._beam['px'] = cpx * self.q_over_c
-    self._beam['py'] = cpy * self.q_over_c
-    self._beam['pz'] = cpz * self.q_over_c
+    self._beam["particle_index"] = np.full(len(self._beam["x"]), 1)
+    # print('SDDS', self._beam["particle_index"])
+    self._beam["particle_mass"] = [self.mass_index[i] for i in self._beam["particle_index"]]
+    # print('SDDS', self._beam["particle_mass"])
+    self._beam["particle_rest_energy"] = self._beam["particle_mass"] * constants.speed_of_light**2
+    # print('SDDS', self._beam["particle_rest_energy"])
+    self._beam["particle_rest_energy_eV"] = self._beam["particle_rest_energy"] / constants.elementary_charge
+    # print('SDDS', self._beam["particle_rest_energy_eV"])
+    self._beam["particle_charge"] = [constants.elementary_charge * self.charge_sign_index[i] for i in self._beam["particle_index"]]
+    # print('SDDS', self._beam["particle_charge"])
+    self["code"] = "SDDS"
+    cp = (self._beam["p"]) * self.particle_rest_energy_eV
+    cpz = cp / np.sqrt(self._beam["xp"] ** 2 + self._beam["yp"] ** 2 + 1)
+    cpx = self._beam["xp"] * cpz
+    cpy = self._beam["yp"] * cpz
+    self._beam["px"] = cpx * self.q_over_c
+    self._beam["py"] = cpy * self.q_over_c
+    self._beam["pz"] = cpz * self.q_over_c
     # self._beam['t'] = self._beam['t']
     self._beam['z'] = (-1*self._beam.Bz * constants.speed_of_light) * (self._beam.t-np.mean(self._beam.t)) #np.full(len(self.t), 0)
     if 'Charge' in elegantData and len(elegantData['Charge']) > 0:
@@ -53,10 +63,24 @@ def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0,0,0]):
     x = SDDSFile(index=(self.sddsindex), ascii=ascii)
 
     Cnames = ["x", "xp", "y", "yp", "t", "p"]
-    Ctypes = [SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE, SDDS_Types.SDDS_DOUBLE]
-    Csymbols = ["", "x'","","y'","",""]
-    Cunits = ["m","","m","","s","m$be$nc"]
-    Ccolumns = [np.array(self.x) - float(xoffset), self.xp, np.array(self.y) - float(yoffset), self.yp, self.t , self.cp/self.E0_eV]
+    Ctypes = [
+        SDDS_Types.SDDS_DOUBLE,
+        SDDS_Types.SDDS_DOUBLE,
+        SDDS_Types.SDDS_DOUBLE,
+        SDDS_Types.SDDS_DOUBLE,
+        SDDS_Types.SDDS_DOUBLE,
+        SDDS_Types.SDDS_DOUBLE,
+    ]
+    Csymbols = ["", "x'", "", "y'", "", ""]
+    Cunits = ["m", "", "m", "", "s", "m$be$nc"]
+    Ccolumns = [
+        np.array(self.x) - float(xoffset),
+        self.xp,
+        np.array(self.y) - float(yoffset),
+        self.yp,
+        self.t,
+        self.cp / self.particle_rest_energy_eV,
+    ]
     x.add_columns(Cnames, Ccolumns, Ctypes, Cunits, Csymbols)
 
     Pnames = ["pCentral", "Charge", "Particles"]

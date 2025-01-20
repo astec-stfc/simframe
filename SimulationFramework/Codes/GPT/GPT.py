@@ -32,14 +32,16 @@ class gptLattice(frameworkLattice):
         return screen(name=self.endObject.objectname, type='screen', centre=self.endObject.centre, position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
 
     def writeElements(self):
-        ccs = gpt_ccs("wcs", [0,0,0], [0,0,0])
-        fulltext = ''
-        self.headers['accuracy'] = gpt_accuracy(self.accuracy)
-        if self.particle_definition == 'laser' and self.space_charge_mode is not None:
-            self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
-            self.headers['spacecharge'].npart = len(self.global_parameters['beam'].x)
-            self.headers['spacecharge'].sample_interval = self.sample_interval
-            self.headers['spacecharge'].space_charge_mode = 'cathode'
+        ccs = gpt_ccs("wcs", [0, 0, 0], [0, 0, 0])
+        fulltext = ""
+        self.headers["accuracy"] = gpt_accuracy(self.accuracy)
+        if self.particle_definition == "laser" and self.space_charge_mode is not None:
+            self.headers["spacecharge"] = gpt_spacecharge(
+                **merge_two_dicts(self.global_parameters, self.file_block["charge"])
+            )
+            self.headers["spacecharge"].npart = len(self.global_parameters["beam"].x)
+            self.headers["spacecharge"].sample_interval = self.sample_interval
+            # self.headers["spacecharge"].space_charge_mode = "cathode"
         else:
             self.headers['spacecharge'] = gpt_spacecharge(**merge_two_dicts(self.global_parameters, self.file_block['charge']))
         if self.csr_enable and len(self.dipoles) > 0 and max([abs(d.angle) for d in self.dipoles]) > 0:# and not os.name == 'nt':
@@ -224,15 +226,24 @@ class gpt_spacecharge(gpt_element):
         self.add_default('ngrids', None)
 
     def write_GPT(self, *args, **kwargs):
-        output = ''#'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
-        if isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == 'cathode':
+        output = ""
+        if (
+            isinstance(self.space_charge_mode, str)
+            and self.cathode
+        ):
             if self.ngrids is None:
                 self.ngrids = self.grids.getGridSizes((self.npart/self.sample_interval))
             output += 'spacecharge3Dmesh("Cathode","RestMaxGamma",1000);\n'
-        elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '3d':
-            output += 'Spacecharge3Dmesh();\n'
-        elif isinstance(self.space_charge_mode,str) and self.space_charge_mode.lower() == '2d':
-            output += 'sc3dmesh();\n'
+        elif (
+            isinstance(self.space_charge_mode, str)
+            and self.space_charge_mode.lower() == "3d"
+        ):
+            output += "Spacecharge3Dmesh();\n"
+        elif (
+            isinstance(self.space_charge_mode, str)
+            and self.space_charge_mode.lower() == "2d"
+        ):
+            output += "Spacecharge3Dmesh();\n"
         else:
             output = ''
         return output
