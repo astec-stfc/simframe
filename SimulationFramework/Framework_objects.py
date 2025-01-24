@@ -5,6 +5,7 @@ from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules.MathParser import MathParser
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
+from .Codes.Ocelot import ocelot_conversion
 import numpy as np
 if os.name == 'nt':
     # from .Modules.symmlinks import has_symlink_privilege
@@ -28,6 +29,11 @@ with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/keyword_co
 
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Elegant/elements_Elegant.yaml', 'r') as infile:
     elements_Elegant = yaml.safe_load(infile)
+
+type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
+
+with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Ocelot/keyword_conversion_rules_ocelot.yaml', 'r') as infile:
+    keyword_conversion_rules_ocelot = yaml.safe_load(infile)
 
 class frameworkLattice(Munch):
     def __init__(self, name, file_block, elementObjects, groupObjects, runSettings, settings, executables, global_parameters):
