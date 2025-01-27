@@ -35,14 +35,16 @@ def write_csv_file(self, file, data):
             [writer.writerow(line) for line in data]
 
 
-def read_astra_beam_file(self, file, normaliseZ=False):
+def read_astra_beam_file(self, file, normaliseZ=False, keepLost=False):
     self.reset_dicts()
     data = read_csv_file(self, file)
     self.filename = file
-    interpret_astra_data(self, data, normaliseZ=normaliseZ)
+    interpret_astra_data(self, data, normaliseZ=normaliseZ, keepLost=keepLost)
 
 
-def interpret_astra_data(self, data, normaliseZ=False):
+def interpret_astra_data(self, data, normaliseZ=False, keepLost=False):
+    if not keepLost:
+        data = [d for d in data if d[-1] >= 0]
     x, y, z, cpx, cpy, cpz, clock, charge, index, status = np.transpose(data)
     zref = z[0]
     self["code"] = "ASTRA"
@@ -80,8 +82,8 @@ def interpret_astra_data(self, data, normaliseZ=False):
         )
     ]
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
-    self._beam["x"] = x + (self.Bx * constants.speed_of_light) * self.t
-    self._beam["y"] = y + (self.By * constants.speed_of_light) * self.t
+    self._beam["x"] = x  # - self.xp * (self.t - np.mean(self.t))
+    self._beam["y"] = y  # - self.yp * (self.t - np.mean(self.t))
     self._beam["total_charge"] = np.sum(1.0e-9 * charge)
     self._beam["nmacro"] = np.array(
         np.array(self._beam["charge"]) / self._beam["particle_charge"]

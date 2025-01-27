@@ -1559,6 +1559,7 @@ class screen(frameworkElement):
 
     def __init__(self, name=None, type="screen", **kwargs):
         super().__init__(name, type, **kwargs)
+        self.beam = rbf.beam()
         if "output_filename" not in kwargs:
             self.output_filename = str(self.objectname) + ".sdds"
 
@@ -1662,22 +1663,22 @@ class screen(frameworkElement):
             print(("Screen Error: ", lattice, self.middle[2], self.zstart[2]))
         else:
             rbf.astra.read_astra_beam_file(
-                self.global_parameters["beam"],
+                self.beam,
                 (
                     self.global_parameters["master_subdir"] + "/" + astrabeamfilename
                 ).strip('"'),
                 normaliseZ=False,
             )
             rbf.hdf5.rotate_beamXZ(
-                self.global_parameters["beam"],
+                self.beam,
                 -1 * self.starting_rotation,
                 preOffset=[0, 0, 0],
                 postOffset=-1 * np.array(self.starting_offset),
             )
             HDF5filename = (self.objectname + ".hdf5").strip('"')
-            toffset = self.global_parameters["beam"]["toffset"]
+            toffset = self.beam["toffset"]
             rbf.hdf5.write_HDF5_beam_file(
-                self.global_parameters["beam"],
+                self.beam,
                 self.global_parameters["master_subdir"] + "/" + HDF5filename,
                 centered=False,
                 sourcefilename=astrabeamfilename,
@@ -1695,11 +1696,11 @@ class screen(frameworkElement):
                 )
 
     def sdds_to_hdf5(self, sddsindex=1):
-        beam = rbf.beam(sddsindex=sddsindex)
+        self.beam.sddsindex = sddsindex
         elegantbeamfilename = self.output_filename.replace(".sdds", ".SDDS").strip('"')
         # print('sdds_to_hdf5')
         rbf.sdds.read_SDDS_beam_file(
-            beam, self.global_parameters["master_subdir"] + "/" + elegantbeamfilename
+            self.beam, self.global_parameters["master_subdir"] + "/" + elegantbeamfilename
         )
         # print('sdds_to_hdf5', 'read_SDDS_beam_file')
         HDF5filename = (
@@ -1708,7 +1709,7 @@ class screen(frameworkElement):
             .strip('"')
         )
         rbf.hdf5.write_HDF5_beam_file(
-            beam,
+            self.beam,
             self.global_parameters["master_subdir"] + "/" + HDF5filename,
             centered=False,
             sourcefilename=elegantbeamfilename,
@@ -1729,21 +1730,21 @@ class screen(frameworkElement):
         # try:
         # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
         rbf.gdf.read_gdf_beam_file(
-            self.global_parameters["beam"],
+            self.beam,
             self.global_parameters["master_subdir"] + "/" + gptbeamfilename,
             position=self.gpt_screen_position,
             gdfbeam=gdfbeam,
         )
         HDF5filename = self.objectname + ".hdf5"
         rbf.hdf5.write_HDF5_beam_file(
-            self.global_parameters["beam"],
+            self.beam,
             self.global_parameters["master_subdir"] + "/" + HDF5filename,
             centered=False,
             sourcefilename=gptbeamfilename,
             pos=self.middle,
             xoffset=self.end[0],
             cathode=cathode,
-            toffset=(-1 * np.mean(self.global_parameters["beam"].t)),
+            toffset=(-1 * np.mean(self.beam.t)),
         )
         # except:
         #     print('Error with screen', self.objectname,'at', self.gpt_screen_position)

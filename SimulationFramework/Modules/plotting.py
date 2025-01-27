@@ -1,8 +1,6 @@
-import sys
 import os
 from io import StringIO
 import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 from copy import copy
 import numpy as np
 from .units import nice_array, nice_scale_prefix
@@ -24,7 +22,7 @@ def fieldmap_data(element, directory="."):
     """
 
     # Position
-    offset = element.position_start[2]
+    offset = element.middle[2]
 
     # Scaling
     scale = element.get_field_amplitude
@@ -49,7 +47,7 @@ def fieldmap_data(element, directory="."):
         stoppos = zpos.index(stop)
         halfcell1 = 1 * fielddat[:startpos]
         halfcell2 = 1 * fielddat[stoppos:]
-        rfcell = 1 * dat[startpos - 1 : stoppos + 1]
+        rfcell = 1 * dat[startpos - 1: stoppos + 1]
         # rfcell[:,0] -= start
         # rfcell[:,0] /= p
         # rfcell[:,0] += start
@@ -94,12 +92,12 @@ class magnet_plotting_data:
         )
 
     def quadrupole(self, e):
-        strength = np.sign(e.k1l) * 0.5  # e.k1l / e.length
+        strength = np.sign(e.k1l) * 0.5 if e.gradient is None else e.gradient  # e.k1l / e.length
         return self.half_rectangle(e, strength), "red"
 
     def dipole(self, e):
         strength = np.sign(e.angle) * 0.4  # e.angle
-        return self.half_rectangle(e, strength), "gray"
+        return self.half_rectangle(e, strength), "blue"
 
     def beam_position_monitor(self, e):
         strength = 0.1  # e.angle
@@ -130,17 +128,17 @@ def load_elements(
     for t in types:
         fmap[t] = {}
         if sections == "All":
-            elements = lattice.getElementType(t)
+            elements = [lattice[e['name']] for e in lattice.getElementType(t)]
         else:
             elements = []
             for s in sections:
-                elements += lattice[s].getElementType(t)
+                elements += [lattice[e['name']] for e in lattice[s].getElementType(t)]
         if bounds is not None:
             elements = [
                 e
                 for e in elements
-                if e.position_start[2] <= bounds[1]
-                and e.position_end[2] >= bounds[0] - 0.1
+                if e['position_start'][2] <= bounds[1]
+                and e['position_end'][2] >= bounds[0] - 0.1
             ]
         for e in elements:
             if (
@@ -162,7 +160,6 @@ def add_fieldmaps_to_axes(
     bounds=None,
     sections="All",
     fields=["cavity", "solenoid"],
-    magnets=["quadrupole", "dipole", "beam_position_monitor", "screen"],
     include_labels=True,
     verbose=False,
 ):
@@ -198,14 +195,32 @@ def add_fieldmaps_to_axes(
                 )
             a.plot(*data.T, label=label, color=c)
         a.set_ylabel(ylabel[section])
+        a.yaxis.label.set_color(c)
     ax1.set_xlabel("$z$ (m)")
 
     if len(fields) < 1:
         for a in ax:
             a.set_yticks([])
 
-    max_scale = 1 if max_scale == 0 else max_scale
-    a = ax[0]
+    data = np.array([[0, 0], [100, 0]])
+    ax[0].plot(*data.T, color="black")
+
+
+def add_magnets_to_axes(
+    lattice,
+    axes,
+    bounds=None,
+    sections="All",
+    magnets=["quadrupole", "dipole", "beam_position_monitor", "screen"],
+    include_labels=True,
+    verbose=False,
+):
+    """
+    Adds magnets to an axes.
+
+    """
+
+    max_scale = 0
 
     fmaps = load_elements(
         lattice,
@@ -215,14 +230,23 @@ def add_fieldmaps_to_axes(
         types=magnets,
         scale=max_scale,
     )
-    for section in magnets:
-        if len(fmaps[section].items()) > 0:
-            section_scale = (
-                max_scale  # / max([max(abs(d[:,1])) for d in fmaps[section].values()])
-            )
+
+    ax1 = axes
+    ax1rhs = ax1.twinx()
+    ax = [ax1, ax1rhs]
+
+    ylabel = {"dipole": r"$\theta$ (rad)", "quadrupole": "$K_1$ (T/m)"}
+    color = {"dipole": "blue", "quadrupole": "red"}
+
+    for i, section in enumerate(ylabel.keys()):
+        a = ax[i]
+        c = color[section]
+        a.set_ylabel(ylabel[section])
+        a.yaxis.label.set_color(c)
+    ax1.set_xlabel("$z$ (m)")
+
+    for section in ylabel.keys():
         for name, (data, c) in fmaps[section].items():
-            # c = color[section]
-            data[:, 1] = data[:, 1] * section_scale
             a.fill(*data.T, color=c)
 
     data = np.array([[0, 0], [100, 0]])
@@ -299,13 +323,14 @@ def plot(
 
     Copied almost verbatim from lume-impact's Impact.plot.plot_stats_with_layout
     """
-    I = framework_object.twiss  # convenience
-    I.sort()  # sort before plotting!
+    twiss = framework_object.twiss  # convenience
+    twiss.sort()  # sort before plotting!
     P = framework_object.beams
 
     if include_layout is not False:
-        fig, all_axis = plt.subplots(2, gridspec_kw={"height_ratios": [4, 1]}, **kwargs)
-        ax_layout = all_axis[-1]
+        fig, all_axis = plt.subplots(3, gridspec_kw={"height_ratios": [4, 1, 1]}, **kwargs)
+        ax_field_layout = all_axis[1]
+        ax_magnet_layout = all_axis[2]
         ax_plot = [all_axis[0]]
     else:
         fig, all_axis = plt.subplots(**kwargs)
@@ -327,12 +352,12 @@ def plot(
     if len(ykeys) == 1 and not ykeys2:
         include_legend = False
 
-    X = I.stat(xkey)
+    X = twiss.stat(xkey)
 
     # Only get the data we need
     if limits:
         good = np.logical_and(X >= limits[0], X <= limits[1])
-        idx = list(np.where(good == True)[0])
+        idx = list(np.where(good is True)[0])
         if len(idx) > 0:
             if idx[0] > 0:
                 good[idx[0] - 1] = True
@@ -365,7 +390,7 @@ def plot(
         Pnames = []
 
     # X axis scaling
-    units_x = str(I.units(xkey))
+    units_x = str(twiss.units(xkey).unit)
     if nice:
         X, factor_x, prefix_x = nice_array(X)
         units_x = prefix_x + units_x
@@ -390,7 +415,7 @@ def plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = [I.units(key) for key in keys]
+        ulist = [twiss.units(key).unit for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -398,7 +423,7 @@ def plot(
         unit = str(ulist[0])
 
         # Data
-        data = [I.stat(key)[good] for key in keys]
+        data = [twiss.stat(key)[good] for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
@@ -426,7 +451,7 @@ def plot(
                 Y_particles = np.array(
                     [
                         (
-                            np.mean(P[name][key])
+                            np.std(P[name][key])
                             if key in P._parameters["data"]
                             else P[name][key]
                         )
@@ -436,7 +461,7 @@ def plot(
                 ax.scatter(X_particles / factor_x, Y_particles / factor, color=color)
             # except:
             #     pass
-        keys = ["$" + k.replace("sigma", "\sigma") + "$" for k in keys]
+        keys = ["$" + k.replace("sigma", r"\sigma") + "$" for k in keys]
         ax.set_ylabel(", ".join(keys) + f" ({unit})")
 
     # Collect legend
@@ -457,18 +482,27 @@ def plot(
 
         if xkey == "z":
             # ax_layout.set_axis_off()
-            ax_layout.set_xlim(limits[0], limits[1])
+            ax_field_layout.set_xlim(limits[0], limits[1])
+            ax_magnet_layout.set_xlim(limits[0], limits[1])
         # else:
         #     ax_layout.set_xlabel('mean_z')
         #     limits = (0, I.stop)
         add_fieldmaps_to_axes(
             framework_object.framework,
-            ax_layout,
+            ax_field_layout,
             bounds=limits,
             include_labels=include_labels,
             fields=fields,
+        )
+        add_magnets_to_axes(
+            framework_object.framework,
+            ax_magnet_layout,
+            bounds=limits,
+            include_labels=include_labels,
             magnets=magnets,
         )
+
+    return plt
 
 
 def getattrsplit(self, attr):
@@ -541,7 +575,7 @@ def general_plot(
     # Only get the data we need
     if limits:
         good = np.logical_and(X >= limits[0], X <= limits[1])
-        idx = list(np.where(good == True)[0])
+        idx = list(np.where(good is True)[0])
         if len(idx) > 0:
             if idx[0] > 0:
                 good[idx[0] - 1] = True
@@ -598,7 +632,7 @@ def general_plot(
             factor = 1
 
         # Make a line and point
-        keys = ["$" + k.replace("sigma", "\sigma") + "$" for k in keys]
+        keys = ["$" + k.replace("sigma", r"\sigma") + "$" for k in keys]
         for key, dat in zip(keys, data):
             #
             ii += 1
