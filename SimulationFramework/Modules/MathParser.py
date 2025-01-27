@@ -2,8 +2,9 @@ import math
 import ast
 import operator as op
 
+
 class MathParser:
-    """ Basic parser with local variable and math functions
+    """Basic parser with local variable and math functions
 
     Args:
        vars (mapping): mapping object where obj[name] -> numerical value
@@ -22,15 +23,15 @@ class MathParser:
         ast.Add: op.add,
         ast.Sub: op.sub,
         ast.BitXor: op.xor,
-        ast.Or:  op.or_,
+        ast.Or: op.or_,
         ast.And: op.and_,
-        ast.Mod:  op.mod,
+        ast.Mod: op.mod,
         ast.Mult: op.mul,
-        ast.Div:  op.truediv,
-        ast.Pow:  op.pow,
+        ast.Div: op.truediv,
+        ast.Pow: op.pow,
         ast.FloorDiv: op.floordiv,
         ast.USub: op.neg,
-        ast.UAdd: lambda a:a
+        ast.UAdd: lambda a: a,
     }
 
     def __init__(self, vars, math=True):
@@ -40,7 +41,7 @@ class MathParser:
 
     def _Name(self, name):
         try:
-            return  self._vars[name]
+            return self._vars[name]
         except KeyError:
             return self._alt_name(name)
 
@@ -49,7 +50,7 @@ class MathParser:
         if name.startswith("_"):
             raise NameError(f"{name!r}")
         try:
-            return  getattr(math, name)
+            return getattr(math, name)
         except AttributeError:
             raise NameError(f"{name!r}")
 
@@ -60,28 +61,29 @@ class MathParser:
     def eval_(self, node):
         if isinstance(node, ast.Expression):
             return self.eval_(node.body)
-        if isinstance(node, ast.Num): # <number>
+        if isinstance(node, ast.Num):  # <number>
             return node.n
         if isinstance(node, ast.Name):
             return self._Name(node.id)
         if isinstance(node, ast.BinOp):
             method = self._operators2method[type(node.op)]
-            return method( self.eval_(node.left), self.eval_(node.right) )
+            return method(self.eval_(node.left), self.eval_(node.right))
         if isinstance(node, ast.UnaryOp):
             method = self._operators2method[type(node.op)]
-            return method( self.eval_(node.operand) )
+            return method(self.eval_(node.operand))
         if isinstance(node, ast.Attribute):
             return getattr(self.eval_(node.value), node.attr)
 
         if isinstance(node, ast.Call):
             return self.eval_(node.func)(
-                      *(self.eval_(a) for a in node.args),
-                      **{k.arg:self.eval_(k.value) for k in node.keywords}
-                     )
-            return self.Call( self.eval_(node.func), tuple(self.eval_(a) for a in node.args))
+                *(self.eval_(a) for a in node.args),
+                **{k.arg: self.eval_(k.value) for k in node.keywords},
+            )
+            return self.Call(
+                self.eval_(node.func), tuple(self.eval_(a) for a in node.args)
+            )
         else:
             raise TypeError(node)
 
     def parse(self, expr):
-        return  self.eval_(ast.parse(expr, mode='eval'))
-    
+        return self.eval_(ast.parse(expr, mode="eval"))

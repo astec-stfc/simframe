@@ -1,0 +1,45 @@
+&global_settings
+	inhibit_fsync = 0
+	mpi_io_read_buffer_size = 16777216
+	mpi_io_write_buffer_size = 16777216
+	usleep_mpi_io_kludge = 0
+	mpi_io_force_file_sync = 0
+&end
+&run_setup
+	lattice = FEBE.lte
+	use_beamline = FEBE
+	parameters = %s.par
+	magnets = %s.mag
+	default_order = 3
+	random_number_seed = 0
+	p_central = 68.93117666245958
+	always_change_p0 = 1
+&end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=lsc value=0 &end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=LSC_BINS value=0 &end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=csr value=0 &end
+!&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=zwakefile string_value="" &end
+!&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=trwakefile string_value="" &end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=zwake value=0 &end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=* item=trwake value=0 &end
+&alter_elements allow_missing_elements=1 allow_missing_parameters=1 name=* type=watch item=DISABLE value=1 &end
+
+&run_control
+	n_steps = 1
+	n_passes = 1
+&end
+&floor_coordinates
+	filename = %s.flr
+	X0 = 0
+	Z0 = 3.29693
+	theta0 = 0
+	magnet_centers = 1
+&end
+&twiss_output
+	cavities_are_drifts_if_matched=0
+&end
+&bunched_beam
+	n_particles_per_bunch = 1
+&end
+&track
+&end

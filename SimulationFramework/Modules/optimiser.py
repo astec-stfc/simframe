@@ -3,21 +3,32 @@ from deap import algorithms
 from deap import tools
 import csv
 
-class optimiser():
+
+class optimiser:
 
     interrupt = False
 
     def finish_running(self, signal, frame):
         self.interrupt = True
-        print('Finishing after this generation!')
+        print("Finishing after this generation!")
 
-    def eaSimple(self, population, toolbox, cxpb, mutpb, ngen, stats=None,
-                 halloffame=None, hoffile=None, verbose=__debug__):
+    def eaSimple(
+        self,
+        population,
+        toolbox,
+        cxpb,
+        mutpb,
+        ngen,
+        stats=None,
+        halloffame=None,
+        hoffile=None,
+        verbose=__debug__,
+    ):
 
         evaluationID = 0
 
         logbook = tools.Logbook()
-        logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
+        logbook.header = ["gen", "nevals"] + (stats.fields if stats else [])
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in population if not ind.fitness.valid]
@@ -29,8 +40,8 @@ class optimiser():
 
         if halloffame is not None:
             halloffame.update(population)
-            with open(hoffile,'w') as out:
-                csv_out=csv.writer(out)
+            with open(hoffile, "w") as out:
+                csv_out = csv.writer(out)
                 for row in halloffame:
                     row.append(0)
                     csv_out.writerow(row)
@@ -62,8 +73,8 @@ class optimiser():
             # Update the hall of fame with the generated individuals
             if halloffame is not None:
                 halloffame.update(offspring)
-                with open(hoffile,'a') as out:
-                    csv_out=csv.writer(out)
+                with open(hoffile, "a") as out:
+                    csv_out = csv.writer(out)
                     for row in halloffame:
                         row.append(gen)
                         csv_out.writerow(row)
@@ -79,12 +90,25 @@ class optimiser():
 
         return population, logbook
 
-    def eaMuPlusLambda(self, population, toolbox, mu, lambda_, cxpb, mutpb, ngen, stats=None, halloffame=None, hoffile=None, verbose=__debug__):
+    def eaMuPlusLambda(
+        self,
+        population,
+        toolbox,
+        mu,
+        lambda_,
+        cxpb,
+        mutpb,
+        ngen,
+        stats=None,
+        halloffame=None,
+        hoffile=None,
+        verbose=__debug__,
+    ):
 
         evaluationID = 0
 
         logbook = tools.Logbook()
-        logbook.header = ['gen', 'nevals'] + (stats.fields if stats else [])
+        logbook.header = ["gen", "nevals"] + (stats.fields if stats else [])
 
         # Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in population if not ind.fitness.valid]
@@ -98,8 +122,8 @@ class optimiser():
 
         if halloffame is not None:
             halloffame.update(population)
-            with open(hoffile,'w') as out:
-                csv_out=csv.writer(out)
+            with open(hoffile, "w") as out:
+                csv_out = csv.writer(out)
                 for row in halloffame:
                     row.append(0)
                     row.append(row.id)
@@ -128,8 +152,8 @@ class optimiser():
             # Update the hall of fame with the generated individuals
             if halloffame is not None:
                 halloffame.update(offspring)
-                with open(hoffile,'a') as out:
-                    csv_out=csv.writer(out)
+                with open(hoffile, "a") as out:
+                    csv_out = csv.writer(out)
                     for row in halloffame:
                         row.append(gen)
                         row.append(row.id)

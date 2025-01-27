@@ -21,6 +21,9 @@ common:
       position_errors,
       rotation_errors,
       tilt_angle,
+      array_names,
+      rotation,
+      smooth
     }
 scatter:
   keywords:
@@ -174,6 +177,7 @@ solenoid:
       field_amplitude,
       field_definition,
       field_definition_gdf,
+      field_type,
       scale_field,
       field_scale,
     }
@@ -272,6 +276,7 @@ astra_newrun:
       "RUN",
       "HEAD",
       "lprompt",
+      "high_res",
     }
   framework_keywords: { "particle_definition" }
 astra_output:

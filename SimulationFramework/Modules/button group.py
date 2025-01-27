@@ -11,22 +11,30 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
+
     def _fromUtf8(s):
         return s
 
+
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig, _encoding)
+
 except AttributeError:
+
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
         Form.resize(874, 212)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
@@ -34,19 +42,27 @@ class Ui_Form(object):
         self.horizontalLayout = QtGui.QHBoxLayout(Form)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.beamPlotXAxisCombo = QtGui.QListWidget(Form)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.beamPlotXAxisCombo.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.beamPlotXAxisCombo.sizePolicy().hasHeightForWidth()
+        )
         self.beamPlotXAxisCombo.setSizePolicy(sizePolicy)
         self.beamPlotXAxisCombo.setMinimumSize(QtCore.QSize(0, 100))
         self.beamPlotXAxisCombo.setObjectName(_fromUtf8("beamPlotXAxisCombo"))
         self.horizontalLayout.addWidget(self.beamPlotXAxisCombo)
         self.beamPlotYAxisCombo = QtGui.QListWidget(Form)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.beamPlotYAxisCombo.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.beamPlotYAxisCombo.sizePolicy().hasHeightForWidth()
+        )
         self.beamPlotYAxisCombo.setSizePolicy(sizePolicy)
         self.beamPlotYAxisCombo.setMinimumSize(QtCore.QSize(0, 100))
         self.beamPlotYAxisCombo.setObjectName(_fromUtf8("beamPlotYAxisCombo"))
@@ -64,7 +80,9 @@ class Ui_Form(object):
         self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.sliceWidth)
         self.chooseSliceNumber = QtGui.QRadioButton(self.groupBox)
         self.chooseSliceNumber.setObjectName(_fromUtf8("chooseSliceNumber"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.chooseSliceNumber)
+        self.formLayout.setWidget(
+            1, QtGui.QFormLayout.LabelRole, self.chooseSliceNumber
+        )
         self.sliceNumber = QtGui.QDoubleSpinBox(self.groupBox)
         self.sliceNumber.setObjectName(_fromUtf8("sliceNumber"))
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.sliceNumber)
@@ -78,4 +96,3 @@ class Ui_Form(object):
         self.groupBox.setTitle(_translate("Form", "Slices", None))
         self.chooseSliceWidth.setText(_translate("Form", "Slice Width", None))
         self.chooseSliceNumber.setText(_translate("Form", "Number of Slices", None))
-
