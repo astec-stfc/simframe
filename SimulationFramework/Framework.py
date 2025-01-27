@@ -13,6 +13,7 @@ from .Codes.CSRTrack.CSRTrack import *
 from .Codes.Elegant.Elegant import *
 from .Codes.Generators.Generators import *
 from .Codes.GPT.GPT import *
+from .Codes.Ocelot.Ocelot import *
 from .Framework_Settings import FrameworkSettings
 from .FrameworkHelperFunctions import _rotation_matrix
 
@@ -412,6 +413,7 @@ class Framework(Munch):
         disallowed = [
             "allowedkeywords",
             "keyword_conversion_rules_elegant",
+            "keyword_conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
         ]
@@ -513,6 +515,7 @@ class Framework(Munch):
         disallowed = [
             "allowedkeywords",
             "keyword_conversion_rules_elegant",
+            "keyword_conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
             "objectname",
@@ -1208,6 +1211,7 @@ class frameworkDirectory(Munch):
             disallowed = [
                 "allowedkeywords",
                 "keyword_conversion_rules_elegant",
+                "keyword_conversion_rules_ocelot",
                 "objectdefaults",
                 "global_parameters",
                 "objectname",

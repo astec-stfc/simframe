@@ -41,5 +41,6 @@ ocelot_conversion_rules = {
   "valve": Drift,
   "bellows": Drift,
   "cleaner": Monitor,
-
+  "lscdrift": Drift,
+  "csrdrift": Drift,
 }

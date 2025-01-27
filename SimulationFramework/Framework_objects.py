@@ -35,6 +35,9 @@ type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
 with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Ocelot/keyword_conversion_rules_ocelot.yaml', 'r') as infile:
     keyword_conversion_rules_ocelot = yaml.safe_load(infile)
 
+with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Ocelot/elements_Ocelot.yaml', 'r') as infile:
+    elements_Ocelot = yaml.safe_load(infile)
+
 class frameworkLattice(Munch):
     def __init__(self, name, file_block, elementObjects, groupObjects, runSettings, settings, executables, global_parameters):
         super(frameworkLattice, self).__init__()
@@ -727,6 +730,10 @@ class frameworkElement(frameworkObject):
         self.keyword_conversion_rules_elegant = keyword_conversion_rules_elegant['general']
         if elementType in keyword_conversion_rules_elegant:
             self.keyword_conversion_rules_elegant = merge_two_dicts(self.keyword_conversion_rules_elegant, keyword_conversion_rules_elegant[elementType])
+        self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot['general']
+        if elementType in keyword_conversion_rules_ocelot:
+            self.keyword_conversion_rules_ocelot = merge_two_dicts(self.keyword_conversion_rules_ocelot,
+                                                                    keyword_conversion_rules_ocelot[elementType])
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -964,15 +971,40 @@ class frameworkElement(frameworkObject):
         wholestring+=string+';\n'
         return wholestring
 
+    def _write_Ocelot(self):
+        wholestring=''
+        etype = self._convertType_Ocelot(self.objecttype)
+        # print(f'objecttype {self.objecttype} \t etype {etype} \t objectname {self.objectname}')
+        obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        for key, value in keydict.items():
+            if not key in ['name', 'type', 'commandtype']:# and self._convertKeword_Ocelot(key) in elements_Ocelot[self.objecttype]:
+                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                setattr(obj, key, value)
+            return obj
+        return None
+
     def write_Elegant(self):
         if not self.subelement:
             return self._write_Elegant()
+
+    def write_Ocelot(self):
+        if not self.subelement:
+            return self._write_Ocelot()
 
     def _convertType_Elegant(self, etype):
         return type_conversion_rules_Elegant[etype] if etype in type_conversion_rules_Elegant else etype
 
     def _convertKeword_Elegant(self, keyword):
         return self.keyword_conversion_rules_elegant[keyword] if keyword in self.keyword_conversion_rules_elegant else keyword
+
+    def _convertType_Ocelot(self, etype):
+        return type_conversion_rules_Ocelot[etype] if etype in type_conversion_rules_Ocelot else etype
+
+    def _convertKeword_Ocelot(self, keyword):
+        return self.keyword_conversion_rules_ocelot[keyword] if keyword in self.keyword_conversion_rules_ocelot else keyword
 
     def write_CSRTrack(self, n=0):
         return ""

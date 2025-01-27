@@ -26,6 +26,7 @@ import SimulationFramework.Modules.minimumVolumeEllipse as mve
 from .Beams import Particles
 MVE = mve.EllipsoidTool()
 import glob
+import numpy as np
 
 class beamGroup(munch.Munch):
 

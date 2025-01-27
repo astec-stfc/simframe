@@ -2,6 +2,11 @@ from ...Framework_objects import *
 from ...Framework_elements import *
 from ...FrameworkHelperFunctions import _rotation_matrix
 from ...Modules import Beams as rbf
+from ...Modules.merge_two_dicts import merge_two_dicts
+from ocelot.cpbd.magnetic_lattice import MagneticLattice
+from ocelot.cpbd.track import track
+from ocelot.cpbd.io import save_particle_array, load_particle_array
+from copy import deepcopy
 
 
 class ocelotLattice(frameworkLattice):
@@ -17,101 +22,66 @@ class ocelotLattice(frameworkLattice):
         self.alphax = None
         self.alphay = None
         self.commandFiles = {}
+        self.lat_obj = None
+        self.pin = None
+        self.pout = None
 
     def endScreen(self, **kwargs):
-        return screen(name=self.endObject.objectname, type='screen', centre=self.endObject.centre, position_start=self.endObject.position_start, position_end=self.endObject.position_start, global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters, **kwargs)
+        return screen(name=self.endObject.objectname, type='screen', centre=self.endObject.centre,
+                      position_start=self.endObject.position_start, position_end=self.endObject.position_start,
+                      global_rotation=self.endObject.global_rotation, global_parameters=self.global_parameters,
+                      **kwargs)
 
     def writeElements(self):
         self.w = None
         if not self.endObject in self.screens_and_bpms:
-            self.w = self.endScreen(output_filename=self.endObject.objectname + '.sdds')
+            self.w = self.endScreen(output_filename=self.endObject.objectname + '.npz')
         elements = self.createDrifts()
-        fulltext = ''
-        fulltext += self.q.write_Elegant()
         mag_lat = []
         for element in list(elements.values()):
             # print(element.write_Elegant())
             if not element.subelement:
                 mag_lat.append(element.write_Ocelot())
-        fulltext += self.w.write_Elegant() if self.w is not None else ''
-        fulltext += self.objectname + ': Line=(START, '
-        for e, element in list(elements.items()):
-            if not element.subelement:
-                if len((fulltext + e).splitlines()[-1]) > 60:
-                    fulltext += '&\n'
-                fulltext += e + ', '
-        fulltext = fulltext[:-2] + ', END )\n' if self.w is not None else fulltext[:-2] + ')\n'
-        return fulltext
+        for o in mag_lat:
+            print(o)
+        self.lat_obj = MagneticLattice(mag_lat)
 
     def write(self):
-        self.code_file = self.global_parameters['master_subdir']+'/'+self.objectname+'.in'
-        saveFile(self.code_file, self.writeElements())
-        return self.writeElements()
+        self.writeElements()
+        self.lat_obj.save_as_py_file(f'{self.global_parameters["master_subdir"]}/{self.objectname}.py')
 
     def preProcess(self):
-        self.headers['setfile'].particle_definition = self.objectname + '.gdf'
-        prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block['input'] else ''
-        self.hdf5_to_gdf(prefix)
+        prefix = self.file_block['input']['prefix'] if 'input' in self.file_block and 'prefix' in self.file_block[
+            'input'] else ''
+        if self.trackBeam:
+            self.hdf5_to_npz(prefix)
+        else:
+            HDF5filename = prefix + self.particle_definition + '.hdf5'
+            rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'],
+                                         os.path.abspath(self.global_parameters['master_subdir'] + '/' + HDF5filename))
+
+    def hdf5_to_npz(self, prefix='', write=True):
+        HDF5filename = prefix+self.particle_definition+'.hdf5'
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], os.path.abspath(self.global_parameters['master_subdir'] + '/' + HDF5filename))
+        # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
+        if self.bunch_charge is not None:
+            self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.bunch_charge)})
+        else:
+            self.q = charge(name='START', type='charge', global_parameters=self.global_parameters,**{'total': abs(self.global_parameters['beam'].Q)})
+        ocebeamfilename = self.objectname+'.npz'
+        self.pin = rbf.ocelot.write_ocelot_beam_file(self.global_parameters['beam'], ocebeamfilename, write=write)
 
     def run(self):
         """Run the code with input 'filename'"""
-        main_command = self.executables[self.code] + ['-o', self.objectname+'_out.gdf'] + ['GPTLICENSE='+self.global_parameters['GPTLICENSE']] + [self.objectname+'.in']
-        my_env = os.environ.copy()
-        my_env["LD_LIBRARY_PATH"] = my_env["LD_LIBRARY_PATH"] + ":/opt/GPT3.3.6/lib/" if "LD_LIBRARY_PATH" in my_env else "/opt/GPT3.3.6/lib/"
-        my_env["OMP_WAIT_POLICY"] = "PASSIVE"
-        # post_command_t = [self.executables[self.code][0].replace('gpt.exe','gdfa.exe')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
-        post_command = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['position','avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
-        post_command_t = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'_emitt.gdf'] + [self.objectname+'_out.gdf'] + ['time', 'avgx','avgy','avgz','stdx','stdBx','stdy','stdBy','stdz','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay','avgfBx','avgfEx','avgfBy','avgfEy','avgfBz','avgfEz']
-        post_command_traj = [self.executables[self.code][0].replace('gpt','gdfa')] + ['-o', self.objectname+'traj.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','avgz']
-        with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.bat'), "w") as batfile:
-            for command in [main_command, post_command, post_command_t, post_command_traj]:
-                output = "\"" + command[0] + "\" "
-                for c in command[1:]:
-                    output += c + ' '
-                output += "\n"
-                batfile.write(output)
-        with open(os.path.abspath(self.global_parameters['master_subdir']+'/'+self.objectname+'.log'), "w") as f:
-            # print('gpt command = ', command)
-            subprocess.call(main_command, stdout=f, cwd=self.global_parameters['master_subdir'], env=my_env)
-            subprocess.call(post_command, stdout=f, cwd=self.global_parameters['master_subdir'])
-            subprocess.call(post_command_t, stdout=f, cwd=self.global_parameters['master_subdir'])
-            subprocess.call(post_command_traj, stdout=f, cwd=self.global_parameters['master_subdir'])
+        tws, self.pout = track(self.lat_obj, deepcopy(self.pin))
+
 
     def postProcess(self):
-        cathode = self.particle_definition == 'laser'
-        gdfbeam = rbf.gdf.read_gdf_beam_file_object(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.objectname + '_out.gdf')
-        for e in self.screens_and_bpms:
-            if not e == self.ignore_start_screen:
-                e.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode, gdfbeam=gdfbeam)
-            # else:
-                # print('Ignoring', self.ignore_start_screen.objectname)
-        if self.endScreenObject is not None:
-            self.endScreenObject.gdf_to_hdf5(self.objectname + '_out.gdf', cathode=cathode)
-
-    def hdf5_to_gdf(self, prefix=''):
-        HDF5filename = prefix+self.particle_definition+'.hdf5'
-        rbf.hdf5.read_HDF5_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + HDF5filename)
-        # print('beam charge = ', self.global_parameters['beam'].charge)
-        if self.sample_interval > 1:
-            self.headers['setreduce'] = gpt_setreduce(set="\"beam\"", setreduce=len(self.global_parameters['beam'].x)/self.sample_interval)
-        # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
-        if self.override_meanBz is not None and isinstance(self.override_meanBz, (int, float)):
-            meanBz = self.override_meanBz
-        else:
-            meanBz = np.mean(self.global_parameters['beam'].Bz)
-            if meanBz < 0.5:
-                meanBz = 0.75
-
-        if self.override_tout is not None and isinstance(self.override_tout, (int, float)):
-            self.headers['tout'] = gpt_tout(starttime=0, endpos=self.override_tout, step=str(self.time_step_size))
-        else:
-            self.headers['tout'] = gpt_tout(starttime=0, endpos=(self.findS(self.end)[0][1]-self.findS(self.start)[0][1])/meanBz/2.998e8, step=str(self.time_step_size))
-
-        gdfbeamfilename = self.objectname+'.gdf'
-        cathode = self.particle_definition == 'laser'
-        rbf.gdf.write_gdf_beam_file(self.global_parameters['beam'], self.global_parameters['master_subdir'] + '/' + self.objectname+'.txt', normaliseX=self.allElementObjects[self.start].start[0], cathode=cathode)
-        subprocess.call([os.path.abspath(self.executables[self.code][0].replace('gpt','asci2gdf')), '-o', gdfbeamfilename, self.objectname+'.txt'], cwd=self.global_parameters['master_subdir'])
-        self.Brho = self.global_parameters['beam'].Brho
+        bfname = f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.npz'
+        save_particle_array(bfname, self.pout)
+        # ocebeam = rbf.ocelot.read_ocelot_beam_file(self.global_parameters['beam'], bfname)
+        # rbf.ocelot.write_ocelot_beam_file(self.global_parameters['beam'],
+        #                                   self.global_parameters['master_subdir'] + '/' + ocebeamfilename)
 
 class gpt_element(frameworkElement):
 

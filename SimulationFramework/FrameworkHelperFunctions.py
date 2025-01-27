@@ -128,7 +128,7 @@ def expand_substitution(self, param, subs={}, elements={}, absolute=False):
     if isinstance(param,(str)):
         subs['master_lattice_location'] = path_function(self.global_parameters['master_lattice_location'],self.global_parameters['master_subdir'])+'/'
         subs['master_subdir'] = './'
-        regex = re.compile('\$(.*)\$')
+        regex = re.compile(r'\$(.*)\$')
         s = re.search(regex, param)
         if s:
             if isevaluable(self, s.group(1)) is True:
@@ -203,7 +203,7 @@ def copylink(source, destination):
 def convert_numpy_types( v):
     if isinstance(v, (np.ndarray, list, tuple)):
         return [convert_numpy_types(l) for l in v]
-    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_ )):
+    elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
     elif isinstance(v, (np.int_, np.intc, np.intp, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64)):
         return int(v)
