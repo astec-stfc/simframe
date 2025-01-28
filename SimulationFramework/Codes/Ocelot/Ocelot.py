@@ -7,7 +7,9 @@ from ocelot.cpbd.magnetic_lattice import MagneticLattice
 from ocelot.cpbd.track import track
 from ocelot.cpbd.io import save_particle_array
 from ocelot.cpbd.navi import Navigator
+from ocelot.cpbd.sc import SpaceCharge, LSC
 from copy import deepcopy
+from np import log2
 
 
 class ocelotLattice(frameworkLattice):
@@ -26,6 +28,10 @@ class ocelotLattice(frameworkLattice):
         self.lat_obj = None
         self.pin = None
         self.pout = None
+        if 'OCELOTsettings' in list(self.settings['global'].keys()):
+            self.oceglobal = self.settings['global']['OCELOTsettings']
+            self.unit_step = self.oceglobal['unit_step'] if 'unit_step' in list(self.oceglobal.keys()) else 0.01
+            self.smooth = self.oceglobal['smooth_param'] if 'smooth_param' in list(self.oceglobal.keys()) else 0.1
 
     def endScreen(self, **kwargs):
         return screen(name=self.endObject.objectname, type='screen', centre=self.endObject.centre,
@@ -72,10 +78,7 @@ class ocelotLattice(frameworkLattice):
 
     def run(self):
         """Run the code with input 'filename'"""
-        navi = Navigator(self.lat_obj, unit_step=0.01)
-        print(self.pin)
-        for e in self.lat_obj.sequence:
-            print(e)
+        navi = self.navi_setup()
         tws, self.pout = track(self.lat_obj, deepcopy(self.pin), navi=navi)
 
     def postProcess(self):
@@ -93,3 +96,14 @@ class ocelotLattice(frameworkLattice):
         # ocebeam = rbf.ocelot.read_ocelot_beam_file(self.global_parameters['beam'], bfname)
         # rbf.ocelot.write_ocelot_beam_file(self.global_parameters['beam'],
         #                                   self.global_parameters['master_subdir'] + '/' + ocebeamfilename)
+
+    def navi_setup(self):
+        settings = self.settings[self.objectname]
+        self.unit_step = settings['unit_step'] if 'unit_step' in settings.keys() else self.unit_step
+        navi = Navigator(self.lat_obj, unit_step=self.unit_step)
+        if self.lscDrifts:
+            lsc = self.physproc_lsc()
+        return navi
+
+    def physproc_lsc(self):
+        return LSC()
