@@ -39,8 +39,9 @@ sextupole:
   sr_enable: synch_rad
   n_kicks: n_slices
 cavity:
+  phase: phi
   frequency: freq
-  field_amplitude: volt
+  field_amplitude: v
   longitudinal_wakefield_sdds: zwakefile
   transverse_wakefield_sdds: trwakefile
   longitudinal_wakefield_enable: zwake
@@ -49,8 +50,9 @@ cavity:
   smooth_current_bins: smoothing
   smoothing_half_width: sg_halfwidth
 rf_deflecting_cavity:
-  frequency: frequency
-  field_amplitude: voltage
+  phase: phi
+  frequency: freq
+  field_amplitude: v
 solenoid:
   field_amplitude: B
 scatter:

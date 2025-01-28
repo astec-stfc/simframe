@@ -9,40 +9,37 @@ def read_ocelot_beam_file(self, filename):
     parray = load_particle_array(filename)
     self._beam['x'] = parray.x()
     self._beam['y'] = parray.y()
-    self._beam['t'] = parray.tau() / constants.speed_of_light
-    self._beam['p'] = parray.p()
-    self._beam['px'] = parray.px()
+    print(parray.s + parray.tau())
+    self._beam['t'] = (parray.s + parray.tau()) / constants.speed_of_light
+    self._beam['p'] = parray.energies
+    self._beam['px'] = parray.px() * parray.energies * 1e9 * self.q_over_c
+    self._beam['py'] = parray.py() * parray.energies * 1e9 * self.q_over_c
     cp = (self._beam['p']) * 1e9
-    cpz = cp / np.sqrt(self._beam['px'] ** 2 + self._beam['py'] ** 2 + 1)
-    cpx = self._beam['xp'] * cpz
-    cpy = self._beam['yp'] * cpz
-    self._beam['px'] = cpx * self.q_over_c
-    self._beam['py'] = cpy * self.q_over_c
-    self._beam['pz'] = cpz * self.q_over_c
-    self._beam['total_charge'] = np.sum(parray.q_array)
-    self._beam['z'] = (-1 * self._beam.Bz * constants.speed_of_light) * (
-                self._beam.t - np.mean(self._beam.t))  # np.full(len(self.t), 0)
-    self._beam['charge'] = np.full(len(self._beam['z']), self._beam['total_charge'] / len(self._beam['x']))
-    self._beam['nmacro'] = np.full(len(self._beam['z']), 1)
+    self._beam['pz'] = self.q_over_c * cp / np.sqrt(parray.px() ** 2 + parray.py() ** 2 + 1)
+    self._beam['total_charge'] = -np.sum(parray.q_array)
+    self._beam['z'] = parray.s + (-1 * self._beam.Bz * constants.speed_of_light) * (
+            self._beam['t'] - np.mean(self._beam['t']))  # np.full(len(self.t), 0)
+    self._beam['charge'] = np.full(len(self._beam['x']), self._beam['total_charge'] / len(self._beam['x']))
+    self._beam['nmacro'] = np.full(len(self._beam['x']), 1)
 
 def write_ocelot_beam_file(self, filename, write=True):
     """Save an npz file for ocelot."""
     # {x, xp, y, yp, t, p, particleID}
-    E = np.mean(self.mean_energy)
-    x = self.x
-    y = self.y
-    xp = self.px / self.pz
-    yp = self.py / self.pz
-    p = self.energy / E
-    tau = self.t * constants.speed_of_light
-    s = np.mean(tau)
+    E = self.energy.mean().val * 1e-9
+    x = self.x.val
+    y = self.y.val
+    xp = self.cpx.val / self.cpz.val
+    yp = self.cpy.val / self.cpz.val
+    p = ((self.energy.val * 1e-9) - E) / E
+    tau = -(self.t.val - np.mean(self.t.val)) * constants.speed_of_light
+    s = np.mean(self.t.val) * constants.speed_of_light
 
     rparticles = np.array([x, xp, y, yp, tau, p])
-    q_array = self.Q / self.nmacro
+    q_array = [float(-self.Q.val / len(x)) for _ in x]
     parray = ParticleArray(n=len(x))
     parray.rparticles = rparticles
     parray.q_array = q_array
-    parray.E = E * 1e-9
+    parray.E = E
     parray.s = s
     if write:
         save_particle_array(filename, parray)

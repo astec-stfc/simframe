@@ -6,6 +6,7 @@ from .Modules.MathParser import MathParser
 from .FrameworkHelperFunctions import *
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Codes.Ocelot import ocelot_conversion
+from ocelot.cpbd.elements import Marker, Aperture
 import numpy as np
 if os.name == 'nt':
     # from .Modules.symmlinks import has_symlink_privilege
@@ -972,19 +973,18 @@ class frameworkElement(frameworkObject):
         return wholestring
 
     def _write_Ocelot(self):
-        wholestring=''
-        etype = self._convertType_Ocelot(self.objecttype)
-        # print(f'objecttype {self.objecttype} \t etype {etype} \t objectname {self.objectname}')
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
         k1 = self.k1 if self.k1 is not None else 0
         k2 = self.k2 if self.k2 is not None else 0
         keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
         for key, value in keydict.items():
-            if not key in ['name', 'type', 'commandtype']:# and self._convertKeword_Ocelot(key) in elements_Ocelot[self.objecttype]:
+            if (not key in ['name', 'type', 'commandtype']) and (not type(obj) in [Aperture, Marker]):
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                setattr(obj, key, value)
-            return obj
-        return None
+                if self.objecttype in ['cavity', 'rf_deflecting_cavity']:
+                    if key == 'field_amplitude':
+                        value *= 1e-9
+                setattr(obj, self._convertKeword_Ocelot(key), value)
+        return obj
 
     def write_Elegant(self):
         if not self.subelement:

@@ -584,6 +584,20 @@ class cavity(frameworkElement):
         self.transverse_wakefield_sdds = original_transverse_wakefield_sdds
         return wholestring
 
+    def _write_Ocelot(self):
+        obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        for key, value in keydict.items():
+            if not key in ['name', 'type', 'commandtype']:# and self._convertKeword_Ocelot(key) in elements_Ocelot[self.objecttype]:
+                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                if self.objecttype in ['cavity', 'rf_deflecting_cavity']:
+                    if key == 'field_amplitude':
+                        value = value * 1e-9 * abs((self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2)))
+                setattr(obj, self._convertKeword_Ocelot(key), value)
+        return obj
+
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         self.update_field_definition()
         relpos, relrot = ccs.relative_position(self.start, self.global_rotation)

@@ -16,7 +16,9 @@ from ocelot.cpbd.elements import (
   TDCavity,
   Aperture,
   Drift,
+  Hcor,
 )
+from ocelot.cpbd.elements.cor_atom import CorAtom
 
 ocelot_conversion_rules = {
   "dipole": Bend,
@@ -43,4 +45,5 @@ ocelot_conversion_rules = {
   "cleaner": Monitor,
   "lscdrift": Drift,
   "csrdrift": Drift,
+  "kicker": Hcor,
 }
