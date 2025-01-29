@@ -1212,14 +1212,14 @@ class frameworkElement(frameworkObject):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 tmpstring = ", " + key + " = " + str(value)
@@ -1243,7 +1243,7 @@ class frameworkElement(frameworkObject):
             else etype
         )
 
-    def _convertKeword_Elegant(self, keyword):
+    def _convertKeyword_Elegant(self, keyword):
         return (
             self.keyword_conversion_rules_elegant[keyword]
             if keyword in self.keyword_conversion_rules_elegant
@@ -1309,14 +1309,14 @@ class csrdrift(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 tmpstring = ", " + key + " = " + str(value)

@@ -250,12 +250,12 @@ class dipole(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
-                # if 'bins' in key or 'bins' in self._convertKeword_Elegant(key):
-                # print('BINS KEY ', key, '  ', self._convertKeword_Elegant(key))
+                # if 'bins' in key or 'bins' in self._convertKeyword_Elegant(key):
+                # print('BINS KEY ', key, '  ', self._convertKeyword_Elegant(key))
                 if "edge_angle" in key:
-                    key = self._convertKeword_Elegant(key)
+                    key = self._convertKeyword_Elegant(key)
                     value = (
                         getattr(self, key)
                         if hasattr(self, key) and getattr(self, key) is not None
@@ -267,7 +267,7 @@ class dipole(frameworkElement):
                         if hasattr(self, key) and getattr(self, key) is not None
                         else value
                     )
-                    key = self._convertKeword_Elegant(key)
+                    key = self._convertKeyword_Elegant(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 tmpstring = ", " + key + " = " + str(value)
@@ -527,14 +527,14 @@ class kicker(dipole):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 tmpstring = ", " + key + " = " + str(value)
@@ -892,14 +892,14 @@ class cavity(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key).lower()
+                key = self._convertKeyword_Elegant(key).lower()
                 if etype == "rftmez0" and key == "freq":
                     key = "frequency"
                 if (
@@ -1190,14 +1190,14 @@ class longitudinal_wakefield(cavity):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 tmpstring = ", " + key + " = " + str(value)
@@ -1230,14 +1230,14 @@ class rf_deflecting_cavity(cavity):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key).lower()
+                key = self._convertKeyword_Elegant(key).lower()
                 # In ELEGANT the voltages need to be compensated
                 # value = abs((self.cells+4.1) * self.cell_length * (1 / np.sqrt(2)) * value) if key == 'voltage' else value
                 # In CAVITY NKICK = n_cells
@@ -1482,14 +1482,14 @@ class scatter(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -1518,14 +1518,14 @@ class cleaner(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -1589,14 +1589,14 @@ class screen(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -1855,9 +1855,9 @@ class drift(frameworkElement):
     #     etype = self._convertType_Elegant(self.objecttype)
     #     string = self.objectname+': '+ etype
     #     for key, value in list(merge_two_dicts(self.objectproperties, self.objectdefaults).items()):
-    #         if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeword_Elegant(key) in elements_Elegant[etype]:
+    #         if not key is 'name' and not key is 'type' and not key is 'commandtype' and self._convertKeyword_Elegant(key) in elements_Elegant[etype]:
     #             value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-    #             key = self._convertKeword_Elegant(key)
+    #             key = self._convertKeyword_Elegant(key)
     #             value = 1 if value is True else value
     #             value = 0 if value is False else value
     #             tmpstring = ', '+key+' = '+str(value)
@@ -1917,14 +1917,14 @@ class fel_modulator(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -1971,14 +1971,14 @@ class wiggler(frameworkElement):
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
-                and self._convertKeword_Elegant(key) in elements_Elegant[etype]
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
                     else value
                 )
-                key = self._convertKeword_Elegant(key)
+                key = self._convertKeyword_Elegant(key)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
