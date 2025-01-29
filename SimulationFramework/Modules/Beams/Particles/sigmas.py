@@ -30,6 +30,10 @@ class sigmas(munch.Munch):
         return self.momentum_spread
 
     @property
+    def sigma_cp_eV(self):
+        return self.momentum_spread
+    
+    @property
     def Sx(self):
         return np.sqrt(self.beam.covariance(self.beam.x, self.beam.x))
 

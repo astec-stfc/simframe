@@ -1,9 +1,10 @@
 import os
+import math
 from io import StringIO
 import matplotlib.pyplot as plt
 from copy import copy
 import numpy as np
-from .units import nice_array, nice_scale_prefix
+from ..units import nice_array, nice_scale_prefix
 from mpl_axes_aligner import align
 
 # from units import nice_array, nice_scale_prefix
@@ -11,6 +12,21 @@ from mpl_axes_aligner import align
 CMAP0 = copy(plt.get_cmap("viridis"))
 CMAP0.set_under("white")
 CMAP1 = copy(plt.get_cmap("plasma"))
+
+
+def trans(M):
+    return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
+
+
+def find_nearest(array, value):
+    idx = np.searchsorted(array, value, side="left")
+    if idx > 0 and (
+        idx == len(array)
+        or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])
+    ):
+        return idx - 1
+    else:
+        return idx
 
 
 def fieldmap_data(element, directory="."):
@@ -71,6 +87,14 @@ def fieldmap_data(element, directory="."):
 
 class magnet_plotting_data:
 
+    def __init__(self,
+                 kinetic_energy=None,
+                 ):
+        if kinetic_energy is not None:
+            self.z, self.kinetic_energy = trans(kinetic_energy)
+        else:
+            self.z, self.kinetic_energy = ([0.], [1.])
+
     def half_rectangle(self, e, half_height):
         return np.array(
             [
@@ -92,8 +116,22 @@ class magnet_plotting_data:
         )
 
     def quadrupole(self, e):
-        strength = np.sign(e.k1l) * 0.5 if e.gradient is None else e.gradient  # e.k1l / e.length
+        if e.gradient is None:
+            strength = np.sign(e.k1l) * 0.5 
+        else:
+            idx = find_nearest(self.z, e.middle[2])
+            ke = self.kinetic_energy[idx]
+            strength = 1.0 / (3.3356 * ke / 1e6) * e.gradient
         return self.half_rectangle(e, strength), "red"
+
+    def sextupole(self, e):
+        if e.gradient is None:
+            strength = np.sign(e.k2l) * 0.5 
+        else:
+            idx = find_nearest(self.z, e.middle[2])
+            ke = self.kinetic_energy[idx]
+            strength = 1.0 / (3.3356 * ke / 1e6) * e.gradient
+        return self.half_rectangle(e, strength), "green"
 
     def dipole(self, e):
         strength = np.sign(e.angle) * 0.4  # e.angle
@@ -121,10 +159,12 @@ def load_elements(
     bounds=None,
     sections="All",
     types=["cavity", "solenoid"],
+    kinetic_energy=None,
     verbose=False,
     scale=1,
 ):
     fmap = {}
+    mpd = magnet_plotting_data(kinetic_energy=kinetic_energy)
     for t in types:
         fmap[t] = {}
         if sections == "All":
@@ -147,8 +187,8 @@ def load_elements(
                 and e.field_definition is not None
             ):
                 fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
-            elif hasattr(magnet_plotting_data, t):
-                fmap[t][e.objectname] = getattr(magnet_plotting_data(), t)(e)
+            elif hasattr(mpd, t):
+                fmap[t][e.objectname] = getattr(mpd, t)(e)
             else:
                 print("Missing drawings for", t)
     return fmap
@@ -196,7 +236,6 @@ def add_fieldmaps_to_axes(
             a.plot(*data.T, label=label, color=c)
         a.set_ylabel(ylabel[section])
         a.yaxis.label.set_color(c)
-    ax1.set_xlabel("$z$ (m)")
 
     if len(fields) < 1:
         for a in ax:
@@ -211,8 +250,9 @@ def add_magnets_to_axes(
     axes,
     bounds=None,
     sections="All",
-    magnets=["quadrupole", "dipole", "beam_position_monitor", "screen"],
+    magnets=["quadrupole", "dipole", "sextupole", "beam_position_monitor", "screen"],
     include_labels=True,
+    kinetic_energy=None,
     verbose=False,
 ):
     """
@@ -229,25 +269,27 @@ def add_magnets_to_axes(
         verbose=verbose,
         types=magnets,
         scale=max_scale,
+        kinetic_energy=kinetic_energy,
     )
 
     ax1 = axes
     ax1rhs = ax1.twinx()
     ax = [ax1, ax1rhs]
 
-    ylabel = {"dipole": r"$\theta$ (rad)", "quadrupole": "$K_1$ (T/m)"}
-    color = {"dipole": "blue", "quadrupole": "red"}
+    ylabel = {"dipole": r"$\theta$ (rad)", "quadrupole": "$K_n$ (T/m)"} #, "sextupole": "$K_2$ (T/$m^2$)"}
+    axis = {"dipole": 0, "quadrupole": 1}
+    color = {"dipole": "blue", "quadrupole": "red", "sextupole": "green", "beam_position_monitor": "purple"}
 
-    for i, section in enumerate(ylabel.keys()):
+    for section, i in axis.items():
         a = ax[i]
         c = color[section]
         a.set_ylabel(ylabel[section])
         a.yaxis.label.set_color(c)
-    ax1.set_xlabel("$z$ (m)")
 
-    for section in ylabel.keys():
-        for name, (data, c) in fmaps[section].items():
-            a.fill(*data.T, color=c)
+    for section in color.keys():
+        if section in fmaps:
+            for name, (data, c) in fmaps[section].items():
+                a.fill(*data.T, color=c)
 
     data = np.array([[0, 0], [100, 0]])
     ax[0].plot(*data.T, color="black")
@@ -326,9 +368,12 @@ def plot(
     twiss = framework_object.twiss  # convenience
     twiss.sort()  # sort before plotting!
     P = framework_object.beams
-
+    
     if include_layout is not False:
-        fig, all_axis = plt.subplots(3, gridspec_kw={"height_ratios": [4, 1, 1]}, **kwargs)
+        if not 'sharex' in kwargs:
+            kwargs['sharex'] = True
+        fig, all_axis = plt.subplots(3, gridspec_kw={"height_ratios": [4, 1, 1]}, subplot_kw=dict(frameon=False), **kwargs)
+        plt.subplots_adjust(hspace=.0)
         ax_field_layout = all_axis[1]
         ax_magnet_layout = all_axis[2]
         ax_plot = [all_axis[0]]
@@ -398,13 +443,13 @@ def plot(
         factor_x = 1
 
     # set all but the layout
-    for ax in ax_plot:
-        ax.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
-        ax.set_xlabel(f"{xkey} ({units_x})")
+    ax_magnet_layout.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
+    ax_magnet_layout.set_xlabel(f"{xkey} ({units_x})")
 
     # Draw for Y1 and Y2
-
     linestyles = ["solid", "dashed"]
+
+    legend_labels = []
 
     ii = -1  # counter for colors
     for ix, keys in enumerate([ykeys, ykeys2]):
@@ -412,6 +457,7 @@ def plot(
             continue
 
         ax = ax_plot[ix]
+        ax.ticklabel_format(useOffset=False)
         linestyle = linestyles[ix]
 
         # Check that units are compatible
@@ -419,11 +465,15 @@ def plot(
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
-        # String representation
+        
+        # String Unit representation
         unit = str(ulist[0])
 
         # Data
         data = [twiss.stat(key)[good] for key in keys]
+
+        # Labels
+        labels = [twiss.units(key).label for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
@@ -432,14 +482,14 @@ def plot(
             factor = 1
 
         # Make a line and point
-        for key, dat in zip(keys, data):
-            #
+        for key, dat, label in zip(keys, data, labels):
+            legend_labels.append("$" + label.replace("sigma", r"\sigma") + "$")
             ii += 1
             color = "C" + str(ii)
             ax.plot(
                 X,
                 dat / factor,
-                label=f"{key} ({unit})",
+                label=f"{label} ({unit})",
                 color=color,
                 linestyle=linestyle,
             )
@@ -461,18 +511,18 @@ def plot(
                 ax.scatter(X_particles / factor_x, Y_particles / factor, color=color)
             # except:
             #     pass
-        keys = ["$" + k.replace("sigma", r"\sigma") + "$" for k in keys]
-        ax.set_ylabel(", ".join(keys) + f" ({unit})")
+        labels = ["$" + k.replace("sigma", r"\sigma") + "$" for k in labels]
+        ax.set_ylabel(", ".join(labels) + f" ({unit})")
 
     # Collect legend
     if include_legend:
         lines = []
-        labels = []
+        # labels = []
         for ax in ax_plot:
-            a, b = ax.get_legend_handles_labels()
+            a, _ = ax.get_legend_handles_labels()
             lines += a
-            labels += b
-        ax_plot[0].legend(lines, labels, loc="best")
+            # labels += b
+        ax_plot[0].legend(lines, legend_labels, loc="best")
 
     # Layout
     if include_layout is not False:
@@ -500,9 +550,9 @@ def plot(
             bounds=limits,
             include_labels=include_labels,
             magnets=magnets,
+            kinetic_energy=list(zip(twiss.stat("z")[good], twiss.stat("kinetic_energy")[good]))
         )
-
-    return plt
+    return plt, fig, all_axis
 
 
 def getattrsplit(self, attr):

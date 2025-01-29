@@ -26,10 +26,6 @@ class centroids(munch.Munch):
         return self.Cz
 
     @property
-    def mean_cp(self):
-        return self.Cp
-
-    @property
     def mean_cxp(self):
         return self.Cpx
 
@@ -40,6 +36,18 @@ class centroids(munch.Munch):
     @property
     def mean_cpz(self):
         return self.Cpz
+
+    @property
+    def mean_energy(self):
+        return self.CEn
+
+    @property
+    def mean_gamma(self):
+        return self.Cgamma
+
+    @property
+    def mean_cp(self):
+        return self.Ccp
 
     @property
     def Cx(self):
@@ -80,3 +88,15 @@ class centroids(munch.Munch):
     @property
     def Cyp(self):
         return np.mean(self.beam.yp)
+
+    @property
+    def Cgamma(self):
+        return np.mean(self.beam.gamma)
+
+    @property
+    def Ccp(self):
+        return np.mean(self.beam.cp)
+
+    @property
+    def CEn(self):
+        return np.mean(self.beam.cp * self.beam.particle_rest_energy)

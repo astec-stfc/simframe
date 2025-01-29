@@ -1,5 +1,7 @@
 import os
+import sys
 import yaml
+import inspect
 from typing import Any
 from pprint import pprint
 import numpy as np
@@ -7,11 +9,10 @@ from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
 from .Codes import Executables as exes
-from .Codes.ASTRA.ASTRA import *
-from .Codes.CSRTrack.CSRTrack import *
-from .Codes.Elegant.Elegant import *
-from .Codes.Generators.Generators import *
-from .Codes.GPT.GPT import *
+from .Codes.Generators.Generators import ASTRAGenerator, GPTGenerator, generator_keywords
+from .Framework_objects import runSetup
+from . import Framework_lattices as frameworkLattices
+from . import Framework_elements as frameworkElements
 from .Framework_Settings import FrameworkSettings
 from .FrameworkHelperFunctions import (
     _rotation_matrix,
@@ -32,7 +33,7 @@ try:
 except ImportError:
     SimCodesLocation = None
 try:
-    import SimulationFramework.Modules.plotting as groupplot
+    import SimulationFramework.Modules.plotting.plotting as groupplot
 
     use_matplotlib = True
 except ImportError as e:
@@ -55,9 +56,7 @@ def dict_constructor(loader, node):
 yaml.add_representer(dict, dict_representer)
 yaml.add_constructor(_mapping_tag, dict_constructor)
 
-latticeClasses = [
-    globals()[x] for x in globals() if (("Lattice" in x) and ("MasterLattice" not in x))
-]
+latticeClasses = [obj for name, obj in inspect.getmembers(sys.modules['SimulationFramework.Framework_lattices']) if inspect.isclass(obj)]
 
 
 class Framework(Munch):
@@ -364,7 +363,7 @@ class Framework(Munch):
 
         for name, elem in list(self.groups.items()):
             if "type" in elem:
-                group = globals()[elem["type"]](
+                group = getattr(frameworkElements, elem["type"])(
                     name, self, global_parameters=self.global_parameters, **elem
                 )
                 self.groupObjects[name] = group
@@ -400,7 +399,7 @@ class Framework(Munch):
     def read_Lattice(self, name: str, lattice: dict) -> None:
         """Create an instance of a <code>Lattice class"""
         code = lattice["code"] if "code" in lattice else "astra"
-        self.latticeObjects[name] = globals()[code.lower() + "Lattice"](
+        self.latticeObjects[name] = getattr(frameworkLattices, code.lower() + "Lattice")(
             name,
             lattice,
             self.elementObjects,
@@ -643,7 +642,7 @@ class Framework(Munch):
             ):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[latticename]
-                self.latticeObjects[latticename] = globals()[code.lower() + "Lattice"](
+                self.latticeObjects[latticename] = getattr(frameworkLattices, code.lower() + "Lattice")(
                     currentLattice.objectname,
                     currentLattice.file_block,
                     self.elementObjects,
@@ -681,10 +680,11 @@ class Framework(Munch):
             else:
                 name = kwargs["name"]
         try:
-            element = globals()[type](
+            element = getattr(frameworkElements, type)(
                 name, type, global_parameters=self.global_parameters, **kwargs
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             print(type, name, kwargs)
         self.elementObjects[name] = element
         return element
@@ -707,7 +707,7 @@ class Framework(Munch):
             if a != "objectname" and a != "objecttype"
         }
         new_properties = merge_two_dicts(kwargs, original_properties)
-        element = globals()[type](name, type, **new_properties)
+        element = getattr(frameworkElements, type)(name, type, **new_properties)
         # print element
         self.elementObjects[name] = element
         return element
@@ -1167,6 +1167,7 @@ class frameworkDirectory(Munch):
         verbose: bool = False,
         settings: str = "settings.def",
         changes: str = "changes.yaml",
+        rest_mass: float | None = None,
         framework: Framework | None = None,
     ) -> None:
         super(frameworkDirectory, self).__init__()
@@ -1181,10 +1182,6 @@ class frameworkDirectory(Munch):
         print("directory = ", directory)
         if os.path.exists(directory + "/" + changes):
             self.framework.load_changes_file(directory + "/" + changes)
-        if twiss:
-            self.twiss = rtf.load_directory(directory)
-        else:
-            self.twiss = None
         if beams:
             self.beams = rbf.load_HDF5_summary_file(
                 os.path.join(directory, "Beam_Summary.hdf5")
@@ -1192,8 +1189,14 @@ class frameworkDirectory(Munch):
             if len(self.beams) < 1:
                 print("No Summary File! Globbing...")
                 self.beams = rbf.load_directory(directory)
+            if rest_mass is None:
+                rest_mass = self.beams.param('particle_rest_energy')[0][0]
+            self.twiss = rtf.twiss(rest_mass=rest_mass)
         else:
             self.beams = None
+            self.twiss = rtf.twiss()
+        if twiss:
+            self.twiss.load_directory(directory)
 
     if use_matplotlib:
 

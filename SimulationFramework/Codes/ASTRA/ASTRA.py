@@ -48,17 +48,11 @@ class astraLattice(frameworkLattice):
             if self.allElementObjects[self.start].global_rotation is not None
             else 0
         )
-        # print 'self.starting_rotation = ', self.starting_rotation
-        # Calculate the correct starting offset by adding up the dipole angles
-        # for d in self.dipoles:
-        #     self.starting_rotation += d.angle
-        # print('self.starting_rotation after subtraction = ', self.starting_rotation)
         self.starting_rotation = (
             eval(expand_substitution(self, str(self.file_block["starting_rotation"])))
             if "starting_rotation" in self.file_block
             else self.starting_rotation
         )
-        # print('self.starting_rotation at end = ', self.starting_rotation)
 
         # Create a "newrun" block
         if "input" not in self.file_block:
@@ -118,7 +112,8 @@ class astraLattice(frameworkLattice):
         self.headers["charge"] = astra_charge(
             global_parameters=self.global_parameters,
             **merge_two_dicts(
-                self.file_block["charge"], self.globalSettings["ASTRAsettings"]
+                merge_two_dicts(self.file_block["charge"], self.globalSettings['charge']),
+                self.globalSettings["ASTRAsettings"]
             )
         )
 

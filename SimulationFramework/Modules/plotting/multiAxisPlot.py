@@ -14,8 +14,8 @@ import pyqtgraph as pg
 import numpy as np
 
 sys.path.append(os.path.abspath(os.path.realpath(__file__) + "/../../../"))
-import SimulationFramework.Modules.read_beam_file as raf
-import SimulationFramework.Modules.read_twiss_file as rtf
+import SimulationFramework.Modules.beams as raf
+import SimulationFramework.Modules.twiss as rtf
 
 sys.path.append(os.path.realpath(__file__) + "/../../../../")
 

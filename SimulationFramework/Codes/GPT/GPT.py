@@ -1,7 +1,11 @@
-from ...Framework_objects import *
-from ...Framework_elements import *
-from ...FrameworkHelperFunctions import _rotation_matrix
+import os
+import subprocess
+import numpy as np
+from ...Framework_objects import frameworkLattice, frameworkElement, elementkeywords, getGrids
+from ...Framework_elements import screen, gpt_ccs
+from ...FrameworkHelperFunctions import saveFile
 from ...Modules import Beams as rbf
+from ...Modules.merge_two_dicts import merge_two_dicts
 
 gpt_defaults = {}
 
@@ -34,8 +38,6 @@ class gptLattice(frameworkLattice):
         self.headers["floorplan"] = gpt_writefloorplan(
             filename='"' + self.objectname + '_floor.gdf"'
         )
-        start = self.allElementObjects[self.start].start[2]
-        end = self.allElementObjects[self.end].end[2]
         self.ignore_start_screen = None
         self.screen_step_size = 0.1
         self.time_step_size = "0.1/c"
@@ -45,10 +47,23 @@ class gptLattice(frameworkLattice):
 
     @property
     def space_charge_mode(self):
-        return self.file_block["charge"]["space_charge_mode"]
+        if (
+            "charge" in self.file_block
+            and "space_charge_mode" in self.file_block["charge"]
+        ):
+            return self.file_block["charge"]["space_charge_mode"]
+        elif (
+            "charge" in self.globalSettings
+            and "space_charge_mode" in self.globalSettings["charge"]
+        ):
+            return self.globalSettings["charge"]["space_charge_mode"]
+        else:
+            return None
 
     @space_charge_mode.setter
     def space_charge_mode(self, mode):
+        if "charge" not in self.file_block:
+            self.file_block["charge"] = {}
         self.file_block["charge"]["space_charge_mode"] = mode
 
     def endScreen(self, **kwargs):
@@ -76,7 +91,13 @@ class gptLattice(frameworkLattice):
             # self.headers["spacecharge"].space_charge_mode = "cathode"
         else:
             self.headers["spacecharge"] = gpt_spacecharge(
-                **merge_two_dicts(self.global_parameters, self.file_block["charge"])
+                **merge_two_dicts(
+                    self.global_parameters,
+                    merge_two_dicts(
+                        self.file_block["charge"],
+                        self.globalSettings["charge"],
+                    ),
+                )
             )
         if (
             self.csr_enable
@@ -203,7 +224,6 @@ class gptLattice(frameworkLattice):
             else "/opt/GPT3.3.6/lib/"
         )
         my_env["OMP_WAIT_POLICY"] = "PASSIVE"
-        # post_command_t = [self.executables[self.code][0].replace('gpt.exe','gdfa.exe')] + ['-o', self.objectname+'_emit.gdf'] + [self.objectname+'_out.gdf'] + ['time','avgx','avgy','stdx','stdBx','stdy','stdBy','stdz','stdt','nemixrms','nemiyrms','nemizrms','numpar','nemirrms','avgG','avgp','stdG','avgt','avgBx','avgBy','avgBz','CSalphax','CSalphay','CSbetax','CSbetay']
         post_command = (
             [self.executables[self.code][0].replace("gpt", "gdfa")]
             + ["-o", self.objectname + "_emit.gdf"]
@@ -486,7 +506,7 @@ class gpt_accuracy(gpt_element):
     def write_GPT(self, *args, **kwargs):
         output = (
             "accuracy(" + str(self.accuracy) + ");\n"
-        )  #'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
+        )  # 'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
         return output
 
 

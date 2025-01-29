@@ -1,9 +1,7 @@
 import os
 import math
 import warnings
-import copy
-from pydantic import BaseModel, ConfigDict
-from typing import List, Dict
+from pydantic import BaseModel, ConfigDict, field_validator, ValidationInfo, Field
 import numpy as np
 
 try:
@@ -35,7 +33,15 @@ class twissParameter(BaseModel):
 
     name: str
     unit: str
+    label: str = Field(default=None, validate_default=True)
     dtype: str = "f"
+
+    @field_validator('label', mode="before")
+    @classmethod
+    def default_label(cls, v: str, info: ValidationInfo):
+        if v is None:
+            return info.data["name"]
+        return v
 
 
 class twiss(munch.Munch):
@@ -43,9 +49,11 @@ class twiss(munch.Munch):
     properties = {
         "z": twissParameter(name="z", unit="m"),
         "t": twissParameter(name="t", unit="s"),
-        "kinetic_energy": twissParameter(name="kinetic_energy", unit="J"),
+        "kinetic_energy": twissParameter(name="kinetic_energy", unit="eV"),
         "gamma": twissParameter(name="gamma", unit=""),
+        "mean_gamma": twissParameter(name="mean_gamma", unit="", label=r"|gamma|"),
         "cp": twissParameter(name="cp", unit="eV/c"),
+        "mean_cp": twissParameter(name="mean_cp", unit="eV/c", label=r"|cp|"),
         "cp_eV": twissParameter(name="cp_eV", unit="eV/c"),
         "p": twissParameter(name="p", unit="kg*m/s"),
         "enx": twissParameter(name="enx", unit="m-radians"),
@@ -89,12 +97,16 @@ class twiss(munch.Munch):
         "alpha_y_beam": twissParameter(name="alpha_y_beam", unit=""),
     }
 
-    E0 = constants.m_e * constants.speed_of_light**2
-    E0_eV = E0 / constants.elementary_charge
-    q_over_c = constants.e / constants.speed_of_light
-
-    def __init__(self):
+    def __init__(self, rest_mass=None):
         super(twiss, self).__init__()
+        if rest_mass is not None:
+            self.E0 = rest_mass * constants.speed_of_light**2
+            self.E0_eV = self.E0 / constants.elementary_charge
+        else:
+            self.E0 = constants.m_e * constants.speed_of_light**2
+            self.E0_eV = E0 / constants.elementary_charge
+        self.q_over_c = constants.e / constants.speed_of_light
+
         self.reset_dicts()
         self.sddsindex = 0
         self.codes = {
@@ -275,25 +287,32 @@ class twiss(munch.Munch):
         elegant.read_sdds_file(sddsobject, filename, ascii)
         return sddsobject.elegantTwiss
 
-    @classmethod
     def load_directory(
-        cls,
+        self,
         directory=".",
         types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001"},
         preglob="*",
         verbose=False,
         sortkey="z",
     ):
-        t = cls()
         if verbose:
             print("Directory:", directory)
         for code, string in types.items():
             twiss_files = glob.glob(directory + "/" + preglob + string)
             if verbose:
                 print(code, [os.path.basename(t) for t in twiss_files])
-            if t._which_code(code) is not None and len(twiss_files) > 0:
-                t._which_code(code)(t, twiss_files, reset=False)
-        t.sort(key=sortkey)
+            if self._which_code(code) is not None and len(twiss_files) > 0:
+                self._which_code(code)(self, twiss_files, reset=False)
+        self.sort(key=sortkey)
+
+    @classmethod
+    def initialise_directory(
+        cls,
+        *args,
+        **kwargs
+    ):
+        t = cls()
+        t.load_directory(*args, **kwargs)
         return t
 
     # @property

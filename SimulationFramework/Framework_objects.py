@@ -1,8 +1,10 @@
-import os, subprocess, yaml, copy
-from munch import Munch, unmunchify
+import os
+import subprocess
+import yaml
+from munch import Munch
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules.MathParser import MathParser
-from .FrameworkHelperFunctions import *
+from .FrameworkHelperFunctions import chunks, expand_substitution, checkValue, chop, copylink
 from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
 
@@ -281,7 +283,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start : index_end + 1]
+                for e in self.allElements[index_start: index_end + 1]
             ]
         )
         return f
@@ -494,9 +496,9 @@ class frameworkObject(Munch):
         super(frameworkObject, self).__init__()
         if "global_parameters" in kwargs:
             self.global_parameters = kwargs["global_parameters"]
-        if objectname == None:
+        if objectname is None:
             raise NameError("Command does not have a name")
-        if objecttype == None:
+        if objecttype is None:
             raise NameError("Command does not have a type")
         setattr(self, "objectdefaults", dict())
         setattr(self, "objectname", objectname)
@@ -557,15 +559,15 @@ class frameworkObject(Munch):
         if lkey in defaults:
             try:
                 return super(frameworkObject, self).__getitem__(lkey)
-            except:
+            except Exception:
                 return defaults[lkey]
         else:
             try:
                 return super(frameworkObject, self).__getitem__(lkey)
-            except:
+            except Exception:
                 try:
                     return super(frameworkObject, self).__getattribute__(key)
-                except:
+                except Exception:
                     return None
 
     def __repr__(self):
@@ -581,11 +583,10 @@ class frameworkCommand(frameworkObject):
         if objectname is None:
             objectname = objecttype
         super(frameworkCommand, self).__init__(objectname, objecttype, **kwargs)
-        if not objecttype in commandkeywords:
+        if objecttype not in commandkeywords:
             raise NameError("Command '%s' does not exist" % objecttype)
 
     def write_Elegant(self):
-        wholestring = ""
         string = "&" + self.objecttype + "\n"
         for key in commandkeywords[self.objecttype]:
             if (
@@ -601,7 +602,6 @@ class frameworkCommand(frameworkObject):
         return string
 
     def write_MAD8(self):
-        wholestring = ""
         string = self.objecttype
         # print(self.objecttype, self.objectproperties)
         for key in commandkeywords[self.objecttype]:
@@ -635,7 +635,7 @@ class frameworkGroup(object):
         try:
             isinstance(type(self).p, p)
             return getattr(self, p)
-        except:
+        except Exception:
             if self.elements[0] in self.allGroupObjects:
                 return self.allGroupObjects[self.elements[0]][p]
             return self.allElementObjects[self.elements[0]][p]
@@ -648,7 +648,7 @@ class frameworkGroup(object):
             if p == "angle":
                 self.set_angle(v)
             # print ('Changing group ', self.objectname, ' ', p, ' = ', v, '  result = ', self.get_Parameter(p))
-        except:
+        except Exception:
             for e in self.elements:
                 setattr(self.allElementObjects[e], p, v)
                 # print ('Changing group elements ', self.objectname, ' ', p, ' = ', v, '  result = ', self.allElementObjects[self.elements[0]].objectname, self.get_Parameter(p))
@@ -788,9 +788,9 @@ class chicane(frameworkGroup):
             self.allElementObjects[list(self.allElementObjects)[e]]
             for e in range(indices[0], indices[-1] + 1)
         ]
-        starting_angle = obj[0].theta
         dipole_number = 0
-        # print('\n\n\n')
+        ref_pos = None
+        ref_angle = None
         for i in range(len(obj)):
             if dipole_number > 0:
                 # print('before',obj[i])
@@ -807,7 +807,6 @@ class chicane(frameworkGroup):
             if obj[i] in dipole_objs:
                 # print('DIPOLE before',obj[i])
                 ref_pos = obj[i].middle
-                start_angle = obj[i].angle
                 obj[i].angle = a * self.ratios[dipole_number]
                 ref_angle = obj[i].global_rotation[2] + obj[i].angle
                 dipole_number += 1

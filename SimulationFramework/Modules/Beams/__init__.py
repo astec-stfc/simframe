@@ -272,6 +272,7 @@ class beam(munch.Munch):
         return len(self._beam.x)
 
     def __getitem__(self, key):
+        # print('beams key', key)
         for p in parameters:
             if key in parameters[p]:
                 return getattr(super().__getattr__(p), key)
