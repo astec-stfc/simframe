@@ -8,6 +8,7 @@ import numpy as np
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
+from .Modules import constants
 from .Codes import Executables as exes
 from .Codes.Generators.Generators import ASTRAGenerator, GPTGenerator, generator_keywords
 from .Framework_objects import runSetup
@@ -1190,7 +1191,10 @@ class frameworkDirectory(Munch):
                 print("No Summary File! Globbing...")
                 self.beams = rbf.load_directory(directory)
             if rest_mass is None:
-                rest_mass = self.beams.param('particle_rest_energy')[0][0]
+                if len(self.beams.param('particle_rest_energy')) > 0:
+                    rest_mass = self.beams.param('particle_rest_energy')[0][0]
+                else:
+                    rest_mass = constants.m_e
             self.twiss = rtf.twiss(rest_mass=rest_mass)
         else:
             self.beams = None

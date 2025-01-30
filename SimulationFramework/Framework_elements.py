@@ -3,7 +3,7 @@ from operator import add
 from copy import copy
 import numpy as np
 from munch import Munch
-from .Framework_objects import frameworkElement, elements_Elegant, csrdrift
+from .Framework_objects import frameworkElement, elements_Elegant, csrdrift, chicane, element_group, r56_group
 from .FrameworkHelperFunctions import (
     checkValue,
     chop,

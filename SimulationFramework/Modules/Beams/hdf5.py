@@ -171,24 +171,29 @@ def read_HDF5_beam_file(self, filename, local=False):
         else:
             self["longitudinal_reference"] = "t"
         hdf5beam = np.array(h5file.get("beam/beam")).transpose()
-        x, y, z, cpx, cpy, cpz, t, mass, charge, nmacro = hdf5beam
-
-        self._beam["particle_mass"] = mass
-        # print('HDF5', self._beam["particle_mass"])
+        columns = [c.decode('utf-8') for c in h5file.get("/beam/columns")]
+        if 'particle' in columns and len(columns) == 10:
+            x, y, z, cpx, cpy, cpz, t, mass, charge, nmacro = hdf5beam
+            self._beam["particle_mass"] = mass
+        elif len(columns) == 9:
+            x, y, z, cpx, cpy, cpz, t, charge, nmacro = hdf5beam
+            self._beam["particle_mass"] = np.full(len(x), constants.m_e)
+        else:
+            raise ValueError(f'HDF5 columns unknown: {columns}')
         self._beam["particle_rest_energy"] = [
             m * constants.speed_of_light**2 for m in self._beam["particle_mass"]
         ]
-        # print('HDF5', self._beam["particle_rest_energy"])
+
         self._beam["particle_rest_energy_eV"] = [
             E0 / constants.elementary_charge
             for E0 in self._beam["particle_rest_energy"]
         ]
-        # print('HDF5', self._beam["particle_rest_energy_eV"])
+
         self._beam["charge"] = charge
         self._beam["particle_charge"] = [
             constants.elementary_charge * q for q in self._beam.chargesign
         ]
-        # print('HDF5', self._beam["particle_charge"])
+
         self._beam["x"] = x
         self._beam["y"] = y
         self._beam["z"] = z

@@ -109,6 +109,8 @@ class astraLattice(frameworkLattice):
         # Create a "charge" block
         if "charge" not in self.file_block:
             self.file_block["charge"] = {}
+        if "charge" not in self.globalSettings:
+            self.globalSettings["charge"] = {}
         self.headers["charge"] = astra_charge(
             global_parameters=self.global_parameters,
             **merge_two_dicts(

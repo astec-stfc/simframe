@@ -104,7 +104,7 @@ class twiss(munch.Munch):
             self.E0_eV = self.E0 / constants.elementary_charge
         else:
             self.E0 = constants.m_e * constants.speed_of_light**2
-            self.E0_eV = E0 / constants.elementary_charge
+            self.E0_eV = self.E0 / constants.elementary_charge
         self.q_over_c = constants.e / constants.speed_of_light
 
         self.reset_dicts()

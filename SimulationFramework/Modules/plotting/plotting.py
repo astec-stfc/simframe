@@ -370,7 +370,7 @@ def plot(
     P = framework_object.beams
     
     if include_layout is not False:
-        if not 'sharex' in kwargs:
+        if 'sharex' not in kwargs:
             kwargs['sharex'] = True
         fig, all_axis = plt.subplots(3, gridspec_kw={"height_ratios": [4, 1, 1]}, subplot_kw=dict(frameon=False), **kwargs)
         plt.subplots_adjust(hspace=.0)
