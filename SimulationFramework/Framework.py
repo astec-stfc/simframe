@@ -1,35 +1,44 @@
-import time, os, subprocess, re
+import os
+import sys
 import yaml
-import copy
+import inspect
 from typing import Any
 from pprint import pprint
-from collections import OrderedDict
+import numpy as np
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
+from .Modules import constants
 from .Codes import Executables as exes
-from .Codes.ASTRA.ASTRA import *
-from .Codes.CSRTrack.CSRTrack import *
-from .Codes.Elegant.Elegant import *
-from .Codes.Generators.Generators import *
-from .Codes.GPT.GPT import *
+from .Codes.Generators.Generators import (
+    ASTRAGenerator,
+    GPTGenerator,
+    generator_keywords,
+)
+from .Framework_objects import runSetup
+from . import Framework_lattices as frameworkLattices
+from . import Framework_elements as frameworkElements
 from .Framework_Settings import FrameworkSettings
-from .FrameworkHelperFunctions import _rotation_matrix
+from .FrameworkHelperFunctions import (
+    _rotation_matrix,
+    clean_directory,
+    convert_numpy_types,
+)
 
 try:
     import MasterLattice
 
     MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
-except:
+except ImportError:
     MasterLatticeLocation = None
 try:
     import SimCodes
 
     SimCodesLocation = os.path.dirname(SimCodes.__file__) + "/"
-except:
+except ImportError:
     SimCodesLocation = None
 try:
-    import SimulationFramework.Modules.plotting as groupplot
+    import SimulationFramework.Modules.plotting.plotting as groupplot
 
     use_matplotlib = True
 except ImportError as e:
@@ -46,14 +55,18 @@ def dict_representer(dumper, data):
 
 
 def dict_constructor(loader, node):
-    return OrderedDict(loader.construct_pairs(node))
+    return dict(loader.construct_pairs(node))
 
 
-yaml.add_representer(OrderedDict, dict_representer)
+yaml.add_representer(dict, dict_representer)
 yaml.add_constructor(_mapping_tag, dict_constructor)
 
 latticeClasses = [
-    globals()[x] for x in globals() if (("Lattice" in x) and ("MasterLattice" not in x))
+    obj
+    for name, obj in inspect.getmembers(
+        sys.modules["SimulationFramework.Framework_lattices"]
+    )
+    if inspect.isclass(obj)
 ]
 
 
@@ -83,10 +96,10 @@ class Framework(Munch):
         self.verbose = verbose
         self.subdir = directory
         self.clean = clean
-        self.elementObjects = OrderedDict()
-        self.latticeObjects = OrderedDict()
-        self.commandObjects = OrderedDict()
-        self.groupObjects = OrderedDict()
+        self.elementObjects = dict()
+        self.latticeObjects = dict()
+        self.commandObjects = dict()
+        self.groupObjects = dict()
         self.progress = 0
         self.tracking = False
         self.basedirectory = os.getcwd()
@@ -121,6 +134,9 @@ class Framework(Munch):
             }
         )
 
+    def change_subdirectory(self, *args, **kwargs):
+        self.setSubDirectory(*args, **kwargs)
+
     def setSubDirectory(self, dir: str) -> None:
         """Set subdirectory for tracking"""
         self.subdirectory = os.path.abspath(dir)
@@ -128,9 +144,9 @@ class Framework(Munch):
         if not os.path.exists(self.subdirectory):
             os.makedirs(self.subdirectory, exist_ok=True)
         else:
-            if self.clean == True:
+            if self.clean is True:
                 clean_directory(self.subdirectory)
-        if self.overwrite == None:
+        if self.overwrite is None:
             self.overwrite = True
 
     def setMasterLatticeLocation(self, master_lattice: str | None = None) -> None:
@@ -329,12 +345,7 @@ class Framework(Munch):
             self.settings = settings
 
         self.globalSettings = self.settings["global"]
-        master_run_no = (
-            self.globalSettings["run_no"]
-            if isinstance(self.globalSettings, list) and "run_no" in self.globalSettings
-            else 1
-        )
-        if "generator" in self.settings:
+        if "generator" in self.settings and len(self.settings["generator"]) > 0:
             self.generatorSettings = self.settings["generator"]
             self.add_Generator(**self.generatorSettings)
         self.fileSettings = self.settings["files"] if "files" in self.settings else {}
@@ -353,15 +364,15 @@ class Framework(Munch):
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
 
-        for name, lattice in list(self.fileSettings.items()):
-            self.read_Lattice(name, lattice)
-
         for name, elem in list(self.groups.items()):
             if "type" in elem:
-                group = globals()[elem["type"]](
+                group = getattr(frameworkElements, elem["type"])(
                     name, self, global_parameters=self.global_parameters, **elem
                 )
                 self.groupObjects[name] = group
+
+        for name, lattice in list(self.fileSettings.items()):
+            self.read_Lattice(name, lattice)
 
         self.apply_changes(changes)
 
@@ -394,7 +405,9 @@ class Framework(Munch):
     def read_Lattice(self, name: str, lattice: dict) -> None:
         """Create an instance of a <code>Lattice class"""
         code = lattice["code"] if "code" in lattice else "astra"
-        self.latticeObjects[name] = globals()[code.lower() + "Lattice"](
+        self.latticeObjects[name] = getattr(
+            frameworkLattices, code.lower() + "Lattice"
+        )(
             name,
             lattice,
             self.elementObjects,
@@ -453,18 +466,18 @@ class Framework(Munch):
                             for k in new
                             if k in orig
                             and not new[k] == orig[k]
-                            and not k in disallowed
+                            and k not in disallowed
                         }
                         changedict[e].update(
                             {
                                 k: convert_numpy_types(new[k])
                                 for k in new
-                                if k not in orig and not k in disallowed
+                                if k not in orig and k not in disallowed
                             }
                         )
                         if changedict[e] == {}:
                             del changedict[e]
-                    except:
+                    except Exception:
                         print("##### ERROR IN CHANGE ELEMS: ", e, new)
                         pass
         return changedict
@@ -500,7 +513,7 @@ class Framework(Munch):
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
             pre, ext = os.path.splitext(os.path.basename(filename))
-        dic = OrderedDict({"elements": OrderedDict()})
+        dic = dict({"elements": dict()})
         latticedict = dic["elements"]
         if lattice is None:
             elements = list(self.elementObjects.keys())
@@ -523,11 +536,11 @@ class Framework(Munch):
             try:
                 if (
                     "subelement" in new and not new["subelement"]
-                ) or not "subelement" in new:
+                ) or "subelement" not in new:
                     latticedict[e] = {
                         k.replace("object", ""): convert_numpy_types(new[k])
                         for k in new
-                        if not k in disallowed
+                        if k not in disallowed
                     }
                     if "sub_elements" in new:
                         for subelem in new["sub_elements"]:
@@ -535,9 +548,9 @@ class Framework(Munch):
                             latticedict[e]["sub_elements"][subelem] = {
                                 k.replace("object", ""): convert_numpy_types(newsub[k])
                                 for k in newsub
-                                if not k in disallowed
+                                if k not in disallowed
                             }
-            except:
+            except Exception:
                 print("##### ERROR IN CHANGE ELEMS: ", e, new)
                 pass
         if dictionary:
@@ -602,14 +615,34 @@ class Framework(Munch):
                 print(elem.objectname, cend, end, cend - end)
         return noerror
 
+    def check_lattice_drifts(self, decimals: int = 4) -> bool:
+        """Checks that there are no positioning errors in the lattice and returns True/False"""
+        noerror = True
+        for elem in self.elementObjects.values():
+            start = elem.position_start
+            end = elem.position_end
+            length = elem.length
+            theta = elem.global_rotation[2]
+            if elem.objecttype == "dipole" and abs(float(elem.angle)) > 0:
+                angle = float(elem.angle)
+                rho = length / angle
+                clength = np.array([rho * (np.cos(angle) - 1), 0, rho * np.sin(angle)])
+            else:
+                clength = np.array([0, 0, length])
+            cend = start + np.dot(clength, _rotation_matrix(theta))
+            if not np.round(cend - end, decimals=decimals).any() == 0:
+                noerror = False
+                print(elem.objectname, cend, end, cend - end)
+        return noerror
+
     def change_Lattice_Code(
         self, latticename: str, code: str, exclude: str | list | tuple | None = None
     ) -> None:
         """Changes the tracking code for a given lattice"""
         if latticename == "All":
-            [self.change_Lattice_Code(l, code, exclude) for l in self.latticeObjects]
+            [self.change_Lattice_Code(lo, code, exclude) for lo in self.latticeObjects]
         elif isinstance(latticename, (tuple, list)):
-            [self.change_Lattice_Code(l, code, exclude) for l in latticename]
+            [self.change_Lattice_Code(ln, code, exclude) for ln in latticename]
         else:
             if not latticename == "generator" and not (
                 latticename == exclude
@@ -617,7 +650,9 @@ class Framework(Munch):
             ):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[latticename]
-                self.latticeObjects[latticename] = globals()[code.lower() + "Lattice"](
+                self.latticeObjects[latticename] = getattr(
+                    frameworkLattices, code.lower() + "Lattice"
+                )(
                     currentLattice.objectname,
                     currentLattice.file_block,
                     self.elementObjects,
@@ -649,16 +684,17 @@ class Framework(Munch):
         self, name: str | None = None, type: str | None = None, **kwargs
     ) -> dict:
         """Instantiates and adds the element definition to the list of all elements"""
-        if name == None:
-            if not "name" in kwargs:
+        if name is None:
+            if "name" not in kwargs:
                 raise NameError("Element does not have a name")
             else:
                 name = kwargs["name"]
         try:
-            element = globals()[type](
+            element = getattr(frameworkElements, type)(
                 name, type, global_parameters=self.global_parameters, **kwargs
             )
-        except:
+        except Exception as e:
+            print(e)
             print(type, name, kwargs)
         self.elementObjects[name] = element
         return element
@@ -669,8 +705,8 @@ class Framework(Munch):
         self, name: str | None = None, type: str | None = None, **kwargs
     ) -> dict:
         """Replaces and element type with a new type and updates the definitions"""
-        if name == None:
-            if not "name" in kwargs:
+        if name is None:
+            if "name" not in kwargs:
                 raise NameError("Element does not have a name")
             else:
                 name = kwargs["name"]
@@ -681,7 +717,7 @@ class Framework(Munch):
             if a != "objectname" and a != "objecttype"
         }
         new_properties = merge_two_dicts(kwargs, original_properties)
-        element = globals()[type](name, type, **new_properties)
+        element = getattr(frameworkElements, type)(name, type, **new_properties)
         # print element
         self.elementObjects[name] = element
         return element
@@ -866,7 +902,7 @@ class Framework(Munch):
         else:
             try:
                 return super(Framework, self).__getitem__(key)
-            except:
+            except Exception:
                 return None
 
     @property
@@ -888,12 +924,12 @@ class Framework(Munch):
         """returns a list of S values for the current machine"""
         s0 = 0
         allS = []
-        for l in self.latticeObjects.values():
+        for lo in self.latticeObjects.values():
             try:
-                latticeS = [a + s0 for a in l.getSValues()]
+                latticeS = [a + s0 for a in lo.getSValues()]
                 allS = allS + latticeS
                 s0 = allS[-1]
-            except:
+            except Exception:
                 pass
         return allS
 
@@ -901,9 +937,9 @@ class Framework(Munch):
         """Returns a list of (name, element, s) tuples for the current machine"""
         s0 = 0
         allS = []
-        for l in self.latticeObjects:
-            if not l == "generator":
-                names, elems, svals = self.latticeObjects[l].getSNamesElems()
+        for lo in self.latticeObjects:
+            if not lo == "generator":
+                names, elems, svals = self.latticeObjects[lo].getSNamesElems()
                 latticeS = [a + s0 for a in svals]
                 selems = list(zip(names, elems, latticeS))
                 allS = allS + selems
@@ -913,9 +949,9 @@ class Framework(Munch):
     def getZValuesElements(self) -> list:
         """Returns a list of (name, element, Z) tuples for the current machine"""
         allZ = []
-        for l in self.latticeObjects:
-            if not l == "generator":
-                names, elems, zvals = self.latticeObjects[l].getZNamesElems()
+        for lo in self.latticeObjects:
+            if not lo == "generator":
+                names, elems, zvals = self.latticeObjects[lo].getZNamesElems()
                 zelems = list(zip(names, elems, zvals))
                 allZ = allZ + zelems
         return list(sorted(allZ, key=lambda x: x[2][0]))
@@ -972,9 +1008,9 @@ class Framework(Munch):
             )
             format_custom_text.update_mapping(running=files[0] + "  ")
             for i in bar(list(range(len(files)))):
-                l = files[i]
+                latt = files[i]
                 self.progress = 100.0 * (i + 1) / len(files)
-                if l == "generator" and hasattr(self, "generator"):
+                if latt == "generator" and hasattr(self, "generator"):
                     format_custom_text.update_mapping(running="Generator  ")
                     if write:
                         self.generator.write()
@@ -990,20 +1026,20 @@ class Framework(Munch):
                     else:
                         format_custom_text.update_mapping(running=files[i + 1] + "  ")
                     if preprocess:
-                        self.latticeObjects[l].preProcess()
+                        self.latticeObjects[latt].preProcess()
                     if write:
-                        self.latticeObjects[l].write()
+                        self.latticeObjects[latt].write()
                     if track:
-                        self.latticeObjects[l].run()
+                        self.latticeObjects[latt].run()
                     if postprocess:
-                        self.latticeObjects[l].postProcess()
+                        self.latticeObjects[latt].postProcess()
             if save_summary:
                 self.save_summary_files()
         else:
             for i in range(len(files)):
-                l = files[i]
+                latt = files[i]
                 self.progress = 100.0 * (i) / len(files)
-                if l == "generator" and hasattr(self, "generator"):
+                if latt == "generator" and hasattr(self, "generator"):
                     if write:
                         self.generator.write()
                     self.progress = 100.0 * (i + 0.33) / len(files)
@@ -1014,16 +1050,16 @@ class Framework(Munch):
                         self.generator.postProcess()
                 else:
                     if preprocess:
-                        self.latticeObjects[l].preProcess()
+                        self.latticeObjects[latt].preProcess()
                     self.progress = 100.0 * (i + 0.25) / len(files)
                     if write:
-                        self.latticeObjects[l].write()
+                        self.latticeObjects[latt].write()
                     self.progress = 100.0 * (i + 0.5) / len(files)
                     if track:
-                        self.latticeObjects[l].run()
+                        self.latticeObjects[latt].run()
                     self.progress = 100.0 * (i + 0.75) / len(files)
                     if postprocess:
-                        self.latticeObjects[l].postProcess()
+                        self.latticeObjects[latt].postProcess()
             if save_summary:
                 self.save_summary_files()
             self.progress = 100
@@ -1056,29 +1092,29 @@ class Framework(Munch):
             index = files.index(endfile)
             files = files[: index + 1]
         for i in range(len(files)):
-            l = files[i]
-            if l == "generator" and hasattr(self, "generator"):
+            latt = files[i]
+            if latt == "generator" and hasattr(self, "generator"):
                 self.generator.postProcess()
             else:
-                self.latticeObjects[l].postProcess()
+                self.latticeObjects[latt].postProcess()
 
     def save_summary_files(self, twiss: bool = True, beams: bool = True) -> None:
         """Saves HDF5 summary files for the Twiss and/or Beam files"""
         t = rtf.load_directory(self.subdirectory)
         try:
             t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
-        except:
+        except Exception:
             pass
         try:
             rbf.save_HDF5_summary_file(
                 self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
             )
-        except:
+        except Exception:
             pass
 
     def pushRunSettings(self) -> None:
         """Updates the 'Run Settings' in each of the lattices"""
-        for l, latticeObject in self.latticeObjects.items():
+        for ln, latticeObject in self.latticeObjects.items():
             if isinstance(latticeObject, tuple(latticeClasses)):
                 latticeObject.updateRunSettings(self.runSetup)
 
@@ -1141,6 +1177,7 @@ class frameworkDirectory(Munch):
         verbose: bool = False,
         settings: str = "settings.def",
         changes: str = "changes.yaml",
+        rest_mass: float | None = None,
         framework: Framework | None = None,
     ) -> None:
         super(frameworkDirectory, self).__init__()
@@ -1152,13 +1189,9 @@ class frameworkDirectory(Munch):
             self.framework = framework
             if directory is None:
                 directory = os.path.abspath(self.framework.subdirectory)
-        print("directory = ", directory)
+
         if os.path.exists(directory + "/" + changes):
             self.framework.load_changes_file(directory + "/" + changes)
-        if twiss:
-            self.twiss = rtf.load_directory(directory)
-        else:
-            self.twiss = None
         if beams:
             self.beams = rbf.load_HDF5_summary_file(
                 os.path.join(directory, "Beam_Summary.hdf5")
@@ -1166,8 +1199,17 @@ class frameworkDirectory(Munch):
             if len(self.beams) < 1:
                 print("No Summary File! Globbing...")
                 self.beams = rbf.load_directory(directory)
+            if rest_mass is None:
+                if len(self.beams.param("particle_rest_energy")) > 0:
+                    rest_mass = self.beams.param("particle_rest_energy")[0][0]
+                else:
+                    rest_mass = constants.m_e
+            self.twiss = rtf.twiss(rest_mass=rest_mass)
         else:
             self.beams = None
+            self.twiss = rtf.twiss()
+        if twiss:
+            self.twiss.load_directory(directory)
 
     if use_matplotlib:
 

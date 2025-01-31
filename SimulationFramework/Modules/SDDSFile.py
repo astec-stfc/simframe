@@ -1,14 +1,16 @@
 import os
 import munch
+
 try:
     import ASTeCsdds.sdds as sdds
 except:
     try:
         import sdds
     except:
-        print('No SDDS available!')
+        print("No SDDS available!")
 import numpy as np
 import enum
+
 
 def read_sdds_file(filename, ascii=False, object=None):
     sddsobject = SDDSFile(index=0, ascii=ascii)
@@ -20,6 +22,7 @@ def read_sdds_file(filename, ascii=False, object=None):
         return object
     return sddsobject
 
+
 class MyEnumMeta(enum.EnumMeta):
     def __contains__(cls, item):
         try:
@@ -28,6 +31,7 @@ class MyEnumMeta(enum.EnumMeta):
             return False
         else:
             return True
+
 
 class SDDS_Types(enum.IntEnum, metaclass=MyEnumMeta):
     SDDS_LONGDOUBLE = 1
@@ -49,9 +53,21 @@ class SDDS_Types(enum.IntEnum, metaclass=MyEnumMeta):
     SDDS_BINARY = 1
     SDDS_ASCII = 2
 
+
 class SDDSObject(munch.Munch):
 
-    def __init__(self, index=1, name=None, data=[], unit="", type=2, symbol="", formatstring="", fieldlength=0, description=""):
+    def __init__(
+        self,
+        index=1,
+        name=None,
+        data=[],
+        unit="",
+        type=2,
+        symbol="",
+        formatstring="",
+        fieldlength=0,
+        description="",
+    ):
         super().__init__()
         self._types = SDDS_Types
         self._name = name
@@ -64,11 +80,19 @@ class SDDSObject(munch.Munch):
         self._description = description
 
     def __repr__(self):
-        return repr({'name': self.name, 'unit': self.unit, 'type': self._types(self.type).name, 'data': self.data})
+        return repr(
+            {
+                "name": self.name,
+                "unit": self.unit,
+                "type": self._types(self.type).name,
+                "data": self.data,
+            }
+        )
 
     @property
     def name(self):
         return self._name
+
     @name.setter
     def name(self, name):
         self._name = name
@@ -77,6 +101,7 @@ class SDDSObject(munch.Munch):
     @property
     def unit(self):
         return self._unit
+
     @unit.setter
     def unit(self, unit):
         if unit is not None:
@@ -86,6 +111,7 @@ class SDDSObject(munch.Munch):
     @property
     def symbol(self):
         return self._symbol
+
     @symbol.setter
     def symbol(self, symbol):
         if symbol is not None:
@@ -95,6 +121,7 @@ class SDDSObject(munch.Munch):
     @property
     def type(self):
         return self._type
+
     @type.setter
     def type(self, type):
         if isinstance(type, str):
@@ -107,6 +134,7 @@ class SDDSObject(munch.Munch):
     @property
     def fieldlength(self):
         return self._fieldlength
+
     @fieldlength.setter
     def fieldlength(self, length):
         if isinstance(length, (int, float)):
@@ -116,6 +144,7 @@ class SDDSObject(munch.Munch):
     @property
     def formatstring(self):
         return self._formatstring
+
     @formatstring.setter
     def formatstring(self, string):
         if isinstance(string, str):
@@ -125,60 +154,85 @@ class SDDSObject(munch.Munch):
     @property
     def description(self):
         return self._description
+
     @description.setter
     def description(self, string):
         if isinstance(string, str):
             self._description = string
         return self._description
 
-
     @property
     def data(self):
         return self._data
+
     @data.setter
     def data(self, data):
         self._data = data
         return self._data
 
+
 class SDDSColumn(SDDSObject):
 
-    def __init__(self, name=None, data=[], unit="", type=2, symbol="", formatstring="", fieldlength=0, description=""):
+    def __init__(
+        self,
+        name=None,
+        data=[],
+        unit="",
+        type=2,
+        symbol="",
+        formatstring="",
+        fieldlength=0,
+        description="",
+    ):
         super().__init__(name=name, data=None, unit=unit, type=type, symbol=symbol)
-        self.objectType = 'Column'
+        self.objectType = "Column"
         self.data = data
 
     @property
     def data(self):
         return self._data
+
     @data.setter
     def data(self, data):
         if not isinstance(data, (dict, tuple, list, np.ndarray)):
             if isinstance(data, (float, int, str)):
                 data = [data]
             else:
-                raise Exception('Wrong data type for SDDS Column!', type(data))
+                raise Exception("Wrong data type for SDDS Column!", type(data))
         self._data = data
         return self._data
 
     def length(self):
         return len(self._data)
 
+
 class SDDSParameter(SDDSObject):
 
-    def __init__(self, name=None, data=[], unit="", type=2, symbol="", formatstring="", fieldlength=0, description=""):
+    def __init__(
+        self,
+        name=None,
+        data=[],
+        unit="",
+        type=2,
+        symbol="",
+        formatstring="",
+        fieldlength=0,
+        description="",
+    ):
         super().__init__(name=name, data=None, unit=unit, type=type, symbol=symbol)
-        self.objectType = 'Parameter'
+        self.objectType = "Parameter"
         self.data = data
 
     @property
     def data(self):
         return self._data
+
     @data.setter
     def data(self, data):
         if not isinstance(data, (dict, tuple, list)):
             self._data = [data]
         else:
-            raise Exception('Wrong data type for SDDS Parameter!', type(data))
+            raise Exception("Wrong data type for SDDS Parameter!", type(data))
         return self._data
 
     @property
@@ -188,6 +242,7 @@ class SDDSParameter(SDDSObject):
         else:
             return ""
 
+
 class SDDSArray(munch.Munch):
 
     def __init__(self, columns):
@@ -195,12 +250,16 @@ class SDDSArray(munch.Munch):
 
     def __getitem__(self, itemkey):
         try:
-            return({k:getattr(v,itemkey) if hasattr(v,itemkey) else v[itemkey] for k,v in self.items()})
+            return {
+                k: getattr(v, itemkey) if hasattr(v, itemkey) else v[itemkey]
+                for k, v in self.items()
+            }
         except:
             try:
                 return super().__getitem__(itemkey)
             except KeyError:
                 raise AttributeError(itemkey)
+
 
 class SDDSFile(object):
 
@@ -211,9 +270,9 @@ class SDDSFile(object):
         self._parameters = munch.Munch()
         self._index = index
         try:
-            self._sddsObject = sdds.SDDS(self.index%20)
+            self._sddsObject = sdds.SDDS(self.index % 20)
         except:
-            self._sddsObject = sdds.sdds.SDDS(self.index%20)
+            self._sddsObject = sdds.sdds.SDDS(self.index % 20)
         if ascii:
             self._sddsObject.mode = self._sddsObject.SDDS_ASCII
         else:
@@ -222,6 +281,7 @@ class SDDSFile(object):
     @property
     def index(self):
         return self._index
+
     @index.setter
     def index(self, index):
         self._index = index
@@ -231,9 +291,9 @@ class SDDSFile(object):
         self._columns = munch.Munch()
         self._parameters = munch.Munch()
         try:
-            self._sddsObject = sdds.SDDS(self.index%20)
+            self._sddsObject = sdds.SDDS(self.index % 20)
         except:
-            self._sddsObject = sdds.sdds.SDDS(self.index%20)
+            self._sddsObject = sdds.sdds.SDDS(self.index % 20)
 
     def column_names(self):
         return self._columns.keys()
@@ -247,22 +307,116 @@ class SDDSFile(object):
     def parameters(self):
         return SDDSArray(self._parameters)
 
-    def add_column(self, name, data, type=2, unit="", symbol="", formatstring="", fieldlength=0, description=""):
-        self._columns[name] = SDDSColumn(name=name, data=data, unit=unit, type=type, symbol=symbol, formatstring=formatstring, fieldlength=fieldlength, description=description)
+    def add_column(
+        self,
+        name,
+        data,
+        type=2,
+        unit="",
+        symbol="",
+        formatstring="",
+        fieldlength=0,
+        description="",
+    ):
+        self._columns[name] = SDDSColumn(
+            name=name,
+            data=data,
+            unit=unit,
+            type=type,
+            symbol=symbol,
+            formatstring=formatstring,
+            fieldlength=fieldlength,
+            description=description,
+        )
 
-    def add_columns(self, name, data, type, unit, symbol, formatstring=None, fieldlength=None, description=None):
-        combined_data = {k:v for k,v in {'name': name, 'data': data, 'type': type, 'unit': unit, 'symbol': symbol, 'formatstring': formatstring, 'fieldlength': fieldlength, 'description': description}.items() if v is not None}
+    def add_columns(
+        self,
+        name,
+        data,
+        type,
+        unit,
+        symbol,
+        formatstring=None,
+        fieldlength=None,
+        description=None,
+    ):
+        combined_data = {
+            k: v
+            for k, v in {
+                "name": name,
+                "data": data,
+                "type": type,
+                "unit": unit,
+                "symbol": symbol,
+                "formatstring": formatstring,
+                "fieldlength": fieldlength,
+                "description": description,
+            }.items()
+            if v is not None
+        }
         for i in range(len(name)):
-            data = dict(zip(combined_data.keys(), [combined_data[k][i] for k in combined_data.keys()]))
+            data = dict(
+                zip(
+                    combined_data.keys(),
+                    [combined_data[k][i] for k in combined_data.keys()],
+                )
+            )
             self.add_column(**data)
 
-    def add_parameter(self, name, data, type=2, unit="", symbol="", formatstring="", fieldlength=0, description=""):
-        self._parameters[name] = SDDSParameter(name=name, data=data, unit=unit, type=type, symbol=symbol, formatstring=formatstring, fieldlength=fieldlength, description=description)
+    def add_parameter(
+        self,
+        name,
+        data,
+        type=2,
+        unit="",
+        symbol="",
+        formatstring="",
+        fieldlength=0,
+        description="",
+    ):
+        self._parameters[name] = SDDSParameter(
+            name=name,
+            data=data,
+            unit=unit,
+            type=type,
+            symbol=symbol,
+            formatstring=formatstring,
+            fieldlength=fieldlength,
+            description=description,
+        )
 
-    def add_parameters(self, name, data, type, unit, symbol, formatstring=None, fieldlength=None, description=None):
-        combined_data = {k:v for k,v in {'name': name, 'data': data, 'type': type, 'unit': unit, 'symbol': symbol, 'formatstring': formatstring, 'fieldlength': fieldlength, 'description': description}.items() if v is not None}
+    def add_parameters(
+        self,
+        name,
+        data,
+        type,
+        unit,
+        symbol,
+        formatstring=None,
+        fieldlength=None,
+        description=None,
+    ):
+        combined_data = {
+            k: v
+            for k, v in {
+                "name": name,
+                "data": data,
+                "type": type,
+                "unit": unit,
+                "symbol": symbol,
+                "formatstring": formatstring,
+                "fieldlength": fieldlength,
+                "description": description,
+            }.items()
+            if v is not None
+        }
         for i in range(len(name)):
-            data = dict(zip(combined_data.keys(), [combined_data[k][i] for k in combined_data.keys()]))
+            data = dict(
+                zip(
+                    combined_data.keys(),
+                    [combined_data[k][i] for k in combined_data.keys()],
+                )
+            )
             self.add_parameter(**data)
 
     def save(self, *args, **kwargs):
@@ -278,14 +432,29 @@ class SDDSFile(object):
 
     def write_file(self, filename):
         for name, param in self._parameters.items():
-            self._sddsObject.defineParameter(param.name, param.symbol, param.unit, param.description, param.formatstring, param.type, param.fieldlength)
+            self._sddsObject.defineParameter(
+                param.name,
+                param.symbol,
+                param.unit,
+                param.description,
+                param.formatstring,
+                param.type,
+                param.fieldlength,
+            )
             self._sddsObject.setParameterValueList(param.name, param.data)
         for name, column in self._columns.items():
             # print(len([list(column.data)][0]))
-            self._sddsObject.defineColumn(column.name, column.symbol, column.unit, column.description, column.formatstring, column.type, column.fieldlength)
+            self._sddsObject.defineColumn(
+                column.name,
+                column.symbol,
+                column.unit,
+                column.description,
+                column.formatstring,
+                column.type,
+                column.fieldlength,
+            )
             self._sddsObject.setColumnValueLists(column.name, [list(column.data)])
         self._sddsObject.save(filename)
-
 
     def load(self, *args, **kwargs):
         return self.read_file(*args, **kwargs)
@@ -294,16 +463,38 @@ class SDDSFile(object):
         self._sddsObject.load(filename)
         sddsref = self._sddsObject
         for col in range(len(sddsref.columnName)):
-            symbol, unit, description, formatString, type, fieldLength = sddsref.columnDefinition[col]
+            symbol, unit, description, formatString, type, fieldLength = (
+                sddsref.columnDefinition[col]
+            )
             column_data = np.array(sddsref.columnData[col][page])
-            self.add_column(sddsref.columnName[col], column_data, type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
+            self.add_column(
+                sddsref.columnName[col],
+                column_data,
+                type=type,
+                unit=unit,
+                symbol=symbol,
+                formatstring=formatString,
+                fieldlength=fieldLength,
+                description=description,
+            )
         # sddsobject.SDDSparameterNames = list()
         for param in range(len(sddsref.parameterName)):
             name = sddsref.parameterName[param]
-            symbol, unit, description, formatString, type, fieldLength = sddsref.parameterDefinition[param]
+            symbol, unit, description, formatString, type, fieldLength = (
+                sddsref.parameterDefinition[param]
+            )
             parameter_data = sddsref.parameterData[param]
-            self.add_parameter(sddsref.parameterName[param], parameter_data[page], type=type, unit=unit, symbol=symbol, formatstring=formatString, fieldlength=fieldLength, description=description)
+            self.add_parameter(
+                sddsref.parameterName[param],
+                parameter_data[page],
+                type=type,
+                unit=unit,
+                symbol=symbol,
+                formatstring=formatString,
+                fieldlength=fieldLength,
+                description=description,
+            )
 
     @property
     def data(self):
-        return {k:v.data for k, v in {**self._parameters, **self._columns}.items()}
+        return {k: v.data for k, v in {**self._parameters, **self._columns}.items()}

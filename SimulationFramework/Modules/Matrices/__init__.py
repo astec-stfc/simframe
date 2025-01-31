@@ -3,9 +3,10 @@ import math
 import warnings
 import numpy as np
 from functools import reduce
-from collections import OrderedDict
+
 try:
     from scipy import interpolate
+
     use_interpolate = True
 except ImportError:
     use_interpolate = False
@@ -17,23 +18,24 @@ from . import elegant
 
 from ..units import UnitValue
 
+
 class matrices(munch.Munch):
-    ''' Class for dealing with R-matrices produced by Elegant.
+    """Class for dealing with R-matrices produced by Elegant.
 
-        Usage:
-        mat = matrices()
-        mat.load(<filename>, reset=False, cumulative=True)
-            Load sdds output file from the "matrix_output" command.
-                reset: Reset all parameters to None
-                cumulative: Are the R-matrices cumulative or element-by-element?
-        mat.R:
-            Return the nx6x6 R-matrices that have been loaded where "n" is the number of elements
-        mat.cumulativeR:
-            Return the cumulative R-matrices for the loaded R-matrices in order.
-        mat.elementR:
-            Return the element-by-element R-matrices for the loaded R-matrices in order.
+    Usage:
+    mat = matrices()
+    mat.load(<filename>, reset=False, cumulative=True)
+        Load sdds output file from the "matrix_output" command.
+            reset: Reset all parameters to None
+            cumulative: Are the R-matrices cumulative or element-by-element?
+    mat.R:
+        Return the nx6x6 R-matrices that have been loaded where "n" is the number of elements
+    mat.cumulativeR:
+        Return the cumulative R-matrices for the loaded R-matrices in order.
+    mat.elementR:
+        Return the element-by-element R-matrices for the loaded R-matrices in order.
 
-    '''
+    """
 
     def __init__(self):
         super().__init__()
@@ -41,9 +43,9 @@ class matrices(munch.Munch):
         self.sddsindex = 0
         self._cumulative = {}
         self.codes = {
-            'elegant': elegant.read_elegant_matrix_files,
+            "elegant": elegant.read_elegant_matrix_files,
         }
-        self.code_signatures = [['elegant','.mat']]
+        self.code_signatures = [["elegant", ".mat"]]
 
     def read_elegant_matrix_files(self, *args, **kwargs):
         with warnings.catch_warnings():
@@ -74,7 +76,7 @@ class matrices(munch.Munch):
         return None
 
     def _determine_code(self, filename):
-        for k,v in self.code_signatures:
+        for k, v in self.code_signatures:
             l = -len(v)
             if v == filename[l:]:
                 return self.codes[k]
@@ -86,12 +88,12 @@ class matrices(munch.Munch):
             self._determine_code(filename)(self, filename, reset=reset)
 
     def generate_R_matrix(self, index):
-        R = np.empty((len(self['R11'][index]),6,6))
-        for k in range(len(self['R11'][index])):
-            for i in range(1,7):
-                for j in range(1,7):
-                    mat = getattr(self, 'R'+str(i)+str(j))[index]
-                    R[k, i-1, j-1] = mat[k]
+        R = np.empty((len(self["R11"][index]), 6, 6))
+        for k in range(len(self["R11"][index])):
+            for i in range(1, 7):
+                for j in range(1, 7):
+                    mat = getattr(self, "R" + str(i) + str(j))[index]
+                    R[k, i - 1, j - 1] = mat[k]
         return R
 
     @property
@@ -111,7 +113,7 @@ class matrices(munch.Munch):
             ir = list(reversed(self.flatten1(self.individualR())))
             r = ir[0]
             for mat in ir[1:]:
-                r = np.dot(mat,r)
+                r = np.dot(mat, r)
                 cR.append(r)
         else:
             for i in range(len(self.R11)):
@@ -121,12 +123,12 @@ class matrices(munch.Munch):
                     ir = list(reversed(self.R[i]))
                     r = ir[0]
                     for mat in ir[1:]:
-                        r = np.dot(mat,r)
+                        r = np.dot(mat, r)
                     cR.append(r)
         return cR
 
     def matrixsolve(self, A, b, elist):
-        elist.append(np.linalg.solve(A.T,b.T).T)
+        elist.append(np.linalg.solve(A.T, b.T).T)
         return b
 
     def individualR(self):
@@ -134,12 +136,17 @@ class matrices(munch.Munch):
         for i in range(len(self.R11)):
             if self._cumulative:
                 element_matrices = []
-                reduce(lambda A,b: self.matrixsolve(A,b,element_matrices), self.R[i], np.identity(6))
-                element_dict = OrderedDict()
+                reduce(
+                    lambda A, b: self.matrixsolve(A, b, element_matrices),
+                    self.R[i],
+                    np.identity(6),
+                )
+                element_dict = dict()
                 iR.append(element_matrices)
             else:
                 iR.append(self.R[i])
         return iR
+
 
 # def load_directory(directory='.', types={'elegant':'.twi', 'GPT': 'emit.gdf','ASTRA': 'Xemit.001'}, preglob='*', verbose=False, sortkey='z'):
 #     t = twiss()

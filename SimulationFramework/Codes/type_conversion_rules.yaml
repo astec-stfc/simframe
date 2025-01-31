@@ -23,6 +23,9 @@ elegant:
   valve: drift
   bellows: drift
   cleaner: clean
+  marker: marker
+  apcontour: apcontour
+  watch_point: watch
 name:
   dia-bpm: beam_position_monitor
   dia-bam: beam_arrival_monitor
