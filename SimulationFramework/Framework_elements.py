@@ -1,4 +1,5 @@
 from math import copysign
+import inspect
 from operator import add
 from .Framework_objects import *
 from .FrameworkHelperFunctions import *
@@ -225,6 +226,27 @@ class dipole(frameworkElement):
                     string+= tmpstring
         wholestring+=string+';\n'
         return wholestring
+
+    def _write_Ocelot(self):
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        valdict = {'eid': self.objectname}
+        for key, value in keydict.items():
+            if (not key in ['name', 'type', 'commandtype']) and (
+            not type(type_conversion_rules_Ocelot[self.objecttype]) in [Aperture, Marker]):
+                if 'edge_angle' in key:
+                    key = self._convertKeword_Ocelot(key)
+                    value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                else:
+                    value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+                    key = self._convertKeword_Ocelot(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                if key in inspect.getfullargspec(type_conversion_rules_Ocelot[self.objecttype]).args:
+                    valdict.update({key: value})
+        obj = type_conversion_rules_Ocelot[self.objecttype](**valdict)
+        return obj
 
     @property
     def corners(self):
@@ -596,7 +618,8 @@ class cavity(frameworkElement):
                     if key == 'field_amplitude':
                         value = value * 1e-9 * abs((self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2)))
                 setattr(obj, self._convertKeword_Ocelot(key), value)
-        return obj
+        scr = type_conversion_rules_Ocelot["screen"](eid=f'{self.objectname}_END')
+        return [obj, scr]
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         self.update_field_definition()

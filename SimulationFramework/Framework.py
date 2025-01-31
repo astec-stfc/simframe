@@ -354,15 +354,15 @@ class Framework(Munch):
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
 
-        for name, lattice in list(self.fileSettings.items()):
-            self.read_Lattice(name, lattice)
-
         for name, elem in list(self.groups.items()):
             if "type" in elem:
                 group = globals()[elem["type"]](
                     name, self, global_parameters=self.global_parameters, **elem
                 )
                 self.groupObjects[name] = group
+
+        for name, lattice in list(self.fileSettings.items()):
+            self.read_Lattice(name, lattice)
 
         self.apply_changes(changes)
 

@@ -274,7 +274,6 @@ class frameworkLattice(Munch):
         csr = 1 if self.csrDrifts is True else 0
         lsc = 1 if self.lscDrifts is True else 0
         drifttype = lscdrift if self.csrDrifts or self.lscDrifts else edrift
-
         for e, d in driftdata:
             if (e[1]['objecttype'] == 'screen' or e[1]['objecttype'] == 'beam_position_monitor') and round(e[1]['length']/2, 6) > 0:
                 name = e[0]+'-drift-01'
@@ -980,9 +979,6 @@ class frameworkElement(frameworkObject):
         for key, value in keydict.items():
             if (not key in ['name', 'type', 'commandtype']) and (not type(obj) in [Aperture, Marker]):
                 value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
-                if self.objecttype in ['cavity', 'rf_deflecting_cavity']:
-                    if key == 'field_amplitude':
-                        value *= 1e-9
                 setattr(obj, self._convertKeword_Ocelot(key), value)
         return obj
 
