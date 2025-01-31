@@ -111,11 +111,15 @@ class astraLattice(frameworkLattice):
             self.file_block["charge"] = {}
         if "charge" not in self.globalSettings:
             self.globalSettings["charge"] = {}
+        space_charge_dict = merge_two_dicts(
+            self.file_block["charge"],
+            self.globalSettings["charge"],
+        )
         self.headers["charge"] = astra_charge(
             global_parameters=self.global_parameters,
             **merge_two_dicts(
-                merge_two_dicts(self.file_block["charge"], self.globalSettings['charge']),
-                self.globalSettings["ASTRAsettings"]
+                space_charge_dict,
+                self.globalSettings["ASTRAsettings"],
             )
         )
 

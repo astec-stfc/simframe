@@ -63,7 +63,7 @@ def fieldmap_data(element, directory="."):
         stoppos = zpos.index(stop)
         halfcell1 = 1 * fielddat[:startpos]
         halfcell2 = 1 * fielddat[stoppos:]
-        rfcell = 1 * dat[startpos - 1: stoppos + 1]
+        rfcell = 1 * dat[startpos - 1 : stoppos + 1]
         # rfcell[:,0] -= start
         # rfcell[:,0] /= p
         # rfcell[:,0] += start
@@ -87,13 +87,14 @@ def fieldmap_data(element, directory="."):
 
 class magnet_plotting_data:
 
-    def __init__(self,
-                 kinetic_energy=None,
-                 ):
+    def __init__(
+        self,
+        kinetic_energy=None,
+    ):
         if kinetic_energy is not None:
             self.z, self.kinetic_energy = trans(kinetic_energy)
         else:
-            self.z, self.kinetic_energy = ([0.], [1.])
+            self.z, self.kinetic_energy = ([0.0], [1.0])
 
     def half_rectangle(self, e, half_height):
         return np.array(
@@ -117,7 +118,7 @@ class magnet_plotting_data:
 
     def quadrupole(self, e):
         if e.gradient is None:
-            strength = np.sign(e.k1l) * 0.5 
+            strength = np.sign(e.k1l) * 0.5
         else:
             idx = find_nearest(self.z, e.middle[2])
             ke = self.kinetic_energy[idx]
@@ -126,7 +127,7 @@ class magnet_plotting_data:
 
     def sextupole(self, e):
         if e.gradient is None:
-            strength = np.sign(e.k2l) * 0.5 
+            strength = np.sign(e.k2l) * 0.5
         else:
             idx = find_nearest(self.z, e.middle[2])
             ke = self.kinetic_energy[idx]
@@ -168,17 +169,17 @@ def load_elements(
     for t in types:
         fmap[t] = {}
         if sections == "All":
-            elements = [lattice[e['name']] for e in lattice.getElementType(t)]
+            elements = [lattice[e["name"]] for e in lattice.getElementType(t)]
         else:
             elements = []
             for s in sections:
-                elements += [lattice[e['name']] for e in lattice[s].getElementType(t)]
+                elements += [lattice[e["name"]] for e in lattice[s].getElementType(t)]
         if bounds is not None:
             elements = [
                 e
                 for e in elements
-                if e['position_start'][2] <= bounds[1]
-                and e['position_end'][2] >= bounds[0] - 0.1
+                if e["position_start"][2] <= bounds[1]
+                and e["position_end"][2] >= bounds[0] - 0.1
             ]
         for e in elements:
             if (
@@ -234,8 +235,8 @@ def add_fieldmaps_to_axes(
                     else max_scale
                 )
             a.plot(*data.T, label=label, color=c)
+            a.yaxis.label.set_color(c)
         a.set_ylabel(ylabel[section])
-        a.yaxis.label.set_color(c)
 
     if len(fields) < 1:
         for a in ax:
@@ -276,9 +277,17 @@ def add_magnets_to_axes(
     ax1rhs = ax1.twinx()
     ax = [ax1, ax1rhs]
 
-    ylabel = {"dipole": r"$\theta$ (rad)", "quadrupole": "$K_n$ (T/m)"} #, "sextupole": "$K_2$ (T/$m^2$)"}
+    ylabel = {
+        "dipole": r"$\theta$ (rad)",
+        "quadrupole": "$K_n$ (T/m)",
+    }  # , "sextupole": "$K_2$ (T/$m^2$)"}
     axis = {"dipole": 0, "quadrupole": 1}
-    color = {"dipole": "blue", "quadrupole": "red", "sextupole": "green", "beam_position_monitor": "purple"}
+    color = {
+        "dipole": "blue",
+        "quadrupole": "red",
+        "sextupole": "green",
+        "beam_position_monitor": "purple",
+    }
 
     for section, i in axis.items():
         a = ax[i]
@@ -368,12 +377,17 @@ def plot(
     twiss = framework_object.twiss  # convenience
     twiss.sort()  # sort before plotting!
     P = framework_object.beams
-    
+
     if include_layout is not False:
-        if 'sharex' not in kwargs:
-            kwargs['sharex'] = True
-        fig, all_axis = plt.subplots(3, gridspec_kw={"height_ratios": [4, 1, 1]}, subplot_kw=dict(frameon=False), **kwargs)
-        plt.subplots_adjust(hspace=.0)
+        if "sharex" not in kwargs:
+            kwargs["sharex"] = True
+        fig, all_axis = plt.subplots(
+            3,
+            gridspec_kw={"height_ratios": [4, 1, 1]},
+            subplot_kw=dict(frameon=False),
+            **kwargs,
+        )
+        plt.subplots_adjust(hspace=0.0)
         ax_field_layout = all_axis[1]
         ax_magnet_layout = all_axis[2]
         ax_plot = [all_axis[0]]
@@ -465,7 +479,7 @@ def plot(
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
-        
+
         # String Unit representation
         unit = str(ulist[0])
 
@@ -550,7 +564,9 @@ def plot(
             bounds=limits,
             include_labels=include_labels,
             magnets=magnets,
-            kinetic_energy=list(zip(twiss.stat("z")[good], twiss.stat("kinetic_energy")[good]))
+            kinetic_energy=list(
+                zip(twiss.stat("z")[good], twiss.stat("kinetic_energy")[good])
+            ),
         )
     return plt, fig, all_axis
 

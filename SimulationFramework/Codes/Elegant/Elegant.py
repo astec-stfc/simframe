@@ -1,17 +1,25 @@
-import os, shutil
+import os
+from copy import copy
+import subprocess
+import numpy as np
 
 try:
     import ASTeCsdds.sdds as sdds
-except:
+except ImportError:
     try:
         import sdds
-    except:
+    except Exception:
         print("No SDDS available!")
 import lox
-from ...Framework_objects import *
-from ...Framework_elements import *
+from ...Framework_objects import (
+    frameworkLattice,
+    frameworkCommand,
+    elementkeywords,
+    keyword_conversion_rules_elegant,
+)
+from ...Framework_elements import charge, screen
+from ...FrameworkHelperFunctions import saveFile
 from ...Modules import Beams as rbf
-from ...Modules.merge_two_dicts import merge_two_dicts
 
 
 class elegantLattice(frameworkLattice):

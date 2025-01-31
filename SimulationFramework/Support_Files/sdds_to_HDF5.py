@@ -1,8 +1,9 @@
-import sys, os
+# import sys
+# import os
 
-sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../"))
+# sys.path.append(os.path.realpath(os.path.dirname(__file__) + "/../../"))
 import numpy as np
-from Modules import Beams as rbf
+from SimulationFramework.Modules import Beams as rbf
 import argparse
 
 parser = argparse.ArgumentParser(description="Convert SDDS file to SimFrame HDF5.")

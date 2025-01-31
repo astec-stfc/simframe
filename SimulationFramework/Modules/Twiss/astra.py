@@ -85,7 +85,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     beta = np.sqrt(1 - (gamma**-2))
     self.append("sigma_t", rms_z / (beta * constants.speed_of_light))
     self.append("sigma_p", (rms_e / (e_kin + self.E0_eV)))
-    self.append('sigma_cp', (0.5e6 * (rms_e / e_kin) * self['cp']))
+    self.append("sigma_cp", (0.5e6 * (rms_e / e_kin) * self["cp"]))
     self.append("mux", cumtrapz(x=z, y=1 / (rms_x**2 / ex)))
     self.append("muy", cumtrapz(x=z, y=1 / (rms_y**2 / ey)))
     self.append("eta_x", np.zeros(len(z)))

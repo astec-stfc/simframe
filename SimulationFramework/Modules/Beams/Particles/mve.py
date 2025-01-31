@@ -1,4 +1,6 @@
-from SimulationFramework.Modules.Beams.Particles.minimumVolumeEllipse import getMinVolEllipse
+from SimulationFramework.Modules.Beams.Particles.minimumVolumeEllipse import (
+    getMinVolEllipse,
+)
 import numpy as np
 from scipy.stats import gaussian_kde
 from functools import partial

@@ -1,7 +1,12 @@
 import os
 import subprocess
 import numpy as np
-from ...Framework_objects import frameworkLattice, frameworkElement, elementkeywords, getGrids
+from ...Framework_objects import (
+    frameworkLattice,
+    frameworkElement,
+    elementkeywords,
+    getGrids,
+)
 from ...Framework_elements import screen, gpt_ccs
 from ...FrameworkHelperFunctions import saveFile
 from ...Modules import Beams as rbf
@@ -82,22 +87,20 @@ class gptLattice(frameworkLattice):
         ccs = gpt_ccs("wcs", [0, 0, 0], [0, 0, 0])
         fulltext = ""
         self.headers["accuracy"] = gpt_accuracy(self.accuracy)
+        space_charge_dict = merge_two_dicts(
+            self.file_block["charge"],
+            self.globalSettings["charge"],
+        )
         if self.particle_definition == "laser" and self.space_charge_mode is not None:
             self.headers["spacecharge"] = gpt_spacecharge(
-                **merge_two_dicts(self.global_parameters, self.file_block["charge"])
+                **merge_two_dicts(self.global_parameters, space_charge_dict)
             )
             self.headers["spacecharge"].npart = len(self.global_parameters["beam"].x)
             self.headers["spacecharge"].sample_interval = self.sample_interval
             # self.headers["spacecharge"].space_charge_mode = "cathode"
         else:
             self.headers["spacecharge"] = gpt_spacecharge(
-                **merge_two_dicts(
-                    self.global_parameters,
-                    merge_two_dicts(
-                        self.file_block["charge"],
-                        self.globalSettings["charge"],
-                    ),
-                )
+                **merge_two_dicts(self.global_parameters, space_charge_dict)
             )
         if (
             self.csr_enable

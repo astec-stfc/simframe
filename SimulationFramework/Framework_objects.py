@@ -4,7 +4,13 @@ import yaml
 from munch import Munch
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules.MathParser import MathParser
-from .FrameworkHelperFunctions import chunks, expand_substitution, checkValue, chop, copylink
+from .FrameworkHelperFunctions import (
+    chunks,
+    expand_substitution,
+    checkValue,
+    chop,
+    copylink,
+)
 from .FrameworkHelperFunctions import _rotation_matrix
 import numpy as np
 
@@ -75,7 +81,7 @@ class frameworkLattice(Munch):
         self.file_block = file_block
         self.settings = settings
         self.globalSettings = (
-            settings["global"] if settings["global"] is not None else {}
+            settings["global"] if settings["global"] is not None else {"charge": None}
         )
         self.groupSettings = (
             file_block["groups"]
@@ -130,11 +136,14 @@ class frameworkLattice(Munch):
         if "input" not in self.file_block:
             self.file_block["input"] = {}
         if "prefix" not in self.file_block["input"]:
+            print(self.file_block["input"])
             self.file_block["input"]["prefix"] = ""
         return self.file_block["input"]["prefix"]
 
     @prefix.setter
     def prefix(self, prefix):
+        if "input" not in self.file_block:
+            self.file_block["input"] = {}
         self.file_block["input"]["prefix"] = prefix
 
     def update_groups(self):
@@ -283,7 +292,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start: index_end + 1]
+                for e in self.allElements[index_start : index_end + 1]
             ]
         )
         return f
@@ -641,7 +650,6 @@ class frameworkGroup(object):
             return self.allElementObjects[self.elements[0]][p]
 
     def change_Parameter(self, p, v):
-        # print 'p = ', getattr(self, p)
         try:
             getattr(self, p)
             setattr(self, p, v)
@@ -871,7 +879,7 @@ class frameworkCounter(dict):
 class frameworkElement(frameworkObject):
 
     def __init__(self, elementName=None, elementType=None, **kwargs):
-        super(frameworkElement, self).__init__(elementName, elementType, **kwargs)
+        super().__init__(elementName, elementType, **kwargs)
         self.add_default("length", 0)
         self.add_property("position_errors", [0, 0, 0])
         self.add_property("rotation_errors", [0, 0, 0])

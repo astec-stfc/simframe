@@ -10,7 +10,11 @@ from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
 from .Modules import constants
 from .Codes import Executables as exes
-from .Codes.Generators.Generators import ASTRAGenerator, GPTGenerator, generator_keywords
+from .Codes.Generators.Generators import (
+    ASTRAGenerator,
+    GPTGenerator,
+    generator_keywords,
+)
 from .Framework_objects import runSetup
 from . import Framework_lattices as frameworkLattices
 from . import Framework_elements as frameworkElements
@@ -57,7 +61,13 @@ def dict_constructor(loader, node):
 yaml.add_representer(dict, dict_representer)
 yaml.add_constructor(_mapping_tag, dict_constructor)
 
-latticeClasses = [obj for name, obj in inspect.getmembers(sys.modules['SimulationFramework.Framework_lattices']) if inspect.isclass(obj)]
+latticeClasses = [
+    obj
+    for name, obj in inspect.getmembers(
+        sys.modules["SimulationFramework.Framework_lattices"]
+    )
+    if inspect.isclass(obj)
+]
 
 
 class Framework(Munch):
@@ -335,11 +345,6 @@ class Framework(Munch):
             self.settings = settings
 
         self.globalSettings = self.settings["global"]
-        master_run_no = (
-            self.globalSettings["run_no"]
-            if isinstance(self.globalSettings, list) and "run_no" in self.globalSettings
-            else 1
-        )
         if "generator" in self.settings and len(self.settings["generator"]) > 0:
             self.generatorSettings = self.settings["generator"]
             self.add_Generator(**self.generatorSettings)
@@ -359,15 +364,15 @@ class Framework(Munch):
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
 
-        for name, lattice in list(self.fileSettings.items()):
-            self.read_Lattice(name, lattice)
-
         for name, elem in list(self.groups.items()):
             if "type" in elem:
                 group = getattr(frameworkElements, elem["type"])(
                     name, self, global_parameters=self.global_parameters, **elem
                 )
                 self.groupObjects[name] = group
+
+        for name, lattice in list(self.fileSettings.items()):
+            self.read_Lattice(name, lattice)
 
         self.apply_changes(changes)
 
@@ -400,7 +405,9 @@ class Framework(Munch):
     def read_Lattice(self, name: str, lattice: dict) -> None:
         """Create an instance of a <code>Lattice class"""
         code = lattice["code"] if "code" in lattice else "astra"
-        self.latticeObjects[name] = getattr(frameworkLattices, code.lower() + "Lattice")(
+        self.latticeObjects[name] = getattr(
+            frameworkLattices, code.lower() + "Lattice"
+        )(
             name,
             lattice,
             self.elementObjects,
@@ -643,7 +650,9 @@ class Framework(Munch):
             ):
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[latticename]
-                self.latticeObjects[latticename] = getattr(frameworkLattices, code.lower() + "Lattice")(
+                self.latticeObjects[latticename] = getattr(
+                    frameworkLattices, code.lower() + "Lattice"
+                )(
                     currentLattice.objectname,
                     currentLattice.file_block,
                     self.elementObjects,
@@ -1180,7 +1189,7 @@ class frameworkDirectory(Munch):
             self.framework = framework
             if directory is None:
                 directory = os.path.abspath(self.framework.subdirectory)
-        print("directory = ", directory)
+
         if os.path.exists(directory + "/" + changes):
             self.framework.load_changes_file(directory + "/" + changes)
         if beams:
@@ -1191,8 +1200,8 @@ class frameworkDirectory(Munch):
                 print("No Summary File! Globbing...")
                 self.beams = rbf.load_directory(directory)
             if rest_mass is None:
-                if len(self.beams.param('particle_rest_energy')) > 0:
-                    rest_mass = self.beams.param('particle_rest_energy')[0][0]
+                if len(self.beams.param("particle_rest_energy")) > 0:
+                    rest_mass = self.beams.param("particle_rest_energy")[0][0]
                 else:
                     rest_mass = constants.m_e
             self.twiss = rtf.twiss(rest_mass=rest_mass)

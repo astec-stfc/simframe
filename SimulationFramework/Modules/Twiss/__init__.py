@@ -36,7 +36,7 @@ class twissParameter(BaseModel):
     label: str = Field(default=None, validate_default=True)
     dtype: str = "f"
 
-    @field_validator('label', mode="before")
+    @field_validator("label", mode="before")
     @classmethod
     def default_label(cls, v: str, info: ValidationInfo):
         if v is None:
@@ -306,11 +306,7 @@ class twiss(munch.Munch):
         self.sort(key=sortkey)
 
     @classmethod
-    def initialise_directory(
-        cls,
-        *args,
-        **kwargs
-    ):
+    def initialise_directory(cls, *args, **kwargs):
         t = cls()
         t.load_directory(*args, **kwargs)
         return t
