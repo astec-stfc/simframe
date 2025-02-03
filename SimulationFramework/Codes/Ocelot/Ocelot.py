@@ -14,7 +14,8 @@ from ocelot.cpbd.csr import CSR
 from ocelot.cpbd.wake3D import Wake, WakeTable
 from ocelot.cpbd.physics_proc import SaveBeam
 from copy import deepcopy
-from numpy import array, where
+from numpy import array, where, mean, savez_compressed
+import os
 
 
 class ocelotLattice(frameworkLattice):
@@ -23,12 +24,6 @@ class ocelotLattice(frameworkLattice):
         self.code = "ocelot"
         self.particle_definition = self.allElementObjects[self.start].objectname
         self.bunch_charge = None
-        self.q = charge(
-            name="START",
-            type="charge",
-            global_parameters=self.global_parameters,
-            **{"total": 250e-12},
-        )
         self.trackBeam = True
         self.betax = None
         self.betay = None
@@ -38,6 +33,7 @@ class ocelotLattice(frameworkLattice):
         self.lat_obj = None
         self.pin = None
         self.pout = None
+        self.tws = None
         self.names = None
         self.grids = getGrids()
         self.sample_interval = 1
@@ -146,20 +142,6 @@ class ocelotLattice(frameworkLattice):
         )
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5fnwpath)
         # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
-        if self.bunch_charge is not None:
-            self.q = charge(
-                name="START",
-                type="charge",
-                global_parameters=self.global_parameters,
-                **{"total": abs(self.bunch_charge)},
-            )
-        else:
-            self.q = charge(
-                name="START",
-                type="charge",
-                global_parameters=self.global_parameters,
-                **{"total": abs(self.global_parameters["beam"].Q)},
-            )
         ocebeamfilename = HDF5fnwpath.replace("hdf5", "npz")
         self.pin = rbf.ocelot.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
@@ -168,7 +150,7 @@ class ocelotLattice(frameworkLattice):
     def run(self):
         """Run the code with input 'filename'"""
         navi = self.navi_setup()
-        tws, self.pout = track(self.lat_obj, deepcopy(self.pin), navi=navi)
+        self.tws, self.pout = track(self.lat_obj, deepcopy(self.pin), navi=navi)
 
     def postProcess(self):
         bfname = (
@@ -182,14 +164,15 @@ class ocelotLattice(frameworkLattice):
             centered=False,
             sourcefilename=bfname,
             pos=0.0,
-            xoffset=np.mean(self.pout.x()),
-            yoffset=np.mean(self.pout.y()),
+            xoffset=mean(self.pout.x()),
+            yoffset=mean(self.pout.y()),
             zoffset=self.pout.s,
         )
-        # rbf.beam.write_HDF5_beam_file(bfname.replace('npz', 'hdf5'))
-        # ocebeam = rbf.ocelot.read_ocelot_beam_file(self.global_parameters['beam'], bfname)
-        # rbf.ocelot.write_ocelot_beam_file(self.global_parameters['beam'],
-        #                                   self.global_parameters['master_subdir'] + '/' + ocebeamfilename)
+        twsdat = {e: [] for e in self.tws[0].__dict__.keys()}
+        for t in self.tws:
+            for k, v in t.__dict__.items():
+                twsdat[k].append(v)
+        savez_compressed(f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz', **twsdat)
 
     def navi_setup(self):
         settings = self.settings
@@ -241,7 +224,8 @@ class ocelotLattice(frameworkLattice):
         for w in self.screens_and_bpms:
             name = w["output_filename"].replace(".sdds", "")
             loc = self.lat_obj.sequence[where(self.names == name)[0][0]]
-            navi.add_physics_proc(SaveBeam(filename=f"{name}.npz"), loc, loc)
+            subdir = self.global_parameters["master_subdir"]
+            navi.add_physics_proc(SaveBeam(filename=f"{subdir}/{name}.npz"), loc, loc)
         return navi
 
     def physproc_lsc(self):

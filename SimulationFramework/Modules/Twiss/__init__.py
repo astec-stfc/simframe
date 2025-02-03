@@ -17,6 +17,7 @@ from . import hdf5
 from . import gpt
 from . import astra
 from . import elegant
+from . import ocelot
 
 try:
     from . import plot
@@ -113,6 +114,7 @@ class twiss(munch.Munch):
             "elegant": elegant.read_elegant_twiss_files,
             "gpt": gpt.read_gdf_twiss_files,
             "astra": astra.read_astra_twiss_files,
+            "ocelot": ocelot.read_ocelot_twiss_files,
         }
         self.code_signatures = [
             ["elegant", ".twi"],
@@ -120,6 +122,7 @@ class twiss(munch.Munch):
             ["elegant", ".sig"],
             ["GPT", "emit.gdf"],
             ["astra", "Xemit.001"],
+            ["ocelot", "_twiss.npz"],
         ]
 
     # def __getitem__(self, key):
@@ -145,6 +148,11 @@ class twiss(munch.Munch):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             return gpt.read_gdf_twiss_files(self, *args, **kwargs)
+
+    def read_ocelot_twiss_files(self, *args, **kwargs):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return ocelot.read_ocelot_twiss_files(self, *args, **kwargs)
 
     def save_HDF5_twiss_file(self, *args, **kwargs):
         with warnings.catch_warnings():
@@ -290,7 +298,7 @@ class twiss(munch.Munch):
     def load_directory(
         self,
         directory=".",
-        types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001"},
+        types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001", "ocelot": "_twiss.npz"},
         preglob="*",
         verbose=False,
         sortkey="z",
@@ -321,7 +329,7 @@ class twiss(munch.Munch):
 
 def load_directory(
     directory=".",
-    types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001"},
+    types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001", "ocelot": "_twiss.npz"},
     preglob="*",
     verbose=False,
     sortkey="z",
