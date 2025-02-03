@@ -46,3 +46,4 @@ from SimulationFramework.Elements.wiggler import wiggler  # noqa F401
 from SimulationFramework.Elements.charge import charge  # noqa F401
 from SimulationFramework.Elements.gpt_ccs import gpt_ccs  # noqa F401
 from SimulationFramework.Elements.global_error import global_error  # noqa F401
+from SimulationFramework.Framework_objects import chicane, s_chicane, r56_group, element_group  # noqa F401
