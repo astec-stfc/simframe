@@ -61,10 +61,17 @@ with open(
 
 type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
 
-with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Ocelot/keyword_conversion_rules_ocelot.yaml', 'r') as infile:
+with open(
+    os.path.dirname(os.path.abspath(__file__))
+    + "/Codes/Ocelot/keyword_conversion_rules_ocelot.yaml",
+    "r",
+) as infile:
     keyword_conversion_rules_ocelot = yaml.safe_load(infile)
 
-with open(os.path.dirname( os.path.abspath(__file__))+'/Codes/Ocelot/elements_Ocelot.yaml', 'r') as infile:
+with open(
+    os.path.dirname(os.path.abspath(__file__)) + "/Codes/Ocelot/elements_Ocelot.yaml",
+    "r",
+) as infile:
     elements_Ocelot = yaml.safe_load(infile)
 
 
@@ -905,12 +912,18 @@ class frameworkElement(frameworkObject):
                 keyword_conversion_rules_elegant[elementType],
             )
         if elementType in keyword_conversion_rules_elegant:
-            self.keyword_conversion_rules_elegant = merge_two_dicts(self.keyword_conversion_rules_elegant,
-                                                                    keyword_conversion_rules_elegant[elementType])
-        self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot['general']
+            self.keyword_conversion_rules_elegant = merge_two_dicts(
+                self.keyword_conversion_rules_elegant,
+                keyword_conversion_rules_elegant[elementType],
+            )
+        self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot[
+            "general"
+        ]
         if elementType in keyword_conversion_rules_ocelot:
-            self.keyword_conversion_rules_ocelot = merge_two_dicts(self.keyword_conversion_rules_ocelot,
-                                                                   keyword_conversion_rules_ocelot[elementType])
+            self.keyword_conversion_rules_ocelot = merge_two_dicts(
+                self.keyword_conversion_rules_ocelot,
+                keyword_conversion_rules_ocelot[elementType],
+            )
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -1279,10 +1292,19 @@ class frameworkElement(frameworkObject):
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
         k1 = self.k1 if self.k1 is not None else 0
         k2 = self.k2 if self.k2 is not None else 0
-        keydict = merge_two_dicts({'k1': k1, 'k2': k2}, merge_two_dicts(self.objectproperties, self.objectdefaults))
+        keydict = merge_two_dicts(
+            {"k1": k1, "k2": k2},
+            merge_two_dicts(self.objectproperties, self.objectdefaults),
+        )
         for key, value in keydict.items():
-            if (not key in ['name', 'type', 'commandtype']) and (not type(obj) in [Aperture, Marker]):
-                value = getattr(self, key) if hasattr(self, key) and getattr(self, key) is not None else value
+            if (not key in ["name", "type", "commandtype"]) and (
+                not type(obj) in [Aperture, Marker]
+            ):
+                value = (
+                    getattr(self, key)
+                    if hasattr(self, key) and getattr(self, key) is not None
+                    else value
+                )
                 setattr(obj, self._convertKeword_Ocelot(key), value)
         return obj
 
@@ -1291,11 +1313,18 @@ class frameworkElement(frameworkObject):
             return self._write_Ocelot()
 
     def _convertType_Ocelot(self, etype):
-        return type_conversion_rules_Ocelot[etype] if etype in type_conversion_rules_Ocelot else etype
+        return (
+            type_conversion_rules_Ocelot[etype]
+            if etype in type_conversion_rules_Ocelot
+            else etype
+        )
 
     def _convertKeword_Ocelot(self, keyword):
-        return self.keyword_conversion_rules_ocelot[
-            keyword] if keyword in self.keyword_conversion_rules_ocelot else keyword
+        return (
+            self.keyword_conversion_rules_ocelot[keyword]
+            if keyword in self.keyword_conversion_rules_ocelot
+            else keyword
+        )
 
     def write_CSRTrack(self, n=0):
         return ""
