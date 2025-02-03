@@ -1,0 +1,68 @@
+from SimulationFramework.Framework_objects import elements_Elegant
+from SimulationFramework.Elements.dipole import dipole
+import numpy as np
+from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
+
+
+class kicker(dipole):
+
+    def __init__(self, name=None, type="kicker", **kwargs):
+        super().__init__(name, type, **kwargs)
+
+    @property
+    def angle(self):
+        hkick = self.horizontal_kick if self.horizontal_kick is not None else 0
+        vkick = self.vertical_kick if self.vertical_kick is not None else 0
+        return np.sqrt(hkick**2 + vkick**2)
+
+    @property
+    def z_rot(self):
+        hkick = self.horizontal_kick if self.horizontal_kick is not None else 0
+        vkick = self.vertical_kick if self.vertical_kick is not None else 0
+        return self.global_rotation[0] + np.arctan2(vkick, hkick)
+
+    def write_ASTRA(self, n, **kwargs):
+        output = ""
+        output = super().write_ASTRA(n)
+        return output
+
+    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+        return ""
+
+    def gpt_ccs(self, ccs):
+        return ccs
+
+    def _write_Elegant(self):
+        wholestring = ""
+        etype = self._convertType_Elegant(self.objecttype)
+        string = self.objectname + ": " + etype
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts(
+            {"k1": k1, "k2": k2},
+            merge_two_dicts(self.objectproperties, self.objectdefaults),
+        )
+        for key, value in keydict.items():
+            if (
+                not key == "name"
+                and not key == "type"
+                and not key == "commandtype"
+                and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
+            ):
+                value = (
+                    getattr(self, key)
+                    if hasattr(self, key) and getattr(self, key) is not None
+                    else value
+                )
+                key = self._convertKeyword_Elegant(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                tmpstring = ", " + key + " = " + str(value)
+                if len(string + tmpstring) > 76:
+                    wholestring += string + ",&\n"
+                    string = ""
+                    string += tmpstring[2::]
+                else:
+                    string += tmpstring
+        wholestring += string + ";\n"
+        return wholestring

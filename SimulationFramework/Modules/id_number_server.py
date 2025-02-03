@@ -4,6 +4,7 @@ import zmq
 import threading
 import signal
 
+
 class zmqServer(threading.Thread):
 
     _id = -1
@@ -22,18 +23,19 @@ class zmqServer(threading.Thread):
         while not self.event.is_set():
             msg = self.socket.recv_pyobj()
             # print 'msg = ', msg
-            if msg == 'get_number':
+            if msg == "get_number":
                 self._id += 1
                 self.socket.send_pyobj(self._id)
-            elif msg == 'reset_number':
+            elif msg == "reset_number":
                 self._id = -1
                 self.socket.send_pyobj(self._id)
 
     def stop(self):
-        print ('stopping server...')
+        print("stopping server...")
         self.event.set()
         self.socket.close()
         self.context.destroy()
+
 
 if __name__ == "__main__":
     server = zmqServer()
