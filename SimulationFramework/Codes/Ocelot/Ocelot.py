@@ -1,8 +1,10 @@
-from ...Framework_objects import getGrids
+from ...Framework_objects import (
+    frameworkLattice,
+    getGrids
+)
 from ...Framework_elements import *
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
-from ...Modules.merge_two_dicts import merge_two_dicts
 from ocelot.cpbd.magnetic_lattice import MagneticLattice
 from ocelot.cpbd.track import track
 from ocelot.cpbd.io import save_particle_array
