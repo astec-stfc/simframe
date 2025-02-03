@@ -426,6 +426,7 @@ class frameworkLattice(Munch):
                 if round(length, 6) > 0:
                     elementno += 1
                     name = "drift" + str(elementno)
+                    middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
                     newdrift = drifttype(
                         name,
                         global_parameters=self.global_parameters,
@@ -433,6 +434,7 @@ class frameworkLattice(Munch):
                             "length": round(length, 6),
                             "position_start": list(d[0]),
                             "position_end": list(d[1]),
+                            "centre": middle,
                             "csr_enable": csr,
                             "lsc_enable": lsc,
                             "use_stupakov": 1,
@@ -450,22 +452,39 @@ class frameworkLattice(Munch):
                     exit()
         return newelements
 
-    def getSValues(self):
+    def getSValues(self, drifts: bool = True, as_dict: bool = False, at_entrance=False):
         elems = self.createDrifts()
         s = [0]
         for e in list(elems.values()):
             s.append(s[-1] + e.length)
-        return list(s[1:])
+        s = s[:-1] if at_entrance else s[1:]
+        if as_dict:
+            return dict(zip([e.objectname for e in elems.values()], s))
+        return list(s)
 
-    def getZValues(self):
-        return [[e.start[2], e.end[2]] for e in self.elements.values()]
+    def getZValues(self, drifts: bool = True, as_dict: bool = False):
+        if drifts:
+            elems = self.createDrifts()
+        else:
+            elems = self.elements
+        if as_dict:
+            return {e.objectname: [e.start[2], e.end[2]] for e in elems.values()}
+        return [[e.start[2], e.end[2]] for e in elems.values()]
 
-    def getNames(self):
-        elems = self.createDrifts()
+    def getNames(self, drifts: bool = True):
+        if drifts:
+            elems = self.createDrifts()
+        else:
+            elems = self.elements
         return [e.objectname for e in list(elems.values())]
 
-    def getElems(self):
-        elems = self.createDrifts()
+    def getElems(self, drifts: bool = True, as_dict: bool = False):
+        if drifts:
+            elems = self.createDrifts()
+        else:
+            elems = self.elements
+        if as_dict:
+            return {e.objectname: e for e in list(elems.values())}
         return [e for e in list(elems.values())]
 
     def getSNames(self):
