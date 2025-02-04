@@ -85,7 +85,8 @@ cavity:
       wakefield_gdf,
       longitudinal_wakefield_gdf,
       transverse_wakefield_gdf,
-      smooth
+      smooth,
+      body_focus_model,
     }
 longitudinal_wakefield:
   keywords:
