@@ -170,6 +170,7 @@ def read_HDF5_beam_file(self, filename, local=False):
             )
         else:
             self["longitudinal_reference"] = "t"
+        
         hdf5beam = np.array(h5file.get("beam/beam")).transpose()
         columns = [c.decode("utf-8") for c in h5file.get("/beam/columns")]
         if "particle" in columns and len(columns) == 10:
@@ -177,6 +178,10 @@ def read_HDF5_beam_file(self, filename, local=False):
             self._beam["particle_mass"] = mass
         elif len(columns) == 9:
             x, y, z, cpx, cpy, cpz, t, charge, nmacro = hdf5beam
+            self._beam["particle_mass"] = np.full(len(x), constants.m_e)
+        elif len(columns) == 8:
+            x, y, z, cpx, cpy, cpz, t, charge = hdf5beam
+            nmacro = [abs(c) / constants.elementary_charge for c in charge]
             self._beam["particle_mass"] = np.full(len(x), constants.m_e)
         else:
             raise ValueError(f"HDF5 columns unknown: {columns}")

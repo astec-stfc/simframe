@@ -108,7 +108,10 @@ class ocelotLattice(frameworkLattice):
         mag_lat = []
         for element in list(elements.values()):
             if not element.subelement:
-                mag_lat.append(element.write_Ocelot())
+                try:
+                    mag_lat.append(element.write_Ocelot())
+                except Exception as e:
+                    print(element.objectname, e)
         self.lat_obj = MagneticLattice(mag_lat)
         self.names = array([lat.id for lat in self.lat_obj.sequence])
 
@@ -141,7 +144,6 @@ class ocelotLattice(frameworkLattice):
             self.global_parameters["master_subdir"] + "/" + HDF5filename
         )
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5fnwpath)
-        # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
         ocebeamfilename = HDF5fnwpath.replace("hdf5", "npz")
         self.pin = rbf.ocelot.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
@@ -175,6 +177,9 @@ class ocelotLattice(frameworkLattice):
         savez_compressed(f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz', **twsdat)
 
     def navi_setup(self):
+        navi_processes = []
+        navi_locations_start = []
+        navi_locations_end = []
         settings = self.settings
         self.unit_step = (
             settings["unit_step"] if "unit_step" in settings.keys() else self.unit_step
@@ -187,11 +192,11 @@ class ocelotLattice(frameworkLattice):
         navi = Navigator(self.lat_obj, unit_step=self.unit_step)
         if self.lsc:
             lsc = self.physproc_lsc()
-            navi.add_physics_proc(
-                lsc, self.lat_obj.sequence[0], self.lat_obj.sequence[-1]
-            )
+            navi_processes += [lsc]
+            navi_locations_start += [self.lat_obj.sequence[0]]
+            navi_locations_end += [self.lat_obj.sequence[-1]]
         if "charge" in list(self.file_block.keys()):
-            if "space_charge_mode" in list(self.file_block["charge"].keys()):
+            if "space_charge_mode" in list(self.file_block["charge"].keys()) and self.file_block["charge"]["space_charge_mode"].lower() == "3d":
                 gridsize = self.grids.getGridSizes(
                     (len(self.global_parameters["beam"].x) / self.sample_interval)
                 )
@@ -202,13 +207,15 @@ class ocelotLattice(frameworkLattice):
                 )
                 grids = [g1 for _ in range(3)]
                 sc = self.physproc_sc(grids)
-                navi.add_physics_proc(
-                    sc, self.lat_obj.sequence[0], self.lat_obj.sequence[-1]
-                )
+                navi_processes += [sc]
+                navi_locations_start += [self.lat_obj.sequence[0]]
+                navi_locations_end += [self.lat_obj.sequence[-1]]
         if "csr" in list(self.file_block.keys()):
             csr, start, end = self.physproc_csr()
             for i in range(len(csr)):
-                navi.add_physics_proc(csr[i], start[i], end[i])
+                navi_processes += [csr[i]]
+                navi_locations_start += [start[i]]
+                navi_locations_end += [end[i]]
         for name, obj in self.elements.items():
             if (obj["objecttype"] == "cavity") and ("sub_elements" in list(obj.keys())):
                 for sename, seobj in obj["sub_elements"].items():
@@ -216,16 +223,17 @@ class ocelotLattice(frameworkLattice):
                         wake, w_ind = self.physproc_wake(
                             name, seobj["field_definition"]
                         )
-                        navi.add_physics_proc(
-                            wake,
-                            self.lat_obj.sequence[w_ind],
-                            self.lat_obj.sequence[w_ind + 1],
-                        )
+                        navi_processes += [wake]
+                        navi_locations_start += [self.lat_obj.sequence[w_ind]]
+                        navi_locations_end += [self.lat_obj.sequence[w_ind + 1]]
         for w in self.screens_and_bpms:
             name = w["output_filename"].replace(".sdds", "")
             loc = self.lat_obj.sequence[where(self.names == name)[0][0]]
             subdir = self.global_parameters["master_subdir"]
-            navi.add_physics_proc(SaveBeam(filename=f"{subdir}/{name}.npz"), loc, loc)
+            navi_processes += [SaveBeam(filename=f"{subdir}/{name}.npz")]
+            navi_locations_start += [loc]
+            navi_locations_end += [loc]
+        navi.add_physics_processes(navi_processes, navi_locations_start, navi_locations_end)
         return navi
 
     def physproc_lsc(self):

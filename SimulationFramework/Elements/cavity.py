@@ -1,4 +1,4 @@
-from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant
+from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant, type_conversion_rules_Ocelot
 from SimulationFramework.FrameworkHelperFunctions import expand_substitution
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 import numpy as np
