@@ -1,8 +1,8 @@
 import os
 import yaml
-from ...Framework_objects import *
-from ...Framework_elements import *
-from ...FrameworkHelperFunctions import _rotation_matrix
+from ...Framework_objects import frameworkLattice, frameworkElement, frameworkCounter, elementkeywords
+from ...Framework_elements import screen
+from ...FrameworkHelperFunctions import saveFile
 from ...Modules import Beams as rbf
 
 with open(
@@ -16,7 +16,7 @@ class csrtrackLattice(frameworkLattice):
         super(csrtrackLattice, self).__init__(*args, **kwargs)
         self.code = "csrtrack"
         self.particle_definition = ""
-        self.CSRTrackelementObjects = OrderedDict()
+        self.CSRTrackelementObjects = {}
         self.set_particles_filename()
 
     def endScreen(self, **kwargs):
