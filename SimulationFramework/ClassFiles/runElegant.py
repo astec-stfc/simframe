@@ -1,7 +1,6 @@
 import os
-import sys
 from SimulationFramework import Framework as fw
-from SimulationFramework.Modules.constraints import *
+from SimulationFramework.Modules.optimisation.constraints import constraintsClass
 from SimulationFramework.Modules import Beams as rbf
 from SimulationFramework.Modules import Twiss as rtf
 import shutil
@@ -39,7 +38,7 @@ class TemporaryDirectory(object):
     def __exit__(self, exc_type, exc_value, traceback):
         try:
             shutil.rmtree(self.name)
-        except:
+        except Exception:
             pass
 
 
@@ -141,13 +140,13 @@ class fitnessFunc(object):
         elif hasattr(self, "change_to_gpt") and self.change_to_gpt:
             self.framework.change_Lattice_Code("All", "GPT", exclude=["injector400"])
 
-        ### Define starting lattice
+        # ## Define starting lattice
         if self.start_lattice is None:
             self.start_lattice = self.framework[
                 list(self.framework.latticeObjects)[0]
             ].objectname
 
-        ### Apply any pre-tracking changes to elements
+        # ## Apply any pre-tracking changes to elements
         if self.changes is not None:
             if isinstance(self.changes, (tuple, list)):
                 for c in self.changes:
@@ -155,7 +154,7 @@ class fitnessFunc(object):
             else:
                 self.framework.load_changes_file(self.changes)
 
-        ### Apply input arguments to element definitions
+        # ## Apply input arguments to element definitions
         """ Apply arguments: [[element, parameter, value], [...]] """
         for e, p, v in self.input_parameters:
             if e == "startcharge":
@@ -164,7 +163,7 @@ class fitnessFunc(object):
             else:
                 self.framework.modifyElement(e, p, v)
 
-        ### Save the changes to the run directory
+        # ## Save the changes to the run directory
         self.framework.save_changes_file(
             filename=self.framework.subdirectory + "/changes.yaml",
             elements=self.input_parameters,
@@ -174,12 +173,12 @@ class fitnessFunc(object):
         pass
 
     def track(self, endfile=None, **kwargs):
-        ### Have we defined where the base files are?
+        # ## Have we defined where the base files are?
         if self.base_files is not None:
             if self.verbose:
                 print("Using base_files = ", self.base_files)
             self.framework[self.start_lattice].prefix = self.base_files
-        ### If not, use the defaults based on the location of the CLARA example directory
+        # ## If not, use the defaults based on the location of the CLARA example directory
         elif self.CLARA_dir is not None:
             if self.verbose:
                 print(
@@ -190,13 +189,13 @@ class fitnessFunc(object):
                 self.CLARA_dir + "/basefiles_" + str(self.scaling) + "/"
             )
 
-        ### Are we are setting the charge?
+        # ## Are we are setting the charge?
         if self.startcharge is not None:
             if self.verbose:
                 print("Starting Charge =", self.startcharge)
             self.framework[self.start_lattice].bunch_charge = 1e-12 * self.startcharge
 
-        ### Are we are sub-sampling the distribution?
+        # ## Are we are sub-sampling the distribution?
         if self.sample_interval is not None:
             if self.verbose:
                 print("Sampling at ", self.sample_interval)
@@ -204,7 +203,7 @@ class fitnessFunc(object):
                 self.sample_interval
             )  # 2**(3*4)
 
-        ### TRACKING
+        # ## TRACKING
         if self.doTracking:
             if self.verbose:
                 print("Tracking from", self.start_lattice, "to", endfile)
@@ -215,7 +214,7 @@ class fitnessFunc(object):
 
 def optfunc(inputargs, dir=None, *args, **kwargs):
     global bestfit
-    if dir == None:
+    if dir is None:
         with TemporaryDirectory(dir=os.getcwd()) as tmpdir:
             fit = fitnessFunc(inputargs, tmpdir, *args, **kwargs)
             fitvalue = fit.calculateBeamParameters()
