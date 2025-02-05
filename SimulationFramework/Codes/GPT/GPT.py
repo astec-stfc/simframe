@@ -8,7 +8,7 @@ from ...Framework_objects import (
     getGrids,
 )
 from ...Framework_elements import screen, gpt_ccs
-from ...FrameworkHelperFunctions import saveFile
+from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.merge_two_dicts import merge_two_dicts
 
@@ -372,9 +372,13 @@ class gptLattice(frameworkLattice):
 
     def hdf5_to_gdf(self, prefix=""):
         HDF5filename = prefix + self.particle_definition + ".hdf5"
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
-            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+            filepath,
         )
         # print('beam charge = ', self.global_parameters['beam'].charge)
         if self.sample_interval > 1:

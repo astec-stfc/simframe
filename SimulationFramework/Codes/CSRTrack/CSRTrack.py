@@ -2,7 +2,7 @@ import os
 import yaml
 from ...Framework_objects import frameworkLattice, frameworkElement, frameworkCounter, elementkeywords
 from ...Framework_elements import screen
-from ...FrameworkHelperFunctions import saveFile
+from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 
 with open(
@@ -220,9 +220,13 @@ class csrtrack_particles(csrtrack_element):
 
     def hdf5_to_astra(self, prefix=""):
         HDF5filename = prefix + self.particle_definition.replace(".astra", "") + ".hdf5"
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
-            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+            filepath,
         )
         astrabeamfilename = self.particle_definition + ".astra"
         rbf.astra.write_astra_beam_file(

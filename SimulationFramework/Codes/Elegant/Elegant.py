@@ -4,7 +4,7 @@ import subprocess
 import numpy as np
 
 try:
-    import ASTeCsdds.sdds as sdds
+    import ASTeCsdds.sdds as sdds  # type: ignore
 except ImportError:
     try:
         import sdds
@@ -18,7 +18,7 @@ from ...Framework_objects import (
     keyword_conversion_rules_elegant,
 )
 from ...Framework_elements import charge, screen
-from ...FrameworkHelperFunctions import saveFile
+from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 
 
@@ -53,7 +53,7 @@ class elegantLattice(frameworkLattice):
 
     def writeElements(self):
         self.w = None
-        if not self.endObject in self.screens_and_bpms:
+        if self.endObject not in self.screens_and_bpms:
             self.w = self.endScreen(output_filename=self.endObject.objectname + ".sdds")
         elements = self.createDrifts()
         fulltext = ""
@@ -202,10 +202,10 @@ class elegantLattice(frameworkLattice):
             # the first scan step is always the baseline simulation, for fiducialization
             multiplicative = elementScan["multiplicative"]
             if multiplicative:
-                if not 1.0 in list(scan_values):
+                if 1.0 not in list(scan_values):
                     scan_values = [1.0] + list(scan_values)
             else:
-                if not 0.0 in list(scan_values):
+                if 0.0 not in list(scan_values):
                     scan_values = [0.0] + list(scan_values)
 
             # build the SDDS file with the scan values
@@ -245,7 +245,7 @@ class elegantLattice(frameworkLattice):
                 if cfileid in self.commandFiles:
                     cfile = self.commandFiles[cfileid]
                     saveFile(self.command_file, cfile.write(), "a")
-        except:
+        except Exception:
             pass
 
     def createCommandFiles(self):
@@ -363,7 +363,7 @@ class elegantLattice(frameworkLattice):
     def screen_threaded_function(self, screen, sddsindex):
         try:
             return screen.sdds_to_hdf5(sddsindex)
-        except:
+        except Exception:
             return None
 
     def postProcess(self):
@@ -376,15 +376,19 @@ class elegantLattice(frameworkLattice):
                 self.screen_threaded_function.scatter(
                     self.w, len(self.screens_and_bpms)
                 )
-        results = self.screen_threaded_function.gather()
+        self.screen_threaded_function.gather()
         self.commandFiles = {}
 
     def hdf5_to_sdds(self, prefix="", write=True):
         HDF5filename = prefix + self.particle_definition + ".hdf5"
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
             os.path.abspath(
-                self.global_parameters["master_subdir"] + "/" + HDF5filename
+                filepath
             ),
         )
         # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
@@ -607,7 +611,7 @@ class elegant_twiss_output_command(elegantCommandFile):
 class elegant_floor_coordinates_command(elegantCommandFile):
     def __init__(self, lattice="", **kwargs):
         super().__init__(objecttype="floor_coordinates", lattice=lattice, **kwargs)
-        flr = self.add_properties(
+        self.add_properties(
             filename="%s.flr",
             X0=lattice.startObject["position_start"][0],
             Z0=lattice.startObject["position_start"][2],
@@ -620,7 +624,7 @@ class elegant_floor_coordinates_command(elegantCommandFile):
 class elegant_matrix_output_command(elegantCommandFile):
     def __init__(self, lattice="", **kwargs):
         super().__init__(objecttype="matrix_output", lattice=lattice, **kwargs)
-        mat = self.add_properties(
+        self.add_properties(
             SDDS_output="%s.mat", full_matrix_only=0, SDDS_output_order=2, **kwargs
         )
 

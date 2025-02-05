@@ -1148,11 +1148,12 @@ class frameworkDirectory(Munch):
         changes: str = "changes.yaml",
         rest_mass: float | None = None,
         framework: Framework | None = None,
+        **kwargs,
     ) -> None:
         super(frameworkDirectory, self).__init__()
         if framework is None:
             directory = "." if directory is None else os.path.abspath(directory)
-            self.framework = Framework(directory, clean=False, verbose=verbose)
+            self.framework = Framework(directory, clean=False, verbose=verbose, **kwargs)
             self.framework.loadSettings(directory + "/" + settings)
         else:
             self.framework = framework

@@ -83,7 +83,7 @@ class astraLattice(frameworkLattice):
                     "input"
                 ]["particle_definition"]
                 self.headers["newrun"].output_particle_definition = (
-                    self.file_block["input"]["particle_definition"] + "_input.astra"
+                    self.objectname + "_input.astra"
                 )
         else:
             self.headers["newrun"].input_particle_definition = (
@@ -428,9 +428,13 @@ class astra_newrun(astra_header):
         HDF5filename = (
             prefix + self.input_particle_definition.replace(".astra", "") + ".hdf5"
         )
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
-            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+            filepath,
         )
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
