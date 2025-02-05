@@ -26,13 +26,13 @@ from .FrameworkHelperFunctions import (
 )
 
 try:
-    import MasterLattice
+    import MasterLattice  # type: ignore
 
     MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
 except ImportError:
     MasterLatticeLocation = None
 try:
-    import SimCodes
+    import SimCodes  # type: ignore
 
     SimCodesLocation = os.path.dirname(SimCodes.__file__) + "/"
 except ImportError:
@@ -44,7 +44,7 @@ try:
 except ImportError as e:
     print("Import error - plotting disabled. Missing package:", e)
     use_matplotlib = False
-import progressbar
+from tqdm import tqdm
 from munch import Munch, unmunchify
 
 _mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
@@ -350,7 +350,7 @@ class Framework(Munch):
             self.add_Generator(**self.generatorSettings)
         self.fileSettings = self.settings["files"] if "files" in self.settings else {}
         elements = self.settings["elements"]
-        self.groups = (
+        groups = (
             self.settings["groups"]
             if "groups" in self.settings and self.settings["groups"] is not None
             else {}
@@ -364,7 +364,7 @@ class Framework(Munch):
         for name, elem in list(elements.items()):
             self.read_Element(name, elem)
 
-        for name, elem in list(self.groups.items()):
+        for name, elem in list(groups.items()):
             if "type" in elem:
                 group = getattr(frameworkElements, elem["type"])(
                     name, self, global_parameters=self.global_parameters, **elem
@@ -530,6 +530,7 @@ class Framework(Munch):
             "global_parameters",
             "objectname",
             "subelement",
+            "beam"
         ]
         for e in elements:
             new = unmunchify(self.elementObjects[e])
@@ -774,12 +775,8 @@ class Framework(Munch):
                 self.modifyElement(elementName, p, v)
         elif elementName in self.groupObjects:
             self.groupObjects[elementName].change_Parameter(parameter, value)
-            # print('modifyElement(groupObject):', elementName, parameter, value)
         elif elementName in self.elementObjects:
             setattr(self.elementObjects[elementName], parameter, value)
-        #     print('modifyElement(elementObject):', elementName, parameter, value)
-        # else:
-        #     print('modifyElement ERROR:', elementName, parameter, value)
 
     def modifyElements(
         self, elementNames: str | list, parameter: str | list | dict, value: Any = None
@@ -808,9 +805,6 @@ class Framework(Munch):
                 self.modifyLattice(latticeName, p, v)
         elif latticeName in self.latticeObjects:
             setattr(self.latticeObjects[latticeName], parameter, value)
-            # print('modifyLattice(latticeObject):', latticeName, parameter, value)
-        # else:
-        #     print('modifyLattice ERROR:', latticeName, parameter, value)
 
     def modifyLattices(
         self, latticeNames: str | list, parameter: str | list | dict, value: Any = None
@@ -878,9 +872,6 @@ class Framework(Munch):
         with open(file, "w") as yaml_file:
             yaml.default_flow_style = True
             yaml.dump(output, yaml_file)
-        # try:
-        # elem = self.getelement(k, v)
-        # outputfile.write(k+' '+v+' ')
 
     def set_lattice_prefix(self, lattice: str, prefix: str) -> None:
         """Sets the 'prefix' parameter for a lattice, which determines where it looks for its starting beam distribution"""
@@ -911,9 +902,18 @@ class Framework(Munch):
         return list(self.elementObjects.keys())
 
     @property
+    def groups(self) -> list:
+        """Returns a list of all group objects"""
+        return list(self.groupObjects.keys())
+
+    @property
     def lines(self) -> list:
         """Returns a list of all lattice objects"""
         return list(self.latticeObjects.keys())
+
+    @property
+    def lattices(self) -> list:
+        return self.lines
 
     @property
     def commands(self) -> list:
@@ -994,83 +994,52 @@ class Framework(Munch):
             index = files.index(endfile)
             files = files[: index + 1]
         if self.verbose:
-            format_custom_text = progressbar.FormatCustomText(
-                "File: %(running)s", {"running": ""}
+            pbar = tqdm(total=len(files)*4)
+        percentage_step = 100 / len(files)
+        for i in range(len(files)):
+            base_percentage = 100 * (i / len(files))
+            lattice_name = files[i]
+            self.progress = base_percentage
+            if lattice_name == "generator" and hasattr(self, "generator"):
+                latt = self.generator
+                base_description = "Generator["+self.generator.code+"]"
+            else:
+                latt = self.latticeObjects[lattice_name]
+                base_description = lattice_name + "["+latt.code+"]"
+            if self.verbose: pbar.set_description(base_description + ":              ")  # noqa E701
+            if preprocess and lattice_name != "generator":
+                if self.verbose: pbar.set_description(base_description + ": pre-process  ")  # noqa E701
+                latt.preProcess()
+                self.progress = base_percentage + 0.25 * percentage_step
+            if self.verbose: pbar.update()  # noqa E701
+            if write:
+                if self.verbose: pbar.set_description(base_description + ": write        ")  # noqa E701
+                latt.write()
+                self.progress = base_percentage + 0.5 * percentage_step
+            if self.verbose: pbar.update()  # noqa E701
+            if track:
+                if self.verbose: pbar.set_description(base_description + ": track        ")  # noqa E701
+                latt.run()
+                self.progress = base_percentage + 0.75 * percentage_step
+            if self.verbose: pbar.update()  # noqa E701
+            if postprocess:
+                if self.verbose: pbar.set_description(base_description + ": post-process ")  # noqa E701
+                latt.postProcess()
+                self.progress = base_percentage + 1 * percentage_step
+            if self.verbose: pbar.update()  # noqa E701
+        if self.verbose:
+            pbar.set_description(base_description + ": Finished! ")
+            pbar.close()
+        if save_summary:
+            self.save_summary_files()
+        self.tracking = False
+        if frameworkDirectory:
+            return frameworkDirectory(
+                directory=self.subdirectory,
+                twiss=True,
+                beams=True,
+                verbose=self.verbose,
             )
-            bar = progressbar.ProgressBar(
-                widgets=[
-                    format_custom_text,
-                    progressbar.Percentage(),
-                    progressbar.Bar(),
-                    progressbar.Percentage(),
-                ],
-                max_value=len(files),
-            )
-            format_custom_text.update_mapping(running=files[0] + "  ")
-            for i in bar(list(range(len(files)))):
-                latt = files[i]
-                self.progress = 100.0 * (i + 1) / len(files)
-                if latt == "generator" and hasattr(self, "generator"):
-                    format_custom_text.update_mapping(running="Generator  ")
-                    if write:
-                        self.generator.write()
-                    if track:
-                        self.generator.run()
-                    if postprocess:
-                        self.generator.postProcess()
-                    if save_summary:
-                        self.save_summary_files()
-                else:
-                    if i == (len(files) - 1):
-                        format_custom_text.update_mapping(running="Finished")
-                    else:
-                        format_custom_text.update_mapping(running=files[i + 1] + "  ")
-                    if preprocess:
-                        self.latticeObjects[latt].preProcess()
-                    if write:
-                        self.latticeObjects[latt].write()
-                    if track:
-                        self.latticeObjects[latt].run()
-                    if postprocess:
-                        self.latticeObjects[latt].postProcess()
-            if save_summary:
-                self.save_summary_files()
-        else:
-            for i in range(len(files)):
-                latt = files[i]
-                self.progress = 100.0 * (i) / len(files)
-                if latt == "generator" and hasattr(self, "generator"):
-                    if write:
-                        self.generator.write()
-                    self.progress = 100.0 * (i + 0.33) / len(files)
-                    if track:
-                        self.generator.run()
-                    self.progress = 100.0 * (i + 0.66) / len(files)
-                    if postprocess:
-                        self.generator.postProcess()
-                else:
-                    if preprocess:
-                        self.latticeObjects[latt].preProcess()
-                    self.progress = 100.0 * (i + 0.25) / len(files)
-                    if write:
-                        self.latticeObjects[latt].write()
-                    self.progress = 100.0 * (i + 0.5) / len(files)
-                    if track:
-                        self.latticeObjects[latt].run()
-                    self.progress = 100.0 * (i + 0.75) / len(files)
-                    if postprocess:
-                        self.latticeObjects[latt].postProcess()
-            if save_summary:
-                self.save_summary_files()
-            self.progress = 100
-            self.tracking = False
-            if frameworkDirectory:
-                return frameworkDirectory(
-                    directory=self.subdirectory,
-                    twiss=True,
-                    beams=True,
-                    verbose=self.verbose,
-                )
 
     def postProcess(
         self,
@@ -1254,6 +1223,7 @@ class frameworkDirectory(Munch):
                 "global_parameters",
                 "objectname",
                 "subelement",
+                "beam",
             ]
             return pprint(
                 {
