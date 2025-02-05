@@ -21,12 +21,12 @@ class kicker(dipole):
         vkick = self.vertical_kick if self.vertical_kick is not None else 0
         return self.global_rotation[0] + np.arctan2(vkick, hkick)
 
-    def write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs):
         output = ""
         output = super().write_ASTRA(n)
         return output
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         return ""
 
     def gpt_ccs(self, ccs):

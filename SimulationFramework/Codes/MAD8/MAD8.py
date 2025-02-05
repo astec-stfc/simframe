@@ -1,5 +1,9 @@
-from SimulationFramework.Framework_objects import *
-from SimulationFramework.Framework_elements import *
+import os
+import subprocess
+import numpy as np
+from SimulationFramework.Framework_objects import frameworkLattice, frameworkObject, frameworkCommand
+from SimulationFramework.FrameworkHelperFunctions import saveFile, expand_substitution
+from ...Modules import Beams as rbf
 
 
 class mad8Lattice(frameworkLattice):
@@ -66,8 +70,13 @@ class mad8Lattice(frameworkLattice):
 
     def hdf5_to_tfs(self, prefix=""):
         HDF5filename = prefix + self.particle_definition + ".hdf5"
-        self.global_parameters["beam"].read_HDF5_beam_file(
-            self.global_parameters["master_subdir"] + "/" + HDF5filename
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
+        rbf.hdf5.read_HDF5_beam_file(
+            self.global_parameters["beam"],
+            filepath,
         )
         tfsbeamfilename = self.objectname + ".tfs"
         self.global_parameters["beam"].write_TFS_file(
@@ -97,13 +106,13 @@ class mad8Lattice(frameworkLattice):
 class mad8CommandFile(frameworkObject):
     def __init__(self, lattice="", *args, **kwargs):
         super(mad8CommandFile, self).__init__()
-        self.commandObjects = OrderedDict()
+        self.commandObjects = {}
         self.lattice_filename = lattice.objectname + ".mff"
 
     def addCommand(self, name=None, **kwargs):
-        if name == None:
-            if not "name" in kwargs:
-                if not "type" in kwargs:
+        if name is None:
+            if "name" not in kwargs:
+                if "type" not in kwargs:
                     raise NameError("Command does not have a name")
                 else:
                     name = kwargs["type"]
@@ -178,19 +187,6 @@ class mad8TrackFile(mad8CommandFile):
             alpha_x=self.alphax,
             beta_y=self.betay,
             alpha_y=self.alphay,
-        )
-        flr = self.addCommand(
-            type="floor_coordinates",
-            filename="%s.flr",
-            X0=lattice.startObject["position_start"][0],
-            Z0=lattice.startObject["position_start"][2],
-            theta0=0,
-        )
-        mat = self.addCommand(
-            type="matrix_output",
-            SDDS_output="%s.mat",
-            full_matrix_only=1,
-            SDDS_output_order=2,
         )
         if self.trackBeam:
             self.addCommand(

@@ -1,17 +1,11 @@
 import os
 import subprocess
+import numpy as np
 from munch import Munch, unmunchify
-from ...FrameworkHelperFunctions import *
+from ...FrameworkHelperFunctions import saveFile, copylink, expand_substitution, convert_numpy_types
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import constants
 from ...Modules import Beams as rbf
-
-if os.name == "nt":
-    from ...Modules.symmlinks import has_symlink_privilege
-else:
-
-    def has_symlink_privilege():
-        return True
 
 
 astra_generator_keywords = {
@@ -371,9 +365,9 @@ class frameworkGenerator(Munch):
         latticedict = {
             k.replace("object", ""): convert_numpy_types(new[k])
             for k in new
-            if not k in disallowed
+            if k not in disallowed
         }
-        return dic
+        return latticedict
 
 
 class ASTRAGenerator(frameworkGenerator):
@@ -381,6 +375,7 @@ class ASTRAGenerator(frameworkGenerator):
         super(ASTRAGenerator, self).__init__(executables, global_parameters, **kwargs)
         astra_keywords = list(astra_generator_keywords["keywords"].values())
         keywords = generator_keywords["keywords"]
+        self.code = "ASTRA"
         self.allowedKeyWords = [*astra_keywords, *keywords]
         self.allowedKeyWords = [
             x.lower() if not isinstance(x, list) else x[0].lower()
@@ -424,10 +419,6 @@ class ASTRAGenerator(frameworkGenerator):
 
     def write(self):
         output = "&INPUT\n"
-        try:
-            npart = eval(self.number_of_particles)
-        except:
-            npart = self.number_of_particles
         if self.filename is None:
             self.filename = "generator.txt"
         framework_dict = dict(
@@ -465,7 +456,7 @@ class ASTRAGenerator(frameworkGenerator):
                 ):
                     try:
                         val = eval(getattr(self, klower))
-                    except:
+                    except Exception:
                         val = getattr(self, klower)
                     if m is not None:
                         val = m * val
@@ -509,7 +500,7 @@ class GPTGenerator(frameworkGenerator):
                     # print 'key = ', key
                     self[key] = value
                     setattr(self, key, value)
-                except:
+                except Exception:
                     pass
                     # print 'WARNING: Unknown keyword: ', key, value
                     # exit()

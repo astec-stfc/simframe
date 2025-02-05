@@ -1,10 +1,11 @@
-import os, shutil
+import os
+import shutil
+import yaml
 import numpy as np
-from SimulationFramework.Modules.constraints import constraintsClass
-from SimulationFramework.Modules.nelder_mead import nelder_mead
+from SimulationFramework.Modules.optimisation.constraints import constraintsClass
+from SimulationFramework.Modules.optimisation.nelder_mead import nelder_mead
 import csv
 from copy import copy
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from . import runElegant as runEle
 from scipy.optimize import minimize
 
@@ -16,20 +17,6 @@ def saveState(dir, args, n, fitness):
         args.append(n)
         args.append(fitness)
         csv_out.writerow(args)
-
-
-def saveParameterFile(best, file="clara_elegant_best.yaml"):
-    if POST_INJECTOR:
-        allparams = list(zip(*(parameternames)))
-    else:
-        allparams = list(zip(*(injparameternames + parameternames)))
-    output = {}
-    for p, k, v in zip(allparams[0], allparams[1], best):
-        if p not in output:
-            output[p] = {}
-        output[p][k] = v
-        with open(file, "w") as yaml_file:
-            yaml.dump(output, yaml_file, default_flow_style=False)
 
 
 class Optimise_Elegant(runEle.fitnessFunc):
@@ -71,7 +58,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.basefiles = "../../CLARA/basefiles_" + str(self.scaling) + "/"
         # ******************************************************************************
         if not self.POST_INJECTOR:
-            best = injector_startingvalues + best
+            self.best = self.injector_startingvalues + self.best
         elif CREATE_BASE_FILES:
             for i in [self.scaling]:
                 pass
@@ -149,7 +136,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
                     saveState(self.subdir, inputargs, self.opt_iteration - 1, fitvalue)
                 else:
                     saveState(self.subdir, inputargs, self.opt_iteration, fitvalue)
-            except:
+            except Exception:
                 pass
         if save_state and fitvalue < self.bestfit:
             print(self.cons.constraintsList(constraintsList))
@@ -158,7 +145,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             try:
                 shutil.copyfile(dir + "/changes.yaml", self.best_changes)
                 self.framework.save_lattice()
-            except:
+            except Exception:
                 pass
         else:
             if self.deleteFolders:
@@ -182,7 +169,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.bestfit = 1e26
 
         os.makedirs(subdir, exist_ok=True)
-        with open(subdir + "/best_solutions_running.csv", "w") as out:
+        with open(subdir + "/best_solutions_running.csv", "w"):
             self.opt_iteration = 0
         res = nelder_mead(
             self.OptimisingFunction,
@@ -211,7 +198,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.bestfit = 1e26
 
         os.makedirs(subdir, exist_ok=True)
-        with open(subdir + "/best_solutions_running.csv", "w") as out:
+        with open(subdir + "/best_solutions_running.csv", "w"):
             self.opt_iteration = 0
         res = minimize(
             self.OptimisingFunction,
@@ -235,3 +222,16 @@ class Optimise_Elegant(runEle.fitnessFunc):
         self.OptimisingFunction(best, **kwargs)
         # except:
         # pass
+
+    def saveParameterFile(self, best, file="clara_elegant_best.yaml"):
+        if self.POST_INJECTOR:
+            allparams = list(zip(*(self.parameternames)))
+        else:
+            allparams = list(zip(*(self.injparameternames + self.parameternames)))
+        output = {}
+        for p, k, v in zip(allparams[0], allparams[1], best):
+            if p not in output:
+                output[p] = {}
+            output[p][k] = v
+            with open(file, "w") as yaml_file:
+                yaml.dump(output, yaml_file, default_flow_style=False)

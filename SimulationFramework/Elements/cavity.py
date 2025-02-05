@@ -29,39 +29,6 @@ class cavity(frameworkElement):
         self.add_default("field_amplitude", 0)
         self.add_default("crest", 0)
 
-    def update_field_definition(self) -> None:
-        """Updates the field definitions to allow for the relative sub-directory location"""
-        if hasattr(self, "field_definition") and self.field_definition is not None:
-            self.field_definition = expand_substitution(self, self.field_definition)
-        if (
-            hasattr(self, "field_definition_sdds")
-            and self.field_definition_sdds is not None
-        ):
-            self.field_definition_sdds = expand_substitution(
-                self, self.field_definition_sdds
-            )
-        if (
-            hasattr(self, "field_definition_gdf")
-            and self.field_definition_gdf is not None
-        ):
-            self.field_definition_gdf = expand_substitution(
-                self, self.field_definition_gdf
-            )
-        if (
-            hasattr(self, "longitudinal_wakefield_sdds")
-            and self.longitudinal_wakefield_sdds is not None
-        ):
-            self.longitudinal_wakefield_sdds = expand_substitution(
-                self, self.longitudinal_wakefield_sdds
-            )
-        if (
-            hasattr(self, "transverse_wakefield_sdds")
-            and self.transverse_wakefield_sdds is not None
-        ):
-            self.transverse_wakefield_sdds = expand_substitution(
-                self, self.transverse_wakefield_sdds
-            )
-
     @property
     def cells(self):
         if (self.n_cells == 0 or self.n_cells is None) and self.cell_length > 0:
@@ -78,12 +45,12 @@ class cavity(frameworkElement):
             cells = None
         return cells
 
-    def write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs):
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ["FILE_EFieLD", {"value": "'" + basename + "'", "default": ""}]
-        return self._write_ASTRA(
+        return self._write_ASTRA_dictionary(
             dict(
                 [
                     ["C_pos", {"value": self.start[2] + self.dz, "default": 0}],
@@ -142,7 +109,6 @@ class cavity(frameworkElement):
         )
 
     def _write_Elegant(self):
-        self.update_field_definition()
         original_field_definition_sdds = self.field_definition_sdds
         if self.field_definition_sdds is not None:
             self.field_definition_sdds = (
@@ -209,6 +175,7 @@ class cavity(frameworkElement):
                         # In ELEGANT all phases are +90degrees!!
                         value = 90 - value if key == "phase" else value
                     # In ELEGANT the voltages need to be compensated
+
                     value = (
                         abs(
                             (self.cells + 4.1)
@@ -224,7 +191,7 @@ class cavity(frameworkElement):
                         abs(1e-3 / (np.sqrt(2)) * value) if key == "ez_peak" else value
                     )
                     # In CAVITY NKICK = n_cells
-                    value = 3 * self.cells if key == "n_kicks" else value
+                    value = 3 * self.cells if key == "n_kicks" and self.cells > 0 else value
                     if key == "n_bins" and value > 0:
                         print(
                             "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
@@ -276,8 +243,7 @@ class cavity(frameworkElement):
         scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
         return [obj, scr]
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        self.update_field_definition()
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
         """

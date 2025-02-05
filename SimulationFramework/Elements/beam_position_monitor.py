@@ -6,8 +6,8 @@ class beam_position_monitor(screen):
     def __init__(self, name=None, type="beam_position_monitor", **kwargs):
         super().__init__(name, type, **kwargs)
 
-    def write_ASTRA(self, n, **kwargs):
-        return self._write_ASTRA(
+    def _write_ASTRA(self, n, **kwargs):
+        return self._write_ASTRA_dictionary(
             dict(
                 [
                     ["Screen", {"value": self.middle[2], "default": 0}],

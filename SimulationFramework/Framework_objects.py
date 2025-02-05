@@ -309,7 +309,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start : index_end + 1]
+                for e in self.allElements[index_start: index_end + 1]
             ]
         )
         return f
@@ -1165,7 +1165,40 @@ class frameworkElement(frameworkObject):
             np.array(vec), offset=self.starting_offset, theta=self.y_rot
         )
 
-    def _write_ASTRA(self, d, n=1):
+    def update_field_definition(self) -> None:
+        """Updates the field definitions to allow for the relative sub-directory location"""
+        if hasattr(self, "field_definition") and self.field_definition is not None:
+            self.field_definition = expand_substitution(self, self.field_definition)
+        if (
+            hasattr(self, "field_definition_sdds")
+            and self.field_definition_sdds is not None
+        ):
+            self.field_definition_sdds = expand_substitution(
+                self, self.field_definition_sdds
+            )
+        if (
+            hasattr(self, "field_definition_gdf")
+            and self.field_definition_gdf is not None
+        ):
+            self.field_definition_gdf = expand_substitution(
+                self, self.field_definition_gdf
+            )
+        if (
+            hasattr(self, "longitudinal_wakefield_sdds")
+            and self.longitudinal_wakefield_sdds is not None
+        ):
+            self.longitudinal_wakefield_sdds = expand_substitution(
+                self, self.longitudinal_wakefield_sdds
+            )
+        if (
+            hasattr(self, "transverse_wakefield_sdds")
+            and self.transverse_wakefield_sdds is not None
+        ):
+            self.transverse_wakefield_sdds = expand_substitution(
+                self, self.transverse_wakefield_sdds
+            )
+
+    def _write_ASTRA_dictionary(self, d, n=1):
         output = ""
         for k, v in list(d.items()):
             if checkValue(self, v) is not None:
@@ -1225,8 +1258,9 @@ class frameworkElement(frameworkObject):
                     output += param_string
         return output[:-2]
 
-    def write_ASTRA(self, n):
-        return ""
+    def write_ASTRA(self, n, **kwargs):
+        self.update_field_definition()
+        return self._write_ASTRA(n, **kwargs)
 
     def generate_field_file_name(self, param):
         basename = os.path.basename(param).replace('"', "").replace("'", "")
@@ -1241,20 +1275,11 @@ class frameworkElement(frameworkObject):
             + "/"
             + basename.replace("\\", "/")
         )
-        # print('efield_basename:', param, location, efield_basename, self.global_parameters['master_subdir'], self.global_parameters['master_lattice_location'])
-        # if int(self.global_parameters['astra_use_wsl']) > 1 or has_symlink_privilege():
-        #     # print('symmlink', expand_substitution(self, param), location, efield_basename, basename)
-        #     symlink(location, efield_basename)
-        #     return basename
-        # # elif len(str('\''+expand_substitution(self, '\''+param+'\'').strip('\'"')+'\'').replace('\\','/')) < 80:
-        # #     # print('path')
-        # #     return expand_substitution(self, '\''+param+'\'').replace('\\','/')
-        # else:
-        # print('copy')
         copylink(location, efield_basename)
         return basename
 
     def _write_Elegant(self):
+        self.update_field_definition()
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
@@ -1291,6 +1316,7 @@ class frameworkElement(frameworkObject):
 
     def write_Elegant(self):
         if not self.subelement:
+            self.update_field_definition()
             return self._write_Elegant()
 
     def _convertType_Elegant(self, etype):
@@ -1345,11 +1371,16 @@ class frameworkElement(frameworkObject):
             else keyword
         )
 
-    def write_CSRTrack(self, n=0):
-        return ""
+    def _write_CSRTrack(self, n=0, **kwargs):
+        pass
+
+    def write_CSRTrack(self, n=0, **kwargs):
+        self.update_field_definition()
+        return self._write_CSRTrack(self, n, **kwargs)
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        return ""
+        self.update_field_definition()
+        return self._write_GPT(Brho, ccs, *args, **kwargs)
 
     def gpt_coordinates(self, position, rotation):
         x, y, z = chop(position, 1e-6)

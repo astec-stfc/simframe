@@ -10,28 +10,10 @@ class solenoid(frameworkElement):
         self.add_default("field_type", "1D")
         self.add_default("default_array_names", ["Z", "Bz"])
 
-    def update_field_definition(self):
-        if hasattr(self, "field_definition") and self.field_definition is not None:
-            self.field_definition = expand_substitution(self, self.field_definition)
-        if (
-            hasattr(self, "field_definition_sdds")
-            and self.field_definition_sdds is not None
-        ):
-            self.field_definition_sdds = expand_substitution(
-                self, self.field_definition_sdds
-            )
-        if (
-            hasattr(self, "field_definition_gdf")
-            and self.field_definition_gdf is not None
-        ):
-            self.field_definition_gdf = expand_substitution(
-                self, self.field_definition_gdf
-            )
-
-    def write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs):
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ["FILE_BFieLD", {"value": "'" + basename + "'", "default": ""}]
-        return self._write_ASTRA(
+        return self._write_ASTRA_dictionary(
             dict(
                 [
                     ["S_pos", {"value": self.middle[2] + self.dz, "default": 0}],
@@ -48,7 +30,7 @@ class solenoid(frameworkElement):
             n,
         )
 
-    def write_GPT(self, Brho, ccs, *args, **kwargs):
+    def _write_GPT(self, Brho, ccs, *args, **kwargs):
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         if self.field_type.lower() == "1d":
             self.default_array_names = ["Z", "Bz"]

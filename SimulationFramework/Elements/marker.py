@@ -6,7 +6,7 @@ class marker(screen):
     def __init__(self, name=None, type="marker", **kwargs):
         super().__init__(name, "screen", **kwargs)
 
-    def write_CSRTrack(self, n):
+    def _write_CSRTrack(self, n):
         return ""
 
     def _write_Elegant(self) -> str:

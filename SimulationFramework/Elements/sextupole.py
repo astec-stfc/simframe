@@ -25,7 +25,7 @@ class sextupole(frameworkElement):
     def dk2(self, dk2):
         self.strength_errors[0] = dk2
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         output = (
             str(self.objecttype)

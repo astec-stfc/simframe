@@ -83,7 +83,7 @@ class astraLattice(frameworkLattice):
                     "input"
                 ]["particle_definition"]
                 self.headers["newrun"].output_particle_definition = (
-                    self.file_block["input"]["particle_definition"] + "_input.astra"
+                    self.objectname + "_input.astra"
                 )
         else:
             self.headers["newrun"].input_particle_definition = (
@@ -190,7 +190,7 @@ class astraLattice(frameworkLattice):
         self.headers["output"].screens = self.screens_and_bpms
         # write the headers and their elements
         for header in self.headers:
-            fulltext += self.headers[header].write_ASTRA() + "\n"
+            fulltext += self.headers[header].write_ASTRA(0) + "\n"
         # Initialise a counter object
         counter = frameworkCounter(sub={"kicker": "dipole", "collimator": "aperture"})
         for t in [
@@ -379,14 +379,14 @@ class astra_header(frameworkElement):
     def framework_dict(self):
         return dict()
 
-    def write_ASTRA(self):
+    def write_ASTRA(self, n):
         keyword_dict = dict()
         for k in elementkeywords[self.objecttype]["keywords"]:
             if getattr(self, k.lower()) is not None:
                 keyword_dict[k.lower()] = {"value": getattr(self, k.lower())}
         output = "&" + section_header_text_ASTRA[self.objecttype]["header"] + "\n"
         output += (
-            self._write_ASTRA(
+            self._write_ASTRA_dictionary(
                 merge_two_dicts(self.framework_dict(), keyword_dict), None
             )
             + "\n/\n"
@@ -428,9 +428,13 @@ class astra_newrun(astra_header):
         HDF5filename = (
             prefix + self.input_particle_definition.replace(".astra", "") + ".hdf5"
         )
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
-            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+            filepath,
         )
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
@@ -555,7 +559,7 @@ class astra_errors(astra_header):
         self.add_property("generate_output", True)
         self.add_property("Suppress_output", False)
 
-    def write_ASTRA(self):
+    def write_ASTRA(self, n):
         keyword_dict = {}
         conversion = dict(
             [a, b]
@@ -574,7 +578,7 @@ class astra_errors(astra_header):
         if len(joineddict) > 0:
             output = "&" + section_header_text_ASTRA[self.objecttype]["header"] + "\n"
             output += (
-                self._write_ASTRA(
+                self._write_ASTRA_dictionary(
                     merge_two_dicts(self.framework_dict(), keyword_dict), None
                 )
                 + "\n/\n"
