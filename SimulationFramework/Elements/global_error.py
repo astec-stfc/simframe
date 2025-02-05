@@ -11,12 +11,12 @@ class global_error(frameworkElement):
         if type in global_Error_Types:
             self.add_property(type, sigma)
 
-    def write_ASTRA(self):
-        return self._write_ASTRA(
+    def _write_ASTRA(self):
+        return self._write_ASTRA_dictionary(
             dict([[key, {"value": value}] for key, value in self._errordict])
         )
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         relpos, relrot = ccs.relative_position(self.middle, [0, 0, 0])
         coord = self.gpt_coordinates(relpos, relrot)
         output = (

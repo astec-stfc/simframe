@@ -10,14 +10,13 @@ class longitudinal_wakefield(cavity):
         super().__init__(name, type, **kwargs)
         self.add_default("coupling_cell_length", 0)
 
-    def write_ASTRA(self, startn):
-        self.update_field_definition()
+    def _write_ASTRA(self, startn):
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ["Wk_filename", {"value": "'" + basename + "'", "default": ""}]
         output = ""
         if self.scale_kick > 0:
             for n in range(startn, startn + self.cells):
-                output += self._write_ASTRA(
+                output += self._write_ASTRA_dictionary(
                     dict(
                         [
                             [
@@ -68,7 +67,6 @@ class longitudinal_wakefield(cavity):
         return output
 
     def _write_Elegant(self):
-        self.update_field_definition()
         original_field_definition_sdds = self.field_definition_sdds
         if self.field_definition_sdds is not None:
             self.field_definition_sdds = (

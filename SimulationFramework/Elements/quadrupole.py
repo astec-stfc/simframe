@@ -1,4 +1,4 @@
-from SimulationFramework.Framework_objects import frameworkElement, expand_substitution
+from SimulationFramework.Framework_objects import frameworkElement
 
 
 class quadrupole(frameworkElement):
@@ -26,12 +26,7 @@ class quadrupole(frameworkElement):
     def dk1(self, dk1):
         self.strength_errors[0] = dk1
 
-    def update_field_definition(self) -> None:
-        """Updates the field definitions to allow for the relative sub-directory location"""
-        if hasattr(self, "field_definition") and self.field_definition is not None:
-            self.field_definition = expand_substitution(self, self.field_definition)
-
-    def write_ASTRA(self, n: int, **kwargs) -> str:
+    def _write_ASTRA(self, n: int) -> str:
         astradict = dict(
             [
                 ["Q_pos", {"value": self.middle[2] + self.dz, "default": 0}],
@@ -75,11 +70,11 @@ class quadrupole(frameworkElement):
             ]
         )
         if self.field_definition:
-            self.generate_field_file_name(self.field_definition)
+            basename = self.generate_field_file_name(self.field_definition)
             astradict.update(
                 dict(
                     [
-                        ["Q_type", {"value": self.field_definition, "default": None}],
+                        ["Q_type", {"value": "'" + basename + "'", "default": None}],
                         ["q_grad", {"value": self.gradient, "default": None}],
                     ]
                 )
@@ -94,11 +89,11 @@ class quadrupole(frameworkElement):
                 )
             )
         if abs(self.k1 + self.dk1) > 0 or self.field_definition:
-            return self._write_ASTRA(astradict, n)
+            return self._write_ASTRA_dictionary(astradict, n)
         else:
             return None
 
-    def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         output = (
             str(self.objecttype)

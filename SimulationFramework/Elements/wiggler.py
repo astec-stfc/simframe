@@ -9,8 +9,8 @@ class wiggler(frameworkElement):
         # self.add_default('k1l', 0)
         # self.add_default('n_steps', 1*self.periods)
 
-    def write_ASTRA(self, n, **kwargs):
-        return self._write_ASTRA(
+    def _write_ASTRA(self, n, **kwargs):
+        return self._write_ASTRA_dictionary(
             dict(
                 [
                     ["Q_pos", {"value": self.middle[2] + self.dz, "default": 0}],

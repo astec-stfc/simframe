@@ -87,6 +87,10 @@ class gptLattice(frameworkLattice):
         ccs = gpt_ccs("wcs", [0, 0, 0], [0, 0, 0])
         fulltext = ""
         self.headers["accuracy"] = gpt_accuracy(self.accuracy)
+        if "charge" not in self.file_block:
+            self.file_block["charge"] = {}
+        if "charge" not in self.globalSettings:
+            self.globalSettings["charge"] = {}
         space_charge_dict = merge_two_dicts(
             self.file_block["charge"],
             self.globalSettings["charge"],
@@ -434,6 +438,9 @@ class gpt_element(frameworkElement):
         #         self.add_default(k, v)
 
     def write_GPT(self, *args, **kwargs):
+        return self._write_GPT(*args, **kwargs)
+
+    def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "("
         for k in elementkeywords[self.objecttype]["keywords"]:
             k = k.lower()
@@ -477,7 +484,7 @@ class gpt_charge(gpt_element):
             elementName="settotalcharge", elementType="gpt_charge", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "("
         output += str(self.set) + ","
         output += str(-1 * abs(self.charge)) + ");\n"
@@ -491,7 +498,7 @@ class gpt_setreduce(gpt_element):
             elementName="setreduce", elementType="gpt_setreduce", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "("
         output += str(self.set) + ","
         output += str(self.setreduce) + ");\n"
@@ -506,7 +513,7 @@ class gpt_accuracy(gpt_element):
         )
         self.accuracy = accuracy
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = (
             "accuracy(" + str(self.accuracy) + ");\n"
         )  # 'setrmacrodist(\"beam\","u",1e-9,0) ;\n'
@@ -522,7 +529,7 @@ class gpt_spacecharge(gpt_element):
         self.grids = getGrids()
         self.add_default("ngrids", None)
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = ""
         if isinstance(self.space_charge_mode, str) and self.cathode:
             if self.ngrids is None:
@@ -552,7 +559,7 @@ class gpt_tout(gpt_element):
             elementName="tout", elementType="gpt_tout", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         self.starttime = 0 if self.starttime < 0 else self.starttime
         output = str(self.objectname) + "("
         if self.starttime is not None:
@@ -571,7 +578,7 @@ class gpt_csr1d(gpt_element):
             elementName="csr1d", elementType="gpt_csr1d", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "();\n"
         return output
 
@@ -583,7 +590,7 @@ class gpt_writefloorplan(gpt_element):
             elementName="writefloorplan", elementType="gpt_writefloorplan", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "(" + self.filename + ");\n"
         return output
 
@@ -595,7 +602,7 @@ class gpt_Zminmax(gpt_element):
             elementName="Zminmax", elementType="gpt_Zminmax", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = (
             str(self.objectname)
             + "("
@@ -616,7 +623,7 @@ class gpt_forwardscatter(gpt_element):
             elementName="forwardscatter", elementType="gpt_forwardscatter", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = (
             str(self.objectname)
             + "("
@@ -637,7 +644,7 @@ class gpt_scatterplate(gpt_element):
             elementName="scatterplate", elementType="gpt_scatterplate", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = (
             str(self.objectname)
             + "("
@@ -660,7 +667,7 @@ class gpt_dtmaxt(gpt_element):
             elementName="dtmaxt", elementType="gpt_dtmaxt", **kwargs
         )
 
-    def write_GPT(self, *args, **kwargs):
+    def _write_GPT(self, *args, **kwargs):
         output = (
             str(self.objectname)
             + "("

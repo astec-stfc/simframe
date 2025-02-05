@@ -135,7 +135,7 @@ class csrtrack_element(frameworkElement):
         else:
             return str(s)
 
-    def write_CSRTrack(self):
+    def _write_CSRTrack(self):
         output = str(self.header) + "{\n"
         for k in elementkeywords[self.objecttype]["keywords"]:
             k = k.lower()

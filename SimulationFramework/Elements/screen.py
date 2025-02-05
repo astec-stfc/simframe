@@ -13,8 +13,8 @@ class screen(frameworkElement):
         if "output_filename" not in kwargs:
             self.output_filename = str(self.objectname) + ".sdds"
 
-    def write_ASTRA(self, n, **kwargs):
-        return self._write_ASTRA(
+    def _write_ASTRA(self, n, **kwargs):
+        return self._write_ASTRA_dictionary(
             dict(
                 [
                     ["Screen", {"value": self.middle[2], "default": 0}],
@@ -60,7 +60,7 @@ class screen(frameworkElement):
         #     wholestring+=d._write_Elegant()
         return wholestring
 
-    def write_CSRTrack(self, n):
+    def _write_CSRTrack(self, n):
         z = self.middle[2]
         return (
             """quadrupole{\nposition{rho="""
@@ -74,7 +74,7 @@ class screen(frameworkElement):
             + """b}\n}\n"""
         )
 
-    def write_GPT(self, Brho, ccs="wcs", output_ccs=None, *args, **kwargs):
+    def _write_GPT(self, Brho, ccs="wcs", output_ccs=None, *args, **kwargs):
         relpos, _ = ccs.relative_position(self.middle, self.global_rotation)
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         self.gpt_screen_position = relpos[2]

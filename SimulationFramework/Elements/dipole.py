@@ -335,7 +335,7 @@ class dipole(frameworkElement):
         # corners = [self.rotated_position(x, offset=self.starting_offset, theta=rotation) for x in corners]
         return corners
 
-    def write_CSRTrack(self, n):
+    def _write_CSRTrack(self, n):
         z1 = self.position_start[2]
         z2 = self.position_end[2]
         return (
@@ -356,11 +356,7 @@ class dipole(frameworkElement):
             + """b}\n}\n"""
         )
 
-    def write_ASTRA(self, n, **kwargs):
-        # print('self.start = ', self.position_start)
-        # print('self.end = ', self.position_end)
-        # print('self.rotation = ', self.global_rotation[2])
-        # print('self.astra_end = ', self.astra_end)
+    def _write_ASTRA(self, n, **kwargs):
         if abs(checkValue(self, "strength", default=0)) > 0 or abs(self.rho) > 0:
             corners = self.corners
             if self.plane is None:
@@ -401,7 +397,7 @@ class dipole(frameworkElement):
                 }
             else:
                 params["D_radius"] = {"value": 1 * self.rho, "default": 1e6}
-            return self._write_ASTRA(params, n)
+            return self._write_ASTRA_dictionary(params, n)
         else:
             return None
 
@@ -415,7 +411,7 @@ class dipole(frameworkElement):
         output += "cos(" + str(angle) + "), 0, -sin(" + str(angle) + "), 0, 1 ,0"
         return output
 
-    def write_GPT(self, Brho, ccs, *args, **kwargs):
+    def _write_GPT(self, Brho, ccs, *args, **kwargs):
         field = 1.0 * self.angle * Brho / self.length
         if abs(field) > 0 and abs(self.rho) < 100:
             relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
