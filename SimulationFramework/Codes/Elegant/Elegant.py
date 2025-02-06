@@ -154,7 +154,7 @@ class elegantLattice(frameworkLattice):
                     # for example, in simframe the elegant parameter 'voltage' for RF cavities is called 'amplitude'
                     conversions = keyword_conversion_rules_elegant[ele_type]
                     keyword = conversions[param] if (param in conversions) else param
-                    output[ele][keyword] = copy.copy(default_err)
+                    output[ele][keyword] = copy(default_err)
 
                     # fill in the define error parameters
                     for k in default_err:
