@@ -136,7 +136,6 @@ class frameworkLattice(Munch):
         if "input" not in self.file_block:
             self.file_block["input"] = {}
         if "prefix" not in self.file_block["input"]:
-            print(self.file_block["input"])
             self.file_block["input"]["prefix"] = ""
         return self.file_block["input"]["prefix"]
 

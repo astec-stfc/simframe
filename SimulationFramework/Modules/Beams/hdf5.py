@@ -174,6 +174,8 @@ def read_HDF5_beam_file(self, filename, local=False):
         columns = [c.decode("utf-8") for c in h5file.get("/beam/columns")]
         if "particle" in columns and len(columns) == 10:
             x, y, z, cpx, cpy, cpz, t, mass, charge, nmacro = hdf5beam
+            if np.mean(mass) > 1e-10:
+                mass = [self.mass_index[m] for m in mass]
             self._beam["particle_mass"] = mass
         elif len(columns) == 9:
             x, y, z, cpx, cpy, cpz, t, charge, nmacro = hdf5beam
