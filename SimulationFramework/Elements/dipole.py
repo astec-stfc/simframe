@@ -13,6 +13,7 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from ocelot.cpbd.elements import Aperture, Marker
 import inspect
 
+
 def add(x, y):
     return x + y
 

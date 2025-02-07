@@ -32,7 +32,10 @@ class quadrupole(frameworkElement):
         astradict = dict(
             [
                 ["Q_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
-                ["Q_xoff", {"value": field_ref_pos[0], "default": 0, "type": "not_zero"}],
+                [
+                    "Q_xoff",
+                    {"value": field_ref_pos[0], "default": 0, "type": "not_zero"},
+                ],
                 [
                     "Q_yoff",
                     {

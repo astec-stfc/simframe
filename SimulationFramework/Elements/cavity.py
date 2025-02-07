@@ -1,4 +1,8 @@
-from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant, type_conversion_rules_Ocelot
+from SimulationFramework.Framework_objects import (
+    frameworkElement,
+    elements_Elegant,
+    type_conversion_rules_Ocelot,
+)
 from SimulationFramework.FrameworkHelperFunctions import expand_substitution
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 import numpy as np
@@ -193,7 +197,9 @@ class cavity(frameworkElement):
                         abs(1e-3 / (np.sqrt(2)) * value) if key == "ez_peak" else value
                     )
                     # In CAVITY NKICK = n_cells
-                    value = 3 * self.cells if key == "n_kicks" and self.cells > 0 else value
+                    value = (
+                        3 * self.cells if key == "n_kicks" and self.cells > 0 else value
+                    )
                     if key == "n_bins" and value > 0:
                         print(
                             "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
@@ -222,7 +228,7 @@ class cavity(frameworkElement):
             merge_two_dicts(self.objectproperties, self.objectdefaults),
         )
         for key, value in keydict.items():
-            if not key in [
+            if key not in [
                 "name",
                 "type",
                 "commandtype",

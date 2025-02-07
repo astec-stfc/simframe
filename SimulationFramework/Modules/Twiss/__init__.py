@@ -298,7 +298,12 @@ class twiss(munch.Munch):
     def load_directory(
         self,
         directory=".",
-        types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001", "ocelot": "_twiss.npz"},
+        types={
+            "elegant": ".twi",
+            "GPT": "emit.gdf",
+            "ASTRA": "Xemit.001",
+            "ocelot": "_twiss.npz",
+        },
         preglob="*",
         verbose=False,
         sortkey="z",
@@ -329,7 +334,12 @@ class twiss(munch.Munch):
 
 def load_directory(
     directory=".",
-    types={"elegant": ".twi", "GPT": "emit.gdf", "ASTRA": "Xemit.001", "ocelot": "_twiss.npz"},
+    types={
+        "elegant": ".twi",
+        "GPT": "emit.gdf",
+        "ASTRA": "Xemit.001",
+        "ocelot": "_twiss.npz",
+    },
     preglob="*",
     verbose=False,
     sortkey="z",

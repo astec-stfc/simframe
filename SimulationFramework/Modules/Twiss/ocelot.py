@@ -31,7 +31,7 @@ def interpret_ocelot_data(self, fdat):
     self.append("cp", cp / constants.elementary_charge)
     self.append("mean_cp", cp / constants.elementary_charge)
     ke = np.array(
-        (np.sqrt(self.E0 ** 2 + cp ** 2) - self.E0 ** 2) / constants.elementary_charge
+        (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
     )
     self.append("kinetic_energy", ke)
     gamma = 1 + ke / self.E0_eV
@@ -62,9 +62,7 @@ def interpret_ocelot_data(self, fdat):
     self.append("t", fdat["s"] / (beta * constants.speed_of_light))
     self.append("sigma_z", fdat["tautau"] * (beta * constants.speed_of_light))
     # self.append('sigma_cp', elegantData['Sdelta'] * cp )
-    self.append(
-        "sigma_cp", fdat["pp"] * cp / constants.elementary_charge
-    )
+    self.append("sigma_cp", fdat["pp"] * cp / constants.elementary_charge)
     # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
     self.append("sigma_p", fdat["pp"])
     self.append("mux", fdat["mux"])
@@ -93,4 +91,3 @@ def interpret_ocelot_data(self, fdat):
                 self.append(k, np.zeros(len(fdat["s"])))
         except Exception as e:
             pass
-

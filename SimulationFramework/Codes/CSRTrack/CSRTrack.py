@@ -1,6 +1,11 @@
 import os
 import yaml
-from ...Framework_objects import frameworkLattice, frameworkElement, frameworkCounter, elementkeywords
+from ...Framework_objects import (
+    frameworkLattice,
+    frameworkElement,
+    frameworkCounter,
+    elementkeywords,
+)
 from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf

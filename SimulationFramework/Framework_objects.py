@@ -308,7 +308,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start: index_end + 1]
+                for e in self.allElements[index_start : index_end + 1]
             ]
         )
         return f
@@ -1086,7 +1086,7 @@ class frameworkElement(frameworkObject):
             return float(expand_substitution(self, self.field_amplitude))
 
     def get_field_reference_position(self):
-        if hasattr(self, 'field_reference_position'):
+        if hasattr(self, "field_reference_position"):
             if self.field_reference_position.lower() == "start":
                 return self.start
             elif self.field_reference_position.lower() == "middle":
@@ -1094,7 +1094,10 @@ class frameworkElement(frameworkObject):
             elif self.field_reference_position.lower() == "end":
                 return self.end
             else:
-                raise ValueError('field_reference_position should be (start/middle/end) not', self.field_reference_position)
+                raise ValueError(
+                    "field_reference_position should be (start/middle/end) not",
+                    self.field_reference_position,
+                )
         else:
             return self.middle
 
@@ -1354,7 +1357,7 @@ class frameworkElement(frameworkObject):
             merge_two_dicts(self.objectproperties, self.objectdefaults),
         )
         for key, value in keydict.items():
-            if (not key in ["name", "type", "commandtype"]) and (
+            if (key not in ["name", "type", "commandtype"]) and (
                 not type(obj) in [Aperture, Marker]
             ):
                 value = (

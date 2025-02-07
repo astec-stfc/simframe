@@ -387,9 +387,7 @@ class elegantLattice(frameworkLattice):
             filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
         rbf.hdf5.read_HDF5_beam_file(
             self.global_parameters["beam"],
-            os.path.abspath(
-                filepath
-            ),
+            os.path.abspath(filepath),
         )
         # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
         if self.bunch_charge is not None:

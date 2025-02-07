@@ -1,7 +1,4 @@
-from ...Framework_objects import (
-    frameworkLattice,
-    getGrids
-)
+from ...Framework_objects import frameworkLattice, getGrids
 from ...Framework_elements import *
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
@@ -174,7 +171,10 @@ class ocelotLattice(frameworkLattice):
         for t in self.tws:
             for k, v in t.__dict__.items():
                 twsdat[k].append(v)
-        savez_compressed(f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz', **twsdat)
+        savez_compressed(
+            f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz',
+            **twsdat,
+        )
 
     def navi_setup(self):
         navi_processes = []
@@ -196,7 +196,10 @@ class ocelotLattice(frameworkLattice):
             navi_locations_start += [self.lat_obj.sequence[0]]
             navi_locations_end += [self.lat_obj.sequence[-1]]
         if "charge" in list(self.file_block.keys()):
-            if "space_charge_mode" in list(self.file_block["charge"].keys()) and self.file_block["charge"]["space_charge_mode"].lower() == "3d":
+            if (
+                "space_charge_mode" in list(self.file_block["charge"].keys())
+                and self.file_block["charge"]["space_charge_mode"].lower() == "3d"
+            ):
                 gridsize = self.grids.getGridSizes(
                     (len(self.global_parameters["beam"].x) / self.sample_interval)
                 )
@@ -233,7 +236,9 @@ class ocelotLattice(frameworkLattice):
             navi_processes += [SaveBeam(filename=f"{subdir}/{name}.npz")]
             navi_locations_start += [loc]
             navi_locations_end += [loc]
-        navi.add_physics_processes(navi_processes, navi_locations_start, navi_locations_end)
+        navi.add_physics_processes(
+            navi_processes, navi_locations_start, navi_locations_end
+        )
         return navi
 
     def physproc_lsc(self):

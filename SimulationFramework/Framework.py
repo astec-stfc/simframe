@@ -479,7 +479,7 @@ class Framework(Munch):
                         if changedict[e] == {}:
                             del changedict[e]
                     except Exception:
-                        print("##### ERROR IN CHANGE ELEMS: ")#, e, new)
+                        print("##### ERROR IN CHANGE ELEMS: ")  # , e, new)
                         pass
         return changedict
 
@@ -532,7 +532,7 @@ class Framework(Munch):
             "global_parameters",
             "objectname",
             "subelement",
-            "beam"
+            "beam",
         ]
         for e in elements:
             new = unmunchify(self.elementObjects[e])
@@ -830,7 +830,7 @@ class Framework(Munch):
             self.generator = code(
                 self.executables,
                 self.global_parameters,
-                **merge_two_dicts(kwargs, generator_keywords["defaults"][default])
+                **merge_two_dicts(kwargs, generator_keywords["defaults"][default]),
             )
         else:
             self.generator = code(self.executables, self.global_parameters, **kwargs)
@@ -996,7 +996,7 @@ class Framework(Munch):
             index = files.index(endfile)
             files = files[: index + 1]
         if self.verbose:
-            pbar = tqdm(total=len(files)*4)
+            pbar = tqdm(total=len(files) * 4)
         percentage_step = 100 / len(files)
         for i in range(len(files)):
             base_percentage = 100 * (i / len(files))
@@ -1004,31 +1004,48 @@ class Framework(Munch):
             self.progress = base_percentage
             if lattice_name == "generator" and hasattr(self, "generator"):
                 latt = self.generator
-                base_description = "Generator["+self.generator.code+"]"
+                base_description = "Generator[" + self.generator.code + "]"
             else:
                 latt = self.latticeObjects[lattice_name]
-                base_description = lattice_name + "["+latt.code+"]"
-            if self.verbose: pbar.set_description(base_description + ":              ")  # noqa E701
+                base_description = lattice_name + "[" + latt.code + "]"
+            if self.verbose:
+                pbar.set_description(base_description + ":              ")  # noqa E701
             if preprocess and lattice_name != "generator":
-                if self.verbose: pbar.set_description(base_description + ": pre-process  ")  # noqa E701
+                if self.verbose:
+                    pbar.set_description(
+                        base_description + ": pre-process  "
+                    )  # noqa E701
                 latt.preProcess()
                 self.progress = base_percentage + 0.25 * percentage_step
-            if self.verbose: pbar.update()  # noqa E701
+            if self.verbose:
+                pbar.update()  # noqa E701
             if write:
-                if self.verbose: pbar.set_description(base_description + ": write        ")  # noqa E701
+                if self.verbose:
+                    pbar.set_description(
+                        base_description + ": write        "
+                    )  # noqa E701
                 latt.write()
                 self.progress = base_percentage + 0.5 * percentage_step
-            if self.verbose: pbar.update()  # noqa E701
+            if self.verbose:
+                pbar.update()  # noqa E701
             if track:
-                if self.verbose: pbar.set_description(base_description + ": track        ")  # noqa E701
+                if self.verbose:
+                    pbar.set_description(
+                        base_description + ": track        "
+                    )  # noqa E701
                 latt.run()
                 self.progress = base_percentage + 0.75 * percentage_step
-            if self.verbose: pbar.update()  # noqa E701
+            if self.verbose:
+                pbar.update()  # noqa E701
             if postprocess:
-                if self.verbose: pbar.set_description(base_description + ": post-process ")  # noqa E701
+                if self.verbose:
+                    pbar.set_description(
+                        base_description + ": post-process "
+                    )  # noqa E701
                 latt.postProcess()
                 self.progress = base_percentage + 1 * percentage_step
-            if self.verbose: pbar.update()  # noqa E701
+            if self.verbose:
+                pbar.update()  # noqa E701
         if self.verbose:
             pbar.set_description(base_description + ": Finished! ")
             pbar.close()
@@ -1155,7 +1172,9 @@ class frameworkDirectory(Munch):
         super(frameworkDirectory, self).__init__()
         if framework is None:
             directory = "." if directory is None else os.path.abspath(directory)
-            self.framework = Framework(directory, clean=False, verbose=verbose, **kwargs)
+            self.framework = Framework(
+                directory, clean=False, verbose=verbose, **kwargs
+            )
             self.framework.loadSettings(directory + "/" + settings)
         else:
             self.framework = framework
