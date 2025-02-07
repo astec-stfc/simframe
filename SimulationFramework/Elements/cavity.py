@@ -47,6 +47,7 @@ class cavity(frameworkElement):
         return cells
 
     def _write_ASTRA(self, n, **kwargs):
+        field_ref_pos = self.get_field_reference_position()
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
         basename = self.generate_field_file_name(self.field_definition)
@@ -54,7 +55,7 @@ class cavity(frameworkElement):
         return self._write_ASTRA_dictionary(
             dict(
                 [
-                    ["C_pos", {"value": self.start[2] + self.dz, "default": 0}],
+                    ["C_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
                     efield_def,
                     ["C_numb", {"value": self.cells}],
                     ["Nue", {"value": float(self.frequency) / 1e9, "default": 2998.5}],
@@ -67,7 +68,7 @@ class cavity(frameworkElement):
                     [
                         "C_xoff",
                         {
-                            "value": self.start[0] + self.dx,
+                            "value": field_ref_pos[0] + self.dx,
                             "default": None,
                             "type": "not_zero",
                         },
@@ -75,7 +76,7 @@ class cavity(frameworkElement):
                     [
                         "C_yoff",
                         {
-                            "value": self.start[1] + self.dy,
+                            "value": field_ref_pos[1] + self.dy,
                             "default": None,
                             "type": "not_zero",
                         },
