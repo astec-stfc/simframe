@@ -1,12 +1,14 @@
 import h5py
-from jedi.debug import speed
-
 from ..units import UnitValue
 from . import FieldParameter
 from ..constants import speed_of_light
 from warnings import warn
+from . import (
+    allowed_cavities,
+    tw_required_attrs,
+)
 
-def read_HDF5_field_file(self, filename, local=False):
+def read_HDF5_field_file(self, filename, normalise=True):
     self.reset_dicts()
     self.filename = filename
     with h5py.File(filename, "r") as h5file:
@@ -26,6 +28,14 @@ def read_HDF5_field_file(self, filename, local=False):
             self.norm = h5file.attrs["norm"]
         else:
             self.norm = 1.0
+        if "cavity_type" in list(h5file.attrs.keys()):
+            cavtype = h5file.attrs["cavity_type"]
+            if not cavtype in allowed_cavities:
+                raise Exception(f"cavity_type attributes of {filename} must be in {allowed_cavities}")
+            if cavtype == "TravellingWave":
+                for param in tw_required_attrs:
+                    if not param in (h5file.attrs.keys()):
+                        raise Exception(f"{param} must be an attribute of {filename} for a travelling wave linac")
         length_set = False
         for key in h5file:
             if not length_set:
@@ -33,9 +43,11 @@ def read_HDF5_field_file(self, filename, local=False):
             setattr(self, key,
                     FieldParameter(name=key, value=UnitValue(h5file[key][()], units=h5file[key].attrs['units'])))
         if ("z" not in list(h5file.keys())) and ("t" in list(h5file.keys())):
-            setattr(self, "z", self.t * speed_of_light)
+            setattr(self, "z", self.t.value * speed_of_light)
         for param in ["Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br"]:
-            if getattr(self, param).value:
-                if 0.999 < round(max(abs(getattr(self, param).value.val)), 3) < 1.001:
-                    warn("Warning: Field is not normalised to 1.0.")
+            if getattr(self, param).value is not None:
+                lessthancond = 0.99 > round(max(abs(getattr(self, param).value.val)), 4)
+                greaterthancond = round(max(abs(getattr(self, param).value.val)), 4) > 1.1
+                if lessthancond or greaterthancond:
+                    warn(f"Warning: Field {param} in {filename} is not normalised to 1.0.")
         self.read = True

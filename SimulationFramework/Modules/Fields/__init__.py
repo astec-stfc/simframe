@@ -1,12 +1,11 @@
 import os
 from ..units import UnitValue
-from warnings import warn
 from pydantic import (
     BaseModel,
     ConfigDict,
     model_validator,
 )
-from typing import Optional, Literal
+from typing import Literal, Optional
 
 allowed_fields = [
     "1DElectroStatic",
@@ -30,19 +29,30 @@ allowed_formats = [
     "gdf",
 ]
 
-fieldtype = Literal[*allowed_fields]
+allowed_cavities = [
+    "StandingWave",
+    "TravellingWave",
+]
 
-# I can't think of a clever way of doing this, so...
-def get_properties(obj):
-    return [f for f in dir(obj) if type(getattr(obj, f)) is property]
+tw_required_attrs = [
+    "start_cell_z",
+    "end_cell_z",
+    "mode_numerator",
+    "mode_denominator",
+]
+
+fieldtype = Literal[*allowed_fields]
+cavitytype = Literal[*allowed_cavities]
+
 
 class FieldParameter(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str
-    value: Optional[UnitValue] = None
+    value: UnitValue | None = None
 
 from . import astra
+
 from . import gdf
 from . import hdf5
 from . import opal
@@ -62,19 +72,25 @@ class field(BaseModel):
     By: Optional[FieldParameter(name="By")] = None
     Bz: Optional[FieldParameter(name="Bz")] = None
     Br: Optional[FieldParameter(name="Br")] = None
-    Wx: Optional[FieldParameter(name="Ex")] = None
-    Wy: Optional[FieldParameter(name="Ey")] = None
-    Wz: Optional[FieldParameter(name="Ez")] = None
-    Wr: Optional[FieldParameter(name="Er")] = None
-    filename: Optional[str] = None
-    field_type: Optional[fieldtype] = None
-    origin_code: Optional[str] = None
+    Wx: Optional[FieldParameter(name="Wx")] = None
+    Wy: Optional[FieldParameter(name="Wy")] = None
+    Wz: Optional[FieldParameter(name="Wz")] = None
+    Wr: Optional[FieldParameter(name="Wr")] = None
+    filename: str | None = None
+    field_type: fieldtype | None = None
+    origin_code: str | None = None
     norm: float = 1.0
     read: bool = False
-    length: Optional[int] = None
-    frequency: Optional[float] = None
-    radius: Optional[float] = None # MAGIC NUMBER FOR SOLENOID RADIUS, DEFAULTS TO 10cm in write_opal_field_file
+    length: int | None = None
+    frequency: float | None = None
+    radius: float | None = None # MAGIC NUMBER FOR SOLENOID RADIUS, DEFAULTS TO 10cm in write_opal_field_file
     fourier: int = 100
+    cavity_type: cavitytype | None = None
+    start_cell_z: float | None = None
+    end_cell_z: float | None = None
+    mode_numerator: float | None = None
+    mode_denominator: float | None = None
+    # For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator
 
     def __init__(
             self,
