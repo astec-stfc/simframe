@@ -6,10 +6,12 @@ from SimulationFramework.Framework_objects import (
     elements_Elegant,
     _rotation_matrix,
     chop,
+    type_conversion_rules_Ocelot,
 )
 from SimulationFramework.FrameworkHelperFunctions import checkValue
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-
+from ocelot.cpbd.elements import Aperture, Marker
+import inspect
 
 def add(x, y):
     return x + y
@@ -280,6 +282,45 @@ class dipole(frameworkElement):
                     string += tmpstring
         wholestring += string + ";\n"
         return wholestring
+
+    def _write_Ocelot(self):
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts(
+            {"k1": k1, "k2": k2},
+            merge_two_dicts(self.objectproperties, self.objectdefaults),
+        )
+        valdict = {"eid": self.objectname}
+        for key, value in keydict.items():
+            if (not key in ["name", "type", "commandtype"]) and (
+                not type(type_conversion_rules_Ocelot[self.objecttype])
+                in [Aperture, Marker]
+            ):
+                if "edge_angle" in key:
+                    key = self._convertKeword_Ocelot(key)
+                    value = (
+                        getattr(self, key)
+                        if hasattr(self, key) and getattr(self, key) is not None
+                        else value
+                    )
+                else:
+                    value = (
+                        getattr(self, key)
+                        if hasattr(self, key) and getattr(self, key) is not None
+                        else value
+                    )
+                    key = self._convertKeword_Ocelot(key)
+                value = 1 if value is True else value
+                value = 0 if value is False else value
+                if (
+                    key
+                    in inspect.getfullargspec(
+                        type_conversion_rules_Ocelot[self.objecttype]
+                    ).args
+                ):
+                    valdict.update({key: value})
+        obj = type_conversion_rules_Ocelot[self.objecttype](**valdict)
+        return obj
 
     @property
     def corners(self):

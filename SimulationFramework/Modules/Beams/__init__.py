@@ -13,6 +13,7 @@ from . import sdds
 from . import gdf
 from . import hdf5
 from . import mad8
+from . import ocelot
 
 try:
     from . import plot
@@ -340,6 +341,9 @@ class beam(munch.Munch):
     def read_astra_beam_file(self, *args, **kwargs):
         astra.read_astra_beam_file(self, *args, **kwargs)
 
+    def read_ocelot_beam_file(self, *args, **kwargs):
+        ocelot.read_ocelot_beam_file(self, *args, **kwargs)
+
     def write_HDF5_beam_file(self, *args, **kwargs):
         hdf5.write_HDF5_beam_file(self, *args, **kwargs)
 
@@ -352,6 +356,9 @@ class beam(munch.Munch):
     def write_astra_beam_file(self, *args, **kwargs):
         astra.write_astra_beam_file(self, *args, **kwargs)
 
+    def write_ocelot_beam_file(self, *args, **kwargs):
+        ocelot.write_ocelot_beam_file(self, *args, **kwargs)
+
     def write_mad8_beam_file(self, *args, **kwargs):
         mad8.write_mad8_beam_file(self, *args, **kwargs)
 
@@ -363,6 +370,8 @@ class beam(munch.Munch):
             sdds.read_SDDS_beam_file(self, filename)
         elif ext.lower() == ".gdf":
             gdf.read_gdf_beam_file(self, filename)
+        elif ext.lower() == ".ocelot":
+            ocelot.read_ocelot_beam_file(self, filename)
         elif ext.lower() == ".astra":
             astra.read_astra_beam_file(self, filename)
         elif re.match(r".*.\d\d\d\d." + run_extension, filename):

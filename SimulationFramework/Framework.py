@@ -425,6 +425,7 @@ class Framework(Munch):
         disallowed = [
             "allowedkeywords",
             "keyword_conversion_rules_elegant",
+            "keyword_conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
         ]
@@ -478,7 +479,7 @@ class Framework(Munch):
                         if changedict[e] == {}:
                             del changedict[e]
                     except Exception:
-                        print("##### ERROR IN CHANGE ELEMS: ", e, new)
+                        print("##### ERROR IN CHANGE ELEMS: ")#, e, new)
                         pass
         return changedict
 
@@ -526,6 +527,7 @@ class Framework(Munch):
         disallowed = [
             "allowedkeywords",
             "keyword_conversion_rules_elegant",
+            "keyword_conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
             "objectname",
@@ -1220,6 +1222,7 @@ class frameworkDirectory(Munch):
             disallowed = [
                 "allowedkeywords",
                 "keyword_conversion_rules_elegant",
+                "keyword_conversion_rules_ocelot",
                 "objectdefaults",
                 "global_parameters",
                 "objectname",

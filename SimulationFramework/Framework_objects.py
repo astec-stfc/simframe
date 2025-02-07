@@ -12,6 +12,8 @@ from .FrameworkHelperFunctions import (
     copylink,
 )
 from .FrameworkHelperFunctions import _rotation_matrix
+from .Codes.Ocelot import ocelot_conversion
+from ocelot.cpbd.elements import Marker, Aperture
 import numpy as np
 
 if os.name == "nt":
@@ -56,6 +58,21 @@ with open(
     "r",
 ) as infile:
     elements_Elegant = yaml.safe_load(infile)
+
+type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
+
+with open(
+    os.path.dirname(os.path.abspath(__file__))
+    + "/Codes/Ocelot/keyword_conversion_rules_ocelot.yaml",
+    "r",
+) as infile:
+    keyword_conversion_rules_ocelot = yaml.safe_load(infile)
+
+with open(
+    os.path.dirname(os.path.abspath(__file__)) + "/Codes/Ocelot/elements_Ocelot.yaml",
+    "r",
+) as infile:
+    elements_Ocelot = yaml.safe_load(infile)
 
 
 class frameworkLattice(Munch):
@@ -912,6 +929,19 @@ class frameworkElement(frameworkObject):
                 self.keyword_conversion_rules_elegant,
                 keyword_conversion_rules_elegant[elementType],
             )
+        if elementType in keyword_conversion_rules_elegant:
+            self.keyword_conversion_rules_elegant = merge_two_dicts(
+                self.keyword_conversion_rules_elegant,
+                keyword_conversion_rules_elegant[elementType],
+            )
+        self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot[
+            "general"
+        ]
+        if elementType in keyword_conversion_rules_ocelot:
+            self.keyword_conversion_rules_ocelot = merge_two_dicts(
+                self.keyword_conversion_rules_ocelot,
+                keyword_conversion_rules_ocelot[elementType],
+            )
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -1312,6 +1342,44 @@ class frameworkElement(frameworkObject):
         return (
             self.keyword_conversion_rules_elegant[keyword]
             if keyword in self.keyword_conversion_rules_elegant
+            else keyword
+        )
+
+    def _write_Ocelot(self):
+        obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts(
+            {"k1": k1, "k2": k2},
+            merge_two_dicts(self.objectproperties, self.objectdefaults),
+        )
+        for key, value in keydict.items():
+            if (not key in ["name", "type", "commandtype"]) and (
+                not type(obj) in [Aperture, Marker]
+            ):
+                value = (
+                    getattr(self, key)
+                    if hasattr(self, key) and getattr(self, key) is not None
+                    else value
+                )
+                setattr(obj, self._convertKeword_Ocelot(key), value)
+        return obj
+
+    def write_Ocelot(self):
+        if not self.subelement:
+            return self._write_Ocelot()
+
+    def _convertType_Ocelot(self, etype):
+        return (
+            type_conversion_rules_Ocelot[etype]
+            if etype in type_conversion_rules_Ocelot
+            else etype
+        )
+
+    def _convertKeword_Ocelot(self, keyword):
+        return (
+            self.keyword_conversion_rules_ocelot[keyword]
+            if keyword in self.keyword_conversion_rules_ocelot
             else keyword
         )
 

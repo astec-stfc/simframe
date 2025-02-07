@@ -257,7 +257,7 @@ def copylink(source, destination):
 def convert_numpy_types(v):
     if isinstance(v, (np.ndarray, list, tuple)):
         return [convert_numpy_types(li) for li in v]
-    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_)):
+    elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
     elif isinstance(
         v,
