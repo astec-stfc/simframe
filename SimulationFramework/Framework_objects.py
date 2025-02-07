@@ -1055,6 +1055,19 @@ class frameworkElement(frameworkObject):
         else:
             return float(expand_substitution(self, self.field_amplitude))
 
+    def get_field_reference_position(self):
+        if hasattr(self, 'field_reference_position'):
+            if self.field_reference_position.lower() == "start":
+                return self.start
+            elif self.field_reference_position.lower() == "middle":
+                return self.middle
+            elif self.field_reference_position.lower() == "end":
+                return self.end
+            else:
+                raise ValueError('field_reference_position should be (start/middle/end) not', self.field_reference_position)
+        else:
+            return self.middle
+
     @property
     def theta(self):
         if hasattr(self, "global_rotation") and self.global_rotation is not None:

@@ -87,6 +87,7 @@ cavity:
       transverse_wakefield_gdf,
       smooth,
       body_focus_model,
+      field_reference_position,
     }
 longitudinal_wakefield:
   keywords:

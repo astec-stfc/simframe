@@ -521,6 +521,9 @@ class astra_charge(astra_header):
         sc_dict = dict(
             [
                 ["Lmirror", {"value": self.cathode, "default": False}],
+                ["cell_var", {"value": self.cell_var, "default": None}],
+                ["min_grid", {"value": self.min_grid, "default": None}],
+                ["max_scale", {"value": self.max_scale, "default": None}],
                 ["LSPCH", {"value": self.space_charge, "default": True}],
                 ["LSPCH3D", {"value": self.space_charge_3D, "default": True}],
             ]

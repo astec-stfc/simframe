@@ -28,6 +28,7 @@ class cavity(frameworkElement):
         self.add_default("coupling_cell_length", 0)
         self.add_default("field_amplitude", 0)
         self.add_default("crest", 0)
+        self.add_default("field_reference_position", "start")
 
     @property
     def cells(self):
@@ -212,8 +213,9 @@ class cavity(frameworkElement):
         return wholestring
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
-        relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+        field_ref_pos = self.get_field_reference_position()
+        ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
+        relpos, _ = ccs.relative_position(field_ref_pos, self.global_rotation)
         """
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
         wakefield("wcs","z",  6.78904 + 4.06667 / 2, 4.06667, 50, "Sz5um10mm.gdf", "z","","","Wz", "FieldFactorWz", 10 * 122 / 4.06667) ;
