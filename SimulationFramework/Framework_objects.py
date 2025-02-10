@@ -331,7 +331,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start: index_end + 1]
+                for e in self.allElements[index_start : index_end + 1]
             ]
         )
         return f

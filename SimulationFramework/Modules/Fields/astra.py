@@ -1,6 +1,7 @@
 import numpy as np
 from warnings import warn
 
+
 def write_astra_field_file(self):
     length = str(self.length)
     astra_file = self.filename.replace(".hdf5", ".astra")
@@ -13,11 +14,32 @@ def write_astra_field_file(self):
         zdata = self.z.value.val
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
-        data = np.concatenate([np.array([[length, ""]]), np.transpose([zdata, wxdata, wydata])])
+        data = np.concatenate(
+            [np.array([[length, ""]]), np.transpose([zdata, wxdata, wydata])]
+        )
     elif self.field_type == "3DWake":
-        zpreamble = np.array([[3, 0], [length, 0], [0, 0], [0, 0], ])
-        xpreamble = np.array([[length, 0], [0, 0], [0, 13], ])
-        ypreamble = np.array([[length, 0], [0, 0], [0, 24], ])
+        zpreamble = np.array(
+            [
+                [3, 0],
+                [length, 0],
+                [0, 0],
+                [0, 0],
+            ]
+        )
+        xpreamble = np.array(
+            [
+                [length, 0],
+                [0, 0],
+                [0, 13],
+            ]
+        )
+        ypreamble = np.array(
+            [
+                [length, 0],
+                [0, 0],
+                [0, 24],
+            ]
+        )
         zdata = self.z.value.val
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
@@ -34,9 +56,20 @@ def write_astra_field_file(self):
         zdata = self.z.value.val
         ezdata = self.Ez.value.val
         if self.cavity_type == "TravellingWave":
-            spdata = ['' for _ in range(self.length)]
-            preamble = np.array([[self.start_cell_z, self.end_cell_z, self.mode_numerator, self.mode_denominator]])
-            data = np.concatenate([preamble, np.transpose([zdata, ezdata, spdata, spdata])])
+            spdata = ["" for _ in range(self.length)]
+            preamble = np.array(
+                [
+                    [
+                        self.start_cell_z,
+                        self.end_cell_z,
+                        self.mode_numerator,
+                        self.mode_denominator,
+                    ]
+                ]
+            )
+            data = np.concatenate(
+                [preamble, np.transpose([zdata, ezdata, spdata, spdata])]
+            )
         else:
             data = np.transpose([zdata, ezdata])
     else:

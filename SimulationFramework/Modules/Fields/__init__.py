@@ -90,6 +90,7 @@ class field(BaseModel):
     end_cell_z: float | None = None
     mode_numerator: float | None = None
     mode_denominator: float | None = None
+    orientation: str | None = None
     # For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator
 
     def __init__(
@@ -141,7 +142,7 @@ class field(BaseModel):
             elif code.lower() == "sdds":
                 sdds.write_SDDS_field_file(self)
             elif code.lower() == "opal":
-                opal.write_opal_field_file(self, frequency=self.frequency, radius=self.radius, fourier=self.fourier)
+                opal.write_opal_field_file(self, frequency=self.frequency, radius=self.radius, fourier=self.fourier, orientation=self.orientation)
         except NotImplementedError as e:
             print("Supported formats are [astra, sdds, opal, gdf]")
 

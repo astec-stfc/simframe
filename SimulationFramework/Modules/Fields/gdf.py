@@ -1,6 +1,7 @@
 import easygdf
 from warnings import warn
 
+
 def write_gdf_beam_file(self):
     gdf_file = self.filename.replace(".hdf5", ".gdf")
     data = None
