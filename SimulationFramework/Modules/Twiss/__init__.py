@@ -306,7 +306,7 @@ class twiss(munch.Munch):
         return sddsobject.elegantTwiss
 
     def load_directory(
-        cls,
+        self,
         directory=".",
         types={
             "elegant": ".twi",
@@ -318,17 +318,16 @@ class twiss(munch.Munch):
         verbose=False,
         sortkey="z",
     ):
-        t = cls()
         if verbose:
             print("Directory:", directory)
         for code, string in types.items():
             twiss_files = glob.glob(directory + "/" + preglob + string)
             if verbose:
                 print(code, [os.path.basename(t) for t in twiss_files])
-            if t._which_code(code) is not None and len(twiss_files) > 0:
-                t._which_code(code)(t, twiss_files, reset=False)
-        t.sort(key=sortkey)
-        return t
+            if self._which_code(code) is not None and len(twiss_files) > 0:
+                self._which_code(code)(self, twiss_files, reset=False)
+        self.sort(key=sortkey)
+        return self
 
     @classmethod
     def initialise_directory(cls, *args, **kwargs):
