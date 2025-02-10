@@ -32,6 +32,13 @@ def write_gdf_beam_file(self):
             {"name": "Wy", "value": wydata},
             {"name": "Wz", "value": wzdata},
         ]
+    elif self.field_type == "1DMagnetoStatic":
+        zdata = self.z.value.val
+        bzdata = self.Bz.value.val
+        blocks = [
+            {"name": "z", "value": zdata},
+            {"name": "Bz", "value": bzdata},
+        ]
     else:
         warn(f"Field type {self.field_type} not supported for GPT")
     if data is not None:
