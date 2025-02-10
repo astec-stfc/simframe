@@ -4,9 +4,20 @@ import versioneer
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
-requirements = ["deepdiff>=5", "h5py>=2.10", "munch>=2.5", "numpy>=1.19,<2", "progressbar2>=3",
-                "PyQt5>=5.1", "PyYAML>=5.3", "mpl-axes-aligner>=1.1", "lox>=0.11", "fastKDE<2",
-                "pydantic>=2.5.3", "attrs>=23.2.0"]
+requirements = [
+    "deepdiff>=5",
+    "h5py>=2.10",
+    "munch>=2.5",
+    "numpy>=1.19,<2",
+    "progressbar2>=3",
+    "PyQt5>=5.1",
+    "PyYAML>=5.3",
+    "mpl-axes-aligner>=1.1",
+    "lox>=0.11",
+    "fastKDE<2",
+    "pydantic>=2.5.3",
+    "attrs>=23.2.0",
+]
 
 setup(
     name="AcceleratorSimFrame",
@@ -24,5 +35,12 @@ setup(
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
-	package_data={'SimulationFramework': ['Codes/*.yaml', 'Codes/Elegant/*.yaml', 'Codes/CSRTrack/*.yaml','*.yaml']},
+    package_data={
+        "SimulationFramework": [
+            "Codes/*.yaml",
+            "Codes/Elegant/*.yaml",
+            "Codes/CSRTrack/*.yaml",
+            "*.yaml",
+        ]
+    },
 )

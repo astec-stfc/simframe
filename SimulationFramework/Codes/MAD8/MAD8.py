@@ -1,7 +1,11 @@
 import os
 import subprocess
 import numpy as np
-from SimulationFramework.Framework_objects import frameworkLattice, frameworkObject, frameworkCommand
+from SimulationFramework.Framework_objects import (
+    frameworkLattice,
+    frameworkObject,
+    frameworkCommand,
+)
 from SimulationFramework.FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 

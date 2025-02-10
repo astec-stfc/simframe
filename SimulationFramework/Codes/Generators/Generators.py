@@ -2,7 +2,12 @@ import os
 import subprocess
 import numpy as np
 from munch import Munch, unmunchify
-from ...FrameworkHelperFunctions import saveFile, copylink, expand_substitution, convert_numpy_types
+from ...FrameworkHelperFunctions import (
+    saveFile,
+    copylink,
+    expand_substitution,
+    convert_numpy_types,
+)
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import constants
 from ...Modules import Beams as rbf

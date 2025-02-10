@@ -191,7 +191,9 @@ class cavity(frameworkElement):
                         abs(1e-3 / (np.sqrt(2)) * value) if key == "ez_peak" else value
                     )
                     # In CAVITY NKICK = n_cells
-                    value = 3 * self.cells if key == "n_kicks" and self.cells > 0 else value
+                    value = (
+                        3 * self.cells if key == "n_kicks" and self.cells > 0 else value
+                    )
                     if key == "n_bins" and value > 0:
                         print(
                             "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"

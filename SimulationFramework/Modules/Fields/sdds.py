@@ -3,6 +3,7 @@ from ..constants import speed_of_light
 from warnings import warn
 from ..SDDSFile import SDDSFile, SDDS_Types
 
+
 def write_SDDS_field_file(self, sddsindex=0, ascii=False):
     """Save an SDDS file using the SDDS class."""
     sdds_filename = self.filename.replace(".hdf5", ".sdds")
@@ -25,12 +26,14 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         tdata = zdata / speed_of_light
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
-        data = np.array([
-            zdata,
-            tdata,
-            wxdata,
-            wydata,
-        ])
+        data = np.array(
+            [
+                zdata,
+                tdata,
+                wxdata,
+                wydata,
+            ]
+        )
         cnames = ["z", "t", "Wx", "Wy"]
         cunits = ["m", "s", "V/C/m", "V/C/m"]
     elif self.field_type == "3DWake":
@@ -39,13 +42,15 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
         wzdata = self.Wz.value.val
-        data = np.array([
-            zdata,
-            tdata,
-            wxdata,
-            wydata,
-            wzdata,
-        ])
+        data = np.array(
+            [
+                zdata,
+                tdata,
+                wxdata,
+                wydata,
+                wzdata,
+            ]
+        )
         cnames = ["z", "t", "Wx", "Wy", "Wz"]
         cunits = ["m", "s", "V/C/m", "V/C/m", "V/C"]
     else:

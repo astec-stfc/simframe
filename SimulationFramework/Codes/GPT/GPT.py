@@ -163,7 +163,9 @@ class gptLattice(frameworkLattice):
                     ccs = new_ccs
         if not isinstance(element, screen):
             element = self.endScreenObject = self.endScreen()
-            fulltext += self.endScreenObject.write_GPT(self.Brho, ccs=ccs, output_ccs="wcs")
+            fulltext += self.endScreenObject.write_GPT(
+                self.Brho, ccs=ccs, output_ccs="wcs"
+            )
         else:
             # print('End screen', element.objectname)
             self.endScreenObject = None

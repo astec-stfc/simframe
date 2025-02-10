@@ -68,7 +68,7 @@ def chop(expr, delta=1e-8):
 def chunks(li, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(li), n):
-        yield li[i: i + n]
+        yield li[i : i + n]
 
 
 def sortByPositionFunction(element):
