@@ -12,11 +12,8 @@ class scatter(frameworkElement):
         wholestring = ""
         etype = "scatter"
         string = self.objectname + ": " + etype
-        k1 = self.k1 if self.k1 is not None else 0
         for key, value in list(
-            merge_two_dicts(
-                {"k1": k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)
-            ).items()
+            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
         ):
             if (
                 not key == "name"

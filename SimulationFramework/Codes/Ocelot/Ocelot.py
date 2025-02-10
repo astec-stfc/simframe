@@ -19,6 +19,7 @@ class ocelotLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(ocelotLattice, self).__init__(*args, **kwargs)
         self.code = "ocelot"
+        self.allow_negative_drifts = False
         self.bunch_charge = None
         self.trackBeam = True
         self.betax = None

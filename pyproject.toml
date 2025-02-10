@@ -1,0 +1,46 @@
+[build-system]
+requires = [
+    "setuptools",
+    "versioneer",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "AcceleratorSimFrame"
+description = "A python framework for particle accelerator simulations"
+readme = "README.md"
+dynamic = ["version"]
+authors = [
+    {name = "James Jones", email = "james.jones@stfc.ac.uk"},
+]
+maintainers = [
+    {name = "James Jones", email = "james.jones@stfc.ac.uk"},
+    {name = "Alex Brynes", email = "alexander.brynes@stfc.ac.uk"},
+    {name = "Mark Johnson", email = "mark.johnson@stfc.ac.uk"},
+]
+dependencies = [
+    "deepdiff>=5",
+    "h5py>=2.10",
+    "munch>=2.5",
+    "numpy>=1.19,<2",
+    "tqdm>=4",
+    "PyQt5>=5.1",
+    "PyYAML>=5.3",
+    "mpl-axes-aligner>=1.1",
+    "lox>=0.11",
+    "fastKDE<2",
+    "pydantic>=2.5.3",
+    "attrs>=23.2.0",
+    "ocelot-desy==24.3.0",
+]
+
+requires-python = ">= 3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+
+[project.urls]
+Homepage = "https://gitlab.stfc.ac.uk/jkj62/simframe"
+Repository = "https://gitlab.stfc.ac.uk/jkj62/simframe.git"
+Issues = "https://gitlab.stfc.ac.uk/jkj62/simframe/-/issues/"

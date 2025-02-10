@@ -4,12 +4,6 @@ import warnings
 from pydantic import BaseModel, ConfigDict, field_validator, ValidationInfo, Field
 import numpy as np
 
-try:
-    from scipy import interpolate
-
-    use_interpolate = True
-except ImportError:
-    use_interpolate = False
 from .. import constants
 import munch
 import glob
@@ -85,6 +79,8 @@ class twiss(munch.Munch):
         "muy": twissParameter(name="muy", unit="2 pi"),
         "eta_x": twissParameter(name="eta_x", unit="m"),
         "eta_xp": twissParameter(name="eta_xp", unit="mrad"),
+        "eta_y": twissParameter(name='eta_y', unit='m'),
+        "eta_yp": twissParameter(name='eta_yp', unit='mrad'),
         "element_name": twissParameter(name="element_name", unit="", dtype="U"),
         "ecnx": twissParameter(name="ecnx", unit="m-mrad"),
         "ecny": twissParameter(name="ecny", unit="m-mrad"),
@@ -181,15 +177,19 @@ class twiss(munch.Munch):
         if key in self.properties:
             return self.properties[key]
 
-    def find_nearest(self, array, value):
+    def find_nearest_idx(self, array, value):
         idx = np.searchsorted(array, value, side="left")
-        if idx > 0 and (
-            idx == len(array)
-            or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])
-        ):
-            return idx - 1
+        if idx > 0 and (idx == len(array) or math.fabs(value - array[idx-1]) < math.fabs(value - array[idx])):
+            return idx-1
         else:
             return idx
+
+    def find_nearest(self, array, value):
+        idx = np.searchsorted(array, value, side="left")
+        if idx > 0 and (idx == len(array) or math.fabs(value - array[idx-1]) < math.fabs(value - array[idx])):
+            return array[idx-1]
+        else:
+            return array[idx]
 
     def reset_dicts(self):
         self.sddsindex = 0
@@ -218,8 +218,8 @@ class twiss(munch.Munch):
 
     def _determine_code(self, filename):
         for k, v in self.code_signatures:
-            l = -len(v)
-            if v == filename[l:]:
+            cutl = -len(v)
+            if v == filename[cutl:]:
                 return self.codes[k]
         return None
 
@@ -233,50 +233,60 @@ class twiss(munch.Munch):
                 return float(np.interp(z, self[index], self[value]))
 
     def extract_values(self, array, start, end):
-        startidx = self.find_nearest(self["z"], start)
-        endidx = self.find_nearest(self["z"], end) + 1
+        startidx = self.find_nearest_idx(self['z'], start)
+        endidx = self.find_nearest_idx(self['z'], end) + 1
         return self[array][startidx:endidx]
 
-    def find_nearest(self, array, value):
-        idx = np.searchsorted(array, value, side="left")
-        if idx > 0 and (
-            idx == len(array)
-            or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])
-        ):
-            return array[idx - 1]
-        else:
-            return array[idx]
-
     def get_parameter_at_z(self, param, z, tol=1e-3):
-        if z in self["z"]:
-            idx = list(self["z"]).index(z)
+        if z in self['z']:
+            idx = list(self['z']).index(z)
             return self[param][idx]
         else:
-            nearest_z = self.find_nearest(self["z"], z)
+            nearest_z = self.find_nearest(self['z'], z)
             if abs(nearest_z - z) < tol:
-                idx = list(self["z"]).index(nearest_z)
+                idx = list(self['z']).index(nearest_z)
                 return self[param][idx]
             else:
                 # print('interpolate!', z, self['z'])
-                return self.interpolate(z=z, value=param, index="z")
+                return self.interpolate(z=z, value=param, index='z')
 
     def get_parameter_at_element(self, param, element_name):
-        if element_name in self["element_name"]:
-            idx = list(self["element_name"]).index(element_name)
+        if element_name in self['element_name']:
+            idx = list(self['element_name']).index(element_name)
             return self[param][idx]
         return None
 
-    def get_twiss_at_element(self, element_name):
-        if element_name in self["element_name"]:
-            idx = list(self["element_name"]).index(element_name)
-            twissdict = {}
-            for param in self.properties.keys():
-                try:
-                    twissdict[param] = (self[param].val)[idx]
-                except:
-                    pass
-            return twissdict
+    def get_twiss_dict(self, idx):
+        twissdict = {}
+        for param in self.properties.keys():
+            try:
+                twissdict[param] = (self[param].val)[idx]
+            except Exception:
+                pass
+        return twissdict
+
+    def get_twiss_at_element(self, element_name, before=False):
+        if element_name in self['element_name']:
+            idx = list(self['element_name']).index(element_name)
+            if before:
+                idx = idx - 1
+            return self.get_twiss_dict(idx)
         return None
+
+    def get_twiss_at_z(self, z, tol=1e-3):
+        if z in self['z']:
+            idx = list(self['z']).index(z)
+            return self.get_twiss_dict(idx)
+        else:
+            nearest_z = self.find_nearest(self['z'], z)
+            if abs(nearest_z - z) < tol:
+                idx = list(self['z']).index(nearest_z)
+                return self.get_twiss_dict(idx)
+            else:
+                twissdict = {}
+                for param in [k for k, v in self.properties.items() if v.dtype == 'f']:
+                    twissdict[param] = self.interpolate(z=z, value=param, index='z')
+                return twissdict
 
     if use_matplotlib:
 
@@ -296,7 +306,7 @@ class twiss(munch.Munch):
         return sddsobject.elegantTwiss
 
     def load_directory(
-        self,
+        cls,
         directory=".",
         types={
             "elegant": ".twi",
@@ -308,15 +318,17 @@ class twiss(munch.Munch):
         verbose=False,
         sortkey="z",
     ):
+        t = cls()
         if verbose:
             print("Directory:", directory)
         for code, string in types.items():
             twiss_files = glob.glob(directory + "/" + preglob + string)
             if verbose:
                 print(code, [os.path.basename(t) for t in twiss_files])
-            if self._which_code(code) is not None and len(twiss_files) > 0:
-                self._which_code(code)(self, twiss_files, reset=False)
-        self.sort(key=sortkey)
+            if t._which_code(code) is not None and len(twiss_files) > 0:
+                t._which_code(code)(t, twiss_files, reset=False)
+        t.sort(key=sortkey)
+        return t
 
     @classmethod
     def initialise_directory(cls, *args, **kwargs):

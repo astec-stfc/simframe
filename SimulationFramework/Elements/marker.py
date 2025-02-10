@@ -4,7 +4,7 @@ from SimulationFramework.Elements.screen import screen
 class marker(screen):
 
     def __init__(self, name=None, type="marker", **kwargs):
-        super().__init__(name, "screen", **kwargs)
+        super().__init__(name, type, **kwargs)
 
     def _write_CSRTrack(self, n):
         return ""

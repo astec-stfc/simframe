@@ -1,22 +1,24 @@
-import os, errno, sys
+import os
+import sys
 import numpy as np
 import random
-
+import shutil
+import deap
+import deap.base
+import deap.creator
+import deap.tools
+from copy import copy
+import csv
 sys.path.append("./../../")
-from SimulationFramework.Modules.optimiser import optimiser
-from SimulationFramework.ClassFiles.Optimise_longitudinal_Elegant import (
+import SimulationFramework.Modules.id_number as idn  # noqa E402
+import SimulationFramework.Modules.id_number_server as idnserver  # noqa E402
+from SimulationFramework.Modules.optimisation.optimiser import optimiser  # noqa E402
+from SimulationFramework.ClassFiles.Optimise_longitudinal_Elegant import (  # noqa E402
     Optimise_Elegant,
 )
 
-opt = optimiser()
-import multiprocessing
 
-# from scoop import futures
-import deap  # , deap.base, deap.creator, deap.tools
-from copy import copy
-import csv
-import SimulationFramework.Modules.id_number as idn
-import SimulationFramework.Modules.id_number_server as idnserver
+opt = optimiser()
 
 
 class MOGA(Optimise_Elegant):
@@ -42,8 +44,8 @@ class MOGA(Optimise_Elegant):
         ["CLA-S07-DCP-01", "factor"],
     ]
 
-    def __init__(self):
-        super(MOGA, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(MOGA, self).__init__(*args, **kwargs)
         self.global_best = 0
         self.POST_INJECTOR = True
 
@@ -100,15 +102,16 @@ class MOGA(Optimise_Elegant):
     def create_NSGA2_selection_function(self, **kwargs):
         self.create_selection_function(deap.tools.selNSGA2, **kwargs)
 
-    def saveState(self, args, n, params, fitness):
-        with open("MOGA/best_solutions_running.csv", "a") as out:
+    def saveState(self, args, n, gen, params, fitness):
+        with open(self.saveStateFile, "a") as out:
             csv_out = csv.writer(out)
             args = [float(a) for a in args]
             for p in params:
                 args.append(p)
-            args.append(n)
-            args.append(fitness)
             args = [float(a) for a in args]
+            args.append(n)
+            args.append(gen)
+            args.append(fitness)
             csv_out.writerow(args)
 
     def rangeFunc(self, i):
@@ -122,7 +125,7 @@ class MOGA(Optimise_Elegant):
             def wrapper(*args, **kargs):
                 offspring = func(*args, **kargs)
                 for child in offspring:
-                    for i in xrange(len(child)):
+                    for i in range(len(child)):
                         if child[i] > max[i]:
                             child[i] = max[i]
                         elif child[i] < min[i]:
@@ -158,8 +161,16 @@ class MOGA(Optimise_Elegant):
         self.saveState(inputargs, self.opt_iteration, [e, b, ee, be, l], fitness)
         return e, b, e / b
 
+    def calculate_fitness(self):
+        # if e < 0.01:
+        #     print ('e too low! ', e)
+        #     l = 500
+        # self.resultsDict.update({'e': e, 'b': b, 'ee': ee, 'be': be, 'l': l, 'g': g, 'brightness': (1e-4*e)/(1e-2*b), 'momentum': 1e-6*np.mean(g.momentum)})
+        # return e, b, ee, be, l, g
+        return 0, 0, 0, 0, 0, 0
+
     def OptimisingFunction(self, inputargs, **kwargs):
-        self.optdir = "MOGA/iteration_"
+        # self.optdir = 'MOGA/iteration_'
         if not self.post_injector:
             parameternames = self.injector_parameter_names + self.parameter_names
         else:
@@ -169,10 +180,14 @@ class MOGA(Optimise_Elegant):
             map(lambda a: a[0] + [a[1]], zip(parameternames, inputargs))
         )
 
+        self.linac_names = np.array(
+            [i[0] for i in self.inputlist if i[1] == "field_amplitude"]
+        )
         self.linac_fields = np.array(
             [i[2] for i in self.inputlist if i[1] == "field_amplitude"]
         )
         self.linac_phases = np.array([i[2] for i in self.inputlist if i[1] == "phase"])
+        self.vbc_angle = np.array([i[2] for i in self.inputlist if i[1] == "angle"])
 
         idclient = idn.zmqClient()
         n = idclient.get_id()
@@ -180,31 +195,18 @@ class MOGA(Optimise_Elegant):
         self.opt_iteration = n
 
         dir = self.optdir + str(self.opt_iteration)
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        os.makedirs(dir, exist_ok=True)
         self.setup_lattice(self.inputlist, dir)
         self.before_tracking()
-        fitvalue = self.track()
-
+        self.track(**kwargs)
+        fitness = self.calculate_fitness()
         if isinstance(self.opt_iteration, int):
             self.opt_iteration += 1
 
-        if e < 0.01:
-            print("e too low! ", e)
-            l = 500
-        self.resultsDict.update(
-            {
-                "e": e,
-                "b": b,
-                "ee": ee,
-                "be": be,
-                "l": l,
-                "g": g,
-                "brightness": (1e-4 * e) / (1e-2 * b),
-                "momentum": 1e-6 * np.mean(g.momentum),
-            }
-        )
-        return e, b, ee, be, l, g
+        if self.deleteFolders:
+            shutil.rmtree(dir, ignore_errors=True)
+
+        return fitness
 
     def initialise_population(self, best, npop, sigma=None):
         self.best = best
@@ -228,7 +230,7 @@ class MOGA(Optimise_Elegant):
         self.server.daemon = True
         self.server.start()
 
-    def eaMuPlusLambda(
+    def eaMuPlusLambdaFunction(
         self,
         nSelect,
         nChildren,

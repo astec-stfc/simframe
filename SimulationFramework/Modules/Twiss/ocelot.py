@@ -69,6 +69,8 @@ def interpret_ocelot_data(self, fdat):
     self.append("muy", fdat["muy"])
     self.append("eta_x", fdat["Dx"])
     self.append("eta_xp", fdat["Dxp"])
+    self.append("eta_y", fdat["Dy"])
+    self.append("eta_yp", fdat["Dyp"])
     self.append("element_name", np.zeros(len(fdat["s"])))
     ### BEAM parameters
     self.append("ecnx", fdat["emit_xn"])

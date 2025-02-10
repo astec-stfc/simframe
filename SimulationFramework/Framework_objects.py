@@ -10,6 +10,7 @@ from .FrameworkHelperFunctions import (
     checkValue,
     chop,
     copylink,
+    dot
 )
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Codes.Ocelot import ocelot_conversion
@@ -88,6 +89,7 @@ class frameworkLattice(Munch):
         global_parameters,
     ):
         super(frameworkLattice, self).__init__()
+        self.allow_negative_drifts = False
         self.global_parameters = global_parameters
         self.objectname = name
         for key, value in list(elementObjects.items()):
@@ -247,6 +249,16 @@ class frameworkLattice(Munch):
         )
 
     @property
+    def screens_and_markers_and_bpms(self) -> list:
+        """Return all Screens and BPMs"""
+        return sorted(
+            self.getElementType("screen")
+            + self.getElementType("marker")
+            + self.getElementType("beam_position_monitor"),
+            key=lambda x: x.position_start[2],
+        )
+
+    @property
     def apertures(self):
         return sorted(
             self.getElementType("aperture") + self.getElementType("collimator"),
@@ -308,7 +320,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start : index_end + 1]
+                for e in self.allElements[index_start: index_end + 1]
             ]
         )
         return f
@@ -435,11 +447,12 @@ class frameworkLattice(Munch):
                 x2, y2, z2 = d[1]
                 try:
                     length = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
+                    vector = dot((d[1] - d[0]), [0, 0, -1])
                 except Exception as exc:
                     print("Element with error = ", e[0])
                     print(d)
                     raise exc
-                if round(length, 6) > 0:
+                if self.allow_negative_drifts or (round(length, 6) > 0 and vector < 1e-6):
                     elementno += 1
                     name = "drift" + str(elementno)
                     middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
@@ -463,9 +476,8 @@ class frameworkLattice(Munch):
                         }
                     )
                     newelements[name] = newdrift
-                elif length < 0:
-                    raise Exception("Lattice has negative drifts!", name, length)
-                    exit()
+                elif length < 0 or vector > 1e-6:
+                    raise Exception("Lattice has negative drifts!", self.allow_negative_drifts, e[0], e[1], length)
         return newelements
 
     def getSValues(self, drifts: bool = True, as_dict: bool = False, at_entrance=False):
