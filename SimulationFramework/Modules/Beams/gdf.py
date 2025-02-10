@@ -1,5 +1,6 @@
+import easygdf
 import numpy as np
-from .. import read_gdf_file as rgf
+from ..gdf_beam import gdf_beam
 from .. import constants
 
 
@@ -24,7 +25,6 @@ def write_gdf_beam_file(
             len(self.x),
             abs(self._beam["total_charge"] / constants.elementary_charge / len(self.x)),
         )
-    # toffset = np.mean(self.z / (self.Bz * constants.speed_of_light))
     x = (
         self.x
         if not normaliseX
@@ -43,123 +43,35 @@ def write_gdf_beam_file(
             else (self.z - np.mean(self.z))
         )
     )
-    # t = self.t - np.max(self.t)
+    dataarray = {
+        "x": x,
+        "y": self.y,
+        "z": z,
+        "q": q,
+        "m": m,
+        "nmacro": nmacro,
+        "GBx": self.gamma * self.Bx,
+        "GBy": self.gamma * self.By,
+        "GBz": self.gamma * self.Bz,
+    }
     if cathode:
-        dataarray = np.array(
-            [
-                x,
-                self.y,
-                z,
-                q,
-                m,
-                nmacro,
-                self.gamma * self.Bx,
-                self.gamma * self.By,
-                self.gamma * self.Bz,
-                self.t,
-            ]
-        ).transpose()
-        namearray = "x y z q m nmacro GBx GBy GBz t"
-        np.savetxt(
-            filename,
-            dataarray,
-            fmt=(
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-            ),
-            header=namearray,
-            comments="",
-        )
-    else:
-        dataarray = np.array(
-            [
-                x,
-                self.y,
-                z,
-                q,
-                m,
-                nmacro,
-                self.gamma * self.Bx,
-                self.gamma * self.By,
-                self.gamma * self.Bz,
-            ]
-        ).transpose()
-        namearray = "x y z q m nmacro GBx GBy GBz"
-        np.savetxt(
-            filename,
-            dataarray,
-            fmt=(
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-                "%.12e",
-            ),
-            header=namearray,
-            comments="",
-        )
+        dataarray["t"] = self.t
+    easygdf.save_initial_distribution(filename, **dataarray)
 
 
 def read_gdf_beam_file_object(self, file):
     if isinstance(file, (str)):
-        gdfbeam = rgf.read_gdf_file(file)
-    elif isinstance(file, (rgf.read_gdf_file)):
+        gdfbeam = gdf_beam(file)
+    elif isinstance(file, (gdf_beam)):
         gdfbeam = file
     else:
-        raise Exception("file is not str or gdf object!")
+        raise Exception("file is not str or gdf_beam object!")
     return gdfbeam
-
-
-def calculate_gdf_s(self, file):
-    gdfbeam = self.read_gdf_beam_file_object(file)
-    datagrab = gdfbeam.get_grab(0)
-    avgt = [datagrab.avgt]
-    position = [datagrab.position]
-    sposition = list(zip(*list(sorted(zip(avgt[0], position[0])))))[1]
-    ssposition = list(zip(sposition, list(sposition[1:]) + [0]))
-    offset = 0
-    spos = []
-    for p1, p2 in ssposition:
-        spos += [p1 + offset]
-        if p2 < p1:
-            offset += p1
-    return spos
-
-
-def calculate_gdf_eta(self, file):
-    gdfbeam = self.read_gdf_beam_file_object(file)
-    etax = []
-    etaxp = []
-    tp = []
-    for p in gdfbeam.positions:
-        self.read_gdf_beam_file(gdfbeam=gdfbeam, position=p)
-        if len(self.x) > 0:
-            e, ep, t = self.calculate_etax()
-            etax += [e]
-            etaxp += [ep]
-            tp += [t]
-    etax, etaxp = list(zip(*list(sorted(zip(tp, etax, etaxp)))))[1:]
-    return etax, etaxp
 
 
 def read_gdf_beam_file_info(self, file):
     self.reset_dicts()
-    gdfbeam = read_gdf_beam_file_object(self, file)
-    # print('grab_groups = ',  gdfbeam.grab_groups)
-    # print(( 'Positions = ', gdfbeam.positions))
-    # print(( 'Times = ', gdfbeam.times))
+    gdfbeam = gdf_beam(self, file)
     return gdfbeam
 
 
@@ -168,7 +80,6 @@ def read_gdf_beam_file(
     file=None,
     position=None,
     time=None,
-    block=None,
     charge=None,
     longitudinal_reference="t",
     gdfbeam=None,
@@ -176,36 +87,22 @@ def read_gdf_beam_file(
     self.reset_dicts()
     if gdfbeam is None and file is not None:
         gdfbeam = read_gdf_beam_file_object(self, file)
-        # self.gdfbeam = gdfbeam
     elif gdfbeam is None and file is None:
         return None
 
     if position is not None:  # and (time is not None or block is not None):
-        # print 'Assuming position over time!'
         self["longitudinal_reference"] = "t"
         gdfbeamdata = gdfbeam.get_position(position)
         if gdfbeamdata is not None:
-            # print('GDF found position ', position)
             time = None
-            block = None
         else:
-            print("GDF DID NOT find position ", position)
-            position = None
-    elif position is None and time is not None and block is None:
-        # print('Assuming time over block!')
+            raise ValueError(f"GDF DID NOT find position {position}")
+    elif position is None and time is not None:
         self["longitudinal_reference"] = "z"
         gdfbeamdata = gdfbeam.get_time(time)
-        if gdfbeamdata is not None:
-            block = None
-        else:
-            time = None
-    elif position is None and time is None and block is not None:
-        gdfbeamdata = gdfbeam.get_grab(block)
-        if gdfbeamdata is None:
-            block = None
-    elif position is None and time is None and block is None:
-        gdfbeamdata = gdfbeam.get_grab(0)
-    # print(gdfbeamdata.datasets)
+        time = None
+    elif position is None and time is None:
+        gdfbeamdata = gdfbeam.positions[0]
     self.filename = file
     self["code"] = "GPT"
     if hasattr(gdfbeamdata, "m"):
@@ -269,14 +166,9 @@ def read_gdf_beam_file(
         raise Exception("GDF File does not have Bx or GBx!")
 
     if hasattr(gdfbeamdata, "z") and longitudinal_reference == "z":
-        # print( 'z!')
-        # print(( gdfbeamdata.z))
         self._beam["z"] = gdfbeamdata.z
-        self._beam["t"] = np.full(
-            len(self.z), 0
-        )  # self.z / (-1 * self.Bz * constants.speed_of_light)
+        self._beam["t"] = np.full(len(self.z), 0)
     elif hasattr(gdfbeamdata, "t") and longitudinal_reference == "t":
-        # print( 't!')
         self._beam["t"] = gdfbeamdata.t
         self._beam["z"] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (
             gdfbeamdata.t - np.mean(gdfbeamdata.t)
