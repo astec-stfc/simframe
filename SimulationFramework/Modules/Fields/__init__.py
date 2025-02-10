@@ -55,8 +55,8 @@ from . import astra
 
 from . import gdf
 from . import hdf5
-from . import opal
 from . import sdds
+from . import opal
 
 class field(BaseModel):
     x: Optional[FieldParameter(name="x")] = None
@@ -119,7 +119,7 @@ class field(BaseModel):
         self.field_type = None
         self.norm = 1.0
         setattr(self, "t", FieldParameter(name="t"))
-        for par in ["x", "y", "z", "r", ]:
+        for par in ["x", "y", "z", "r",]:
             setattr(self, par, FieldParameter(name=par))
             setattr(self, f"E{par}", FieldParameter(name=f"E{par}"))
             setattr(self, f"B{par}", FieldParameter(name=f"B{par}"))

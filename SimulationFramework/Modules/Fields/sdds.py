@@ -33,13 +33,26 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         ])
         cnames = ["z", "t", "Wx", "Wy"]
         cunits = ["m", "s", "V/C/m", "V/C/m"]
-        if bool((wxdata == wydata).all()):
-            wdata = wxdata
-            np.append(data, wdata, axis=0)
+    elif self.field_type == "3DWake":
+        zdata = self.z.value.val
+        tdata = zdata / speed_of_light
+        wxdata = self.Wx.value.val
+        wydata = self.Wy.value.val
+        wzdata = self.Wz.value.val
+        data = np.array([
+            zdata,
+            tdata,
+            wxdata,
+            wydata,
+            wzdata,
+        ])
+        cnames = ["z", "t", "Wx", "Wy", "Wz"]
+        cunits = ["m", "s", "V/C/m", "V/C/m", "V/C"]
     else:
         warn(f"Field type {self.field_type} not supported for SDDS")
         return
-    ctypes = [SDDS_Types.SDDS_DOUBLE for _ in len(data)]
-    csymbols = ["" for _ in len(data)]
-    sddsfile.add_columns(cnames, ccolumns, ctypes, cunits, csymbols)
-    sddsfile.write_file(sdds_filename)
+    if data is not None:
+        ctypes = [SDDS_Types.SDDS_DOUBLE for _ in len(data)]
+        csymbols = ["" for _ in len(data)]
+        sddsfile.add_columns(cnames, ccolumns, ctypes, cunits, csymbols)
+        sddsfile.write_file(sdds_filename)

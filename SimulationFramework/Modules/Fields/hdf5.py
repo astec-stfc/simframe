@@ -32,10 +32,14 @@ def read_HDF5_field_file(self, filename, normalise=True):
             cavtype = h5file.attrs["cavity_type"]
             if not cavtype in allowed_cavities:
                 raise Exception(f"cavity_type attributes of {filename} must be in {allowed_cavities}")
+            else:
+                setattr(self, "cavity_type", cavtype)
             if cavtype == "TravellingWave":
                 for param in tw_required_attrs:
                     if not param in (h5file.attrs.keys()):
                         raise Exception(f"{param} must be an attribute of {filename} for a travelling wave linac")
+                    else:
+                        setattr(self, param, h5file.attrs[param])
         length_set = False
         for key in h5file:
             if not length_set:
