@@ -33,10 +33,15 @@ def write_astra_field_file(self):
     elif self.field_type == "1DElectroDynamic":
         zdata = self.z.value.val
         ezdata = self.Ez.value.val
-        data = np.transpose([zdata, ezdata])
+        if self.cavity_type == "TravellingWave":
+            spdata = ['' for _ in range(self.length)]
+            preamble = np.array([[self.start_cell_z, self.end_cell_z, self.mode_numerator, self.mode_denominator]])
+            data = np.concatenate([preamble, np.transpose([zdata, ezdata, spdata, spdata])])
+        else:
+            data = np.transpose([zdata, ezdata])
     else:
         warn(f"Field type {self.field_type} not supported for ASTRA")
-    if data:
+    if data is not None:
         with open(f"{astra_file}", "w") as f:
             for d in data:
                 f.write(" ".join([str(x) for x in d]) + "\n")

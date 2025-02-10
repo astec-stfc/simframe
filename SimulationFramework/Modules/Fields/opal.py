@@ -1,4 +1,5 @@
 import numpy as np
+from .sdds import write_SDDS_field_file
 from warnings import warn
 
 def write_opal_field_file(self, frequency: float=None, radius: float=None, fourier: int=100):
@@ -24,7 +25,7 @@ def write_opal_field_file(self, frequency: float=None, radius: float=None, fouri
         rvals = [str(0), str(radius * 100), str(length), fourier]
         zvals = [str(zmin), str(zmax), str(length)]
         header = [head, rvals, zvals]
-    elif self.field_type == "1DElectroStatic":
+    elif self.field_type == "1DElectroDynamic":
         if not frequency:
             warn("RF Frequency not provided to field class")
             return
@@ -34,9 +35,12 @@ def write_opal_field_file(self, frequency: float=None, radius: float=None, fouri
         ezdata = self.Ez.value.val
         data = np.transpose([zdata, ezdata])
         header = [head, freq]
+    elif "wake" in self.field_type:
+        write_SDDS_field_file(self)
+        warn(f"Field type {self.field_type} defaulting to SDDS type; use with caution")
     else:
         warn(f"Field type {self.field_type} not supported for OPAL")
-    if data:
+    if data is not None:
         with open(f"{opal_file}", "w") as f:
             for h in header:
                 f.write(" ".join([str(x) for x in h]) + "\n")
