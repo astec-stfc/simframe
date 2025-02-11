@@ -137,10 +137,12 @@ class field(BaseModel):
             print("Field file not read in. Use read_field_file to load in an hdf5 field file.")
             return
         try:
-            if code.lower() == "astra":
+            if code.lower() in ["astra", "ocelot"]:
                 astra.write_astra_field_file(self)
-            elif code.lower() == "sdds":
+            elif code.lower() in ["sdds", "elegant"]:
                 sdds.write_SDDS_field_file(self)
+            elif code.lower() in ["gdf", "gpt"]:
+                gdf.write_gdf_field_file(self)
             elif code.lower() == "opal":
                 opal.write_opal_field_file(self, frequency=self.frequency, radius=self.radius, fourier=self.fourier, orientation=self.orientation)
         except NotImplementedError as e:
