@@ -7,6 +7,7 @@ class quadrupole(frameworkElement):
         super().__init__(name, type, **kwargs)
         self.add_default("k1l", 0)
         self.add_default("n_kicks", 4)
+        self.add_default("field_reference_position", "middle")
         self.strength_errors = [0]
 
     @property
@@ -16,7 +17,7 @@ class quadrupole(frameworkElement):
 
     @k1.setter
     def k1(self, k1):
-        self.k1l = self.length * k1
+        self.k1l = float(self.length) * float(k1)
 
     @property
     def dk1(self):
@@ -27,14 +28,18 @@ class quadrupole(frameworkElement):
         self.strength_errors[0] = dk1
 
     def _write_ASTRA(self, n: int) -> str:
+        field_ref_pos = self.get_field_reference_position()
         astradict = dict(
             [
-                ["Q_pos", {"value": self.middle[2] + self.dz, "default": 0}],
-                ["Q_xoff", {"value": self.middle[0], "default": 0, "type": "not_zero"}],
+                ["Q_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
+                [
+                    "Q_xoff",
+                    {"value": field_ref_pos[0], "default": 0, "type": "not_zero"},
+                ],
                 [
                     "Q_yoff",
                     {
-                        "value": self.middle[1] + self.dy,
+                        "value": field_ref_pos[1] + self.dy,
                         "default": None,
                         "type": "not_zero",
                     },
@@ -94,7 +99,8 @@ class quadrupole(frameworkElement):
             return None
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
+        field_ref_pos = self.get_field_reference_position()
+        ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         output = (
             str(self.objecttype)
             + "( "

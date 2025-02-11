@@ -71,6 +71,10 @@ def chunks(li, n):
         yield li[i : i + n]
 
 
+def dot(a, b) -> float:
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+
 def sortByPositionFunction(element):
     """Sort function for element positions"""
     return float(element[1]["position_start"][2])
@@ -257,7 +261,7 @@ def copylink(source, destination):
 def convert_numpy_types(v):
     if isinstance(v, (np.ndarray, list, tuple)):
         return [convert_numpy_types(li) for li in v]
-    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_)):
+    elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
     elif isinstance(
         v,

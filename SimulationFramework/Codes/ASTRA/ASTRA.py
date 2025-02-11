@@ -33,6 +33,7 @@ class astraLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(astraLattice, self).__init__(*args, **kwargs)
         self.code = "astra"
+        self.allow_negative_drifts = True
         self._bunch_charge = None
         self._toffset = None
         self.headers = dict()
@@ -97,7 +98,7 @@ class astraLattice(frameworkLattice):
         if "output" not in self.file_block:
             self.file_block["output"] = {}
         self.headers["output"] = astra_output(
-            self.screens_and_bpms,
+            self.screens_and_markers_and_bpms,
             self.starting_offset,
             self.starting_rotation,
             global_parameters=self.global_parameters,
@@ -521,6 +522,9 @@ class astra_charge(astra_header):
         sc_dict = dict(
             [
                 ["Lmirror", {"value": self.cathode, "default": False}],
+                ["cell_var", {"value": self.cell_var, "default": None}],
+                ["min_grid", {"value": self.min_grid, "default": None}],
+                ["max_scale", {"value": self.max_scale, "default": None}],
                 ["LSPCH", {"value": self.space_charge, "default": True}],
                 ["LSPCH3D", {"value": self.space_charge_3D, "default": True}],
             ]

@@ -107,6 +107,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append("muy", elegantData["psiy"] / (2 * constants.pi))
         self.append("eta_x", elegantData["etax"])
         self.append("eta_xp", elegantData["etaxp"])
+        self.append('eta_y', elegantData['etay'])
+        self.append('eta_yp', elegantData['etayp'])
         self.append("element_name", elegantData["ElementName"])
         ### BEAM parameters
         self.append("ecnx", elegantData["ecnx"])

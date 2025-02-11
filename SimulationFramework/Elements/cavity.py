@@ -1,4 +1,8 @@
-from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant
+from SimulationFramework.Framework_objects import (
+    frameworkElement,
+    elements_Elegant,
+    type_conversion_rules_Ocelot,
+)
 from SimulationFramework.FrameworkHelperFunctions import expand_substitution
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 import numpy as np
@@ -28,6 +32,7 @@ class cavity(frameworkElement):
         self.add_default("coupling_cell_length", 0)
         self.add_default("field_amplitude", 0)
         self.add_default("crest", 0)
+        self.add_default("field_reference_position", "start")
 
     @property
     def cells(self):
@@ -46,6 +51,7 @@ class cavity(frameworkElement):
         return cells
 
     def _write_ASTRA(self, n, **kwargs):
+        field_ref_pos = self.get_field_reference_position()
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
         basename = self.generate_field_file_name(self.field_definition)
@@ -53,7 +59,7 @@ class cavity(frameworkElement):
         return self._write_ASTRA_dictionary(
             dict(
                 [
-                    ["C_pos", {"value": self.start[2] + self.dz, "default": 0}],
+                    ["C_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
                     efield_def,
                     ["C_numb", {"value": self.cells}],
                     ["Nue", {"value": float(self.frequency) / 1e9, "default": 2998.5}],
@@ -66,7 +72,7 @@ class cavity(frameworkElement):
                     [
                         "C_xoff",
                         {
-                            "value": self.start[0] + self.dx,
+                            "value": field_ref_pos[0] + self.dx,
                             "default": None,
                             "type": "not_zero",
                         },
@@ -74,7 +80,7 @@ class cavity(frameworkElement):
                     [
                         "C_yoff",
                         {
-                            "value": self.start[1] + self.dy,
+                            "value": field_ref_pos[1] + self.dy,
                             "default": None,
                             "type": "not_zero",
                         },
@@ -213,9 +219,42 @@ class cavity(frameworkElement):
         self.transverse_wakefield_sdds = original_transverse_wakefield_sdds
         return wholestring
 
+    def _write_Ocelot(self):
+        obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
+        k1 = self.k1 if self.k1 is not None else 0
+        k2 = self.k2 if self.k2 is not None else 0
+        keydict = merge_two_dicts(
+            {"k1": k1, "k2": k2},
+            merge_two_dicts(self.objectproperties, self.objectdefaults),
+        )
+        for key, value in keydict.items():
+            if key not in [
+                "name",
+                "type",
+                "commandtype",
+            ]:  # and self._convertKeword_Ocelot(key) in elements_Ocelot[self.objecttype]:
+                value = (
+                    getattr(self, key)
+                    if hasattr(self, key) and getattr(self, key) is not None
+                    else value
+                )
+                if self.objecttype in ["cavity", "rf_deflecting_cavity"]:
+                    if key == "field_amplitude":
+                        value = (
+                            value
+                            * 1e-9
+                            * abs(
+                                (self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2))
+                            )
+                        )
+                setattr(obj, self._convertKeword_Ocelot(key), value)
+        scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
+        return [obj, scr]
+
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
-        relpos, relrot = ccs.relative_position(self.middle, self.global_rotation)
+        field_ref_pos = self.get_field_reference_position()
+        ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
+        relpos, _ = ccs.relative_position(field_ref_pos, self.global_rotation)
         """
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
         wakefield("wcs","z",  6.78904 + 4.06667 / 2, 4.06667, 50, "Sz5um10mm.gdf", "z","","","Wz", "FieldFactorWz", 10 * 122 / 4.06667) ;

@@ -90,7 +90,8 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     self.append("muy", cumtrapz(x=z, y=1 / (rms_y**2 / ey)))
     self.append("eta_x", np.zeros(len(z)))
     self.append("eta_xp", np.zeros(len(z)))
-
+    self.append('eta_y', np.zeros(len(z)))
+    self.append('eta_yp', np.zeros(len(z)))
     self.append("ecnx", exn)
     self.append("ecny", eyn)
     self.append("element_name", np.full(len(z), ""))

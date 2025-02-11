@@ -23,7 +23,8 @@ common:
       tilt_angle,
       array_names,
       rotation,
-      smooth
+      smooth,
+      field_reference_position,
     }
 scatter:
   keywords:

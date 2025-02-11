@@ -26,6 +26,7 @@ class elegantLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(elegantLattice, self).__init__(*args, **kwargs)
         self.code = "elegant"
+        self.allow_negative_drifts = False
         self.particle_definition = self.allElementObjects[self.start].objectname
         self.bunch_charge = None
         self.q = charge(
@@ -53,7 +54,7 @@ class elegantLattice(frameworkLattice):
 
     def writeElements(self):
         self.w = None
-        if self.endObject not in self.screens_and_bpms:
+        if self.endObject not in self.screens_and_markers_and_bpms:
             self.w = self.endScreen(output_filename=self.endObject.objectname + ".sdds")
         elements = self.createDrifts()
         fulltext = ""
@@ -154,7 +155,7 @@ class elegantLattice(frameworkLattice):
                     # for example, in simframe the elegant parameter 'voltage' for RF cavities is called 'amplitude'
                     conversions = keyword_conversion_rules_elegant[ele_type]
                     keyword = conversions[param] if (param in conversions) else param
-                    output[ele][keyword] = copy.copy(default_err)
+                    output[ele][keyword] = copy(default_err)
 
                     # fill in the define error parameters
                     for k in default_err:
@@ -368,13 +369,13 @@ class elegantLattice(frameworkLattice):
 
     def postProcess(self):
         if self.trackBeam:
-            for i, s in enumerate(self.screens_and_bpms):
+            for i, s in enumerate(self.screens_and_markers_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
             if self.w is not None and not self.w["output_filename"].lower() in [
-                s["output_filename"].lower() for s in self.screens_and_bpms
+                s["output_filename"].lower() for s in self.screens_and_markers_and_bpms
             ]:
                 self.screen_threaded_function.scatter(
-                    self.w, len(self.screens_and_bpms)
+                    self.w, len(self.screens_and_markers_and_bpms)
                 )
         self.screen_threaded_function.gather()
         self.commandFiles = {}

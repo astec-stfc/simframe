@@ -27,8 +27,8 @@ apclara3:
   csrtrack: ['/opt/OpenMPI-1.4.5/bin/mpiexec','-n',$ncpu$,'/opt/CSRTrack/csrtrack_1.204_Linux_x86_64_OpenMPI_1.4.3']
   gpt: ['/opt/GPT3.3.6/bin/gpt', '-j',$ncpu$]
 posix:
-  astragenerator: ['/opt/ASTRA/generator.sh']
-  astra: ['mpiexec','-np',$ncpu$,'/opt/ASTRA/astra_MPICH2.sh']
+  astragenerator: ['/home/xkc85723/Documents/simcodes/SimCodes/ASTRA/generator.sh']
+  astra: ['/home/xkc85723/Documents/simcodes/SimCodes/ASTRA/Astra']
   Pelegant: ['mpiexec','-np', $ncpu$, 'Pelegant']
   elegant: ['elegant']
   csrtrack: ['/opt/OpenMPI-1.4.5/bin/mpiexec','-n',$ncpu$,'/opt/CSRTrack/csrtrack_1.204_Linux_x86_64_OpenMPI_1.4.3']
