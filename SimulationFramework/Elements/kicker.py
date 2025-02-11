@@ -23,7 +23,7 @@ class kicker(dipole):
 
     def _write_ASTRA(self, n, **kwargs):
         output = ""
-        output = super().write_ASTRA(n)
+        output = super()._write_ASTRA(n)
         return output
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):

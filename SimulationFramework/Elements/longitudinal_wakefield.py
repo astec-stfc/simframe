@@ -11,6 +11,7 @@ class longitudinal_wakefield(cavity):
         self.add_default("coupling_cell_length", 0)
 
     def _write_ASTRA(self, startn):
+        field_ref_pos = self.get_field_reference_position()
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ["Wk_filename", {"value": "'" + basename + "'", "default": ""}]
         output = ""
@@ -32,7 +33,7 @@ class longitudinal_wakefield(cavity):
                             [
                                 "Wk_z",
                                 {
-                                    "value": self.start[2]
+                                    "value": field_ref_pos[2]
                                     + self.coupling_cell_length
                                     + (0.5 + n - 1) * self.cell_length
                                 },

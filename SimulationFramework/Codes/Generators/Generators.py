@@ -436,7 +436,6 @@ class ASTRAGenerator(frameworkGenerator):
         if str(self["thermal_emittance"]) == "None":
             pass
         else:
-            print("self[thermal_emittance]", self["thermal_emittance"])
             framework_dict.update(
                 {
                     "le": {
@@ -481,6 +480,7 @@ class ASTRAGenerator(frameworkGenerator):
             self.global_parameters["beam"],
             self.global_parameters["master_subdir"] + "/" + astrabeamfilename,
             normaliseZ=False,
+            keepLost=True,
         )
         HDF5filename = "laser.hdf5"
         rbf.hdf5.write_HDF5_beam_file(
