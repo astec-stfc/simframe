@@ -2,7 +2,7 @@ import easygdf
 from warnings import warn
 
 
-def write_gdf_beam_file(self):
+def write_gdf_field_file(self):
     gdf_file = self.filename.replace(".hdf5", ".gdf")
     data = None
     blocks = []
