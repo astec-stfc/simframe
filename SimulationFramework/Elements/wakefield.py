@@ -9,6 +9,7 @@ class wakefield(cavity):
     def __init__(self, name=None, type="longitudinal_wakefield", **kwargs):
         super().__init__(name, type, **kwargs)
         self.add_default("coupling_cell_length", 0)
+        self.add_default("scale_kick", 1)
 
     def _write_ASTRA(self, startn):
         field_ref_pos = self.get_field_reference_position()
