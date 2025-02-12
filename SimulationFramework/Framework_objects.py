@@ -1122,7 +1122,7 @@ class frameworkElement(frameworkObject):
                     self.field_reference_position,
                 )
         else:
-            return self.middle
+            return self.start
 
     @property
     def theta(self):
