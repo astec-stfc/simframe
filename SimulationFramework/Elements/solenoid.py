@@ -12,8 +12,8 @@ class solenoid(frameworkElement):
 
     def _write_ASTRA(self, n, **kwargs):
         field_ref_pos = self.get_field_reference_position()
-        basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ["FILE_BFieLD", {"value": "'" + basename + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
+        efield_def = ["FILE_BFieLD", {"value": "'" + field_file_name + "'", "default": ""}]
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -33,6 +33,7 @@ class solenoid(frameworkElement):
 
     def _write_GPT(self, Brho, ccs, *args, **kwargs):
         field_ref_pos = self.get_field_reference_position()
+        field_file_name = self.generate_field_file_name(self.field_definition, code="gpt")
         ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         if self.field_type.lower() == "1d":
             self.default_array_names = ["Z", "Bz"]
@@ -49,7 +50,7 @@ class solenoid(frameworkElement):
                 + value_text
                 + ", "
                 + '"'
-                + str(self.generate_field_file_name(self.field_definition_gdf))
+                + str(field_file_name)
                 + '", '
                 + self.array_names_string()
                 + ", "
@@ -71,7 +72,7 @@ class solenoid(frameworkElement):
                 + value_text
                 + ", "
                 + '"'
-                + str(self.generate_field_file_name(self.field_definition_gdf))
+                + str(field_file_name)
                 + '", '
                 + self.array_names_string()
                 + ", "

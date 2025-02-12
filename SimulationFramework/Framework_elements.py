@@ -3,8 +3,8 @@ from SimulationFramework.Elements.kicker import kicker  # noqa F401
 from SimulationFramework.Elements.quadrupole import quadrupole  # noqa F401
 from SimulationFramework.Elements.sextupole import sextupole  # noqa F401
 from SimulationFramework.Elements.cavity import cavity  # noqa F401
-from SimulationFramework.Elements.longitudinal_wakefield import (  # noqa F401
-    longitudinal_wakefield,
+from SimulationFramework.Elements.wakefield import (  # noqa F401
+    wakefield,
 )
 from SimulationFramework.Elements.rf_deflecting_cavity import (  # noqa F401
     rf_deflecting_cavity,

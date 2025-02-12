@@ -54,8 +54,8 @@ class cavity(frameworkElement):
         field_ref_pos = self.get_field_reference_position()
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
-        basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ["FILE_EFieLD", {"value": "'" + basename + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
+        efield_def = ["FILE_EFieLD", {"value": "'" + field_file_name + "'", "default": ""}]
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -115,37 +115,18 @@ class cavity(frameworkElement):
         )
 
     def _write_Elegant(self):
-        original_field_definition_sdds = self.field_definition_sdds
-        if self.field_definition_sdds is not None:
-            self.field_definition_sdds = (
-                '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
-            )
-        original_longitudinal_wakefield_sdds = self.longitudinal_wakefield_sdds
-        if self.longitudinal_wakefield_sdds is not None:
-            self.longitudinal_wakefield_sdds = (
-                '"'
-                + self.generate_field_file_name(self.longitudinal_wakefield_sdds)
-                + '"'
-            )
-        original_transverse_wakefield_sdds = self.transverse_wakefield_sdds
-        if self.transverse_wakefield_sdds is not None:
-            self.transverse_wakefield_sdds = (
-                '"'
-                + self.generate_field_file_name(self.transverse_wakefield_sdds)
-                + '"'
-            )
+        field_file_name = self.generate_field_file_name(self.field_definition, code="elegant")
+        wakefield_file_name = self.generate_field_file_name(self.wakefield_definition, code="elegant")
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         if (
-            not hasattr(self, "longitudinal_wakefield_sdds")
-            or self.longitudinal_wakefield_sdds is None
-        ) and (
-            not hasattr(self, "transverse_wakefield_sdds")
-            or self.transverse_wakefield_sdds is None
+            not hasattr(self, "wakefield_definition")
+            and not not hasattr(self, "longitudinal_wakefield_definition")
+            and not not hasattr(self, "transverse_wakefield_definition")
         ):
             # print('cavity ', self.objectname, ' is an RFCA!')
             etype = "rfca"
-        if self.field_definition_sdds is not None:
+        if self.field_definition is not None:
             etype = "rftmez0"
             self.ez_peak = self.field_amplitude
         string = self.objectname + ": " + etype
@@ -214,9 +195,6 @@ class cavity(frameworkElement):
                 else:
                     string += tmpstring
         wholestring += string + ";\n"
-        self.field_definition_sdds = original_field_definition_sdds
-        self.longitudinal_wakefield_sdds = original_longitudinal_wakefield_sdds
-        self.transverse_wakefield_sdds = original_transverse_wakefield_sdds
         return wholestring
 
     def _write_Ocelot(self):
@@ -351,7 +329,7 @@ class cavity(frameworkElement):
                 )
             else:
                 if (
-                    expand_substitution(self, self.longitudinal_wakefield_gdf)
+                    expand_substitution(self, self.wakefield_definition)
                     is not None
                 ):
                     output += (
@@ -366,7 +344,7 @@ class cavity(frameworkElement):
                         + ', 50, "'
                         + str(
                             self.generate_field_file_name(
-                                self.longitudinal_wakefield_gdf
+                                self.wakefield_definition
                             )
                         )
                         + '", "z","","","Wz", "FieldFactorWz", '

@@ -4,7 +4,7 @@ from SimulationFramework.Framework_objects import elements_Elegant
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
-class longitudinal_wakefield(cavity):
+class wakefield(cavity):
 
     def __init__(self, name=None, type="longitudinal_wakefield", **kwargs):
         super().__init__(name, type, **kwargs)
@@ -12,8 +12,8 @@ class longitudinal_wakefield(cavity):
 
     def _write_ASTRA(self, startn):
         field_ref_pos = self.get_field_reference_position()
-        basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ["Wk_filename", {"value": "'" + basename + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
+        efield_def = ["Wk_filename", {"value": "'" + field_file_name + "'", "default": ""}]
         output = ""
         if self.scale_kick > 0:
             for n in range(startn, startn + self.cells):
@@ -68,11 +68,7 @@ class longitudinal_wakefield(cavity):
         return output
 
     def _write_Elegant(self):
-        original_field_definition_sdds = self.field_definition_sdds
-        if self.field_definition_sdds is not None:
-            self.field_definition_sdds = (
-                '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
-            )
+        field_file_name = self.generate_field_file_name(self.field_definition, code="elegant")
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
@@ -106,5 +102,4 @@ class longitudinal_wakefield(cavity):
                 else:
                     string += tmpstring
         wholestring += string + ";\n"
-        self.field_definition_sdds = original_field_definition_sdds
         return wholestring

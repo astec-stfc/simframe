@@ -238,7 +238,7 @@ class ocelotLattice(frameworkLattice):
         for name, obj in self.elements.items():
             if (obj["objecttype"] == "cavity") and ("sub_elements" in list(obj.keys())):
                 for sename, seobj in obj["sub_elements"].items():
-                    if seobj["type"] == "longitudinal_wakefield":
+                    if seobj["type"] == "wakefield":
                         wake, w_ind = self.physproc_wake(
                             name, seobj["field_definition"]
                         )
