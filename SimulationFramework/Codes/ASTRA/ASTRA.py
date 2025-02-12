@@ -15,6 +15,7 @@ from ...Framework_elements import global_error, wakefield
 from ...FrameworkHelperFunctions import expand_substitution, saveFile
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import Beams as rbf
+from ...Modules.Fields import field
 
 section_header_text_ASTRA = {
     "cavities": {"header": "CAVITY", "bool": "LEField"},
@@ -219,7 +220,7 @@ class astraLattice(frameworkLattice):
                         counter.counter(element.objecttype),
                         auto_phase=self.headers["newrun"]["auto_phase"],
                     )
-                    if t[0] == "wakefields":
+                    if t[0] == "wakefields" and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
                         original_properties = {
                             a: element[a]
                             for a in element.objectproperties
