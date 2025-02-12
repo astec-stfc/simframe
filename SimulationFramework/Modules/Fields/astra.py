@@ -43,9 +43,9 @@ def generate_astra_field_data(self):
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
         wzdata = self.Wz.value.val
-        zvals = np.concatenate([zpreamble, np.transpose([zdata, wxdata])])
-        xvals = np.concatenate([xpreamble, np.transpose([zdata, wydata])])
-        yvals = np.concatenate([ypreamble, np.transpose([zdata, wzdata])])
+        zvals = np.concatenate([zpreamble, np.transpose([zdata, wzdata])])
+        xvals = np.concatenate([xpreamble, np.transpose([zdata, wxdata])])
+        yvals = np.concatenate([ypreamble, np.transpose([zdata, wydata])])
         data = np.concatenate([zvals, xvals, yvals])
     elif self.field_type == "1DMagnetoStatic":
         zdata = self.z.value.val

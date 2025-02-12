@@ -52,3 +52,13 @@ from SimulationFramework.Framework_objects import (
     r56_group,
     element_group,
 )  # noqa F401
+
+disallowed_keywords = [
+                "allowedkeywords",
+                "keyword_conversion_rules_elegant",
+                "keyword_conversion_rules_ocelot",
+                "objectdefaults",
+                "global_parameters",
+                "objectname",
+                "beam",
+            ]

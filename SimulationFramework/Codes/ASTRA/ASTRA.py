@@ -1,4 +1,5 @@
 import os
+from copy import copy
 import numpy as np
 import lox
 
@@ -218,12 +219,15 @@ class astraLattice(frameworkLattice):
                         counter.counter(element.objecttype),
                         auto_phase=self.headers["newrun"]["auto_phase"],
                     )
-                elif t[0] == "wakefields":
-                    wake_element = wakefield(**self)
-                    elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
-                    print(wake_element)
-                    print(elemstr)
-                    exit()
+                    if t[0] == "wakefields":
+                        original_properties = {
+                            a: element[a]
+                            for a in element.objectproperties
+                            if a != "objectname" and a != "objecttype"
+                        }
+                        original_properties['field_definition'] = original_properties['wakefield_definition']
+                        wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
+                        elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
                 else:
                     elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == "":
