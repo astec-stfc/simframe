@@ -11,7 +11,6 @@ from . import (
 
 def read_HDF5_field_file(self, filename, normalise=True):
     self.reset_dicts()
-    self.filename = filename
     with h5py.File(filename, "r") as h5file:
         for key, value in h5file.attrs.items():
             if key == "type":
@@ -69,3 +68,4 @@ def read_HDF5_field_file(self, filename, normalise=True):
                         f"Warning: Field {param} in {filename} is not normalised to 1.0."
                     )
         self.read = True
+    return filename

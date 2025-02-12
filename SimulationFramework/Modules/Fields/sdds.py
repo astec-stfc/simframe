@@ -6,7 +6,7 @@ from ..SDDSFile import SDDSFile, SDDS_Types
 
 def write_SDDS_field_file(self, sddsindex=0, ascii=False):
     """Save an SDDS file using the SDDS class."""
-    sdds_filename = self.filename.replace(".hdf5", ".sdds")
+    sdds_filename = self._output_filename(extension=".sdds")
     sddsfile = SDDSFile(index=sddsindex, ascii=ascii)
     data = None
     if self.field_type == "LongitudinalWake":
@@ -61,3 +61,4 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         csymbols = ["" for _ in len(data)]
         sddsfile.add_columns(cnames, ccolumns, ctypes, cunits, csymbols)
         sddsfile.write_file(sdds_filename)
+    return sdds_filename

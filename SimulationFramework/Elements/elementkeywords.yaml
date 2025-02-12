@@ -58,13 +58,12 @@ cavity:
       frequency,
       phase,
       field_definition,
-      field_definition_sdds,
-      field_definition_gdf,
       lsc_cutoff_high,
       field_amplitude,
       cell_length,
-      longitudinal_wakefield_sdds,
-      transverse_wakefield_sdds,
+      wakefield_definition,
+      longitudinal_wakefield,
+      transverse_wakefield,
       tcolumn,
       wzcolumn,
       wxcolumn,
@@ -83,18 +82,14 @@ cavity:
       design_power,
       design_gamma,
       bunch_phase,
-      wakefield_gdf,
-      longitudinal_wakefield_gdf,
-      transverse_wakefield_gdf,
       smooth,
       body_focus_model,
     }
-longitudinal_wakefield:
+wakefield:
   keywords:
     {
       n_cells,
       field_definition,
-      field_definition_sdds,
       field_amplitude,
       cell_length,
       waketype,
@@ -178,7 +173,6 @@ solenoid:
     {
       field_amplitude,
       field_definition,
-      field_definition_gdf,
       field_type,
       scale_field,
       field_scale,

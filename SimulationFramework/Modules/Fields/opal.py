@@ -12,11 +12,11 @@ def write_opal_field_file(
     orientation: str = None,
 ):
     length = self.length
-    opal_file = self.filename.replace(".hdf5", ".opal")
+    opal_file = self._output_filename(extension=".opal")
     data = None
     header = None
     fourier_ratio = fourier / length
-    if self.field_type is not "2DElectroDynamic":
+    if self.field_type != "2DElectroDynamic":
         if fourier_ratio > 1.0:
             warn("Too many fourier components provided; defaulting to 1/100")
             fourier = int(length / 100)
@@ -81,3 +81,4 @@ def write_opal_field_file(
                 f.write(" ".join([str(x) for x in h]) + "\n")
             for d in data:
                 f.write(" ".join([str(x) for x in d]) + "\n")
+    return opal_file

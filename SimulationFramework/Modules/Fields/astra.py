@@ -2,9 +2,8 @@ import numpy as np
 from warnings import warn
 
 
-def write_astra_field_file(self):
+def generate_astra_field_data(self):
     length = str(self.length)
-    astra_file = self.filename.replace(".hdf5", ".astra")
     data = None
     if self.field_type == "LongitudinalWake":
         zdata = self.z.value.val
@@ -74,7 +73,14 @@ def write_astra_field_file(self):
             data = np.transpose([zdata, ezdata])
     else:
         warn(f"Field type {self.field_type} not supported for ASTRA")
+    return data
+
+
+def write_astra_field_file(self):
+    astra_file = self._output_filename(extension=".astra")
+    data = generate_astra_field_data(self)
     if data is not None:
         with open(f"{astra_file}", "w") as f:
             for d in data:
                 f.write(" ".join([str(x) for x in d]) + "\n")
+    return astra_file

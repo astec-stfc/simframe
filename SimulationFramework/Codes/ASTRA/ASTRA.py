@@ -10,7 +10,7 @@ from ...Framework_objects import (
     getGrids,
     elementkeywords,
 )
-from ...Framework_elements import global_error
+from ...Framework_elements import global_error, wakefield
 from ...FrameworkHelperFunctions import expand_substitution, saveFile
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import Beams as rbf
@@ -219,7 +219,11 @@ class astraLattice(frameworkLattice):
                         auto_phase=self.headers["newrun"]["auto_phase"],
                     )
                 elif t[0] == "wakefields":
-                    elemstr = element.write_ASTRA(counter.counter("wakefields"))
+                    wake_element = wakefield(**self)
+                    elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
+                    print(wake_element)
+                    print(elemstr)
+                    exit()
                 else:
                     elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == "":

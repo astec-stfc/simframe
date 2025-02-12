@@ -41,8 +41,24 @@ tw_required_attrs = [
     "mode_denominator",
 ]
 
-fieldtype = Literal[*allowed_fields]
-cavitytype = Literal[*allowed_cavities]
+fieldtype = Literal[
+    "1DElectroStatic",
+    "1DMagnetoStatic",
+    "1DElectroDynamic",
+    "2DElectroStatic",
+    "2DMagnetoStatic",
+    "2DElectroDynamic",
+    "3DElectroStatic",
+    "3DMagnetoStatic",
+    "3DElectroDynamic",
+    "LongitudinalWake",
+    "TransverseWake",
+    "3DWake",
+]
+cavitytype = Literal[
+    "StandingWave",
+    "TravellingWave",
+]
 
 
 class FieldParameter(BaseModel):
@@ -51,6 +67,7 @@ class FieldParameter(BaseModel):
     name: str
     value: UnitValue | None = None
 
+
 from . import astra
 
 from . import gdf
@@ -58,24 +75,25 @@ from . import hdf5
 from . import sdds
 from . import opal
 
+
 class field(BaseModel):
-    x: Optional[FieldParameter(name="x")] = None
-    y: Optional[FieldParameter(name="y")] = None
-    z: Optional[FieldParameter(name="z")] = None
-    r: Optional[FieldParameter(name="r")] = None
-    t: Optional[FieldParameter(name="t")] = None
-    Ex: Optional[FieldParameter(name="Ex")] = None
-    Ey: Optional[FieldParameter(name="Ey")] = None
-    Ez: Optional[FieldParameter(name="Ez")] = None
-    Er: Optional[FieldParameter(name="Er")] = None
-    Bx: Optional[FieldParameter(name="Bx")] = None
-    By: Optional[FieldParameter(name="By")] = None
-    Bz: Optional[FieldParameter(name="Bz")] = None
-    Br: Optional[FieldParameter(name="Br")] = None
-    Wx: Optional[FieldParameter(name="Wx")] = None
-    Wy: Optional[FieldParameter(name="Wy")] = None
-    Wz: Optional[FieldParameter(name="Wz")] = None
-    Wr: Optional[FieldParameter(name="Wr")] = None
+    x: FieldParameter(name="x") = None
+    y: FieldParameter(name="y") = None
+    z: FieldParameter(name="z") = None
+    r: FieldParameter(name="r") = None
+    t: FieldParameter(name="t") = None
+    Ex: FieldParameter(name="Ex") = None
+    Ey: FieldParameter(name="Ey") = None
+    Ez: FieldParameter(name="Ez") = None
+    Er: FieldParameter(name="Er") = None
+    Bx: FieldParameter(name="Bx") = None
+    By: FieldParameter(name="By") = None
+    Bz: FieldParameter(name="Bz") = None
+    Br: FieldParameter(name="Br") = None
+    Wx: FieldParameter(name="Wx") = None
+    Wy: FieldParameter(name="Wy") = None
+    Wz: FieldParameter(name="Wz") = None
+    Wr: FieldParameter(name="Wr") = None
     filename: str | None = None
     field_type: fieldtype | None = None
     origin_code: str | None = None
@@ -83,7 +101,9 @@ class field(BaseModel):
     read: bool = False
     length: int | None = None
     frequency: float | None = None
-    radius: float | None = None # MAGIC NUMBER FOR SOLENOID RADIUS, DEFAULTS TO 10cm in write_opal_field_file
+    radius: float | None = (
+        None  # MAGIC NUMBER FOR SOLENOID RADIUS, DEFAULTS TO 10cm in write_opal_field_file
+    )
     fourier: int = 100
     cavity_type: cavitytype | None = None
     start_cell_z: float | None = None
@@ -94,10 +114,10 @@ class field(BaseModel):
     # For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator
 
     def __init__(
-            self,
-            filename = None,
-            *args,
-            **kwargs,
+        self,
+        filename=None,
+        *args,
+        **kwargs,
     ):
         field.filename = filename
         super(
@@ -120,7 +140,12 @@ class field(BaseModel):
         self.field_type = None
         self.norm = 1.0
         setattr(self, "t", FieldParameter(name="t"))
-        for par in ["x", "y", "z", "r",]:
+        for par in [
+            "x",
+            "y",
+            "z",
+            "r",
+        ]:
             setattr(self, par, FieldParameter(name=par))
             setattr(self, f"E{par}", FieldParameter(name=f"E{par}"))
             setattr(self, f"B{par}", FieldParameter(name=f"B{par}"))
@@ -129,23 +154,68 @@ class field(BaseModel):
 
     def read_field_file(self, filename: str):
         fext = os.path.splitext(os.path.basename(filename))[-1]
-        if fext == '.hdf5':
+        if fext == ".hdf5":
             hdf5.read_HDF5_field_file(self, filename)
 
-    def write_field_file(self, code: str):
+    def _output_filename(self, extension: str = ".hdf5", location: str | None = None):
+        if location is not None:
+            _output_location = os.path.dirname(os.path.abspath(location))
+        else:
+            if not hasattr(self, '_output_location'):
+                _output_location = os.path.dirname(os.path.dirname(self.filename))
+            else:
+                _output_location = self._output_location
+        basefilename = os.path.basename(self.filename)
+        pre, _ = os.path.splitext(basefilename)
+        return os.path.relpath(os.path.join(_output_location, pre + extension))
+
+    def get_field_data(self, code: str):
         if not self.read:
-            print("Field file not read in. Use read_field_file to load in an hdf5 field file.")
+            print(
+                "Field file not read in. Use read_field_file to load in an hdf5 field file."
+            )
             return
-        try:
-            if code.lower() in ["astra", "ocelot"]:
-                astra.write_astra_field_file(self)
-            elif code.lower() in ["sdds", "elegant"]:
-                sdds.write_SDDS_field_file(self)
-            elif code.lower() in ["gdf", "gpt"]:
-                gdf.write_gdf_field_file(self)
-            elif code.lower() == "opal":
-                opal.write_opal_field_file(self, frequency=self.frequency, radius=self.radius, fourier=self.fourier, orientation=self.orientation)
-        except NotImplementedError as e:
-            print("Supported formats are [astra, sdds, opal, gdf]")
+        # try:
+        if code.lower() in ["astra", "ocelot"]:
+            return astra.generate_astra_field_data(self)
+        return None
+        # elif code.lower() in ["sdds", "elegant"]:
+        #     return sdds.write_SDDS_field_file(self)
+        # elif code.lower() in ["gdf", "gpt"]:
+        #     return gdf.write_gdf_field_file(self)
+        # elif code.lower() == "opal":
+        #     return opal.write_opal_field_file(
+        #         self,
+        #         frequency=self.frequency,
+        #         radius=self.radius,
+        #         fourier=self.fourier,
+        #         orientation=self.orientation,
+        #     )
 
-
+    def write_field_file(self, code: str, location: str | None = None):
+        if not self.read:
+            print(
+                "Field file not read in. Use read_field_file to load in an hdf5 field file."
+            )
+            return
+        # try:
+        if location is not None:
+            self._output_location = os.path.dirname(os.path.abspath(location))
+        else:
+            self._output_location = os.path.dirname(os.path.dirname(self.filename))
+        if code.lower() in ["astra", "ocelot"]:
+            return astra.write_astra_field_file(self)
+        elif code.lower() in ["sdds", "elegant"]:
+            return sdds.write_SDDS_field_file(self)
+        elif code.lower() in ["gdf", "gpt"]:
+            return gdf.write_gdf_field_file(self)
+        elif code.lower() == "opal":
+            return opal.write_opal_field_file(
+                self,
+                frequency=self.frequency,
+                radius=self.radius,
+                fourier=self.fourier,
+                orientation=self.orientation,
+            )
+        # except NotImplementedError:
+        #     print("Supported formats are [astra, sdds, opal, gdf]")

@@ -696,6 +696,7 @@ class Framework(Munch):
             element = getattr(frameworkElements, type)(
                 name, type, global_parameters=self.global_parameters, **kwargs
             )
+            element.update_field_definition()
         except Exception as e:
             print(e)
             print(type, name, kwargs)

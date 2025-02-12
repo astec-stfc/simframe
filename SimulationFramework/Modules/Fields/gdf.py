@@ -3,7 +3,7 @@ from warnings import warn
 
 
 def write_gdf_field_file(self):
-    gdf_file = self.filename.replace(".hdf5", ".gdf")
+    gdf_file = self._output_filename(extension=".gdf")
     data = None
     blocks = []
     if self.field_type == "LongitudinalWake":
@@ -51,3 +51,4 @@ def write_gdf_field_file(self):
         warn(f"Field type {self.field_type} not supported for GPT")
     if data is not None:
         easygdf.save(gdf_file, blocks)
+    return gdf_file
