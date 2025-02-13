@@ -1,5 +1,6 @@
 import os
 from ..units import UnitValue
+from ..constants import speed_of_light
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -152,6 +153,18 @@ class field(BaseModel):
             setattr(self, f"W{par}", FieldParameter(name=f"W{par}"))
         self.read = False
 
+    @property
+    def z_values(self):
+        if self.t.value is not None and self.z.value is None:
+            return -1 * abs(self.t.value.val * speed_of_light)
+        return self.z.value.val
+
+    @property
+    def t_values(self):
+        if self.z is not None and self.t.value is None:
+            return abs(self.z.value.val / speed_of_light)
+        return self.t.value.val
+        
     def read_field_file(self, filename: str):
         fext = os.path.splitext(os.path.basename(filename))[-1]
         if fext == ".hdf5":

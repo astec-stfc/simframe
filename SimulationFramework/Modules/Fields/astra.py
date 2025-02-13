@@ -5,12 +5,11 @@ from warnings import warn
 def generate_astra_field_data(self):
     length = str(self.length)
     data = None
+    zdata = self.z_values
     if self.field_type == "LongitudinalWake":
-        zdata = self.z.value.val
         wzdata = self.Wz.value.val
         data = np.concatenate([np.array([[length, ""]]), np.transpose([zdata, wzdata])])
     elif self.field_type == "TransverseWake":
-        zdata = self.z.value.val
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
         data = np.concatenate(
@@ -39,7 +38,6 @@ def generate_astra_field_data(self):
                 [0, 24],
             ]
         )
-        zdata = self.z.value.val
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
         wzdata = self.Wz.value.val
@@ -48,11 +46,9 @@ def generate_astra_field_data(self):
         yvals = np.concatenate([ypreamble, np.transpose([zdata, wydata])])
         data = np.concatenate([zvals, xvals, yvals])
     elif self.field_type == "1DMagnetoStatic":
-        zdata = self.z.value.val
         bzdata = self.Bz.value.val
         data = np.transpose([zdata, bzdata])
     elif self.field_type == "1DElectroDynamic":
-        zdata = self.z.value.val
         ezdata = self.Ez.value.val
         if self.cavity_type == "TravellingWave":
             spdata = ["" for _ in range(self.length)]
