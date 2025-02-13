@@ -53,7 +53,7 @@ class emittance:
         )
         if p is not None:
             beta = np.mean(self.beam.Bz)
-            gamma = np.mean(p) / (self.beam.E0_eV * beta)
+            gamma = np.mean(p) / (np.mean(self.beam.particle_rest_energy_eV) * beta)
             emittance = gamma * emittance
         return emittance
 

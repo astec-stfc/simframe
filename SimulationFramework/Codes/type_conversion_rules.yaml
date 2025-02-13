@@ -26,6 +26,7 @@ elegant:
   marker: marker
   apcontour: apcontour
   watch_point: watch
+  wakefield: wake
 name:
   dia-bpm: beam_position_monitor
   dia-bam: beam_arrival_monitor
