@@ -111,7 +111,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.append('eta_y', np.zeros(len(gdfbeamdata.stdy)))
         self.append('eta_yp', np.zeros(len(gdfbeamdata.stdy)))
         self.append("element_name", np.zeros(len(gdfbeamdata.stdx)))
-        # ## BEAM parameters
+        ### BEAM parameters
         self.append("ecnx", np.zeros(len(gdfbeamdata.stdx)))
         self.append("ecny", np.zeros(len(gdfbeamdata.stdx)))
         self.append("eta_x_beam", np.zeros(len(gdfbeamdata.stdx)))
