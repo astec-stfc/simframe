@@ -237,6 +237,17 @@ class frameworkLattice(Munch):
         return self.getElementType("longitudinal_wakefield")
 
     @property
+    def wakefields_and_cavity_wakefields(self):
+        cavities = [cav for cav in self.getElementType("cavity") if
+                    (hasattr(cav, 'longitudinal_wakefield') and cav['longitudinal_wakefield'] is not None and cav['longitudinal_wakefield'] != '')
+                    or
+                    (hasattr(cav, 'transverse_wakefield') and cav['transverse_wakefield'] is not None and cav['transverse_wakefield'] != '')
+                    or
+                    (hasattr(cav, 'wakefield') and cav['wakefield'] is not None and cav['wakefield'] != '')]
+        wakes = self.getElementType("longitudinal_wakefield")
+        return cavities + wakes
+
+    @property
     def screens(self):
         return self.getElementType("screen")
 
@@ -1098,7 +1109,7 @@ class frameworkElement(frameworkObject):
             return float(expand_substitution(self, self.field_amplitude))
 
     def get_field_reference_position(self):
-        if hasattr(self, "field_reference_position"):
+        if hasattr(self, "field_reference_position") and isinstance(self.field_reference_position, str):
             if self.field_reference_position.lower() == "start":
                 return self.start
             elif self.field_reference_position.lower() == "middle":
@@ -1111,7 +1122,7 @@ class frameworkElement(frameworkObject):
                     self.field_reference_position,
                 )
         else:
-            return self.middle
+            return self.start
 
     @property
     def theta(self):

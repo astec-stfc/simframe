@@ -11,17 +11,18 @@ class solenoid(frameworkElement):
         self.add_default("default_array_names", ["Z", "Bz"])
 
     def _write_ASTRA(self, n, **kwargs):
+        field_ref_pos = self.get_field_reference_position()
         basename = self.generate_field_file_name(self.field_definition)
         efield_def = ["FILE_BFieLD", {"value": "'" + basename + "'", "default": ""}]
         return self._write_ASTRA_dictionary(
             dict(
                 [
-                    ["S_pos", {"value": self.middle[2] + self.dz, "default": 0}],
+                    ["S_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
                     efield_def,
                     ["MaxB", {"value": self.get_field_amplitude, "default": 0}],
                     ["S_smooth", {"value": self.smooth, "default": 10}],
-                    ["S_xoff", {"value": self.middle[0] + self.dx, "default": 0}],
-                    ["S_yoff", {"value": self.middle[1] + self.dy, "default": 0}],
+                    ["S_xoff", {"value": field_ref_pos[0] + self.dx, "default": 0}],
+                    ["S_yoff", {"value": field_ref_pos[1] + self.dy, "default": 0}],
                     ["S_xrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
                     ["S_yrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
                     ["S_noscale", {"value": not self.scale_field, "default": False}],
@@ -31,7 +32,8 @@ class solenoid(frameworkElement):
         )
 
     def _write_GPT(self, Brho, ccs, *args, **kwargs):
-        ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
+        field_ref_pos = self.get_field_reference_position()
+        ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         if self.field_type.lower() == "1d":
             self.default_array_names = ["Z", "Bz"]
             """

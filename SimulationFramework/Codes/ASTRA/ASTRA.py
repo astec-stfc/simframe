@@ -196,7 +196,7 @@ class astraLattice(frameworkLattice):
         counter = frameworkCounter(sub={"kicker": "dipole", "collimator": "aperture"})
         for t in [
             ["cavities"],
-            ["wakefields"],
+            ["wakefields", "wakefields_and_cavity_wakefields"],
             ["solenoids"],
             ["quadrupoles"],
             ["dipoles", "dipoles_and_kickers"],
@@ -218,14 +218,16 @@ class astraLattice(frameworkLattice):
                         counter.counter(element.objecttype),
                         auto_phase=self.headers["newrun"]["auto_phase"],
                     )
+                elif t[0] == "wakefields":
+                    elemstr = element.write_ASTRA(counter.counter("wakefields"))
                 else:
                     elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == "":
                     fulltext += elemstr + "\n"
                     if element.objecttype == "kicker":
                         counter.add(element.objecttype)
-                    elif element.objecttype == "longitudinal_wakefield":
-                        counter.add(element.objecttype, element.cells)
+                    elif t == "wakefields":
+                        counter.add("wakefields", element.cells)
                     elif (
                         element.objecttype == "aperture"
                         or element.objecttype == "collimator"
