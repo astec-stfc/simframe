@@ -6,7 +6,7 @@ from pydantic import (
     ConfigDict,
     model_validator,
 )
-from typing import Literal, Optional
+from typing import Literal
 
 allowed_fields = [
     "1DElectroStatic",
@@ -69,12 +69,12 @@ class FieldParameter(BaseModel):
     value: UnitValue | None = None
 
 
-from . import astra
+from . import astra  # noqa E402
 
-from . import gdf
-from . import hdf5
-from . import sdds
-from . import opal
+from . import gdf  # noqa E402
+from . import hdf5  # noqa E402
+from . import sdds  # noqa E402
+from . import opal  # noqa E402
 
 
 class field(BaseModel):
@@ -164,7 +164,7 @@ class field(BaseModel):
         if self.z is not None and self.t.value is None:
             return abs(self.z.value.val / speed_of_light)
         return self.t.value.val
-        
+
     def read_field_file(self, filename: str):
         fext = os.path.splitext(os.path.basename(filename))[-1]
         if fext == ".hdf5":

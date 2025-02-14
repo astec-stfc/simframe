@@ -12,7 +12,7 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
     tdata = self.t_values
     if self.field_type == "LongitudinalWake":
         wzdata = self.Wz.value.val
-        cnames = ["z", "t", "W"]
+        cnames = ["z", "t", "Wz"]
         cunits = ["m", "s", "V/C"]
         ccolumns = [
             zdata,

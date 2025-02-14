@@ -9,7 +9,6 @@ from .FrameworkHelperFunctions import (
     expand_substitution,
     checkValue,
     chop,
-    copylink,
     dot
 )
 from .FrameworkHelperFunctions import _rotation_matrix
@@ -1283,19 +1282,23 @@ class frameworkElement(frameworkObject):
         return self._write_ASTRA(n, **kwargs)
 
     def generate_field_file_name(self, param, code):
-        basename = os.path.basename(param.filename).replace('"', "").replace("'", "")
-        # location = os.path.abspath(
-        #     expand_substitution(self, param.filename)
-        #     .replace("\\", "/")
-        #     .replace('"', "")
-        #     .replace("'", "")
-        # )
-        efield_basename = os.path.abspath(
-            self.global_parameters["master_subdir"].replace("\\", "/")
-            + "/"
-            + basename.replace("\\", "/")
-        )
-        return os.path.basename(param.write_field_file(code=code, location=efield_basename))
+        if hasattr(param, 'filename'):
+            basename = os.path.basename(param.filename).replace('"', "").replace("'", "")
+            # location = os.path.abspath(
+            #     expand_substitution(self, param.filename)
+            #     .replace("\\", "/")
+            #     .replace('"', "")
+            #     .replace("'", "")
+            # )
+            efield_basename = os.path.abspath(
+                self.global_parameters["master_subdir"].replace("\\", "/")
+                + "/"
+                + basename.replace("\\", "/")
+            )
+            return os.path.basename(param.write_field_file(code=code, location=efield_basename))
+        else:
+            print(f'param does not have a filename: {param}')
+        return None
 
     def _write_Elegant(self):
         wholestring = ""
@@ -1396,6 +1399,9 @@ class frameworkElement(frameworkObject):
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         return self._write_GPT(Brho, ccs, *args, **kwargs)
+
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+        return ""
 
     def gpt_coordinates(self, position, rotation):
         x, y, z = chop(position, 1e-6)
