@@ -19,7 +19,7 @@ class ocelotLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(ocelotLattice, self).__init__(*args, **kwargs)
         self.code = "ocelot"
-        self.particle_definition = self.allElementObjects[self.start].objectname
+        self.allow_negative_drifts = False
         self.bunch_charge = None
         self.trackBeam = True
         self.betax = None
@@ -85,6 +85,22 @@ class ocelotLattice(frameworkLattice):
             else 10
         )
 
+        if (
+            "input" in self.file_block
+            and "particle_definition" in self.file_block["input"]
+        ):
+            if (
+                self.file_block["input"]["particle_definition"]
+                == "initial_distribution"
+            ):
+                self.particle_definition = "laser"
+            else:
+                self.particle_definition = self.file_block["input"][
+                    "particle_definition"
+                ]
+        else:
+            self.particle_definition = self.allElementObjects[self.start].objectname
+
     def endScreen(self, **kwargs):
         return screen(
             name=self.endObject.objectname,
@@ -142,7 +158,7 @@ class ocelotLattice(frameworkLattice):
         )
         rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5fnwpath)
         ocebeamfilename = HDF5fnwpath.replace("hdf5", "npz")
-        self.pin = rbf.ocelot.write_ocelot_beam_file(
+        self.pin = rbf.beam.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
         )
 

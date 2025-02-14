@@ -39,8 +39,7 @@ class MVE:
     def PDFI(self, x, x_grid, bandwidth=0.2, **kwargs):
         kde = self.kde_function(x, bandwidth, **kwargs)
         vals = kde.evaluate(x_grid)
-        f = lambda bin, val: self.Q / len(self.t) * (val / bin)
-        return vals  # self.charge * vals / (2*abs(x_grid[1] - x_grid[0])) / len(self.t) #[f(x_grid[1] - x_grid[0], v) for v in vals]
+        return self.beam.total_charge * vals
 
     def CDF(self, x, x_grid, bandwidth=0.2, **kwargs):
         kde = self.kde_function(x, bandwidth, **kwargs)

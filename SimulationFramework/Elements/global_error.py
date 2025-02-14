@@ -4,7 +4,7 @@ from SimulationFramework.Framework_objects import frameworkElement
 class global_error(frameworkElement):
 
     def __init__(self, name=None, type="global_error", **kwargs):
-        super().__init__(name, "global_error", **kwargs)
+        super().__init__(name, type, **kwargs)
         # self._errordict = {}
 
     def add_Error(self, type, sigma):

@@ -17,7 +17,7 @@ class quadrupole(frameworkElement):
 
     @k1.setter
     def k1(self, k1):
-        self.k1l = self.length * k1
+        self.k1l = float(self.length) * float(k1)
 
     @property
     def dk1(self):

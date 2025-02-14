@@ -321,6 +321,7 @@ class frameworkGenerator(Munch):
         thermal_emittance = (
             float(self["thermal_emittance"])
             if "thermal_emittance" in self.keys()
+            and self["thermal_emittance"] is not None
             else 0.9e-3
         )
         return float(

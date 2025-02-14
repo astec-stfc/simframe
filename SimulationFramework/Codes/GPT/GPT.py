@@ -17,8 +17,9 @@ gpt_defaults = {}
 
 class gptLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
-        super(gptLattice, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.code = "gpt"
+        self.allow_negative_drifts = True
         self.bunch_charge = None
         # self.particle_definition = self.allElementObjects[self.start].objectname
         self.headers = dict()
@@ -360,7 +361,7 @@ class gptLattice(frameworkLattice):
             + self.objectname
             + "_out.gdf",
         )
-        for e in self.screens_and_bpms:
+        for e in self.screens_and_markers_and_bpms:
             if not e == self.ignore_start_screen:
                 e.gdf_to_hdf5(
                     self.objectname + "_out.gdf", cathode=cathode, gdfbeam=gdfbeam
