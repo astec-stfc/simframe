@@ -152,7 +152,6 @@ class twiss(munch.Munch):
 
     @property
     def eta_x(self):
-        # print('etax = ', self.calculate_etax()[0])
         return self.calculate_etax()[0]
 
     @property
