@@ -90,8 +90,6 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append("alpha_z", np.zeros(len(elegantData["Z"])))
         self.append("sigma_x", elegantData["Sx"])
         self.append("sigma_y", elegantData["Sy"])
-        self.append("sigma_xp", elegantData["Sxp"])
-        self.append("sigma_yp", elegantData["Syp"])
         self.append("sigma_t", elegantData["St"])
         self.append("mean_x", elegantData["Cx"])
         self.append("mean_y", elegantData["Cy"])

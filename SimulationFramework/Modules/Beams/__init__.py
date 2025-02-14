@@ -13,6 +13,7 @@ from . import sdds
 from . import gdf
 from . import hdf5
 from . import mad8
+from . import ocelot
 
 try:
     from . import plot
@@ -341,7 +342,6 @@ class beam(munch.Munch):
         astra.read_astra_beam_file(self, *args, **kwargs)
 
     def read_ocelot_beam_file(self, *args, **kwargs):
-        from . import ocelot
         ocelot.read_ocelot_beam_file(self, *args, **kwargs)
 
     def write_HDF5_beam_file(self, *args, **kwargs):
@@ -357,7 +357,6 @@ class beam(munch.Munch):
         astra.write_astra_beam_file(self, *args, **kwargs)
 
     def write_ocelot_beam_file(self, *args, **kwargs):
-        from . import ocelot
         ocelot.write_ocelot_beam_file(self, *args, **kwargs)
 
     def write_mad8_beam_file(self, *args, **kwargs):
@@ -372,7 +371,6 @@ class beam(munch.Munch):
         elif ext.lower() == ".gdf":
             gdf.read_gdf_beam_file(self, filename)
         elif ext.lower() == ".ocelot":
-            from . import ocelot
             ocelot.read_ocelot_beam_file(self, filename)
         elif ext.lower() == ".astra":
             astra.read_astra_beam_file(self, filename)

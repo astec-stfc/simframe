@@ -418,9 +418,20 @@ class gptLattice(frameworkLattice):
         cathode = self.particle_definition == "laser"
         rbf.gdf.write_gdf_beam_file(
             self.global_parameters["beam"],
-            self.global_parameters["master_subdir"] + "/" + gdfbeamfilename,
+            self.global_parameters["master_subdir"] + "/" + self.objectname + ".txt",
             normaliseX=self.allElementObjects[self.start].start[0],
             cathode=cathode,
+        )
+        subprocess.call(
+            [
+                os.path.abspath(
+                    self.executables[self.code][0].replace("gpt", "asci2gdf")
+                ),
+                "-o",
+                gdfbeamfilename,
+                self.objectname + ".txt",
+            ],
+            cwd=self.global_parameters["master_subdir"],
         )
         self.Brho = self.global_parameters["beam"].Brho
 
@@ -454,6 +465,22 @@ class gpt_setfile(gpt_element):
     def __init__(self, **kwargs):
         super(gpt_setfile, self).__init__(
             elementName="setfile", elementType="gpt_setfile", **kwargs
+        )
+
+    def hdf5_to_gpt(self, prefix=""):
+        HDF5filename = prefix + self.particle_definition.replace(".gdf", "") + ".hdf5"
+        print("HDF5filename =", HDF5filename)
+        rbf.hdf5.read_HDF5_beam_file(
+            self.global_parameters["beam"],
+            self.global_parameters["master_subdir"] + "/" + HDF5filename,
+        )
+        # self.global_parameters['beam'].rotate_beamXZ(self.theta, preOffset=self.starting_offset)
+        gptbeamfilename = self.particle_definition
+        print("gptbeamfilename =", gptbeamfilename)
+        rbf.gdf.write_gdf_beam_file(
+            self.global_parameters["beam"],
+            self.global_parameters["master_subdir"] + "/" + gptbeamfilename,
+            normaliseZ=False,
         )
 
 

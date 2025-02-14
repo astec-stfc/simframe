@@ -9,7 +9,7 @@ requirements = [
     "h5py>=2.10",
     "munch>=2.5",
     "numpy>=1.19,<2",
-    "tqdm>=4",
+    "progressbar2>=3",
     "PyQt5>=5.1",
     "PyYAML>=5.3",
     "mpl-axes-aligner>=1.1",
@@ -17,7 +17,6 @@ requirements = [
     "fastKDE<2",
     "pydantic>=2.5.3",
     "attrs>=23.2.0",
-    "easygdf>=2.1.1",
 ]
 
 setup(

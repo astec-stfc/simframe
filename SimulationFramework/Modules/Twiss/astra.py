@@ -79,8 +79,6 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     self.append("alpha_z", (-1 * np.sign(mean_zep) * rms_z * rms_e) / ez)
     self.append("sigma_x", rms_x)
     self.append("sigma_y", rms_y)
-    self.append("sigma_xp", rms_xp)
-    self.append("sigma_yp", rms_yp)
     self.append("sigma_z", rms_z)
     self.append("mean_x", mean_x)
     self.append("mean_y", mean_y)
