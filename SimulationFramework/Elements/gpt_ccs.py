@@ -65,4 +65,7 @@ class gpt_ccs(Munch):
         if abs(theta) > 0:
             ccs_label += "Z"
             value_text += "," + str(theta)
+        if ccs_label == "" and value_text == "":
+            ccs_label = "z"
+            value_text = "," + str(0)
         return '"' + ccs_label + '"', value_text.strip(",")

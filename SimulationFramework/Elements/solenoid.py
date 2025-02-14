@@ -36,7 +36,7 @@ class solenoid(frameworkElement):
         field_file_name = self.generate_field_file_name(self.field_definition, code="gpt")
         ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         if self.field_type.lower() == "1d":
-            self.default_array_names = ["Z", "Bz"]
+            self.default_array_names = ["z", "Bz"]
             """
             map1D_B("wcs",xOffset,0,zOffset+0.,cos(angle),0,-sin(angle),0,1,0,"bas_sol_norm.gdf","Z","Bz",gunSolField);
             """
@@ -58,7 +58,7 @@ class solenoid(frameworkElement):
                 + ");\n"
             )
         elif self.field_type.lower() == "3d":
-            self.default_array_names = ["X", "Y", "Z", "Bx", "By", "Bz"]
+            self.default_array_names = ["x", "y", "z", "Bx", "By", "Bz"]
             """
             map3D_B("wcs", xOffset,0,zOffset+0.,cos(angle),0,-sin(angle),0,1,0, "sol3.gdf", "x", "y", "z", "Bx", "By", "Bz", scale3);
             """
