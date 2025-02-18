@@ -8,6 +8,7 @@ class quadrupole(frameworkElement):
         self.add_default("k1l", 0)
         self.add_default("n_kicks", 4)
         self.add_default("field_reference_position", "middle")
+        self.add_default("fringe_field_coefficient", 0)
         self.strength_errors = [0]
 
     @property
