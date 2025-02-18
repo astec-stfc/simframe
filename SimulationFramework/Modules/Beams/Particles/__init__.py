@@ -277,15 +277,15 @@ class Particles(Munch):
 
     @property
     def Bx(self):
-        return UnitValue(self.cpx / self.Ex, "")
+        return UnitValue(self.cpx / self.energy, "")
 
     @property
     def By(self):
-        return UnitValue(self.cpy / self.Ey, "")
+        return UnitValue(self.cpy / self.energy, "")
 
     @property
     def Bz(self):
-        return UnitValue(self.cpz / self.Ez, "")
+        return UnitValue(self.cpz / self.energy, "")
 
     @property
     def Q(self):
