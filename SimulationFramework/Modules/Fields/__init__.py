@@ -112,6 +112,7 @@ class field(BaseModel):
     mode_numerator: float | None = None
     mode_denominator: float | None = None
     orientation: str | None = None
+    n_cells: int | float | None = None
     # For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator
 
     def __init__(
