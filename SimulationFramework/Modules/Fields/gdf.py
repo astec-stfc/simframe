@@ -2,6 +2,7 @@ from math import floor
 import numpy as np
 import easygdf
 from warnings import warn
+from ..constants import speed_of_light
 
 
 def write_gdf_field_file(self):
@@ -42,19 +43,21 @@ def write_gdf_field_file(self):
         ezdata = self.Ez.value.val
         fielddata = np.array([zdata, ezdata]).transpose()
         if self.cavity_type == "TravellingWave":
-            startpos = zdata.index(self.start_cell_z)
-            stoppos = zdata.index(self.end_cell_z)
-            halfcell1 = fielddata[:startpos]
-            halfcell1end = zdata[startpos]
-            halfcell2 = fielddata[stoppos:]
-            halfcell2start = zdata[stoppos]
+            startpos = list(zdata).index(self.start_cell_z)
+            stoppos = list(zdata).index(self.end_cell_z)
+            halfcell1 = 1.*fielddata[:startpos]
+            halfcell2 = 1.*halfcell1[::-1]
+            halfcell1[:, 1] /= max(halfcell1[:, 1])
+            halfcell2[:, 0] = halfcell2[:, 0][::-1]
+            halfcell2[:, 1] /= max(halfcell2[:, 1])
+            halfcell1end = halfcell1[-1, 0]
             zstep = zdata[1] - zdata[0]
-            lambdaRF = self.speed_of_light/self.frequency
-            ncells = floor(self.length / lambdaRF - 1)
-            nsteps = ncells * lambdaRF / zstep
-            middleRF = np.array([[(x*zstep + halfcell1end), np.cos((2 * np.pi / lambdaRF) * (x*zstep))] for x in range(0, nsteps)])
-            halfcell2[:, 0] += middleRF[-1, 0] - halfcell2start
-            ezdata = np.concatenate([halfcell1, middleRF, halfcell2])
+            lambdaRF = speed_of_light/self.frequency
+            ncells = (self.n_cells - 1) * self.mode_numerator / self.mode_denominator
+            nsteps = int(np.floor((ncells-1) * lambdaRF / zstep))
+            middleRF = np.array([[(x*zstep + halfcell1end + zstep), np.cos((2 * np.pi / lambdaRF) * (x*zstep))] for x in range(0, nsteps+1)])
+            halfcell2[:, 0] += middleRF[-1, 0] + zstep
+            zdata, ezdata = np.concatenate([halfcell1, middleRF, halfcell2]).transpose()
         blocks = [
             {"name": "z", "value": zdata},
             {"name": "Ez", "value": ezdata},
