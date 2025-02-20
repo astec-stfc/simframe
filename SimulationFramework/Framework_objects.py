@@ -1207,7 +1207,8 @@ class frameworkElement(frameworkObject):
         """Updates the field definitions to allow for the relative sub-directory location"""
         if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
             self.field_definition = field(
-                expand_substitution(self, self.field_definition)
+                expand_substitution(self, self.field_definition),
+                n_cells=self.n_cells
             )
         if (
             hasattr(self, "wakefield_definition")
@@ -1215,7 +1216,8 @@ class frameworkElement(frameworkObject):
             and isinstance(self.wakefield_definition, str)
         ):
             self.wakefield_definition = field(
-                expand_substitution(self, self.wakefield_definition)
+                expand_substitution(self, self.wakefield_definition),
+                n_cells=self.n_cells
             )
 
     def _write_ASTRA_dictionary(self, d, n=1):
@@ -1297,7 +1299,8 @@ class frameworkElement(frameworkObject):
             )
             return os.path.basename(param.write_field_file(code=code, location=efield_basename))
         else:
-            print(f'param does not have a filename: {param}')
+            pass
+            # print(f'param does not have a filename: {param}')
         return None
 
     def _write_Elegant(self):
