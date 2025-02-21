@@ -189,6 +189,7 @@ class field(BaseModel):
                 gdf.read_gdf_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
             elif fext.lower() in [".opal"]:
                 opal.read_opal_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+            self.read = True
 
     def _output_filename(self, extension: str = ".hdf5", location: str | None = None):
         if location is not None:
@@ -250,5 +251,7 @@ class field(BaseModel):
                 fourier=self.fourier,
                 orientation=self.orientation,
             )
+        elif code.lower() == "hdf5":
+            return hdf5.write_HDF5_field_file(self)
         # except NotImplementedError:
         #     print("Supported formats are [astra, sdds, opal, gdf]")
