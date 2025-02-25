@@ -78,11 +78,12 @@ class screen(frameworkElement):
         relpos, _ = ccs.relative_position(self.middle, self.global_rotation)
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         self.gpt_screen_position = relpos[2]
-        output = "screen( " + ccs.name + ', "I", ' + str(relpos[2]) + ","
+        output = "screen( " + ccs.name + ', "I", ' + str(relpos[2]) + ",\"OutputCCS\","
         if output_ccs is not None:
             output += '"' + str(output_ccs) + '"'
         else:
             output += ccs.name
+        output += ", \"GroupName\", \"" + self.objectname + "\""
         output += ");\n"
         return output
 
@@ -183,7 +184,7 @@ class screen(frameworkElement):
         rbf.gdf.read_gdf_beam_file(
             self.beam,
             self.global_parameters["master_subdir"] + "/" + gptbeamfilename,
-            position=self.gpt_screen_position,
+            position=self.objectname,
             gdfbeam=gdfbeam,
         )
         HDF5filename = self.objectname + ".hdf5"

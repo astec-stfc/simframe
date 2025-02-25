@@ -1,5 +1,6 @@
 import os
 import subprocess
+import random
 import numpy as np
 from ...Framework_objects import (
     frameworkLattice,
@@ -7,7 +8,7 @@ from ...Framework_objects import (
     elementkeywords,
     getGrids,
 )
-from ...Framework_elements import screen, gpt_ccs
+from ...Framework_elements import screen, marker, gpt_ccs
 from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.merge_two_dicts import merge_two_dicts
@@ -141,8 +142,8 @@ class gptLattice(frameworkLattice):
                             + ", "
                             + str(relpos[2])
                             + ", "
-                            + str(self.screen_step_size)
-                            + ","
+                            + str(float(self.screen_step_size))
+                            + ", \"OutputCCS\","
                             + ccs.name
                             + ");\n"
                         )
@@ -151,18 +152,18 @@ class gptLattice(frameworkLattice):
                             "screen( "
                             + ccs.name
                             + ', "I", '
-                            + str(screen0pos + self.screen_step_size)
+                            + str(screen0pos)
                             + ", "
                             + str(relpos[2])
                             + ", "
-                            + str(self.screen_step_size)
-                            + ","
+                            + str(float(self.screen_step_size))
+                            + ", \"OutputCCS\","
                             + ccs.name
                             + ");\n"
                         )
                     screen0pos = 0
                     ccs = new_ccs
-        if not isinstance(element, screen):
+        if not isinstance(element, (screen, marker)):
             element = self.endScreenObject = self.endScreen()
             fulltext += self.endScreenObject.write_GPT(
                 self.Brho, ccs=ccs, output_ccs="wcs"
@@ -182,8 +183,8 @@ class gptLattice(frameworkLattice):
                 + ", "
                 + str(relpos[2])
                 + ", "
-                + str(self.screen_step_size)
-                + ","
+                + str(float(self.screen_step_size))
+                + ", \"OutputCCS\","
                 + ccs.name
                 + ");\n"
             )
@@ -192,15 +193,19 @@ class gptLattice(frameworkLattice):
                 "screen( "
                 + ccs.name
                 + ', "I", '
-                + str(screen0pos + self.screen_step_size)
+                + str(screen0pos)
                 + ", "
                 + str(relpos[2])
                 + ", "
-                + str(self.screen_step_size)
-                + ","
+                + str(float(self.screen_step_size))
+                + ", \"OutputCCS\","
                 + ccs.name
+                # + ", \"GroupName\","
+                # + "\"SCREEN-" + ccs.name.strip("\"").upper() + "-END-01\""
                 + ");\n"
             )
+            zminmax = gpt_Zminmax(ECS="\"wcs\", \"I\"", zmin=self.startObject.position_start[2]-0.1, zmax=self.endObject.position_end[2]+1)
+            fulltext += zminmax.write_GPT()
         return fulltext
 
     def write(self):
