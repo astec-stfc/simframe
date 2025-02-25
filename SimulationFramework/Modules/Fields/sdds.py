@@ -1,5 +1,11 @@
+from logging import FileHandler
+
 import numpy as np
+from jedi.debug import speed
+
+from ..units import UnitValue
 from ..constants import speed_of_light
+from . import FieldParameter
 from warnings import warn
 from ..SDDSFile import SDDSFile, SDDS_Types
 
@@ -64,3 +70,27 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         sddsfile.add_columns(cnames, ccolumns, ctypes, cunits, csymbols)
         sddsfile.write_file(sdds_filename)
     return sdds_filename
+
+def read_SDDS_field_file(self, filename: str, field_type: str):
+    self.reset_dicts()
+    setattr(self, "field_type", field_type)
+    try:
+        elegantObject = SDDSFile(index=1, ascii=True)
+    except:
+        elegantObject = SDDSFile(index=1, ascii=False)
+    elegantObject.read_file(filename, page=-1)
+    if field_type in ["LongitudinalWake", "3DWake", "TransverseWake"]:
+        for val in elegantObject._columns.values():
+            if val.unit == "m":
+                setattr(self, "z", FieldParameter(name="z", value=UnitValue(val.data, units=val.unit)))
+            elif val.unit == "s":
+                setattr(self, "z", FieldParameter(name="z", value=UnitValue(val.data / speed_of_light, units="m")))
+            elif val.unit == "V/C":
+                setattr(self, "Wz", FieldParameter(name="Wz", value=UnitValue(val.data, units="V/C")))
+            elif val.unit == "V/C/m":
+                setattr(self, "Wx", FieldParameter(name="Wx", value=UnitValue(val.data, units="V/C/m")))
+                setattr(self, "Wy", FieldParameter(name="Wy", value=UnitValue(val.data, units="V/C/m")))
+            else:
+                raise ValueError(f"Unit {val.unit} not recognised in {filename}")
+    else:
+        raise NotImplementedError(f"{field_type} loading not implemented for SDDS files")

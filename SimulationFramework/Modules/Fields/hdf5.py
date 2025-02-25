@@ -69,3 +69,19 @@ def read_HDF5_field_file(self, filename, normalise=True):
                     )
         self.read = True
     return filename
+
+def write_HDF5_field_file(self):
+    self.filename = " ".join(self.filename.split(".")[:-1]) + ".hdf5"
+    with h5py.File(self.filename, "w") as h5file:
+        attrs = ["field_type", "frequency", "radius", "fourier", "cavity_type", "start_cell_z", "end_cell_z", "mode_numerator", "mode_denominator", "orientation"]
+        for att in attrs:
+            if hasattr(self, att):
+                if getattr(self, att) is not None:
+                    h5file.attrs[att] = getattr(self, att)
+        dsets = ["x", "y", "z", "r", "Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br", "Wx", "Wy", "Wz", "Wr"]
+        for dset in dsets:
+            if isinstance(getattr(self, dset), FieldParameter):
+                if getattr(self, dset).value is not None:
+                    dataset = h5file.create_dataset(dset, data=getattr(self, dset).value)
+                    dataset.attrs["units"] = getattr(self, dset).value.units
+    return self.filename

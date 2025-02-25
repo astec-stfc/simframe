@@ -1,4 +1,6 @@
 import os
+import warnings
+
 from ..units import UnitValue
 from ..constants import speed_of_light
 from pydantic import (
@@ -70,7 +72,6 @@ class FieldParameter(BaseModel):
 
 
 from . import astra  # noqa E402
-
 from . import gdf  # noqa E402
 from . import hdf5  # noqa E402
 from . import sdds  # noqa E402
@@ -118,20 +119,29 @@ class field(BaseModel):
     def __init__(
         self,
         filename=None,
+        field_type=None,
+        frequency=None,
+        cavity_type=None,
         *args,
         **kwargs,
     ):
         field.filename = filename
+        field.field_type = field_type,
+        field.frequency = frequency,
+        field.cavity_type = cavity_type,
         super(
             field,
             self,
         ).__init__(
             filename=filename,
+            field_type=field_type,
+            frequency=frequency,
+            cavity_type=cavity_type,
             *args,
             **kwargs,
         )
         if filename is not None:
-            self.read_field_file(filename)
+            self.read_field_file(filename, field_type=field_type, frequency=frequency, cavity_type=cavity_type)
 
     @model_validator(mode="before")
     def validate_fields(cls, values):
@@ -166,10 +176,20 @@ class field(BaseModel):
             return abs(self.z.value.val / speed_of_light)
         return self.t.value.val
 
-    def read_field_file(self, filename: str):
+    def read_field_file(self, filename: str, field_type: str | None = None, cavity_type: str | None = None, frequency: float | None = None):
         fext = os.path.splitext(os.path.basename(filename))[-1]
         if fext == ".hdf5":
             hdf5.read_HDF5_field_file(self, filename)
+        else:
+            if fext.lower() in [".astra", ".dat"]:
+                astra.read_astra_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+            elif fext.lower() in [".sdds"]:
+                sdds.read_SDDS_field_file(self, filename, field_type=field_type)
+            elif fext.lower() in [".gdf"]:
+                gdf.read_gdf_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+            elif fext.lower() in [".opal"]:
+                opal.read_opal_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+            self.read = True
 
     def _output_filename(self, extension: str = ".hdf5", location: str | None = None):
         if location is not None:
@@ -231,5 +251,7 @@ class field(BaseModel):
                 fourier=self.fourier,
                 orientation=self.orientation,
             )
+        elif code.lower() == "hdf5":
+            return hdf5.write_HDF5_field_file(self)
         # except NotImplementedError:
         #     print("Supported formats are [astra, sdds, opal, gdf]")

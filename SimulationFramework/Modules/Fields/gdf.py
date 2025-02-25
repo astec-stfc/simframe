@@ -2,6 +2,8 @@ from math import floor
 import numpy as np
 import easygdf
 from warnings import warn
+from . import FieldParameter
+from ..units import UnitValue
 from ..constants import speed_of_light
 
 
@@ -67,3 +69,52 @@ def write_gdf_field_file(self):
     if blocks is not None:
         easygdf.save(gdf_file, blocks)
     return gdf_file
+
+def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str | None =  None, frequency: float | None = None):
+    self.reset_dicts()
+    setattr(self, "field_type", field_type)
+    if "Electro" in field_type:
+        if cavity_type is None:
+            raise ValueError(f"cavity_type must be provided for {field_type}")
+        else:
+            setattr(self, "cavity_type", cavity_type)
+        if frequency is None:
+            raise ValueError(f"frequency must be provided for {field_type}")
+        else:
+            setattr(self, "frequency", frequency)
+    fdat = easygdf.load(filename)["blocks"]
+    try:
+        zval = [k["value"] for k in fdat if k["name"].lower() == "z"][0]
+    except:
+        zval = [k["value"] * speed_of_light for k in fdat if k["name"].lower() == "t"][0]
+    if field_type == "1DMagnetoStatic":
+        bzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Bz"][0]
+        setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+        setattr(self, "Bz", FieldParameter(name="Bz", value=UnitValue(bzval/np.max(bzval), units="T")))
+    elif field_type == "1DElectroDynamic":
+        if cavity_type == "StandingWave":
+            ezval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Ez"][0]
+            setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+            setattr(self, "Ez", FieldParameter(name="Ez", value=UnitValue(ezval / np.max(ezval), units="V/m")))
+        elif cavity_type == "TravellingWave":
+            raise NotImplementedError(f"{cavity_type} not implemented for GDF files")
+    elif field_type == "LongitudinalWake":
+            wzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wz"][0]
+            setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+            setattr(self, "Wz", FieldParameter(name="Wz", value=UnitValue(wzval, units="V/C")))
+    elif field_type == "TransverseWake":
+        wxval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wx"][0]
+        wyval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wy"][0]
+        setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+        setattr(self, "Wx", FieldParameter(name="Wx", value=UnitValue(wxval, units="V/C/m")))
+        setattr(self, "Wy", FieldParameter(name="Wy", value=UnitValue(wyval, units="V/C/m")))
+    elif field_type == "3DWake":
+        wxval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wx"][0]
+        wyval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wy"][0]
+        wzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Wz"][0]
+        setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+        setattr(self, "Wx", FieldParameter(name="Wx", value=UnitValue(wxval, units="V/C/m")))
+        setattr(self, "Wy", FieldParameter(name="Wy", value=UnitValue(wyval, units="V/C/m")))
+        setattr(self, "Wz", FieldParameter(name="Wz", value=UnitValue(wzval, units="V/C")))
+    else:
+        raise NotImplementedError(f"{field_type} loading not implemented for ASTRA files")
