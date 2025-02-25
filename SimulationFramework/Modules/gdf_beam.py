@@ -1,3 +1,4 @@
+import re
 from munch import Munch
 import easygdf
 
@@ -34,11 +35,17 @@ class gdf_beam(Munch):
     def times(self) -> dict:
         return self._times
 
+    def sorted_nicely(self, unsorted_list: list, dict_key: str | None = None) -> list:
+        """ Sort the given iterable in the way that humans expect."""
+        def convert(text): return int(text) if text.isdigit() else text
+        def alphanum_key(key): return [convert(c) for c in re.split('([0-9]+)', str(key[dict_key]))]
+        return sorted(unsorted_list, key=alphanum_key)
+
     def sort_screens(self, **kwargs) -> None:
-        self.screens_touts['screens'] = sorted(self.screens_touts['screens'], key=lambda s: s['position'], **kwargs)
+        self.screens_touts['screens'] = self.sorted_nicely(self.screens_touts['screens'], dict_key='position')
 
     def sort_touts(self, **kwargs) -> None:
-        self.screens_touts['touts'] = sorted(self.screens_touts['touts'], key=lambda s: s['time'], **kwargs)
+        self.screens_touts['touts'] = self.sorted_nicely(self.screens_touts['touts'], dict_key='time')
 
     def get_position(self, position: float) -> dict | None:
         if position in self._positions.keys():
