@@ -1,4 +1,3 @@
-
 class Counter(dict):
     def __init__(self, sub={}):
         super().__init__()
