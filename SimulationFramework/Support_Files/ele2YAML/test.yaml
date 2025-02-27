@@ -1,0 +1,2169 @@
+elements:
+  MS1M1:
+    type: marker
+    end: [0.0, 0.0, 0.0]
+    start: [0, 0, 0]
+    global_rotation: [0, 0, 0]
+    centre: [0.0, 0.0, 0.0]
+  MS1.QF1:
+    type: quadrupole
+    k1l: -0.1350384966842272
+    end: [0.0, 0.0, 0.2]
+    start: [0.0, 0.0, 0.1]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.15000000000000002]
+    length: 0.1
+  MS1.QF2:
+    type: quadrupole
+    k1l: -0.0627356589179033
+    end: [0.0, 0.0, 0.4]
+    start: [0.0, 0.0, 0.30000000000000004]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.35000000000000003]
+    length: 0.1
+  MS1.QF3:
+    type: quadrupole
+    k1l: -0.22035545849195393
+    end: [0.0, 0.0, 0.6]
+    start: [0.0, 0.0, 0.5]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.55]
+    length: 0.1
+  MS1.QF4:
+    type: quadrupole
+    k1l: 0.3867504282200753
+    end: [0.0, 0.0, 0.7999999999999999]
+    start: [0.0, 0.0, 0.7]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.75]
+    length: 0.1
+  W1MS1:
+    type: watch_point
+    end: [0.0, 0.0, 0.7999999999999999]
+    start: [0.0, 0.0, 0.7999999999999999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.7999999999999999]
+  LIN1_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 32.4
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [0.0, 0.0, 9.304000047999999]
+    start: [0.0, 0.0, 1.0]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 5.1520000239999995]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 5273752.509767013
+  LIN1.QF1:
+    type: quadrupole
+    k1l: 0.6650227358542724
+    end: [0.0, 0.0, 9.604000047999998]
+    start: [0.0, 0.0, 9.504000047999998]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 9.554000047999999]
+    length: 0.1
+  LIN1.QF2:
+    type: quadrupole
+    k1l: -0.7130072418163025
+    end: [0.0, 0.0, 9.904000047999997]
+    start: [0.0, 0.0, 9.804000047999997]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 9.854000047999998]
+    length: 0.1
+  LIN1_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 32.4
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [0.0, 0.0, 18.408000095999995]
+    start: [0.0, 0.0, 10.104000047999996]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 14.256000071999996]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 5273752.509767013
+  MS2M1:
+    type: marker
+    end: [0.0, 0.0, 18.608000095999994]
+    start: [0.0, 0.0, 18.608000095999994]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 18.608000095999994]
+  MS2.QF1:
+    type: quadrupole
+    k1l: -0.27904775594657644
+    end: [0.0, 0.0, 19.058000095999994]
+    start: [0.0, 0.0, 18.858000095999994]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 18.958000095999996]
+    length: 0.2
+  MS2.QF2:
+    type: quadrupole
+    k1l: -0.07530838593869438
+    end: [0.0, 0.0, 19.508000095999993]
+    start: [0.0, 0.0, 19.308000095999994]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 19.408000095999995]
+    length: 0.2
+  MS2.QF3:
+    type: quadrupole
+    k1l: -0.24489969124953062
+    end: [0.0, 0.0, 19.958000095999992]
+    start: [0.0, 0.0, 19.758000095999993]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 19.858000095999994]
+    length: 0.2
+  MS2.QF4:
+    type: quadrupole
+    k1l: 0.5554935242123498
+    end: [0.0, 0.0, 20.40800009599999]
+    start: [0.0, 0.0, 20.208000095999992]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.308000095999994]
+    length: 0.2
+  W1MS2:
+    type: watch_point
+    end: [0.0, 0.0, 20.40800009599999]
+    start: [0.0, 0.0, 20.40800009599999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.40800009599999]
+  HARML_MOD.1:
+    type: cavity
+    cell_length: 2.768000016
+    phase: 180.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [0.0, 0.0, 23.47600011199999]
+    start: [0.0, 0.0, 20.708000095999992]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 22.092000103999993]
+    length: 2.768000016
+    lsc_enable: 1
+    frequency: 3900000000
+    field_amplitude: 2766419.4366986463
+  HARML_MOD.2:
+    type: cavity
+    cell_length: 2.768000016
+    phase: 180.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [0.0, 0.0, 26.54400012799999]
+    start: [0.0, 0.0, 23.77600011199999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 25.160000119999992]
+    length: 2.768000016
+    lsc_enable: 1
+    frequency: 3900000000
+    field_amplitude: 2766419.4366986463
+  BC1M1:
+    type: marker
+    end: [0.0, 0.0, 26.84400012799999]
+    start: [0.0, 0.0, 26.84400012799999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 26.84400012799999]
+  W1BC1:
+    type: watch_point
+    end: [0.0, 0.0, 26.84400012799999]
+    start: [0.0, 0.0, 26.84400012799999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 26.84400012799999]
+  C5.BC1.BEND1:
+    type: dipole
+    end: [0.0037482425170566698, 0.0, 26.94390640436365]
+    start: [0.0, 0.0, 26.84400012799999]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 26.894023578691094]
+    length: 0.1
+    exit_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  C5.BC1.BEND2:
+    type: dipole
+    end: [0.46456769939784176, 0.0, 33.12666447121177]
+    start: [0.46081945688078496, 0.0, 33.026758194848114]
+    global_rotation: [0.0, 0.0, 0.075]
+    centre: [0.4645676993978417, 0.0, 33.07664102052067]
+    length: 0.1
+    entrance_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  C5.BC1.BEND3:
+    type: dipole
+    end: [0.46175594089678146, 0.0, 33.726611745178886]
+    start: [0.46456769939784176, 0.0, 33.62666447121177]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.46456769939784176, 0.0, 33.67667765897823]
+    length: 0.1
+    exit_edge_angle: 0.05625
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05625
+  C5.BC1.BEND4:
+    type: dipole
+    end: [-0.003865413802527488, 0.0, 42.051159246660134]
+    start: [-0.001366081049848089, 0.0, 41.951206765193774]
+    global_rotation: [0.0, 0.0, -0.05625]
+    centre: [-0.0041780135323763335, 0.0, 42.00114394113547]
+    length: 0.1
+    entrance_edge_angle: -0.05625
+    exit_edge_angle: -0.00625
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.0625
+  C5.BC1.BEND5:
+    type: dipole
+    end: [-0.0011251475030756232, 0.0, 42.53959630843061]
+    start: [-0.0014376464858236325, 0.0, 42.439596959471004]
+    global_rotation: [0.0, 0.0, 0.006250000000000001]
+    centre: [-0.001125147503074912, 0.0, 42.48959614566956]
+    length: 0.1
+    entrance_edge_angle: 0.00625
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.00625
+  W2BC1:
+    type: watch_point
+    end: [-0.0011251475030756232, 0.0, 42.53959630843061]
+    start: [-0.0011251475030756232, 0.0, 42.53959630843061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756232, 0.0, 42.53959630843061]
+  BC1M2:
+    type: marker
+    end: [-0.0011251475030756232, 0.0, 42.53959630843061]
+    start: [-0.0011251475030756232, 0.0, 42.53959630843061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756232, 0.0, 42.53959630843061]
+  COMPL_MOD:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030756085, 0.0, 51.143596356430606]
+    start: [-0.0011251475030756228, 0.0, 42.83959630843061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756228, 0.0, 46.9915963324306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 2211669.2425515433
+  MS3M1:
+    type: marker
+    end: [-0.001125147503075608, 0.0, 51.443596356430604]
+    start: [-0.001125147503075608, 0.0, 51.443596356430604]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075608, 0.0, 51.443596356430604]
+  MS3.QF1:
+    type: quadrupole
+    k1l: -0.15959472798758553
+    end: [-0.0011251475030756072, 0.0, 51.893596356430606]
+    start: [-0.0011251475030756076, 0.0, 51.693596356430604]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756076, 0.0, 51.793596356430605]
+    length: 0.2
+  MS3.QF2:
+    type: quadrupole
+    k1l: 0.21931196657960542
+    end: [-0.0011251475030756063, 0.0, 52.34359635643061]
+    start: [-0.0011251475030756067, 0.0, 52.143596356430606]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756067, 0.0, 52.24359635643061]
+    length: 0.2
+  MS3.QF3:
+    type: quadrupole
+    k1l: -0.11464170003706892
+    end: [-0.0011251475030756054, 0.0, 52.79359635643061]
+    start: [-0.0011251475030756059, 0.0, 52.59359635643061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756059, 0.0, 52.69359635643061]
+    length: 0.2
+  MS3.QF4:
+    type: quadrupole
+    k1l: 0.04741288222316338
+    end: [-0.0011251475030756046, 0.0, 53.243596356430615]
+    start: [-0.001125147503075605, 0.0, 53.04359635643061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075605, 0.0, 53.14359635643061]
+    length: 0.2
+  W1MS3:
+    type: watch_point
+    end: [-0.0011251475030756046, 0.0, 53.243596356430615]
+    start: [-0.0011251475030756046, 0.0, 53.243596356430615]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030756046, 0.0, 53.243596356430615]
+  LIN2_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030755887, 0.0, 62.44759640443061]
+    start: [-0.001125147503075603, 0.0, 54.14359635643061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075603, 0.0, 58.29559638043061]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF1.1:
+    type: quadrupole
+    k1l: 0.03614044771537458
+    end: [-0.0011251475030755877, 0.0, 62.99759640443062]
+    start: [-0.001125147503075588, 0.0, 62.797596404430614]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075588, 0.0, 62.897596404430615]
+    length: 0.2
+  LIN2_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030755727, 0.0, 71.65159645243062]
+    start: [-0.001125147503075587, 0.0, 63.34759640443062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075587, 0.0, 67.49959642843062]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.3:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030755569, 0.0, 80.85559650043064]
+    start: [-0.0011251475030755712, 0.0, 72.55159645243063]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755712, 0.0, 76.70359647643063]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF2.1:
+    type: quadrupole
+    k1l: -0.05336369455343359
+    end: [-0.0011251475030755558, 0.0, 81.40559650043063]
+    start: [-0.0011251475030755562, 0.0, 81.20559650043063]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755562, 0.0, 81.30559650043062]
+    length: 0.2
+  LIN2_MOD.4:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030755408, 0.0, 90.05959654843062]
+    start: [-0.0011251475030755551, 0.0, 81.75559650043063]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755551, 0.0, 85.90759652443063]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.5:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.001125147503075525, 0.0, 99.26359659643063]
+    start: [-0.0011251475030755393, 0.0, 90.95959654843062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755393, 0.0, 95.11159657243063]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF3.1:
+    type: quadrupole
+    k1l: 0.016643166533602503
+    end: [-0.001125147503075524, 0.0, 99.81359659643063]
+    start: [-0.0011251475030755243, 0.0, 99.61359659643063]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755243, 0.0, 99.71359659643062]
+    length: 0.2
+  LIN2_MOD.6:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.001125147503075509, 0.0, 108.46759664443061]
+    start: [-0.0011251475030755232, 0.0, 100.16359659643062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755232, 0.0, 104.31559662043063]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.7:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030754931, 0.0, 117.67159669243063]
+    start: [-0.0011251475030755074, 0.0, 109.36759664443062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030755074, 0.0, 113.51959666843062]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF4.1:
+    type: quadrupole
+    k1l: -0.0009747175786068857
+    end: [-0.001125147503075492, 0.0, 118.22159669243062]
+    start: [-0.0011251475030754925, 0.0, 118.02159669243062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754925, 0.0, 118.12159669243061]
+    length: 0.2
+  LIN2_MOD.8:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.001125147503075477, 0.0, 126.87559674043061]
+    start: [-0.0011251475030754914, 0.0, 118.57159669243062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754914, 0.0, 122.72359671643062]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.9:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030754612, 0.0, 136.07959678843062]
+    start: [-0.0011251475030754755, 0.0, 127.77559674043061]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754755, 0.0, 131.9275967644306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF1.2:
+    type: quadrupole
+    k1l: 0.03614044771537458
+    end: [-0.0011251475030754601, 0.0, 136.6295967884306]
+    start: [-0.0011251475030754606, 0.0, 136.42959678843062]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754606, 0.0, 136.5295967884306]
+    length: 0.2
+  LIN2_MOD.10:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030754452, 0.0, 145.2835968364306]
+    start: [-0.0011251475030754595, 0.0, 136.9795967884306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754595, 0.0, 141.1315968124306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.11:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030754294, 0.0, 154.48759688443062]
+    start: [-0.0011251475030754437, 0.0, 146.1835968364306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754437, 0.0, 150.3355968604306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF2.2:
+    type: quadrupole
+    k1l: -0.05336369455343359
+    end: [-0.0011251475030754283, 0.0, 155.0375968844306]
+    start: [-0.0011251475030754287, 0.0, 154.8375968844306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754287, 0.0, 154.9375968844306]
+    length: 0.2
+  LIN2_MOD.12:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030754133, 0.0, 163.6915969324306]
+    start: [-0.0011251475030754276, 0.0, 155.3875968844306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754276, 0.0, 159.53959690843058]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.13:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753975, 0.0, 172.8955969804306]
+    start: [-0.0011251475030754118, 0.0, 164.5915969324306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030754118, 0.0, 168.7435969564306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF3.2:
+    type: quadrupole
+    k1l: 0.016643166533602503
+    end: [-0.0011251475030753964, 0.0, 173.4455969804306]
+    start: [-0.0011251475030753968, 0.0, 173.2455969804306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753968, 0.0, 173.3455969804306]
+    length: 0.2
+  LIN2_MOD.14:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753814, 0.0, 182.0995970284306]
+    start: [-0.0011251475030753957, 0.0, 173.7955969804306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753957, 0.0, 177.94759700443058]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.15:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753656, 0.0, 191.3035970764306]
+    start: [-0.00112514750307538, 0.0, 182.9995970284306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00112514750307538, 0.0, 187.1515970524306]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF4.2:
+    type: quadrupole
+    k1l: -0.0009747175786068857
+    end: [-0.0011251475030753645, 0.0, 191.8535970764306]
+    start: [-0.001125147503075365, 0.0, 191.6535970764306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075365, 0.0, 191.7535970764306]
+    length: 0.2
+  LIN2_MOD.16:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753496, 0.0, 200.5075971244306]
+    start: [-0.0011251475030753639, 0.0, 192.20359707643058]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753639, 0.0, 196.35559710043057]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2_MOD.17:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753337, 0.0, 209.7115971724306]
+    start: [-0.001125147503075348, 0.0, 201.4075971244306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075348, 0.0, 205.55959714843058]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  LIN2.QF1.3:
+    type: quadrupole
+    k1l: 0.03614044771537458
+    end: [-0.0011251475030753326, 0.0, 210.26159717243058]
+    start: [-0.001125147503075333, 0.0, 210.0615971724306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075333, 0.0, 210.1615971724306]
+    length: 0.2
+  LIN2_MOD.18:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 33.5
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0011251475030753177, 0.0, 218.91559722043058]
+    start: [-0.001125147503075332, 0.0, 210.61159717243058]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075332, 0.0, 214.76359719643057]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4941387.136511555
+  MS4M1:
+    type: marker
+    end: [-0.0011251475030753162, 0.0, 219.8155972204306]
+    start: [-0.0011251475030753162, 0.0, 219.8155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753162, 0.0, 219.8155972204306]
+  MS4.QF1:
+    type: quadrupole
+    k1l: -0.17753574131693514
+    end: [-0.0011251475030753153, 0.0, 220.3155972204306]
+    start: [-0.0011251475030753157, 0.0, 220.1155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753157, 0.0, 220.2155972204306]
+    length: 0.2
+  MS4.QF2:
+    type: quadrupole
+    k1l: -0.009488493851608682
+    end: [-0.0011251475030753144, 0.0, 220.8155972204306]
+    start: [-0.0011251475030753149, 0.0, 220.6155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753149, 0.0, 220.7155972204306]
+    length: 0.2
+  MS4.QF3:
+    type: quadrupole
+    k1l: -0.08088834743059667
+    end: [-0.0011251475030753136, 0.0, 221.3155972204306]
+    start: [-0.001125147503075314, 0.0, 221.1155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.001125147503075314, 0.0, 221.2155972204306]
+    length: 0.2
+  MS4.QF4:
+    type: quadrupole
+    k1l: 0.2500635173227364
+    end: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    start: [-0.0011251475030753131, 0.0, 221.6155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753131, 0.0, 221.7155972204306]
+    length: 0.2
+  W1MS4:
+    type: watch_point
+    end: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    start: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753127, 0.0, 221.8155972204306]
+  BC2M1:
+    type: marker
+    end: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    start: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753127, 0.0, 221.8155972204306]
+  W1BC2:
+    type: watch_point
+    end: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    start: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753127, 0.0, 221.8155972204306]
+  C5.BC2.BEND1:
+    type: dipole
+    end: [0.01137224854726186, 0.0, 222.31538891313738]
+    start: [-0.0011251475030753127, 0.0, 221.8155972204306]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0011251475030753127, 0.0, 222.06564931678804]
+    length: 0.5
+    exit_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  C5.BC2.BEND2:
+    type: dipole
+    end: [0.39871341412768724, 0.0, 230.30580755880644]
+    start: [0.38621601807734934, 0.0, 229.80601586609964]
+    global_rotation: [0.0, 0.0, 0.05]
+    centre: [0.3987134141276869, 0.0, 230.05575546244896]
+    length: 0.5
+    entrance_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  C5.BC2.BEND3:
+    type: dipole
+    end: [0.3887147473899112, 0.0, 231.30567423613937]
+    start: [0.39871341412768724, 0.0, 230.80580755880644]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.39871341412768724, 0.0, 231.05584089747396]
+    length: 0.5
+    exit_edge_angle: 0.04
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.04
+  C5.BC2.BEND4:
+    type: dipole
+    end: [-0.023824639215134207, 0.0, 241.9261760220857]
+    start: [-0.016325701658260472, 0.0, 241.4262843468777]
+    global_rotation: [0.0, 0.0, -0.04]
+    centre: [-0.026325118503567446, 0.0, 241.6761364282289]
+    length: 0.5
+    entrance_edge_angle: -0.04
+    exit_edge_angle: -0.01
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  C5.BC2.BEND5:
+    type: dipole
+    end: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    start: [-0.002752390423378156, 0.0, 244.03333065996372]
+    global_rotation: [0.0, 0.0, 0.01]
+    centre: [-0.000252411256642045, 0.0, 244.2833202433179]
+    length: 0.5
+    entrance_edge_angle: 0.01
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.01
+  BC2M2:
+    type: marker
+    end: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    start: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664276533, 0.0, 244.53332232667205]
+  W2BC2:
+    type: watch_point
+    end: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    start: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664276533, 0.0, 244.53332232667205]
+  MS5M1:
+    type: marker
+    end: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    start: [-0.00025241125664276533, 0.0, 244.53332232667205]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664276533, 0.0, 244.53332232667205]
+  MS5.QF1:
+    type: quadrupole
+    k1l: 0.28778660637097564
+    end: [-0.00025241125664276446, 0.0, 245.03332232667205]
+    start: [-0.0002524112566427648, 0.0, 244.83332232667206]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427648, 0.0, 244.93332232667206]
+    length: 0.2
+  MS5.QF2:
+    type: quadrupole
+    k1l: -0.3715637634563438
+    end: [-0.0002524112566427636, 0.0, 245.53332232667205]
+    start: [-0.0002524112566427639, 0.0, 245.33332232667206]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427639, 0.0, 245.43332232667206]
+    length: 0.2
+  MS5.QF3:
+    type: quadrupole
+    k1l: 0.32707895996802105
+    end: [-0.0002524112566427627, 0.0, 246.03332232667205]
+    start: [-0.00025241125664276305, 0.0, 245.83332232667206]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664276305, 0.0, 245.93332232667206]
+    length: 0.2
+  MS5.QF4:
+    type: quadrupole
+    k1l: -0.24186372877363202
+    end: [-0.00025241125664276186, 0.0, 246.53332232667205]
+    start: [-0.0002524112566427622, 0.0, 246.33332232667206]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427622, 0.0, 246.43332232667206]
+    length: 0.2
+  W1MS5:
+    type: watch_point
+    end: [-0.00025241125664276186, 0.0, 246.53332232667205]
+    start: [-0.00025241125664276186, 0.0, 246.53332232667205]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664276186, 0.0, 246.53332232667205]
+  LIN3_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664274587, 0.0, 255.73732237467206]
+    start: [-0.0002524112566427603, 0.0, 247.43332232667206]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427603, 0.0, 251.58532235067204]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.1:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.0002524112566427448, 0.0, 256.33732237467206]
+    start: [-0.0002524112566427453, 0.0, 256.03732237467204]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427453, 0.0, 256.187322374672]
+    length: 0.3
+  LIN3_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566427298, 0.0, 264.94132242267204]
+    start: [-0.00025241125664274424, 0.0, 256.63732237467207]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664274424, 0.0, 260.7893223986721]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.3:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664271383, 0.0, 274.145322470672]
+    start: [-0.00025241125664272825, 0.0, 265.841322422672]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664272825, 0.0, 269.99332244667204]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.1:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.00025241125664271274, 0.0, 274.745322470672]
+    start: [-0.0002524112566427133, 0.0, 274.445322470672]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427133, 0.0, 274.595322470672]
+    length: 0.3
+  LIN3_MOD.4:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566426978, 0.0, 283.349322518672]
+    start: [-0.0002524112566427122, 0.0, 275.04532247067203]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566427122, 0.0, 279.19732249467205]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.5:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566426818, 0.0, 292.55332256667197]
+    start: [-0.0002524112566426962, 0.0, 284.249322518672]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566426962, 0.0, 288.401322542672]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.1:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.0002524112566426807, 0.0, 293.153322566672]
+    start: [-0.00025241125664268125, 0.0, 292.853322566672]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664268125, 0.0, 293.00332256667195]
+    length: 0.3
+  LIN3_MOD.6:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664266574, 0.0, 301.757322614672]
+    start: [-0.00025241125664268016, 0.0, 293.453322566672]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664268016, 0.0, 297.605322590672]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.7:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664264975, 0.0, 310.96132266267193]
+    start: [-0.00025241125664266417, 0.0, 302.65732261467195]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664266417, 0.0, 306.809322638672]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.1:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.00025241125664264867, 0.0, 311.56132266267196]
+    start: [-0.0002524112566426492, 0.0, 311.26132266267194]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566426492, 0.0, 311.4113226626719]
+    length: 0.3
+  LIN3_MOD.8:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566426337, 0.0, 320.16532271067194]
+    start: [-0.0002524112566426481, 0.0, 311.86132266267197]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566426481, 0.0, 316.013322686672]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.9:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566426177, 0.0, 329.3693227586719]
+    start: [-0.00025241125664263213, 0.0, 321.0653227106719]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664263213, 0.0, 325.21732273467194]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.2:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.00025241125664261663, 0.0, 329.9693227586719]
+    start: [-0.00025241125664261717, 0.0, 329.6693227586719]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664261717, 0.0, 329.8193227586719]
+    length: 0.3
+  LIN3_MOD.10:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664260167, 0.0, 338.5733228066719]
+    start: [-0.0002524112566426161, 0.0, 330.26932275867193]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566426161, 0.0, 334.42132278267195]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.11:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566425857, 0.0, 347.77732285467187]
+    start: [-0.0002524112566426001, 0.0, 339.4733228066719]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566426001, 0.0, 343.6253228306719]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.2:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.0002524112566425846, 0.0, 348.3773228546719]
+    start: [-0.00025241125664258513, 0.0, 348.0773228546719]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664258513, 0.0, 348.22732285467185]
+    length: 0.3
+  LIN3_MOD.12:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664256963, 0.0, 356.9813229026719]
+    start: [-0.00025241125664258405, 0.0, 348.6773228546719]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664258405, 0.0, 352.8293228786719]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.13:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664255364, 0.0, 366.18532295067183]
+    start: [-0.00025241125664256806, 0.0, 357.88132290267185]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664256806, 0.0, 362.0333229266719]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.2:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.00025241125664255255, 0.0, 366.78532295067185]
+    start: [-0.0002524112566425531, 0.0, 366.48532295067184]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566425531, 0.0, 366.6353229506718]
+    length: 0.3
+  LIN3_MOD.14:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566425376, 0.0, 375.38932299867184]
+    start: [-0.000252411256642552, 0.0, 367.08532295067187]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.000252411256642552, 0.0, 371.2373229746719]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.15:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566425216, 0.0, 384.5933230466718]
+    start: [-0.000252411256642536, 0.0, 376.2893229986718]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.000252411256642536, 0.0, 380.44132302267184]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.2:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.0002524112566425205, 0.0, 385.1933230466718]
+    start: [-0.00025241125664252106, 0.0, 384.8933230466718]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664252106, 0.0, 385.0433230466718]
+    length: 0.3
+  LIN3_MOD.16:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664250555, 0.0, 393.7973230946718]
+    start: [-0.00025241125664251997, 0.0, 385.49332304667183]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664251997, 0.0, 389.64532307067185]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.17:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664248956, 0.0, 403.00132314267177]
+    start: [-0.000252411256642504, 0.0, 394.6973230946718]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.000252411256642504, 0.0, 398.8493231186718]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.3:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.0002524112566424885, 0.0, 403.6013231426718]
+    start: [-0.000252411256642489, 0.0, 403.3013231426718]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.000252411256642489, 0.0, 403.45132314267175]
+    length: 0.3
+  LIN3_MOD.18:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566424735, 0.0, 412.2053231906718]
+    start: [-0.00025241125664248793, 0.0, 403.9013231426718]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664248793, 0.0, 408.0533231666718]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.19:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566424575, 0.0, 421.40932323867173]
+    start: [-0.00025241125664247194, 0.0, 413.10532319067175]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664247194, 0.0, 417.25732321467177]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.3:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.00025241125664245644, 0.0, 422.00932323867175]
+    start: [-0.000252411256642457, 0.0, 421.70932323867174]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.000252411256642457, 0.0, 421.8593232386717]
+    length: 0.3
+  LIN3_MOD.20:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566424415, 0.0, 430.61332328667174]
+    start: [-0.0002524112566424559, 0.0, 422.30932323867177]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566424559, 0.0, 426.4613232626718]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.21:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566424255, 0.0, 439.8173233346717]
+    start: [-0.0002524112566424399, 0.0, 431.5133232866717]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566424399, 0.0, 435.66532331067174]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.3:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.0002524112566424244, 0.0, 440.4173233346717]
+    start: [-0.00025241125664242494, 0.0, 440.1173233346717]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664242494, 0.0, 440.2673233346717]
+    length: 0.3
+  LIN3_MOD.22:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664240944, 0.0, 449.0213233826717]
+    start: [-0.00025241125664242386, 0.0, 440.71732333467173]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664242386, 0.0, 444.86932335867175]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.23:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664239345, 0.0, 458.22532343067166]
+    start: [-0.00025241125664240787, 0.0, 449.9213233826717]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664240787, 0.0, 454.0733234066717]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.3:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.00025241125664239236, 0.0, 458.8253234306717]
+    start: [-0.0002524112566423929, 0.0, 458.5253234306717]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566423929, 0.0, 458.67532343067165]
+    length: 0.3
+  LIN3_MOD.24:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566423774, 0.0, 467.4293234786717]
+    start: [-0.0002524112566423918, 0.0, 459.1253234306717]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566423918, 0.0, 463.2773234546717]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.25:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566423614, 0.0, 476.63332352667163]
+    start: [-0.00025241125664237583, 0.0, 468.32932347867165]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664237583, 0.0, 472.48132350267167]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.4:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.0002524112566423603, 0.0, 477.23332352667165]
+    start: [-0.00025241125664236087, 0.0, 476.93332352667164]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664236087, 0.0, 477.0833235266716]
+    length: 0.3
+  LIN3_MOD.26:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664234536, 0.0, 485.83732357467164]
+    start: [-0.0002524112566423598, 0.0, 477.53332352667167]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566423598, 0.0, 481.6853235506717]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.27:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664232937, 0.0, 495.0413236226716]
+    start: [-0.0002524112566423438, 0.0, 486.7373235746716]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566423438, 0.0, 490.88932359867164]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.4:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.0002524112566423283, 0.0, 495.6413236226716]
+    start: [-0.00025241125664232883, 0.0, 495.3413236226716]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664232883, 0.0, 495.4913236226716]
+    length: 0.3
+  LIN3_MOD.28:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566423133, 0.0, 504.2453236706716]
+    start: [-0.00025241125664232774, 0.0, 495.94132362267163]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664232774, 0.0, 500.09332364667165]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.29:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664229733, 0.0, 513.4493237186716]
+    start: [-0.00025241125664231175, 0.0, 505.1453236706716]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664231175, 0.0, 509.2973236946716]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.4:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.00025241125664229625, 0.0, 514.0493237186715]
+    start: [-0.0002524112566422968, 0.0, 513.7493237186716]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422968, 0.0, 513.8993237186716]
+    length: 0.3
+  LIN3_MOD.30:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566422813, 0.0, 522.6533237666715]
+    start: [-0.0002524112566422957, 0.0, 514.3493237186715]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422957, 0.0, 518.5013237426715]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.31:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566422653, 0.0, 531.8573238146715]
+    start: [-0.0002524112566422797, 0.0, 523.5533237666715]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422797, 0.0, 527.7053237906715]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.4:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.0002524112566422642, 0.0, 532.4573238146714]
+    start: [-0.00025241125664226475, 0.0, 532.1573238146715]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664226475, 0.0, 532.3073238146715]
+    length: 0.3
+  LIN3_MOD.32:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664224925, 0.0, 541.0613238626714]
+    start: [-0.00025241125664226367, 0.0, 532.7573238146714]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664226367, 0.0, 536.9093238386714]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.33:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664223326, 0.0, 550.2653239106714]
+    start: [-0.0002524112566422477, 0.0, 541.9613238626714]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422477, 0.0, 546.1133238866714]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.5:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.00025241125664223217, 0.0, 550.8653239106713]
+    start: [-0.0002524112566422327, 0.0, 550.5653239106714]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422327, 0.0, 550.7153239106714]
+    length: 0.3
+  LIN3_MOD.34:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566422172, 0.0, 559.4693239586713]
+    start: [-0.00025241125664223163, 0.0, 551.1653239106713]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664223163, 0.0, 555.3173239346713]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.35:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566422012, 0.0, 568.6733240066714]
+    start: [-0.00025241125664221564, 0.0, 560.3693239586713]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664221564, 0.0, 564.5213239826713]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.5:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.00025241125664220013, 0.0, 569.2733240066713]
+    start: [-0.0002524112566422007, 0.0, 568.9733240066713]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566422007, 0.0, 569.1233240066713]
+    length: 0.3
+  LIN3_MOD.36:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664218517, 0.0, 577.8773240546712]
+    start: [-0.0002524112566421996, 0.0, 569.5733240066712]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421996, 0.0, 573.7253240306712]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.37:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566421692, 0.0, 587.0813241026713]
+    start: [-0.0002524112566421836, 0.0, 578.7773240546712]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421836, 0.0, 582.9293240786712]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.5:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.0002524112566421681, 0.0, 587.6813241026712]
+    start: [-0.00025241125664216864, 0.0, 587.3813241026712]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664216864, 0.0, 587.5313241026712]
+    length: 0.3
+  LIN3_MOD.38:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664215313, 0.0, 596.2853241506712]
+    start: [-0.00025241125664216755, 0.0, 587.9813241026711]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664216755, 0.0, 592.1333241266711]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.39:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664213714, 0.0, 605.4893241986712]
+    start: [-0.00025241125664215156, 0.0, 597.1853241506711]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664215156, 0.0, 601.3373241746712]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.5:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.00025241125664213606, 0.0, 606.0893241986711]
+    start: [-0.0002524112566421366, 0.0, 605.7893241986711]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421366, 0.0, 605.9393241986711]
+    length: 0.3
+  LIN3_MOD.40:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566421211, 0.0, 614.6933242466711]
+    start: [-0.0002524112566421355, 0.0, 606.389324198671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421355, 0.0, 610.541324222671]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.41:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566421051, 0.0, 623.8973242946711]
+    start: [-0.0002524112566421195, 0.0, 615.593324246671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421195, 0.0, 619.7453242706711]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.6:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.000252411256642104, 0.0, 624.497324294671]
+    start: [-0.00025241125664210456, 0.0, 624.197324294671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664210456, 0.0, 624.347324294671]
+    length: 0.3
+  LIN3_MOD.42:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664208906, 0.0, 633.101324342671]
+    start: [-0.0002524112566421035, 0.0, 624.797324294671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566421035, 0.0, 628.949324318671]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.43:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664207306, 0.0, 642.305324390671]
+    start: [-0.0002524112566420875, 0.0, 634.001324342671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566420875, 0.0, 638.153324366671]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.6:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.000252411256642072, 0.0, 642.9053243906709]
+    start: [-0.0002524112566420725, 0.0, 642.605324390671]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566420725, 0.0, 642.7553243906709]
+    length: 0.3
+  LIN3_MOD.44:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.000252411256642057, 0.0, 651.5093244386709]
+    start: [-0.00025241125664207144, 0.0, 643.2053243906709]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664207144, 0.0, 647.3573244146709]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.45:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.000252411256642041, 0.0, 660.7133244866709]
+    start: [-0.00025241125664205545, 0.0, 652.4093244386709]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664205545, 0.0, 656.5613244626709]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.6:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.00025241125664203994, 0.0, 661.3133244866708]
+    start: [-0.0002524112566420405, 0.0, 661.0133244866709]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566420405, 0.0, 661.1633244866708]
+    length: 0.3
+  LIN3_MOD.46:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.000252411256642025, 0.0, 669.9173245346708]
+    start: [-0.0002524112566420394, 0.0, 661.6133244866708]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566420394, 0.0, 665.7653245106708]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.47:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.000252411256642009, 0.0, 679.1213245826708]
+    start: [-0.0002524112566420234, 0.0, 670.8173245346708]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566420234, 0.0, 674.9693245586708]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF4.6:
+    type: quadrupole
+    k1l: -0.04808364066949362
+    end: [-0.0002524112566420079, 0.0, 679.7213245826707]
+    start: [-0.00025241125664200845, 0.0, 679.4213245826708]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664200845, 0.0, 679.5713245826707]
+    length: 0.3
+  LIN3_MOD.48:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664199294, 0.0, 688.3253246306707]
+    start: [-0.00025241125664200736, 0.0, 680.0213245826707]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664200736, 0.0, 684.1733246066707]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.49:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664197695, 0.0, 697.5293246786707]
+    start: [-0.00025241125664199137, 0.0, 689.2253246306707]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664199137, 0.0, 693.3773246546707]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF1.7:
+    type: quadrupole
+    k1l: 0.02956375084172984
+    end: [-0.00025241125664197587, 0.0, 698.1293246786706]
+    start: [-0.0002524112566419764, 0.0, 697.8293246786707]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566419764, 0.0, 697.9793246786707]
+    length: 0.3
+  LIN3_MOD.50:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566419609, 0.0, 706.7333247266706]
+    start: [-0.0002524112566419753, 0.0, 698.4293246786706]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566419753, 0.0, 702.5813247026706]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.51:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566419449, 0.0, 715.9373247746706]
+    start: [-0.00025241125664195933, 0.0, 707.6333247266706]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664195933, 0.0, 711.7853247506706]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF2.7:
+    type: quadrupole
+    k1l: -0.00617722776967203
+    end: [-0.00025241125664194383, 0.0, 716.5373247746705]
+    start: [-0.00025241125664194437, 0.0, 716.2373247746706]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664194437, 0.0, 716.3873247746706]
+    length: 0.3
+  LIN3_MOD.52:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664192887, 0.0, 725.1413248226705]
+    start: [-0.0002524112566419433, 0.0, 716.8373247746705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566419433, 0.0, 720.9893247986705]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3_MOD.53:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.0002524112566419129, 0.0, 734.3453248706705]
+    start: [-0.0002524112566419273, 0.0, 726.0413248226705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566419273, 0.0, 730.1933248466705]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  LIN3.QF3.7:
+    type: quadrupole
+    k1l: 0.029942125846754583
+    end: [-0.0002524112566419118, 0.0, 734.9453248706704]
+    start: [-0.00025241125664191233, 0.0, 734.6453248706705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664191233, 0.0, 734.7953248706705]
+    length: 0.3
+  LIN3_MOD.54:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    tcolumn: '"t"'
+    wxcolumn: '"W"'
+    wycolumn: '"W"'
+    wzcolumn: '"W"'
+    lsc_bins: 100
+    end: [-0.00025241125664189737, 0.0, 743.2493249186705]
+    start: [-0.0002524112566419118, 0.0, 734.9453248706704]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566419118, 0.0, 739.0973248946705]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+  ENDM1.1:
+    type: marker
+    end: [-0.0002524112566418958, 0.0, 744.1493249186705]
+    start: [-0.0002524112566418958, 0.0, 744.1493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566418958, 0.0, 744.1493249186705]
+  MS6M1:
+    type: marker
+    end: [-0.0002524112566418958, 0.0, 744.1493249186705]
+    start: [-0.0002524112566418958, 0.0, 744.1493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.0002524112566418958, 0.0, 744.1493249186705]
+  MS6.QF1:
+    type: quadrupole
+    k1l: 0.15479459408435942
+    end: [-0.00025241125664189477, 0.0, 744.7493249186705]
+    start: [-0.00025241125664189547, 0.0, 744.3493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664189547, 0.0, 744.5493249186705]
+    length: 0.4
+  MS6.QF2:
+    type: quadrupole
+    k1l: -0.0599544382349104
+    end: [-0.00025241125664189374, 0.0, 745.3493249186705]
+    start: [-0.00025241125664189444, 0.0, 744.9493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664189444, 0.0, 745.1493249186706]
+    length: 0.4
+  MS6.QF3:
+    type: quadrupole
+    k1l: 0.5354088702520132
+    end: [-0.00025241125664189217, 0.0, 746.2493249186705]
+    start: [-0.00025241125664189287, 0.0, 745.8493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664189287, 0.0, 746.0493249186705]
+    length: 0.4
+  MS6.QF4:
+    type: quadrupole
+    k1l: -1.5095729661232808
+    end: [-0.00025241125664189114, 0.0, 746.8493249186705]
+    start: [-0.00025241125664189184, 0.0, 746.4493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664189184, 0.0, 746.6493249186706]
+    length: 0.4
+  MS6.QF5:
+    type: quadrupole
+    k1l: 2.3091091869149714
+    end: [-0.00025241125664188956, 0.0, 747.7493249186705]
+    start: [-0.00025241125664189027, 0.0, 747.3493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664189027, 0.0, 747.5493249186705]
+    length: 0.4
+  MS6.QF6:
+    type: quadrupole
+    k1l: 1.5080614435810382
+    end: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    start: [-0.00025241125664188924, 0.0, 747.9493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664188924, 0.0, 748.1493249186706]
+    length: 0.4
+  W1MS6:
+    type: watch_point
+    end: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    start: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664188853, 0.0, 748.3493249186705]
+  ENDM1.2:
+    type: marker
+    end: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    start: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664188853, 0.0, 748.3493249186705]
+  W1END:
+    type: watch_point
+    end: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    start: [-0.00025241125664188853, 0.0, 748.3493249186705]
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-0.00025241125664188853, 0.0, 748.3493249186705]
