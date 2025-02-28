@@ -182,12 +182,16 @@ class field(BaseModel):
             hdf5.read_HDF5_field_file(self, filename)
         else:
             if fext.lower() in [".astra", ".dat"]:
+                # print('Field: read_field_file: astra', filename, fext.lower())
                 astra.read_astra_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
             elif fext.lower() in [".sdds"]:
+                # print('Field: read_field_file: SDDS', filename, fext.lower())
                 sdds.read_SDDS_field_file(self, filename, field_type=field_type)
             elif fext.lower() in [".gdf"]:
+                # print('Field: read_field_file: GPT', filename, fext.lower())
                 gdf.read_gdf_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
             elif fext.lower() in [".opal"]:
+                # print('Field: read_field_file: opal', filename, fext.lower())
                 opal.read_opal_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
             self.read = True
 

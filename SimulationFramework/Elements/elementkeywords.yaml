@@ -58,6 +58,8 @@ cavity:
       frequency,
       phase,
       field_definition,
+      field_type,
+      cavity_type,
       lsc_cutoff_high,
       field_amplitude,
       cell_length,
