@@ -41,6 +41,20 @@ def write_gdf_field_file(self):
             {"name": "z", "value": zdata},
             {"name": "Bz", "value": bzdata},
         ]
+    elif self.field_type == "3DMagnetoStatic":
+        xdata = self.x.value.val
+        ydata = self.y.value.val
+        bxdata = self.Bx.value.val
+        bydata = self.By.value.val
+        bzdata = self.Bz.value.val
+        blocks = [
+            {"name": "x", "value": xdata},
+            {"name": "y", "value": ydata},
+            {"name": "z", "value": zdata},
+            {"name": "Bx", "value": bxdata},
+            {"name": "By", "value": bydata},
+            {"name": "Bz", "value": bzdata},
+        ]
     elif self.field_type == "1DElectroDynamic":
         ezdata = self.Ez.value.val
         fielddata = np.array([zdata, ezdata]).transpose()
@@ -91,6 +105,20 @@ def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str |
         bzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Bz"][0]
         setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
         setattr(self, "Bz", FieldParameter(name="Bz", value=UnitValue(bzval/np.max(bzval), units="T")))
+    elif field_type == "3DMagnetoStatic":
+        xval = [k["value"] for k in fdat if k["name"].lower() == "x"][0]
+        yval = [k["value"] for k in fdat if k["name"].lower() == "y"][0]
+        bxval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Bx"][0]
+        byval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "By"][0]
+        bzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Bz"][0]
+        # Normalise by the maximum *on-axis* Bz field
+        normBz = max([abs(Bz) for x, y, Bz in zip(xval, yval, bzval) if x == 0. and y == 0.])
+        setattr(self, "x", FieldParameter(name="x", value=UnitValue(xval, units="m")))
+        setattr(self, "y", FieldParameter(name="y", value=UnitValue(yval, units="m")))
+        setattr(self, "z", FieldParameter(name="z", value=UnitValue(zval, units="m")))
+        setattr(self, "Bx", FieldParameter(name="Bx", value=UnitValue(bxval/normBz, units="T")))
+        setattr(self, "By", FieldParameter(name="By", value=UnitValue(byval/normBz, units="T")))
+        setattr(self, "Bz", FieldParameter(name="Bz", value=UnitValue(bzval/normBz, units="T")))
     elif field_type == "1DElectroDynamic":
         if cavity_type == "StandingWave":
             ezval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Ez"][0]
@@ -117,4 +145,4 @@ def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str |
         setattr(self, "Wy", FieldParameter(name="Wy", value=UnitValue(wyval, units="V/C/m")))
         setattr(self, "Wz", FieldParameter(name="Wz", value=UnitValue(wzval, units="V/C")))
     else:
-        raise NotImplementedError(f"{field_type} loading not implemented for ASTRA files")
+        raise NotImplementedError(f"{field_type} loading not implemented for GDF files")

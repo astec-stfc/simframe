@@ -52,6 +52,11 @@ def generate_astra_field_data(self):
     elif self.field_type == "1DMagnetoStatic":
         bzdata = self.Bz.value.val
         data = np.transpose([zdata, bzdata])
+    elif self.field_type == "3DMagnetoStatic":
+        xdata = self.x.value.val
+        ydata = self.y.value.val
+        bzdata = self.Bz.value.val
+        data = np.array([[z, Bz] for x, y, z, Bz in zip(xdata, ydata, zdata, bzdata) if x == 0. and y == 0.])
     elif self.field_type == "1DElectroDynamic":
         ezdata = self.Ez.value.val
         if self.cavity_type == "TravellingWave":

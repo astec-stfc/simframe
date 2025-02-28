@@ -1207,7 +1207,10 @@ class frameworkElement(frameworkObject):
         """Updates the field definitions to allow for the relative sub-directory location"""
         if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
             self.field_definition = field(
-                expand_substitution(self, self.field_definition),
+                filename=expand_substitution(self, self.field_definition),
+                field_type=self.field_type,
+                frequency=self.frequency,
+                cavity_type=self.cavity_type,
                 n_cells=self.n_cells
             )
         if (
@@ -1216,7 +1219,10 @@ class frameworkElement(frameworkObject):
             and isinstance(self.wakefield_definition, str)
         ):
             self.wakefield_definition = field(
-                expand_substitution(self, self.wakefield_definition),
+                filename=expand_substitution(self, self.wakefield_definition),
+                field_type=self.field_type,
+                frequency=self.frequency,
+                cavity_type=self.cavity_type,
                 n_cells=self.n_cells
             )
 

@@ -1,3 +1,4 @@
+import os
 import h5py
 from ..units import UnitValue
 from . import FieldParameter
@@ -70,8 +71,9 @@ def read_HDF5_field_file(self, filename, normalise=True):
         self.read = True
     return filename
 
+
 def write_HDF5_field_file(self):
-    self.filename = " ".join(self.filename.split(".")[:-1]) + ".hdf5"
+    self.filename = os.path.splitext(self.filename)[0] + ".hdf5"
     with h5py.File(self.filename, "w") as h5file:
         attrs = ["field_type", "frequency", "radius", "fourier", "cavity_type", "start_cell_z", "end_cell_z", "mode_numerator", "mode_denominator", "orientation"]
         for att in attrs:
