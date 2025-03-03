@@ -90,7 +90,7 @@ def write_astra_field_file(self):
                 f.write(" ".join([str(x) for x in d]) + "\n")
     return astra_file
 
-def read_astra_field_file(self, filename: str, field_type: str, cavity_type: str | None =  None, frequency: float | None = None):
+def read_astra_field_file(self, filename: str, field_type: str, cavity_type: str | None = None, frequency: float | None = None):
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     if "Electro" in field_type:

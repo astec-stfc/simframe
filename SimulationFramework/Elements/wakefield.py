@@ -72,7 +72,7 @@ class wakefield(cavity):
         self.tcolumn = '"t"'
         if self.field_definition.field_type == "LongitudinalWake":
             etype = 'wake'
-            self.wcolumn = '"W"'
+            self.wcolumn = '"Wz"'
             self.inputfile = file_name
         elif self.field_definition.field_type == "TransverseWake":
             etype = 'trwake'
