@@ -7,7 +7,7 @@ from counter import Counter
 from pydantic import BaseModel, ValidationInfo, field_validator
 from typing import List, Dict
 import numpy as np
-from sdds_classes import SDDS_Floor
+from sdds_classes_APS import SDDS_Floor
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix, chop  # type: ignore
 from SimulationFramework.Modules.merge_two_dicts import merge_dicts  # type: ignore
 
