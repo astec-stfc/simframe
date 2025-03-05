@@ -1,9 +1,7 @@
 import os
-import re
 import yaml
-from copy import copy
 from itertools import groupby
-from counter import Counter
+from .counter import Counter
 from SimulationFramework.FrameworkHelperFunctions import chop  # type: ignore
 from SimulationFramework.Modules.SDDSFile import SDDSFile
 
