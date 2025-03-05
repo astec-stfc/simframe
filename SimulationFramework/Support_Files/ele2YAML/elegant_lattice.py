@@ -30,10 +30,12 @@ def flow_list_rep(dumper, data):
 
 yaml.add_representer(noflow_list, noflow_list_rep)
 yaml.add_representer(flow_list, flow_list_rep)
+
 elementregex = (
     r"[\"]?([a-zA-Z][a-zA-Z0-9\~\@\$\%\^\&\-\_\+\=\{\}\[\]\\\|\/\?\<\>\.\:]*)[\"]?"
 )
 propertiesregex = r"(?:([^=,&\s]+)\s*=\s*([^,&]+))"
+lineregex = r"[\s]*:[\s]*LINE[\s]*=[\s]*"
 
 with open(
     os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +49,11 @@ elementtypes = {v.lower(): k.lower() for k, v in type_conversion_rules_Elegant.i
 elementtypes["drift"] = "drift"
 elementtypes["mark"] = "marker"
 elementtypes["drif"] = "drift"
-elementtypes["edrift"] = "drift"
+elementtypes["edrift"] = "edrift"
+elementtypes["csrdrift"] = "csrdrift"
+elementtypes["lscdrift"] = "lscdrift"
+elementtypes["sext"] = "sextupole"
+elementtypes["koct"] = "octupole"
 
 with open(
     os.path.dirname(os.path.abspath(__file__))
@@ -397,7 +403,7 @@ class ReadElegantLattice:
 
     @property
     def lattice_names(self):
-        return re.findall(elementregex + r": LINE = ", "\n".join(self.latticestrings))
+        return re.findall(elementregex + lineregex, "\n".join(self.latticestrings))
 
     def load_lattice(
         self, lattice_file: str, floor_file: str, lattice_name: str | None = None
@@ -491,7 +497,7 @@ class ReadElegantLattice:
             lattices[lattname] = re.findall(
                 elementregex,
                 [
-                    latt.replace(lattname + ": LINE = ", "")
+                    re.sub(lattname + lineregex, "", latt)
                     for latt in self.latticestrings
                     if len(latt) > len(lattname) and latt[: len(lattname)] == lattname
                 ][0],
