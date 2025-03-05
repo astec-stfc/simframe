@@ -23,6 +23,7 @@ allowed_fields = [
     "LongitudinalWake",
     "TransverseWake",
     "3DWake",
+    "1DQuadrupole",
 ]
 
 allowed_formats = [
@@ -57,6 +58,7 @@ fieldtype = Literal[
     "LongitudinalWake",
     "TransverseWake",
     "3DWake",
+    "1DQuadrupole",
 ]
 cavitytype = Literal[
     "StandingWave",
@@ -96,6 +98,7 @@ class field(BaseModel):
     Wy: FieldParameter(name="Wy") = None
     Wz: FieldParameter(name="Wz") = None
     Wr: FieldParameter(name="Wr") = None
+    G: FieldParameter(name="G") = None
     filename: str | None = None
     field_type: fieldtype | None = None
     origin_code: str | None = None
@@ -147,6 +150,9 @@ class field(BaseModel):
     def validate_fields(cls, values):
         return values
 
+    def model_dump(self):
+        return self.filename
+
     def reset_dicts(self):
         self.origin_code = None
         self.field_type = None
@@ -162,6 +168,7 @@ class field(BaseModel):
             setattr(self, f"E{par}", FieldParameter(name=f"E{par}"))
             setattr(self, f"B{par}", FieldParameter(name=f"B{par}"))
             setattr(self, f"W{par}", FieldParameter(name=f"W{par}"))
+        setattr(self, "G", FieldParameter(name="G"))
         self.read = False
 
     @property
