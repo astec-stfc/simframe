@@ -3,11 +3,11 @@ import re
 import yaml
 from copy import deepcopy
 from itertools import groupby
-from counter import Counter
+from .counter import Counter
 from pydantic import BaseModel, ValidationInfo, field_validator
 from typing import List, Dict
 import numpy as np
-from sdds_classes_APS import SDDS_Floor
+from .sdds_classes_APS import SDDS_Floor
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix, chop  # type: ignore
 from SimulationFramework.Modules.merge_two_dicts import merge_dicts  # type: ignore
 
@@ -96,7 +96,7 @@ def rotate_vector(
 def convert_numpy_types(v):
     if isinstance(v, (np.ndarray, list, tuple)):
         return flow_list([convert_numpy_types(elem) for elem in v])
-    elif isinstance(v, (np.float64, np.float32, np.float16, np.float_)):
+    elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
     elif isinstance(
         v,

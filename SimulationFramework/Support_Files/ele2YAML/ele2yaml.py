@@ -1,6 +1,6 @@
 import numpy as np
 import yaml
-from elegant_lattice import (
+from .elegant_lattice import (
     ReadElegantLattice,
     elementtypes,
     keywordrules,
@@ -45,11 +45,12 @@ yaml.add_constructor(_mapping_tag, dict_constructor)
 yaml.Dumper.ignore_aliases = lambda *args: True
 
 
-def convert_lattice(lattice_file, line, base_dir):
+def convert_lattice(lattice_file, line, base_dir, floor_file):
     elatt = ReadElegantLattice(
         lattice_file=lattice_file,
         base_dir=base_dir,
         allowed_element_types=elementtypes.keys(),
+        floor_file=floor_file,
     )
     lattice = elatt.lattices[line]
     lattice.replace_element_types(elementtypes)
