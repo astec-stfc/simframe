@@ -58,7 +58,7 @@ def read_HDF5_field_file(self, filename, normalise=True):
             )
         # if ("z" not in list(h5file.keys())) and ("t" in list(h5file.keys())):
         #     setattr(self, "z", self.t.value * speed_of_light)
-        for param in ["Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br"]:
+        for param in ["Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br", "G"]:
             if getattr(self, param).value is not None:
                 lessthancond = 0.99 > round(max(abs(getattr(self, param).value.val)), 4)
                 greaterthancond = (
@@ -80,7 +80,7 @@ def write_HDF5_field_file(self):
             if hasattr(self, att):
                 if getattr(self, att) is not None:
                     h5file.attrs[att] = getattr(self, att)
-        dsets = ["x", "y", "z", "r", "Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br", "Wx", "Wy", "Wz", "Wr"]
+        dsets = ["x", "y", "z", "r", "Ex", "Ey", "Ez", "Er", "Bx", "By", "Bz", "Br", "Wx", "Wy", "Wz", "Wr", "G"]
         for dset in dsets:
             if isinstance(getattr(self, dset), FieldParameter):
                 if getattr(self, dset).value is not None:

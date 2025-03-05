@@ -615,7 +615,7 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print(elem.objectname, cend, end, cend - end)
+                print('check_lattice error:', elem.objectname, cend, end, cend - end)
         return noerror
 
     def check_lattice_drifts(self, decimals: int = 4) -> bool:
@@ -635,7 +635,7 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print(elem.objectname, cend, end, cend - end)
+                print('check_lattice_drifts error:', elem.objectname, cend, end, cend - end)
         return noerror
 
     def change_Lattice_Code(
@@ -698,8 +698,8 @@ class Framework(Munch):
             )
             element.update_field_definition()
         except Exception as e:
-            print(e)
-            print(type, name, kwargs)
+            print('add_Element error:', e)
+            print('add_Element error:', type, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:

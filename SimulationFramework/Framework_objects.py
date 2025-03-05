@@ -598,7 +598,7 @@ class frameworkObject(Munch):
             try:
                 setattr(self, key, value)
             except Exception as e:
-                print((self.objecttype, "[", key, "]: ", e))
+                print('add_property error:', (self.objecttype, "[", key, "]: ", e))
 
     def add_properties(self, **keyvalues):
         for key, value in keyvalues.items():
@@ -607,7 +607,7 @@ class frameworkObject(Munch):
                 try:
                     setattr(self, key, value)
                 except Exception as e:
-                    print((self.objecttype, "[", key, "]: ", e))
+                    print('add_properties error:', (self.objecttype, "[", key, "]: ", e))
 
     def add_default(self, key, value):
         self.objectdefaults[key] = value
@@ -1206,11 +1206,12 @@ class frameworkElement(frameworkObject):
     def update_field_definition(self) -> None:
         """Updates the field definitions to allow for the relative sub-directory location"""
         if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
+            # print('update_field_definition', self.objectname, self.field_definition, self.field_type, self.frequency, self.Structure_Type)
             self.field_definition = field(
                 filename=expand_substitution(self, self.field_definition),
                 field_type=self.field_type,
                 frequency=self.frequency,
-                cavity_type=self.cavity_type,
+                cavity_type=self.Structure_Type,
                 n_cells=self.n_cells
             )
         if (
@@ -1222,7 +1223,7 @@ class frameworkElement(frameworkObject):
                 filename=expand_substitution(self, self.wakefield_definition),
                 field_type=self.field_type,
                 frequency=self.frequency,
-                cavity_type=self.cavity_type,
+                cavity_type=self.Structure_Type,
                 n_cells=self.n_cells
             )
 

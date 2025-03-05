@@ -13,10 +13,10 @@ def write_gdf_field_file(self):
     zdata = self.z.value.val
     if self.field_type == "LongitudinalWake":
         wzdata = self.Wz.value.val
-        blocks = [
+        blocks = union([
             {"name": "z", "value": zdata},
             {"name": "Wz", "value": wzdata},
-        ]
+        ])
     elif self.field_type == "TransverseWake":
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val
@@ -37,10 +37,10 @@ def write_gdf_field_file(self):
         ]
     elif self.field_type == "1DMagnetoStatic":
         bzdata = self.Bz.value.val
-        blocks = [
+        blocks = union([
             {"name": "z", "value": zdata},
             {"name": "Bz", "value": bzdata},
-        ]
+        ])
     elif self.field_type == "3DMagnetoStatic":
         xdata = self.x.value.val
         ydata = self.y.value.val
@@ -74,17 +74,30 @@ def write_gdf_field_file(self):
             middleRF = np.array([[(x*zstep + halfcell1end + zstep), np.cos((2 * np.pi / lambdaRF) * (x*zstep))] for x in range(0, nsteps+1)])
             halfcell2[:, 0] += middleRF[-1, 0] + zstep
             zdata, ezdata = np.concatenate([halfcell1, middleRF, halfcell2]).transpose()
-        blocks = [
+        blocks = union([
             {"name": "z", "value": zdata},
             {"name": "Ez", "value": ezdata},
-        ]
+        ])
     else:
         warn(f"Field type {self.field_type} not supported for GPT")
     if blocks is not None:
+        # print(blocks)
+        # print(union(blocks))
         easygdf.save(gdf_file, blocks)
     return gdf_file
 
-def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str | None =  None, frequency: float | None = None):
+
+def union(blocks):
+    names = [b["name"] for b in blocks]
+    if "z" in names:
+        zidx = names.index("z")
+        _, indices = np.unique(np.round(blocks[zidx]["value"], decimals=6), return_index=True)
+        blocks = [{"name": b["name"], "value": b["value"][indices]} for b in blocks]
+        return blocks
+    return blocks
+
+
+def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str | None = None, frequency: float | None = None):
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     if "Electro" in field_type:
@@ -99,7 +112,7 @@ def read_gdf_field_file(self, filename: str, field_type: str, cavity_type: str |
     fdat = easygdf.load(filename)["blocks"]
     try:
         zval = [k["value"] for k in fdat if k["name"].lower() == "z"][0]
-    except:
+    except Exception:
         zval = [k["value"] * speed_of_light for k in fdat if k["name"].lower() == "t"][0]
     if field_type == "1DMagnetoStatic":
         bzval = [k["value"] for k in fdat if k["name"].lower().capitalize() == "Bz"][0]

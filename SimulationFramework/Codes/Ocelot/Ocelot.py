@@ -124,7 +124,7 @@ class ocelotLattice(frameworkLattice):
                 try:
                     mag_lat.append(element.write_Ocelot())
                 except Exception as e:
-                    print(element.objectname, e)
+                    print('Ocelot writeElements error:', element.objectname, e)
         self.lat_obj = MagneticLattice(mag_lat)
         self.names = array([lat.id for lat in self.lat_obj.sequence])
 
