@@ -154,9 +154,11 @@ marker:
 monitor:
   keywords: {}
 quadrupole:
-  keywords: { k1l, k1, field_definition, gradient, smooth, fringe_field_coefficient}
+  keywords: { k1l, k1, field_definition, gradient, smooth, fringe_field_coefficient, field_type}
 sextupole:
   keywords: { k2l, k2, field_definition, smooth, fringe_field_coefficient}
+octupole:
+  keywords: { k3l, k3, field_definition, smooth, fringe_field_coefficient}
 rf_deflecting_cavity:
   keywords:
     {
