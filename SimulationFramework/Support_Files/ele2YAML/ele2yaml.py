@@ -61,7 +61,6 @@ def convert_lattice(lattice_file, line, base_dir, floor_file):
         floor_file=floor_file,
     )
     rel.load_lattice(line)
-    print(rel.lattices)
     lattice = rel.lattices[line]
     lattice.replace_element_types(elementtypes)
     lattice.replace_keys(keywordrules)
