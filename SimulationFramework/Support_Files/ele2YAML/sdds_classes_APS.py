@@ -1,7 +1,10 @@
 import os
 import yaml
 from itertools import groupby
-from .counter import Counter
+try:
+    from counter import Counter
+except ImportError:
+    from .counter import Counter
 from SimulationFramework.FrameworkHelperFunctions import chop  # type: ignore
 from SimulationFramework.Modules.SDDSFile import SDDSFile
 

@@ -1,11 +1,19 @@
 import numpy as np
 import yaml
-from .elegant_lattice import (
-    ReadElegantLattice,
-    elementtypes,
-    keywordrules,
-    simframerules,
-)
+try:
+    from elegant_lattice import (
+        ReadElegantLattice,
+        elementtypes,
+        keywordrules,
+        simframerules,
+    )
+except ImportError:
+    from .elegant_lattice import (
+        ReadElegantLattice,
+        elementtypes,
+        keywordrules,
+        simframerules,
+    )
 
 _mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
@@ -46,18 +54,20 @@ yaml.Dumper.ignore_aliases = lambda *args: True
 
 
 def convert_lattice(lattice_file, line, base_dir, floor_file):
-    elatt = ReadElegantLattice(
+    rel = ReadElegantLattice(
         lattice_file=lattice_file,
         base_dir=base_dir,
         allowed_element_types=elementtypes.keys(),
         floor_file=floor_file,
     )
-    lattice = elatt.lattices[line]
+    rel.load_lattice(line)
+    print(rel.lattices)
+    lattice = rel.lattices[line]
     lattice.replace_element_types(elementtypes)
     lattice.replace_keys(keywordrules)
     lattice.filter_element_properties(simframerules)
     lattice.update_cavities()
-    return elatt
+    return rel
 
 
 base_dir = "C:\\Users\\jkj62\\Documents\\GitHub\\SimFrame_Examples\\CLARA\\Ocelot\\"
@@ -65,7 +75,7 @@ base_dir = "C:\\Users\\jkj62\\Documents\\GitHub\\SimFrame_Examples\\CLARA\\Ocelo
 
 if __name__ == "__main__":
     elatt = convert_lattice(
-        lattice_file="ukxfel_save.lte", line="L0001", base_dir=base_dir
+        lattice_file="arc_40fs_75pc.lte", line="ARC_LATTICE", base_dir=base_dir, floor_file="arc_40fs_75pc.flr"
     )
     with open("test.yaml", "w") as stream:
-        elatt.to_YAML("L0001", stream)
+        elatt.to_YAML("ARC_LATTICE", stream)

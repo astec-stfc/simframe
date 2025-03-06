@@ -3,11 +3,15 @@ import re
 import yaml
 from copy import deepcopy
 from itertools import groupby
-from .counter import Counter
 from pydantic import BaseModel, ValidationInfo, field_validator
 from typing import List, Dict
 import numpy as np
-from .sdds_classes_APS import SDDS_Floor
+try:
+    from counter import Counter
+    from sdds_classes_APS import SDDS_Floor
+except ImportError:
+    from .counter import Counter
+    from .sdds_classes_APS import SDDS_Floor
 from SimulationFramework.FrameworkHelperFunctions import _rotation_matrix, chop  # type: ignore
 from SimulationFramework.Modules.merge_two_dicts import merge_dicts  # type: ignore
 
@@ -35,7 +39,7 @@ elementregex = (
     r"[\"]?([a-zA-Z][a-zA-Z0-9\~\@\$\%\^\&\-\_\+\=\{\}\[\]\\\|\/\?\<\>\.\:]*)[\"]?"
 )
 propertiesregex = r"(?:([^=,&\s]+)\s*=\s*([^,&]+))"
-lineregex = r"[\s]*:[\s]*LINE[\s]*=[\s]*"
+lineregex = r"[\s]*:[\s]*(?i)\bline\b[\s]*=[\s]*"
 
 with open(
     os.path.dirname(os.path.abspath(__file__))
@@ -304,9 +308,12 @@ class ElegantLattice(BaseModel):
                 name = elem
             new_elements[name] = deepcopy(self.elements[elem])
             new_elements[name].name = name
-            properties = {
-                k: convert_numpy_types(v) for k, v in self.floor[name].items()
-            }
+            try:
+                properties = {
+                    k: convert_numpy_types(v) for k, v in self.floor[name].items()
+                }
+            except Exception:
+                raise ValueError(f'Element {name} has no floor information! Exiting...')
             properties.update({"start": convert_numpy_types(startpos)})
             properties.update({"global_rotation": convert_numpy_types(startangle)})
             new_elements[name].update(properties)
@@ -375,17 +382,15 @@ class ReadElegantLattice:
 
     def __init__(
         self,
-        lattice_file: str = "ukxfel_save.lte",
-        floor_file: str = "ukxfel.flr",
+        lattice_file: str,
+        floor_file: str,
         base_dir: str = ".",
         allowed_element_types: list | None = None,
     ):
         self.base_dir = base_dir
         self.allowed_element_types = allowed_element_types
-        if lattice_file is not None and floor_file is not None:
-            self.lattice_file = lattice_file
-            self.floor_file = floor_file
-            self.load_lattice(self.lattice_file, self.floor_file)
+        self.lattice_file = lattice_file
+        self.floor_file = floor_file
 
     def flatten(self, A):
         rt = []
@@ -405,13 +410,9 @@ class ReadElegantLattice:
     def lattice_names(self):
         return re.findall(elementregex + lineregex, "\n".join(self.latticestrings))
 
-    def load_lattice(
-        self, lattice_file: str, floor_file: str, lattice_name: str | None = None
-    ):
-        self.lattice_file = lattice_file
-        self.floor_file = floor_file
-        self.floor = SDDS_Floor(os.path.join(self.base_dir, floor_file))
-        self.lattice_path = os.path.join(self.base_dir, lattice_file)
+    def load_lattice(self, lattice_name: str):
+        self.floor = SDDS_Floor(os.path.join(self.base_dir, self.floor_file))
+        self.lattice_path = os.path.join(self.base_dir, self.lattice_file)
         join = False
         with open(self.lattice_path, "r") as file:
             lattice = []
@@ -426,16 +427,17 @@ class ReadElegantLattice:
                     join = False
         self.latticestrings = lattice + []
         self.get_lattice_lines()
+        self.element_names = self.latticelists[lattice_name]
         self.get_elements()
         self.lattices = {}
-        for lattice_name, lattice in self.latticelists.items():
-            elements = self.get_elements_in_lattice(lattice_name)
-            self.lattices[lattice_name] = ElegantLattice(
-                name=lattice_name,
-                lattice=lattice,
-                elements=elements,
-                floor=self.floor.data,
-            )
+        elements = self.get_elements_in_lattice(lattice_name)
+        lattice = self.latticelists[lattice_name]
+        self.lattices[lattice_name] = ElegantLattice(
+            name=lattice_name,
+            lattice=lattice,
+            elements=elements,
+            floor=self.floor.data,
+        )
 
     def __convert_to_float_if_possible(self, string: str) -> str | float:
         regex_int = re.match(r"^-?(\d+)$", string)
@@ -449,11 +451,12 @@ class ReadElegantLattice:
     def get_elements(self):
         self.elements = {}
         removed_elements = []
+        element_names_lower = [e.lower() for e in self.element_names]
         for ls in self.latticestrings:
             nametypematch = re.findall(elementregex + r": ([\w]+)", ls)
             if len(nametypematch) > 0:
                 name, type = nametypematch[0]
-                if type.lower() != "line":
+                if type.lower() != "line" and name.lower() in element_names_lower:
                     if (
                         self.allowed_element_types is None
                         or len(self.allowed_element_types) == 0
@@ -497,9 +500,9 @@ class ReadElegantLattice:
             lattices[lattname] = re.findall(
                 elementregex,
                 [
-                    re.sub(lattname + lineregex, "", latt)
+                    re.sub(r'["]*'+lattname + r'["]*' + lineregex, "", latt)
                     for latt in self.latticestrings
-                    if len(latt) > len(lattname) and latt[: len(lattname)] == lattname
+                    if re.findall(r'["]*'+lattname + r'["]*' + lineregex, latt)
                 ][0],
             )
         for lattname, lattice in lattices.items():
@@ -513,6 +516,9 @@ class ReadElegantLattice:
             self.latticelists[lattice_name] = [
                 elem for elem in lattice if elem not in removed_elements
             ]
+
+    def get_element_names_from_lattice(self, lattice: str):
+        return self.latticelists[lattice]
 
     def get_elements_in_lattice(self, lattice: str):
         return {elem: self.elements[elem] for elem in self.latticelists[lattice]}
