@@ -39,7 +39,7 @@ elementregex = (
     r"[\"]?([a-zA-Z][a-zA-Z0-9\~\@\$\%\^\&\-\_\+\=\{\}\[\]\\\|\/\?\<\>\.\:]*)[\"]?"
 )
 propertiesregex = r"(?:([^=,&\s]+)\s*=\s*([^,&]+))"
-lineregex = r"[\s]*:[\s]*(?i)\bline\b[\s]*=[\s]*"
+lineregex = r"[\s]*:[\s]*\bline\b[\s]*=[\s]*"
 
 with open(
     os.path.dirname(os.path.abspath(__file__))
@@ -408,7 +408,7 @@ class ReadElegantLattice:
 
     @property
     def lattice_names(self):
-        return re.findall(elementregex + lineregex, "\n".join(self.latticestrings))
+        return re.findall(r"(?i)" + elementregex + lineregex, "\n".join(self.latticestrings))
 
     def load_lattice(self, lattice_name: str):
         self.floor = SDDS_Floor(os.path.join(self.base_dir, self.floor_file))
@@ -500,9 +500,9 @@ class ReadElegantLattice:
             lattices[lattname] = re.findall(
                 elementregex,
                 [
-                    re.sub(r'["]*'+lattname + r'["]*' + lineregex, "", latt)
+                    re.sub(r'(?i)["]*'+lattname + r'["]*' + lineregex, "", latt)
                     for latt in self.latticestrings
-                    if re.findall(r'["]*'+lattname + r'["]*' + lineregex, latt)
+                    if re.findall(r'(?i)["]*'+lattname + r'["]*' + lineregex, latt)
                 ][0],
             )
         for lattname, lattice in lattices.items():
