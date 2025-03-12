@@ -526,7 +526,7 @@ class astra_charge(astra_header):
 
     @property
     def grid_size(self):
-        # print 'asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart)
+        # print('asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart))
         return self.grids.getGridSizes((self.npart / self.sample_interval))
 
     def framework_dict(self):
@@ -540,6 +540,7 @@ class astra_charge(astra_header):
                 ["LSPCH3D", {"value": self.space_charge_3D, "default": True}],
             ]
         )
+        # print('astra_charge', 'self.space_charge_2D', self.space_charge_2D, 'self.nrad', self.nrad, 'self.nlong_in', self.nlong_in)
         if self.space_charge_2D:
             sc_n_dict = dict(
                 [
@@ -547,9 +548,9 @@ class astra_charge(astra_header):
                     ["nlong_in", {"value": self.grid_size, "default": 32}],
                 ]
             )
-            if hasattr(self, "nrad"):
+            if hasattr(self, "nrad") and self.nrad is not None:
                 sc_n_dict.update({"nrad": {"value": self.nrad}})
-            if hasattr(self, "nlong_in"):
+            if hasattr(self, "nlong_in") and self.nlong_in is not None:
                 sc_n_dict.update({"nlong_in": {"value": self.nlong_in}})
 
         elif self.space_charge_3D:
@@ -562,6 +563,7 @@ class astra_charge(astra_header):
             )
         else:
             sc_n_dict = dict([])
+        # print('astra_charge dict', merge_two_dicts(sc_dict, sc_n_dict))
         return merge_two_dicts(sc_dict, sc_n_dict)
 
 
