@@ -7,7 +7,7 @@ class solenoid(frameworkElement):
         super().__init__(name, type, **kwargs)
         self.add_default("scale_field", True)
         self.add_default("field_scale", 1)
-        self.add_default("field_type", "1D")
+        self.add_default("field_type", "1DMagnetoStatic")
         self.add_default("default_array_names", ["Z", "Bz"])
 
     def _write_ASTRA(self, n, **kwargs):
