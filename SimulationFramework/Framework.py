@@ -667,7 +667,7 @@ class Framework(Munch):
                 )
 
     def read_Element(
-        self, elementname: str, element: dict, subelement: bool = False
+        self, elementname: str, element: dict, subelement: bool = False, parent: str = None
     ) -> None:
         """Reads an element definition and creates the element and any sub-elements"""
         if elementname == "filename":
@@ -676,12 +676,12 @@ class Framework(Munch):
             if subelement:
                 if "subelement" in element:
                     del element["subelement"]
-                self.add_Element(elementname, subelement=True, **element)
+                self.add_Element(elementname, subelement=True, parent=parent, **element)
             else:
                 self.add_Element(elementname, **element)
             if "sub_elements" in element:
                 for name, elem in list(element["sub_elements"].items()):
-                    self.read_Element(name, elem, subelement=True)
+                    self.read_Element(name, elem, subelement=True, parent=elementname)
 
     def add_Element(
         self, name: str | None = None, type: str | None = None, **kwargs
