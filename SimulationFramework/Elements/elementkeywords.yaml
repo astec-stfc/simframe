@@ -25,6 +25,7 @@ common:
       rotation,
       smooth,
       field_reference_position,
+      parent,
     }
 scatter:
   keywords:

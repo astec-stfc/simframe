@@ -1109,7 +1109,7 @@ class frameworkElement(frameworkObject):
             return float(expand_substitution(self, self.field_amplitude))
 
     def get_field_reference_position(self):
-        if hasattr(self, "field_reference_position"):
+        if hasattr(self, "field_reference_position") and self.field_reference_position is not None:
             if self.field_reference_position.lower() == "start":
                 return self.start
             elif self.field_reference_position.lower() == "middle":
