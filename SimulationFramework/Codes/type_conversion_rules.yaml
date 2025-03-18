@@ -2,6 +2,7 @@ elegant:
   dipole: csrcsbend
   quadrupole: kquad
   sextupole: ksext
+  octupole: koct
   beam_position_monitor: watch
   beam_arrival_monitor: moni
   bunch_length_monitor: moni
@@ -26,6 +27,7 @@ elegant:
   marker: marker
   apcontour: apcontour
   watch_point: watch
+  wakefield: wake
 name:
   dia-bpm: beam_position_monitor
   dia-bam: beam_arrival_monitor

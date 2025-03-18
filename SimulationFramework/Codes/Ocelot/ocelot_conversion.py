@@ -46,5 +46,4 @@ ocelot_conversion_rules = {
     "lscdrift": Drift,
     "csrdrift": Drift,
     "kicker": Hcor,
-    "longitudinal_wakefield": Drift,
 }

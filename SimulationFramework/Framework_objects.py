@@ -9,10 +9,10 @@ from .FrameworkHelperFunctions import (
     expand_substitution,
     checkValue,
     chop,
-    copylink,
     dot
 )
 from .FrameworkHelperFunctions import _rotation_matrix
+from .Modules.Fields import field
 from .Codes.Ocelot import ocelot_conversion
 from ocelot.cpbd.elements import Marker, Aperture
 import numpy as np
@@ -43,7 +43,7 @@ with open(
     commandkeywords = yaml.safe_load(infile)
 
 with open(
-    os.path.dirname(os.path.abspath(__file__)) + "/Codes/elementkeywords.yaml", "r"
+    os.path.dirname(os.path.abspath(__file__)) + "/Elements/elementkeywords.yaml", "r"
 ) as infile:
     elementkeywords = yaml.safe_load(infile)
 
@@ -234,7 +234,7 @@ class frameworkLattice(Munch):
 
     @property
     def wakefields(self):
-        return self.getElementType("longitudinal_wakefield")
+        return self.getElementType("wakefield")
 
     @property
     def wakefields_and_cavity_wakefields(self):
@@ -243,8 +243,8 @@ class frameworkLattice(Munch):
                     or
                     (hasattr(cav, 'transverse_wakefield') and cav['transverse_wakefield'] is not None and cav['transverse_wakefield'] != '')
                     or
-                    (hasattr(cav, 'wakefield') and cav['wakefield'] is not None and cav['wakefield'] != '')]
-        wakes = self.getElementType("longitudinal_wakefield")
+                    (hasattr(cav, 'wakefield_definition') and cav['wakefield_definition'] is not None and cav['wakefield_definition'] != '')]
+        wakes = self.getElementType("wakefield")
         return cavities + wakes
 
     @property
@@ -598,7 +598,7 @@ class frameworkObject(Munch):
             try:
                 setattr(self, key, value)
             except Exception as e:
-                print((self.objecttype, "[", key, "]: ", e))
+                print('add_property error:', (self.objecttype, "[", key, "]: ", e))
 
     def add_properties(self, **keyvalues):
         for key, value in keyvalues.items():
@@ -607,7 +607,7 @@ class frameworkObject(Munch):
                 try:
                     setattr(self, key, value)
                 except Exception as e:
-                    print((self.objecttype, "[", key, "]: ", e))
+                    print('add_properties error:', (self.objecttype, "[", key, "]: ", e))
 
     def add_default(self, key, value):
         self.objectdefaults[key] = value
@@ -1109,7 +1109,7 @@ class frameworkElement(frameworkObject):
             return float(expand_substitution(self, self.field_amplitude))
 
     def get_field_reference_position(self):
-        if hasattr(self, "field_reference_position") and isinstance(self.field_reference_position, str):
+        if hasattr(self, "field_reference_position") and self.field_reference_position is not None:
             if self.field_reference_position.lower() == "start":
                 return self.start
             elif self.field_reference_position.lower() == "middle":
@@ -1205,35 +1205,26 @@ class frameworkElement(frameworkObject):
 
     def update_field_definition(self) -> None:
         """Updates the field definitions to allow for the relative sub-directory location"""
-        if hasattr(self, "field_definition") and self.field_definition is not None:
-            self.field_definition = expand_substitution(self, self.field_definition)
-        if (
-            hasattr(self, "field_definition_sdds")
-            and self.field_definition_sdds is not None
-        ):
-            self.field_definition_sdds = expand_substitution(
-                self, self.field_definition_sdds
+        if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
+            # print('update_field_definition', self.objectname, self.field_definition, self.field_type, self.frequency, self.Structure_Type)
+            self.field_definition = field(
+                filename=expand_substitution(self, self.field_definition),
+                field_type=self.field_type,
+                frequency=self.frequency,
+                cavity_type=self.Structure_Type,
+                n_cells=self.n_cells
             )
         if (
-            hasattr(self, "field_definition_gdf")
-            and self.field_definition_gdf is not None
+            hasattr(self, "wakefield_definition")
+            and self.wakefield_definition is not None
+            and isinstance(self.wakefield_definition, str)
         ):
-            self.field_definition_gdf = expand_substitution(
-                self, self.field_definition_gdf
-            )
-        if (
-            hasattr(self, "longitudinal_wakefield_sdds")
-            and self.longitudinal_wakefield_sdds is not None
-        ):
-            self.longitudinal_wakefield_sdds = expand_substitution(
-                self, self.longitudinal_wakefield_sdds
-            )
-        if (
-            hasattr(self, "transverse_wakefield_sdds")
-            and self.transverse_wakefield_sdds is not None
-        ):
-            self.transverse_wakefield_sdds = expand_substitution(
-                self, self.transverse_wakefield_sdds
+            self.wakefield_definition = field(
+                filename=expand_substitution(self, self.wakefield_definition),
+                field_type=self.field_type,
+                frequency=self.frequency,
+                cavity_type=self.Structure_Type,
+                n_cells=self.n_cells
             )
 
     def _write_ASTRA_dictionary(self, d, n=1):
@@ -1297,27 +1288,29 @@ class frameworkElement(frameworkObject):
         return output[:-2]
 
     def write_ASTRA(self, n, **kwargs):
-        self.update_field_definition()
         return self._write_ASTRA(n, **kwargs)
 
-    def generate_field_file_name(self, param):
-        basename = os.path.basename(param).replace('"', "").replace("'", "")
-        location = os.path.abspath(
-            expand_substitution(self, param)
-            .replace("\\", "/")
-            .replace('"', "")
-            .replace("'", "")
-        )
-        efield_basename = os.path.abspath(
-            self.global_parameters["master_subdir"].replace("\\", "/")
-            + "/"
-            + basename.replace("\\", "/")
-        )
-        copylink(location, efield_basename)
-        return basename
+    def generate_field_file_name(self, param, code):
+        if hasattr(param, 'filename'):
+            basename = os.path.basename(param.filename).replace('"', "").replace("'", "")
+            # location = os.path.abspath(
+            #     expand_substitution(self, param.filename)
+            #     .replace("\\", "/")
+            #     .replace('"', "")
+            #     .replace("'", "")
+            # )
+            efield_basename = os.path.abspath(
+                self.global_parameters["master_subdir"].replace("\\", "/")
+                + "/"
+                + basename.replace("\\", "/")
+            )
+            return os.path.basename(param.write_field_file(code=code, location=efield_basename))
+        else:
+            pass
+            # print(f'param does not have a filename: {param}')
+        return None
 
     def _write_Elegant(self):
-        self.update_field_definition()
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
@@ -1354,7 +1347,6 @@ class frameworkElement(frameworkObject):
 
     def write_Elegant(self):
         if not self.subelement:
-            self.update_field_definition()
             return self._write_Elegant()
 
     def _convertType_Elegant(self, etype):
@@ -1413,12 +1405,13 @@ class frameworkElement(frameworkObject):
         pass
 
     def write_CSRTrack(self, n=0, **kwargs):
-        self.update_field_definition()
         return self._write_CSRTrack(self, n, **kwargs)
 
     def write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
-        self.update_field_definition()
         return self._write_GPT(Brho, ccs, *args, **kwargs)
+
+    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+        return ""
 
     def gpt_coordinates(self, position, rotation):
         x, y, z = chop(position, 1e-6)

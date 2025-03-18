@@ -25,6 +25,7 @@ common:
       rotation,
       smooth,
       field_reference_position,
+      parent,
     }
 scatter:
   keywords:
@@ -58,14 +59,15 @@ cavity:
       frequency,
       phase,
       field_definition,
-      field_definition_sdds,
-      field_definition_gdf,
+      field_type,
+      cavity_type,
       lsc_cutoff_high,
       field_amplitude,
       cell_length,
-      longitudinal_wakefield_sdds,
-      transverse_wakefield_sdds,
+      wakefield_definition,
       tcolumn,
+      zcolumn,
+      wcolumn,
       wzcolumn,
       wxcolumn,
       wycolumn,
@@ -83,18 +85,14 @@ cavity:
       design_power,
       design_gamma,
       bunch_phase,
-      wakefield_gdf,
-      longitudinal_wakefield_gdf,
-      transverse_wakefield_gdf,
       smooth,
       body_focus_model,
     }
-longitudinal_wakefield:
+wakefield:
   keywords:
     {
       n_cells,
       field_definition,
-      field_definition_sdds,
       field_amplitude,
       cell_length,
       waketype,
@@ -157,9 +155,11 @@ marker:
 monitor:
   keywords: {}
 quadrupole:
-  keywords: { k1l, k1, field_definition, gradient, smooth, fringe_field_coefficient}
+  keywords: { k1l, k1, field_definition, gradient, smooth, fringe_field_coefficient, field_type}
 sextupole:
   keywords: { k2l, k2, field_definition, smooth, fringe_field_coefficient}
+octupole:
+  keywords: { k3l, k3, field_definition, smooth, fringe_field_coefficient}
 rf_deflecting_cavity:
   keywords:
     {
@@ -178,7 +178,6 @@ solenoid:
     {
       field_amplitude,
       field_definition,
-      field_definition_gdf,
       field_type,
       scale_field,
       field_scale,

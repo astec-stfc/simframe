@@ -3,7 +3,6 @@ from SimulationFramework.Framework_objects import (
     elements_Elegant,
     type_conversion_rules_Ocelot,
 )
-from SimulationFramework.FrameworkHelperFunctions import expand_substitution
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 import numpy as np
 
@@ -15,13 +14,8 @@ class cavity(frameworkElement):
         self.add_default("tcolumn", '"t"')
         self.add_default("zcolumn", '"Z"')
         self.add_default("ezcolumn", '"Ez"')
-        self.add_default("wzcolumn", '"W"')
-        self.add_default("wxcolumn", '"W"')
-        self.add_default("wycolumn", '"W"')
-        self.add_default("wcolumn", '"Ez"')
         self.add_default("change_p0", 1)
         self.add_default("n_kicks", self.n_cells)
-        # self.add_default('method', '"non-adaptive runge-kutta"')
         self.add_default("end1_focus", 1)
         self.add_default("end2_focus", 1)
         self.add_default("body_focus_model", "SRS")
@@ -54,8 +48,13 @@ class cavity(frameworkElement):
         field_ref_pos = self.get_field_reference_position()
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
-        basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ["FILE_EFieLD", {"value": "'" + basename + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="astra"
+        )
+        efield_def = [
+            "FILE_EFieLD",
+            {"value": "'" + field_file_name + "'", "default": ""},
+        ]
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -114,40 +113,44 @@ class cavity(frameworkElement):
             n,
         )
 
+    def set_wakefield_column_names(self, wakefield_file_name: str) -> None:
+        self.tcolumn = '"t"'
+        if self.wakefield_definition.field_type == "3DWake":
+            self.wakefile = wakefield_file_name
+            self.wxcolumn = '"Wx"'
+            self.wycolumn = '"Wy"'
+            self.wzcolumn = '"Wz"'
+            self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
+        elif self.wakefield_definition.field_type == "LongitudinalWake":
+            self.wzcolumn = '"Wz"'
+            self.zwakefile = wakefield_file_name
+            self.wakefieldcolumstring = '"z", "Wz"'
+        elif self.wakefield_definition.field_type == "TransverseWake":
+            self.wxcolumn = '"Wx"'
+            self.wycolumn = '"Wy"'
+            self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
+            self.trwakefile = wakefield_file_name
+
     def _write_Elegant(self):
-        original_field_definition_sdds = self.field_definition_sdds
-        if self.field_definition_sdds is not None:
-            self.field_definition_sdds = (
-                '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
-            )
-        original_longitudinal_wakefield_sdds = self.longitudinal_wakefield_sdds
-        if self.longitudinal_wakefield_sdds is not None:
-            self.longitudinal_wakefield_sdds = (
-                '"'
-                + self.generate_field_file_name(self.longitudinal_wakefield_sdds)
-                + '"'
-            )
-        original_transverse_wakefield_sdds = self.transverse_wakefield_sdds
-        if self.transverse_wakefield_sdds is not None:
-            self.transverse_wakefield_sdds = (
-                '"'
-                + self.generate_field_file_name(self.transverse_wakefield_sdds)
-                + '"'
-            )
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         if (
-            not hasattr(self, "longitudinal_wakefield_sdds")
-            or self.longitudinal_wakefield_sdds is None
-        ) and (
-            not hasattr(self, "transverse_wakefield_sdds")
-            or self.transverse_wakefield_sdds is None
+            not hasattr(self, "wakefield_definition")
+            or self.wakefield_definition is None
+            or self.wakefield_definition == ""
         ):
-            # print('cavity ', self.objectname, ' is an RFCA!')
             etype = "rfca"
-        if self.field_definition_sdds is not None:
-            etype = "rftmez0"
-            self.ez_peak = self.field_amplitude
+            if self.field_definition is not None:
+                etype = "rftmez0"
+                self.ez_peak = self.field_amplitude
+                self.field_file_name = self.generate_field_file_name(
+                    self.field_definition, code="elegant"
+                )
+        else:
+            wakefield_file_name = self.generate_field_file_name(
+                self.wakefield_definition, code="elegant"
+            )
+            self.set_wakefield_column_names(wakefield_file_name)
         string = self.objectname + ": " + etype
         for key, value in list(
             merge_two_dicts(self.objectproperties, self.objectdefaults).items()
@@ -158,54 +161,48 @@ class cavity(frameworkElement):
                 and not key == "commandtype"
                 and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
-                value = (
-                    getattr(self, key)
-                    if hasattr(self, key) and getattr(self, key) is not None
-                    else value
-                )
+                if hasattr(self, key) and getattr(self, key) is not None:
+                    value = getattr(self, key)
                 key = self._convertKeyword_Elegant(key).lower()
+                # rftmez0 uses frequency instead of freq
                 if etype == "rftmez0" and key == "freq":
                     key = "frequency"
+
                 if (
                     self.objecttype == "cavity"
                     or self.objecttype == "rf_deflecting_cavity"
                 ):
-                    if etype == "rftmez0":
-                        # If using rftmez0 or similar
-                        value = (
-                            ((value) / 360.0) * (2 * 3.14159)
-                            if key == "phase"
-                            else value
-                        )
-                    else:
-                        # In ELEGANT all phases are +90degrees!!
-                        value = 90 - value if key == "phase" else value
-                    # In ELEGANT the voltages need to be compensated
+                    if key == "phase":
+                        if etype == "rftmez0":
+                            # If using rftmez0 or similar
+                            value = (value / 360.0) * (2 * 3.14159)
+                        else:
+                            # In ELEGANT all phases are +90degrees!!
+                            value = 90 - value
 
-                    value = (
-                        abs(
+                    # In ELEGANT the voltages need to be compensated
+                    if key == "volt":
+                        value = abs(
                             (self.cells + 4.1)
                             * self.cell_length
                             * (1 / np.sqrt(2))
                             * value
                         )
-                        if key == "volt"
-                        else value
-                    )
                     # If using rftmez0 or similar
-                    value = (
-                        abs(1e-3 / (np.sqrt(2)) * value) if key == "ez_peak" else value
-                    )
+                    if key == "ez_peak":
+                        value = abs(1e-3 / (np.sqrt(2)) * value)
+
                     # In CAVITY NKICK = n_cells
-                    value = (
-                        3 * self.cells if key == "n_kicks" and self.cells > 0 else value
-                    )
+                    if key == "n_kicks" and self.cells > 0:
+                        value = 3 * self.cells
+
                     if key == "n_bins" and value > 0:
                         print(
                             "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
                         )
                     value = 1 if value is True else value
                     value = 0 if value is False else value
+                # print("elegant cavity", key, value)
                 tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -214,9 +211,6 @@ class cavity(frameworkElement):
                 else:
                     string += tmpstring
         wholestring += string + ";\n"
-        self.field_definition_sdds = original_field_definition_sdds
-        self.longitudinal_wakefield_sdds = original_longitudinal_wakefield_sdds
-        self.transverse_wakefield_sdds = original_transverse_wakefield_sdds
         return wholestring
 
     def _write_Ocelot(self):
@@ -255,6 +249,12 @@ class cavity(frameworkElement):
         field_ref_pos = self.get_field_reference_position()
         ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         relpos, _ = ccs.relative_position(field_ref_pos, self.global_rotation)
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="gpt"
+        )
+        wakefield_file_name = self.generate_field_file_name(
+            self.wakefield_definition, code="gpt"
+        )
         """
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
         wakefield("wcs","z",  6.78904 + 4.06667 / 2, 4.06667, 50, "Sz5um10mm.gdf", "z","","","Wz", "FieldFactorWz", 10 * 122 / 4.06667) ;
@@ -262,7 +262,8 @@ class cavity(frameworkElement):
         if self.crest is None:
             self.crest = 0
         subname = str(relpos[2]).replace(".", "")
-        if expand_substitution(self, self.field_definition_gdf) is not None:
+        output = ""
+        if field_file_name is not None:
             output = (
                 "f"
                 + subname
@@ -314,8 +315,8 @@ class cavity(frameworkElement):
                 + ", "
                 + value_text
                 + ', "'
-                + str(self.generate_field_file_name(self.field_definition_gdf))
-                + '", "Z","Ez", ffac'
+                + str(field_file_name)
+                + '", "z", "Ez", ffac'
                 + subname
                 + ", phi"
                 + subname
@@ -323,19 +324,23 @@ class cavity(frameworkElement):
                 + subname
                 + ");\n"
             )
-            if expand_substitution(self, self.wakefield_gdf) is not None:
+            if wakefield_file_name is not None:
+                wccs_label, wvalue_text = ccs.ccs_text(self.middle, self.rotation)
+                self.set_wakefield_column_names(wakefield_file_name)
                 output += (
                     "wakefield("
                     + ccs.name
                     + ", "
-                    + ccs_label
+                    + wccs_label
                     + ", "
-                    + value_text
+                    + wvalue_text
                     + ", "
                     + str(self.length)
                     + ', 50, "'
-                    + str(self.generate_field_file_name(self.wakefield_gdf))
-                    + '", "z","Wx","Wy","Wz", "FieldFactorWz", '
+                    + str(wakefield_file_name)
+                    + '", '
+                    + self.wakefieldcolumstring
+                    + ', "FieldFactorWz", '
                     + str(self.cells)
                     + " / "
                     + str(self.length)
@@ -349,56 +354,6 @@ class cavity(frameworkElement):
                     + str(self.length)
                     + ") ;\n"
                 )
-            else:
-                if (
-                    expand_substitution(self, self.longitudinal_wakefield_gdf)
-                    is not None
-                ):
-                    output += (
-                        "wakefield("
-                        + ccs.name
-                        + ", "
-                        + ccs_label
-                        + ", "
-                        + value_text
-                        + ", "
-                        + str(self.length)
-                        + ', 50, "'
-                        + str(
-                            self.generate_field_file_name(
-                                self.longitudinal_wakefield_gdf
-                            )
-                        )
-                        + '", "z","","","Wz", "FieldFactorWz", '
-                        + str(self.cells)
-                        + " / "
-                        + str(self.length)
-                        + ") ;\n"
-                    )
-                if expand_substitution(self, self.transverse_wakefield_gdf) is not None:
-                    output += (
-                        "wakefield("
-                        + ccs.name
-                        + ", "
-                        + ccs_label
-                        + ", "
-                        + value_text
-                        + ", "
-                        + str(self.length)
-                        + ', 50, "'
-                        + str(
-                            self.generate_field_file_name(self.transverse_wakefield_gdf)
-                        )
-                        + '", "z","Wx","Wy","", "FieldFactorWx", '
-                        + str(self.cells)
-                        + " / "
-                        + str(self.length)
-                        + ', "FieldFactorWy", '
-                        + str(self.cells)
-                        + " / "
-                        + str(self.length)
-                        + ") ;\n"
-                    )
         else:
             output = ""
         return output

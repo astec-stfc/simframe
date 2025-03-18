@@ -2,6 +2,7 @@ import os
 import re
 from shutil import copyfile
 import numpy as np
+from .Modules.Fields import field
 
 
 def readFile(fname):
@@ -68,7 +69,7 @@ def chop(expr, delta=1e-8):
 def chunks(li, n):
     """Yield successive n-sized chunks from l."""
     for i in range(0, len(li), n):
-        yield li[i: i + n]
+        yield li[i : i + n]
 
 
 def dot(a, b) -> float:
@@ -225,7 +226,7 @@ def clean_directory(folder):
                 os.unlink(file_path)
             # elif os.path.isdir(file_path): shutil.rmtree(file_path)
         except Exception as e:
-            print(e)
+            print('clean_directory error:', e)
 
 
 def list_add(list1, list2):
@@ -259,7 +260,9 @@ def copylink(source, destination):
 
 
 def convert_numpy_types(v):
-    if isinstance(v, (np.ndarray, list, tuple)):
+    if isinstance(v, (dict)):
+        return {key: convert_numpy_types(item) for key, item in v.items()}
+    elif isinstance(v, (np.ndarray, list, tuple)):
         return [convert_numpy_types(li) for li in v]
     elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
@@ -280,5 +283,7 @@ def convert_numpy_types(v):
         ),
     ):
         return int(v)
+    elif isinstance(v, field):
+        return convert_numpy_types(v.model_dump())
     else:
         return v

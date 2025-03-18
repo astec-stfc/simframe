@@ -4,16 +4,17 @@ from SimulationFramework.Framework_objects import elements_Elegant
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
-class longitudinal_wakefield(cavity):
+class wakefield(cavity):
 
     def __init__(self, name=None, type="longitudinal_wakefield", **kwargs):
         super().__init__(name, type, **kwargs)
         self.add_default("coupling_cell_length", 0)
+        self.add_default("scale_kick", 1)
 
     def _write_ASTRA(self, startn):
         field_ref_pos = self.get_field_reference_position()
-        basename = self.generate_field_file_name(self.field_definition)
-        efield_def = ["Wk_filename", {"value": "'" + basename + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
+        efield_def = ["Wk_filename", {"value": "'" + field_file_name + "'", "default": ""}]
         output = ""
         if self.scale_kick > 0:
             for n in range(startn, startn + self.cells):
@@ -67,14 +68,23 @@ class longitudinal_wakefield(cavity):
             output += "\n"
         return output
 
+    def set_elegant_column_names(self, file_name: str) -> None:
+        self.tcolumn = '"t"'
+        if self.field_definition.field_type == "LongitudinalWake":
+            etype = 'wake'
+            self.wcolumn = '"Wz"'
+            self.inputfile = file_name
+        elif self.field_definition.field_type == "TransverseWake":
+            etype = 'trwake'
+            self.wxcolumn = '"Wx"'
+            self.wycolumn = '"Wy"'
+            self.inputfile = file_name
+        return etype
+
     def _write_Elegant(self):
-        original_field_definition_sdds = self.field_definition_sdds
-        if self.field_definition_sdds is not None:
-            self.field_definition_sdds = (
-                '"' + self.generate_field_file_name(self.field_definition_sdds) + '"'
-            )
+        wakefield_file_name = self.generate_field_file_name(self.field_definition, code="elegant")
+        etype = self.set_elegant_column_names(wakefield_file_name)
         wholestring = ""
-        etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
         if self.length > 0:
             d = drift(
@@ -106,5 +116,4 @@ class longitudinal_wakefield(cavity):
                 else:
                     string += tmpstring
         wholestring += string + ";\n"
-        self.field_definition_sdds = original_field_definition_sdds
         return wholestring

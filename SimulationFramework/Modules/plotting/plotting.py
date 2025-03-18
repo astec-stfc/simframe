@@ -29,16 +29,35 @@ def find_nearest(array, value):
         return idx
 
 
-def fieldmap_data(element, directory="."):
+def ASTRA_TW_FieldMap(fielddat, start, stop, cells, p):
+    zpos = list(fielddat[:, 0])
+    startpos = zpos.index(start)
+    stoppos = zpos.index(stop)
+    halfcell1 = fielddat[:startpos]
+    halfcell2 = fielddat[stoppos:]
+    rfcell = fielddat[startpos: stoppos]
+    n_cells = int(cells / p)
+    cell_length = rfcell[-1, 0] - rfcell[0, 0]
+    dat = list(halfcell1)
+    for i in range(0, n_cells + 1, 1):
+        dat += list(1.0 * rfcell)
+        rfcell[:, 0] += cell_length
+    halfcell2[:, 0] += n_cells * cell_length
+    dat += list(halfcell2)
+    dat = np.array(dat)
+    return dat
+
+
+def fieldmap_data(element):
     """
     Loads the fieldmap in absolute coordinates.
 
-    If a fieldmaps dict is given, thes will be used instead of loading the file.
+    If a fieldmaps dict is given, these will be used instead of loading the file.
 
     """
 
     # Position
-    offset = element.middle[2]
+    offset = element.get_field_reference_position()[2]
 
     # Scaling
     scale = element.get_field_amplitude
@@ -47,37 +66,13 @@ def fieldmap_data(element, directory="."):
 
     # file
     element.update_field_definition()
-    file = os.path.abspath(os.path.join(directory, element.field_definition.strip('"')))
+    field = element.field_definition
+    data = field.get_field_data(code="astra")
 
-    # print(f'loading from file {file}')
-    with open(file) as f:
-        firstline = f.readline()
-        c = StringIO(firstline)
-        header = np.loadtxt(c)
-    if len(header) == 4:
-        dat = np.loadtxt(file, skiprows=1)
-        start, stop, n, p = header
-        fielddat = dat[1:]
-        zpos = list(1 * fielddat[:, 0])
-        startpos = zpos.index(start)
-        stoppos = zpos.index(stop)
-        halfcell1 = 1 * fielddat[:startpos]
-        halfcell2 = 1 * fielddat[stoppos:]
-        rfcell = 1 * dat[startpos - 1 : stoppos + 1]
-        # rfcell[:,0] -= start
-        # rfcell[:,0] /= p
-        # rfcell[:,0] += start
-        n_cells = int(element.cells / p)
-        cell_length = rfcell[-1, 0] - rfcell[0, 0]
-        dat = list(halfcell1)
-        for i in range(0, n_cells + 1, 1):
-            dat += list(1.0 * rfcell)
-            rfcell[:, 0] += cell_length
-        halfcell2[:, 0] += n_cells * cell_length
-        dat += list(halfcell2)
-        dat = np.array(dat)
+    if field.field_type == "1DElectroDynamic" and field.cavity_type == "TravellingWave":
+        dat = ASTRA_TW_FieldMap(np.transpose([field.z.value.val, field.Ez.value.val]), field.start_cell_z, field.end_cell_z, element.cells, field.mode_denominator)
     else:
-        dat = np.loadtxt(file)
+        dat = data
     dat[:, 0] += offset
     x = dat[:, 1]
     normalise = max(x.min(), x.max(), key=abs)
@@ -187,7 +182,7 @@ def load_elements(
                 and hasattr(e, "field_definition")
                 and e.field_definition is not None
             ):
-                fmap[t][e.objectname] = fieldmap_data(e, directory=lattice.subdirectory)
+                fmap[t][e.objectname] = fieldmap_data(e)
             elif hasattr(mpd, t):
                 fmap[t][e.objectname] = getattr(mpd, t)(e)
             else:

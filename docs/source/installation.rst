@@ -54,10 +54,9 @@ The following dependencies are optional, but are generally required for running 
 
 * `MasterLattice`
 * `SimCodes`
-* `ASTeCsdds` - the version is related to the version of python you are installing (`ASTeCsdds==3.10` is for ``python 3.10``)
 
 The can all be installed from the ``apclara1.dl.ac.uk`` pypi server:
 
 .. code-block:: bash
 
-    pip install --extra-index-url http://apclara1.dl.ac.uk:8090/simple/ --trusted-host apclara1.dl.ac.uk MasterLattice SimCodes ASTeCsdds==3.10
+    pip install --extra-index-url http://apclara1.dl.ac.uk:8090/simple/ --trusted-host apclara1.dl.ac.uk MasterLattice SimCodes

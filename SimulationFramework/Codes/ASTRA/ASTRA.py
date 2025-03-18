@@ -1,4 +1,5 @@
 import os
+from copy import copy
 import numpy as np
 import lox
 
@@ -10,10 +11,11 @@ from ...Framework_objects import (
     getGrids,
     elementkeywords,
 )
-from ...Framework_elements import global_error
+from ...Framework_elements import global_error, wakefield
 from ...FrameworkHelperFunctions import expand_substitution, saveFile
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import Beams as rbf
+from ...Modules.Fields import field
 
 section_header_text_ASTRA = {
     "cavities": {"header": "CAVITY", "bool": "LEField"},
@@ -218,8 +220,15 @@ class astraLattice(frameworkLattice):
                         counter.counter(element.objecttype),
                         auto_phase=self.headers["newrun"]["auto_phase"],
                     )
-                elif t[0] == "wakefields":
-                    elemstr = element.write_ASTRA(counter.counter("wakefields"))
+                    if t[0] == "wakefields" and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
+                        original_properties = {
+                            a: element[a]
+                            for a in element.objectproperties
+                            if a != "objectname" and a != "objecttype"
+                        }
+                        original_properties['field_definition'] = original_properties['wakefield_definition']
+                        wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
+                        elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
                 else:
                     elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == "":
@@ -517,7 +526,7 @@ class astra_charge(astra_header):
 
     @property
     def grid_size(self):
-        # print 'asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart)
+        # print('asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart))
         return self.grids.getGridSizes((self.npart / self.sample_interval))
 
     def framework_dict(self):
@@ -531,6 +540,7 @@ class astra_charge(astra_header):
                 ["LSPCH3D", {"value": self.space_charge_3D, "default": True}],
             ]
         )
+        # print('astra_charge', 'self.space_charge_2D', self.space_charge_2D, 'self.nrad', self.nrad, 'self.nlong_in', self.nlong_in)
         if self.space_charge_2D:
             sc_n_dict = dict(
                 [
@@ -538,9 +548,9 @@ class astra_charge(astra_header):
                     ["nlong_in", {"value": self.grid_size, "default": 32}],
                 ]
             )
-            if hasattr(self, "nrad"):
+            if hasattr(self, "nrad") and self.nrad is not None:
                 sc_n_dict.update({"nrad": {"value": self.nrad}})
-            if hasattr(self, "nlong_in"):
+            if hasattr(self, "nlong_in") and self.nlong_in is not None:
                 sc_n_dict.update({"nlong_in": {"value": self.nlong_in}})
 
         elif self.space_charge_3D:
@@ -553,6 +563,7 @@ class astra_charge(astra_header):
             )
         else:
             sc_n_dict = dict([])
+        # print('astra_charge dict', merge_two_dicts(sc_dict, sc_n_dict))
         return merge_two_dicts(sc_dict, sc_n_dict)
 
 

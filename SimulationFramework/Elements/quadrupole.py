@@ -8,6 +8,7 @@ class quadrupole(frameworkElement):
         self.add_default("k1l", 0)
         self.add_default("n_kicks", 4)
         self.add_default("field_reference_position", "middle")
+        self.add_default("fringe_field_coefficient", 0)
         self.strength_errors = [0]
 
     @property
@@ -75,11 +76,11 @@ class quadrupole(frameworkElement):
             ]
         )
         if self.field_definition:
-            basename = self.generate_field_file_name(self.field_definition)
+            field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
             astradict.update(
                 dict(
                     [
-                        ["Q_type", {"value": "'" + basename + "'", "default": None}],
+                        ["Q_type", {"value": "'" + field_file_name + "'", "default": None}],
                         ["q_grad", {"value": self.gradient, "default": None}],
                     ]
                 )

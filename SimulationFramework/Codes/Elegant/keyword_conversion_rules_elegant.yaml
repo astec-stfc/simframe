@@ -11,7 +11,7 @@ general:
   hangle: hkick
   vangle: vkick
   csrdz: dz
-  field_definition_sdds: inputfile
+  field_file_name: inputfile
   change_momentum: change_p0
   bunched_beam: bunched_beam_mode
   current_bins: n_bins
@@ -39,11 +39,13 @@ sextupole:
   isr_enable: isr
   sr_enable: synch_rad
   n_kicks: n_slices
+octupole:
+  isr_enable: isr
+  sr_enable: synch_rad
+  n_kicks: n_slices
 cavity:
   frequency: freq
   field_amplitude: volt
-  longitudinal_wakefield_sdds: zwakefile
-  transverse_wakefield_sdds: trwakefile
   longitudinal_wakefield_enable: zwake
   transverse_wakefield_enable: trwake
   interpolate_current_bins: interpolate
