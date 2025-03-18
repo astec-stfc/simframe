@@ -4,12 +4,9 @@ import subprocess
 import numpy as np
 
 try:
-    import ASTeCsdds.sdds as sdds  # type: ignore
-except ImportError:
-    try:
-        import sdds
-    except Exception:
-        print("No SDDS available!")
+    import sdds
+except Exception:
+    print("No SDDS available!")
 import lox
 from ...Framework_objects import (
     frameworkLattice,
@@ -543,6 +540,7 @@ class elegant_run_setup_command(elegantCommandFile):
             always_change_p0=always_change_p0,
             sigma="%s.sig",
             default_order=default_order,
+            s_start=lattice.startObject["position_start"][2],
             **kwargs
         )
 
