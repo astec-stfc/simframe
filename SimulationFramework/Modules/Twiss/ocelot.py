@@ -55,6 +55,8 @@ def interpret_ocelot_data(self, fdat):
     self.append("alpha_z", np.zeros(len(fdat["s"])))
     self.append("sigma_x", fdat["xx"])
     self.append("sigma_y", fdat["yy"])
+    self.append("sigma_xp", fdat["pxpx"])
+    self.append("sigma_yp", fdat["pypy"])
     self.append("sigma_t", fdat["tautau"])
     self.append("mean_x", fdat["x"])
     self.append("mean_y", fdat["y"])
