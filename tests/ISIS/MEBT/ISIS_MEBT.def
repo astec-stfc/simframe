@@ -1,0 +1,60 @@
+global:
+  charge:
+    cathode: False
+    space_charge_mode: 3D
+    mirror_charge: False
+  ASTRAsettings:
+    High_res: True
+    EmitS: True
+    PhaseS: True
+    TrackS: True
+    RefS: True
+    Track_All: True
+    Phase_Scan: False
+    Auto_Phase: False
+    check_ref_part: False
+    H_max: 0.01
+    H_min: 0.001
+    title: 'trial'
+    run_no: 1
+    Lmagnetized: False
+generator:
+  combine_distributions: False
+  number_of_particles: 2000
+  species: 'proton'
+  probe_particle: True
+  noise_reduction: True
+  cathode: False
+  charge: 0.173e-9
+  reference_position: 0
+  inital_energy: 0.665
+  distribution_type_z: 'g'
+  sigma_z: 1.4e-3
+  guassian_cutoff_z: 3
+  distribution_type_pz: 'g'
+  sigma_kinetic_energy: 7.8
+  correlation_kinetic_energy: 0
+  distribution_type_x: 'g'
+  sigma_x: 1.33e-3
+  offset_x: 0
+  distribution_type_px: 'g'
+  normalized_horizontal_emittance: 0.48e-6
+  correlation_px: -2.84892
+  distribution_type_y: 'g'
+  sigma_y: 1.05e-3
+  offset_y: 0
+  distribution_type_py: 'g'
+  normalized_vertical_emittance: 0.48e-6
+  correlation_py: 6.17442
+  thermal_emittance: None
+files:
+  MEBT:
+    code: ASTRA
+    starting_rotation: 0
+    input:
+      particle_definition: 'initial_distribution'
+    output:
+      zstart: 0
+      end_element: ISIS-MEBT-SCR-22
+elements:
+  filename: ['YAML/ISIS_MEBT.yaml']

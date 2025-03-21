@@ -67,7 +67,7 @@ class twiss(munch.Munch):
         "gamma_z": twissParameter(name="gamma_z", unit=""),
         "alpha_z": twissParameter(name="alpha_z", unit=""),
         "sigma_x": twissParameter(name="sigma_x", unit="m"),
-        "sigma_xp": twissParameter(name="sigma_xp", unit="m"),        
+        "sigma_xp": twissParameter(name="sigma_xp", unit="m"),
         "sigma_y": twissParameter(name="sigma_y", unit="m"),
         "sigma_yp": twissParameter(name="sigma_yp", unit="m"),
         "sigma_z": twissParameter(name="sigma_z", unit="m"),

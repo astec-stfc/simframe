@@ -1,0 +1,9142 @@
+elements:
+  CLA-HRG1-SIM-APER-01:
+    centre:
+    - 0
+    - 0
+    - 0
+    csr_bins: 196
+    datum:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-HRG1-GUN-CAV-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.16
+    crest: 145.789
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.32
+    field_amplitude: 120000000.0
+    field_definition: $master_lattice_location$Data_Files/HRRG_1D_RF.dat
+    field_definition_gdf: $master_lattice_location$Data_Files/HRRG_1D_RF.gdf
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.32
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0
+    - 0
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 1.5
+    phase: 9
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: StandingWave
+    sub_elements:
+      EBT-HRG1-MAG-SOL-01:
+        centre:
+        - 0.0
+        - 0.0
+        - 0.16241
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 0.32
+        field_amplitude: 0.345
+        field_definition: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.gdf
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.32
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: solenoid
+    transverse_wakefield_enable: true
+    type: cavity
+  CLA-S01-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.32
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.32
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S01-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.335
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.35
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S01-MAG-HCOR-01
+    isr_enable: true
+    length: 0.03
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S01-MAG-VCOR-01
+  CLA-S01-DIA-WCM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.7011
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.7261
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: wall_current_monitor
+  CLA-S01-MAG-HVCOR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.81361
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.82861
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S01-MAG-HCOR-02
+    isr_enable: true
+    length: 0.075
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S01-MAG-VCOR-02
+  CLA-S01-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.894055
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.937
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.08589
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S01-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S01-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 0.9803
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 0.9803
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S01-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-L01-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 1.0577
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 1.0577
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.01
+  CLA-L01-LIN-CAV-01:
+    attenuation_constant: 0.42
+    cell_length: 0.0333333333333333
+    centre:
+    - 0.0
+    - 0.0
+    - 2.210235
+    coupling_cell_length: 0.0495
+    crest: 269.90983
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.2269
+    design_gamma: 10
+    design_power: 25e6
+    field_amplitude: 21000000.0
+    field_definition: $master_lattice_location$Data_Files/TWS_S-DL.dat
+    field_definition_gdf: $master_lattice_location$Data_Files/mockup2m_moved.gdf
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 2.03333
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_sdds: $master_lattice_location$Data_Files/Sz5um10mm.sdds
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 61
+    phase: 16
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shunt_impedance: 1.30693e8
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: TravellingWave
+    sub_elements:
+      CLA-L01-MAG-SOL-01:
+        centre:
+        - 0.0
+        - 0.0
+        - 1.95
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 2.2
+        field_amplitude: 0.05
+        field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/SwissFEL_linac_sols.gdf
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.5
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: solenoid
+      CLA-L01-MAG-SOL-02:
+        centre:
+        - 0.0
+        - 0.0
+        - 2.95
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 3.2
+        field_amplitude: -0.05
+        field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.dat
+        field_definition_gdf: $master_lattice_location$Data_Files/SwissFEL_linac_sols.gdf
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.5
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: solenoid
+      CLA-L01-SIM-WAKE-01:
+        cell_length: 0.0333333333333333
+        centre:
+        - 0.0
+        - 0.0
+        - 2.210235
+        coupling_cell_length: 0.0495
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 3.2269
+        field_definition: $master_lattice_location$Data_Files/SzSx5um10mm.dat
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 2.03333
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        scale_kick: 1
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: longitudinal_wakefield
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: $master_lattice_location$Data_Files/Sx5um10mm.sdds
+    type: cavity
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
+  CLA-S02-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 3.29693
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.29693
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S02-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 3.335237
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.37354
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S02-MAG-HCOR-01
+    isr_enable: true
+    length: 0.076607
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S02-MAG-VCOR-01
+  CLA-S02-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 3.52715
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.5775
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.1884015096956634
+    length: 0.1007
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S02-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 3.59875
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.62
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0425
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S02-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S02-MAG-QUAD-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 3.92715
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 3.9775
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.16432629894876208
+    length: 0.1007
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S02-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 4.0891
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 4.0891
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S02-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S02-MAG-HVCOR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 4.23661
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 4.25161
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S02-MAG-HCOR-02
+    isr_enable: true
+    length: 0.03
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S02-MAG-VCOR-02
+  CLA-S02-DIA-ECOL-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 4.51862
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 4.69362
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    length: 0.35
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: elliptical
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: collimator
+    vertical_size: 0.01
+  CLA-S02-SIM-APER-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 4.69362
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 4.69362
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S02-MAG-HVCOR-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 4.809
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 4.824
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S02-MAG-HCOR-03
+    isr_enable: true
+    length: 0.03
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S02-MAG-VCOR-03
+  CLA-S02-DIA-SCR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 5.0101
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 5.0101
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S02-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S02-MAG-QUAD-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 5.22715
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 5.2775
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.1800806927685676
+    length: 0.1007
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S02-MAG-QUAD-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 5.62715
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 5.6775
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.4654863880663881
+    length: 0.1007
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S02-MAG-QUAD-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 6.4403
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 6.49065
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.23263868920427694
+    length: 0.1007
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S02-DIA-BPM-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 6.515975
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 6.5413
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.05065
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S02-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S02-DIA-SCR-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 6.5846
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 6.5846
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S02-DIA-SCR-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S02-MAG-HVCOR-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 6.683746
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 6.72205
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_pv: CLA-S02-MAG-HCOR-04
+    isr_enable: true
+    length: 0.076607
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+    vertical_pv: CLA-S02-MAG-VCOR-04
+  CLA-L02-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 6.7485
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 6.7485
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.01
+  CLA-L02-LIN-CAV-01:
+    attenuation_constant: 0.42
+    cell_length: 0.0333333333333333
+    centre:
+    - 0.0
+    - 0.0
+    - 8.83099
+    coupling_cell_length: 0.0495
+    crest: 92.381
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 10.87294
+    design_gamma: 100
+    design_power: 25e6
+    field_amplitude: 29746600.123581804
+    field_definition: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/TWS_S-DL.dat
+    field_definition_gdf: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/mockup4m_moved.gdf
+    field_definition_sdds: null
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 4.06667
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sz5um10mm.sdds
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 121
+    phase: 10.031987148422415
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shunt_impedance: 1.30693e8
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: TravellingWave
+    sub_elements:
+      CLA-L02-SIM-WAKE-01:
+        cell_length: 0.0333333
+        centre:
+        - 0.0
+        - 0.0
+        - 8.83099
+        coupling_cell_length: 0.0495
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 10.87294
+        field_definition: $master_lattice_location$Data_Files/SzSx5um10mm.dat
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 4.0839
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        scale_kick: 1
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: longitudinal_wakefield
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sx5um10mm.sdds
+    type: cavity
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
+  CLA-L02-SIM-APER-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 10.8965
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 10.8965
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.01
+  CLA-S03-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 10.8974
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 10.8974
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S03-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 11.1924
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 11.2974
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S03-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S03-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 11.4664
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 11.5474
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.010954454922285679
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S03-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 11.7974
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 11.8224
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S03-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 11.9107
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 11.9107
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S03-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-L03-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 12.0502
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 12.0502
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.01
+  CLA-L03-LIN-CAV-01:
+    cell_length: 0.0333333333333333
+    centre:
+    - 0.0
+    - 0.0
+    - 14.125235
+    coupling_cell_length: 0.0495
+    crest: 88.381
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.15857
+    field_amplitude: 29108218.175626263
+    field_definition: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/TWS_S-DL.dat
+    field_definition_gdf: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/mockup4m_moved.gdf
+    field_definition_sdds: null
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 4.06667
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sz5um10mm.sdds
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 121
+    phase: 10.01260611531321
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: TravellingWave
+    sub_elements:
+      CLA-L03-SIM-WAKE-01:
+        cell_length: 0.0333333
+        centre:
+        - 0.0
+        - 0.0
+        - 14.125235
+        coupling_cell_length: 0.0495
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 16.15857
+        field_definition: $master_lattice_location$Data_Files/SzSx5um10mm.dat
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 4.06667
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        scale_kick: 1
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: longitudinal_wakefield
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sx5um10mm.sdds
+    type: cavity
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
+  CLA-S04-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.2002
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.2002
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S04-SIM-MARK-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.2002
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.2002
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-SIM-MARK-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.353768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.378768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S04-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.499268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.580268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.15677240613466673
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-DIA-ICT-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.655768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.680768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: integrated_current_transformer
+  CLA-S04-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 16.785768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 16.890768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-MAG-QUAD-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 17.019268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 17.100268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.2189752853661588
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 17.313563
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 17.313563
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-QUAD-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 17.519268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 17.600268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.14539145152450883
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-DIA-BPM-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 17.7552
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 17.8602
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-MAG-QUAD-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 18.019268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 18.100268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.22564680779682653
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-MAG-HVCOR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 18.349768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 18.374768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S04-DIA-SCR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 18.4536
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 18.4536
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-DIP-01:
+    angle: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 18.6402
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 18.6902
+    edge_field_integral: 0.4
+    exit_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-S04-MAG-DIP-02:
+    angle: -0.0
+    centre:
+    - 0
+    - 0.0
+    - 19.0902
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 19.1402
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-S04-DIA-SCR-03:
+    centre:
+    - 0
+    - 0.0
+    - 19.233568
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 19.233568
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-SCR-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-HVCOR-03:
+    centre:
+    - 0
+    - 0.0
+    - 19.4102
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 19.4352
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S04-DIA-BPM-03:
+    centre:
+    - 0
+    - 0.0
+    - 19.5027
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 19.5202
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.035
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-DIA-BPM-04:
+    centre:
+    - 0
+    - 0.0
+    - 20.340268
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 20.445268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-DIA-SCR-04:
+    centre:
+    - 0
+    - 0.0
+    - 20.488568
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 20.488568
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-SCR-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-DIP-03:
+    angle: -0.0
+    centre:
+    - 0
+    - 0.0
+    - 20.6652
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 20.7152
+    edge_field_integral: 0.4
+    exit_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-S04-MAG-DIP-04:
+    angle: 0.0
+    centre:
+    - -0.0
+    - 0.0
+    - 21.1152
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 21.1652
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-S04-DIA-SCR-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 21.3152
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 21.3152
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-SCR-05.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S04-MAG-QUAD-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 21.534268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 21.615268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.05221390993437033
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-MAG-HVCOR-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 21.729768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 21.754768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S04-MAG-QUAD-06:
+    centre:
+    - 0.0
+    - 0.0
+    - 22.034268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 22.115268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.02724323796439553
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-DIA-BPM-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 22.300268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 22.405268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-05.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-MAG-QUAD-07:
+    centre:
+    - 0.0
+    - 0.0
+    - 22.534268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 22.615268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.39968330378352
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-MAG-HVCOR-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 22.789768
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 22.814768
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S04-MAG-QUAD-08:
+    centre:
+    - 0.0
+    - 0.0
+    - 23.044268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 23.125268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.3218850922602576
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S04-DIA-BPM-06:
+    centre:
+    - 0.0
+    - 0.0
+    - 23.2802685
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 23.3852685
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-DIA-BPM-06.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S04-SIM-MARK-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 23.4572
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 23.4572
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S04-SIM-MARK-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-L4H-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 23.4572
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 23.4572
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.0041195
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.0041195
+  CLA-L4H-LIN-CAV-01:
+    cell_length: 0.00833333
+    centre:
+    - 0.0
+    - 0.0
+    - 23.9397
+    coupling_cell_length: 0.012375
+    crest: 250.639
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 24.3147
+    field_amplitude: 38572664.28464128
+    field_definition: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/TWS_X-DL.dat
+    field_definition_gdf: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/mockupl4h_moved.gdf
+    field_definition_sdds: null
+    frequency: 11994000000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.75
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_gdf: $master_lattice_location$Data_Files/Sz20um25mmxband.gdf
+    longitudinal_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sz20um25mmxband.sdds
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 89
+    phase: -207.9866534758003
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: TravellingWave
+    sub_elements:
+      CLA-L4H-SIM-WAKE-01:
+        cell_length: 0.00833333
+        centre:
+        - 0.0
+        - 0.0
+        - 23.9397
+        coupling_cell_length: 0.012375
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 24.3147
+        field_definition: $master_lattice_location$Data_Files/SzSx20um25mmxband.dat
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.75
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        scale_kick: 1
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: longitudinal_wakefield
+    transverse_wakefield_enable: true
+    transverse_wakefield_gdf: $master_lattice_location$Data_Files/Sx50um10mmxband.gdf
+    transverse_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sx50um10mmxband.sdds
+    type: cavity
+  CLA-S05-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 24.4222
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 24.4222
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S05-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 24.734268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 24.815268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.09523506869771346
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S05-DIA-ICT-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 24.886968
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 24.911968
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: integrated_current_transformer
+  CLA-S05-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.0509
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.0759
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S05-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.125638
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.136138
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.021
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S05-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S05-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.1794
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.1794
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S05-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S05-DIA-BAM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.267128
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.307128
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.08
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S05-DIA-BAM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_arrival_monitor
+  CLA-S05-MAG-QUAD-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.484268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.565268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.012520112583401195
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S05-DIA-BPM-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.720268
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.825268
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S05-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S05-SIM-MARK-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 25.8253
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 25.8253
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S05-SIM-MARK-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-VBC-MAG-DIP-01:
+    angle: 0.11110931451111211
+    centre:
+    - 0.0
+    - 0.0
+    - 26.165835
+    csr_bins: 196
+    datum:
+    - 0.00953942
+    - 0.0
+    - 26.265948
+    edge_field_integral: 0.4
+    exit_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.200981
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-VBC-MAG-DIP-02:
+    angle: -0.11110931451111211
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 27.865382
+    csr_bins: 196
+    datum:
+    - 0.161944
+    - 0.0
+    - 27.965948
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0.11110931451111211
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.200981
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-VBC-MAG-VCOR-01:
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 28.2881
+    csr_bins: 196
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.3131
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-VBC-DIA-BPM-01:
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 28.353848
+    csr_bins: 196
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.369448
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    length: 0.0312
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-VBC-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-VBC-DIA-RCOL-01:
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 28.6393
+    csr_bins: 196
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.8793
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    horizontal_size: 1
+    length: 0.48
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: collimator
+    vertical_size: 1
+  CLA-VBC-DIA-SCR-01:
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 28.9048
+    csr_bins: 196
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.9048
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-VBC-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-VBC-MAG-DIP-03:
+    angle: -0.11110931451111211
+    centre:
+    - -0.18961643440871848
+    - 0
+    - 29.365835
+    csr_bins: 196
+    datum:
+    - 0.152405
+    - 0.0
+    - 29.465948
+    edge_field_integral: 0.4
+    exit_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - 0.0
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.200981
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-VBC-MAG-DIP-04:
+    angle: 0.11110931451111211
+    centre:
+    - 0.0
+    - 0
+    - 31.065382
+    csr_bins: 196
+    datum:
+    - 0
+    - 0.0
+    - 31.165948
+    edge_field_integral: 0.4
+    entrance_edge_angle: angle
+    global_rotation:
+    - 0
+    - 0
+    - -0.11110931451111211
+    half_gap: 0.005
+    isr_enable: true
+    length: 0.200981
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-VBC-SIM-MARK-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-VBC-SIM-MARK-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S06-SIM-MARK-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-SIM-MARK-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S06-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S06-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.6078
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.6328
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S06-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.667988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.677988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.02
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S06-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 31.852988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 31.927988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.003925566222594477
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S06-DIA-BAM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 32.103988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 32.143988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.08
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-BAM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_arrival_monitor
+  CLA-S06-DIA-EOM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 32.39355
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 32.5378
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2885
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-EOM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_arrival_monitor
+  CLA-S06-MAG-QUAD-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 32.712988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 32.787988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.03777604318884243
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S06-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 32.925234
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 32.925234
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S06-MAG-HVCOR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 33.843
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 33.868
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S06-DIA-BPM-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 33.929478
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 33.941978
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.025
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S06-DIA-SCR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 33.985278
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 33.985278
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S06-SIM-MARK-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 34.118
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 34.118
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S06-SIM-MARK-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-L04-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 34.118
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 34.118
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.01
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.01
+  CLA-L04-LIN-CAV-01:
+    cell_length: 0.0333333333333333
+    centre:
+    - 0.0
+    - 0.0
+    - 36.192935
+    coupling_cell_length: 0.0495
+    crest: 88.8
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.22627
+    field_amplitude: 29152428.21178435
+    field_definition: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/TWS_S-DL.dat
+    field_definition_gdf: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/mockup4m_moved.gdf
+    field_definition_sdds: null
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 4.06667
+    longitudinal_wakefield_enable: true
+    longitudinal_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sz5um10mm.sdds
+    lsc_bins: 196
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 121
+    phase: -38.914805401354116
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    structure_type: TravellingWave
+    sub_elements:
+      CLA-L04-SIM-WAKE-01:
+        cell_length: 0.0333333
+        centre:
+        - 0.0
+        - 0.0
+        - 36.192935
+        coupling_cell_length: 0.0495
+        csr_bins: 196
+        datum:
+        - 0.0
+        - 0.0
+        - 38.22627
+        field_definition: $master_lattice_location$Data_Files/SzSx5um10mm.dat
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 4.06667
+        longitudinal_wakefield_enable: true
+        lsc_bins: 196
+        lsc_enable: true
+        lsc_high_frequency_cutoff_end: 0.25
+        lsc_high_frequency_cutoff_start: 0.2
+        position_errors:
+        - 0
+        - 0
+        - 0
+        rotation_errors:
+        - 0
+        - 0
+        - 0
+        scale_kick: 1
+        smoothing: 1
+        smoothing_half_width: 1
+        transverse_wakefield_enable: true
+        type: longitudinal_wakefield
+    transverse_wakefield_enable: true
+    transverse_wakefield_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/Sx5um10mm.sdds
+    type: cavity
+    wakefield_gdf: $master_lattice_location$Data_Files/SxSz5um10mm.gdf
+  CLA-S07-SIM-START-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 38.2678
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.2678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 38.2678
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.2678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S07-DIA-BPM-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 38.372988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.477988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-MAG-HVCOR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 38.653487
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.678487
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-MAG-QUAD-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 38.852988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 38.927988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.0803136055350447
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-SIM-MARK-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 39.0278
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 39.0278
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-SIM-MARK-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-MAG-QUAD-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 39.302988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 39.377988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.1458756270196294
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-DIA-BPM-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 39.582988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 39.687988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-MAG-HVCOR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 39.813464
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 39.838464
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-DIA-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 39.931277
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 39.931277
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-SIM-TDC-01-APER:
+    centre:
+    - 0.0
+    - 0.0
+    - 40.0078
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 40.0078
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.005
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.005
+  CLA-S07-DIA-TDC-01:
+    cell_length: 0.0333333333333333
+    centre:
+    - 0.0
+    - 0.0
+    - 40.5795
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 40.8045
+    frequency: 2998500000.0
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.45
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_cells: 13
+    phase: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    tilt_angle: 1.5708
+    transverse_wakefield_enable: true
+    type: rf_deflecting_cavity
+  CLA-S07-SIM-APER-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 41.1078
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 41.1078
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S07-MAG-HVCOR-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 41.2328
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 41.2578
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-DIA-BPM-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 41.307988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 41.307988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-MAG-QUAD-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 41.482988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 41.557988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.4173319296909266
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-MAG-QUAD-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 42.232988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 42.307988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.3036529493322101
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-DIA-BPM-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 42.512988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 42.617988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-DIA-SCR-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 42.661277
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 42.661277
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-MAG-QUAD-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 42.912988
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 42.987988
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.3374502687341014
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-MAG-HVCOR-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 43.183528
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 43.208528
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-DIA-CDR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 43.375
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 43.525
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.3
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-CDR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: bunch_length_monitor
+  CLA-S07-MAG-QUAD-06:
+    centre:
+    - 0.0
+    - 0.0
+    - 43.66296
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 43.73796
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.0662142005316123
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-DCP-SCR-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 43.9318
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 43.9318
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DCP-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-DCP-EM-01:
+    allow_long_beam: 1
+    bunched_beam: 0
+    cell_length: 0.596
+    centre:
+    - 0.0
+    - 0.0
+    - 44.2298
+    change_momentum: 1
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 44.2298
+    factor: 1.0456133337104998
+    field_definition: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/DCP_200um_G1200um.txt
+    field_definition_sdds: C:/Users/jkj62/Documents/GitHub/MasterLattice/MasterLattice/Data_Files/DCP_200um_G1200um.sdds
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    interpolate: 1
+    length: 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    n_bins: 0
+    n_cells: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    scale_kick: 1
+    smoothing: 1
+    smoothing_half_width: 1
+    tcolumn: t
+    transverse_wakefield_enable: true
+    type: longitudinal_wakefield
+    wcolumn: Ez
+  CLA-S07-SIM-APER-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 44.5278
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 44.5278
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-S07-DIA-BPM-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 44.63296
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 44.73796
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-05.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-MAG-QUAD-07:
+    centre:
+    - 0.0
+    - 0.0
+    - 44.91296
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 44.98796
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.5304640526925201
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-MAG-HVCOR-05:
+    centre:
+    - 0.0
+    - 0.0
+    - 45.1373
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 45.1623
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-MAG-HVCOR-06:
+    centre:
+    - 0.0
+    - 0.0
+    - 45.9983
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 46.0233
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-DIA-BPM-06:
+    centre:
+    - 0.0
+    - 0.0
+    - 46.272968
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 46.297968
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.05
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-06.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-DIA-SCR-03:
+    centre:
+    - 0.0
+    - 0.0
+    - 46.440923
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 46.440923
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-SCR-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-SIM-MARK-02:
+    centre:
+    - 0.0
+    - 0.0
+    - 46.5178
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 46.5178
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-SIM-MARK-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-MAG-QUAD-08:
+    centre:
+    - 0.0
+    - 0.0
+    - 46.7928
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 46.8678
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.6023147138917485
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-MAG-QUAD-09:
+    centre:
+    - 0.0
+    - 0.0
+    - 47.3368
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 47.4178
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.339753315584344
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-S07-DIA-BPM-07:
+    centre:
+    - 0.0
+    - 0.0
+    - 47.662633
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 47.767633
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-BPM-07.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-S07-MAG-HVCOR-07:
+    centre:
+    - 0.0
+    - 0.0
+    - 47.6728
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 47.6978
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    isr_enable: true
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    sr_enable: true
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-S07-DIA-SCR-04:
+    centre:
+    - 0.0
+    - 0.0
+    - 47.810933
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 47.810933
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-S07-DIA-SCR-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-S07-MAG-QUAD-10:
+    centre:
+    - 0.0
+    - 0.0
+    - 48.1168
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 48.1978
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.911792831771558
+    length: 0.162
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-SIM-START-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 48.2978
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 48.2978
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-SIM-APER-01:
+    centre:
+    - 0.0
+    - 0.0
+    - 48.2978
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 48.2978
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.034
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-DIP-01:
+    angle: -0.2443460953
+    centre:
+    - 0.0
+    - 0.0
+    - 48.39830053
+    csr_bins: 196
+    datum:
+    - 0.0
+    - 0.0
+    - 48.39830053
+    entrance_edge_angle: -0.1221730476
+    exit_edge_angle: -0.1221730476
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-FEA-SIM-DIP-01-END:
+    centre:
+    - 0.024313
+    - 0.0
+    - 48.495816
+    csr_bins: 196
+    datum:
+    - 0.024313
+    - 0.0
+    - 48.495816
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-SIM-DIP-01-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-SIM-APER-02:
+    centre:
+    - 0.024313
+    - 0.0
+    - 48.495816
+    csr_bins: 196
+    datum:
+    - 0.024313
+    - 0.0
+    - 48.495816
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-QUAD-01:
+    centre:
+    - 0.1960768
+    - 0.0
+    - 49.18471805
+    csr_bins: 196
+    datum:
+    - 0.1960768
+    - 0.0
+    - 49.18471805
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-QUAD-02:
+    centre:
+    - 0.3291338
+    - 0.0
+    - 49.71838005
+    csr_bins: 196
+    datum:
+    - 0.3291338
+    - 0.0
+    - 49.71838005
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-HVCOR-01:
+    centre:
+    - 0.40050119
+    - 0.0
+    - 50.00462957
+    csr_bins: 196
+    datum:
+    - 0.40050119
+    - 0.0
+    - 50.00462957
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-DIA-BPM-01:
+    centre:
+    - 0.48517419
+    - 0.0
+    - 50.34422957
+    csr_bins: 196
+    datum:
+    - 0.4683122
+    - 0.0
+    - 50.2766
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-DIA-SCR-01:
+    centre:
+    - 0.57346165
+    - 0.0
+    - 50.69832957
+    csr_bins: 196
+    datum:
+    - 0.56942154
+    - 0.0
+    - 50.6821256
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-MAG-QUAD-03:
+    centre:
+    - 0.6629858
+    - 0.0
+    - 51.05738805
+    csr_bins: 196
+    datum:
+    - 0.6629858
+    - 0.0
+    - 51.05738805
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-SEXT-01:
+    centre:
+    - 0.7088675
+    - 0.0
+    - 51.24141279
+    csr_bins: 196
+    datum:
+    - 0.7088675
+    - 0.0
+    - 51.24141279
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k2l: 7.127774150981103
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: sextupole
+  CLA-FEA-MAG-QUAD-04:
+    centre:
+    - 0.7960428
+    - 0.0
+    - 51.59105105
+    csr_bins: 196
+    datum:
+    - 0.7960428
+    - 0.0
+    - 51.59105105
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-BPM-02:
+    centre:
+    - 0.8625824
+    - 0.0
+    - 51.85792957
+    csr_bins: 196
+    datum:
+    - 0.84572045
+    - 0.0
+    - 51.7903
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-SIM-APER-03:
+    centre:
+    - 0.909747
+    - 0.0
+    - 52.04709
+    csr_bins: 196
+    datum:
+    - 0.909747
+    - 0.0
+    - 52.04709
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    horizontal_size: 0.034
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-DIP-02:
+    angle: -0.2443460953
+    centre:
+    - 0.93406028
+    - 0.0
+    - 52.14460524
+    csr_bins: 196
+    datum:
+    - 0.93406028
+    - 0.0
+    - 52.14460524
+    entrance_edge_angle: -0.1221730476
+    exit_edge_angle: -0.1221730476
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-FEA-SIM-DIP-02-END:
+    centre:
+    - 0.981243
+    - 0.0
+    - 52.233342
+    csr_bins: 196
+    datum:
+    - 0.981243
+    - 0.0
+    - 52.233342
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-SIM-DIP-02-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-SIM-APER-04:
+    centre:
+    - 0.981243
+    - 0.0
+    - 52.233342
+    csr_bins: 196
+    datum:
+    - 0.981243
+    - 0.0
+    - 52.233342
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-QUAD-05:
+    centre:
+    - 1.31456751
+    - 0.0
+    - 52.8602345
+    csr_bins: 196
+    datum:
+    - 1.31456751
+    - 0.0
+    - 52.8602345
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-QUAD-06:
+    centre:
+    - 1.57277651
+    - 0.0
+    - 53.3458555
+    csr_bins: 196
+    datum:
+    - 1.57277651
+    - 0.0
+    - 53.3458555
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-HVCOR-02:
+    centre:
+    - 1.71832451
+    - 0.0
+    - 53.61959476
+    csr_bins: 196
+    datum:
+    - 1.71832451
+    - 0.0
+    - 53.61959476
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-DIA-BPM-03:
+    centre:
+    - 1.88262716
+    - 0.0
+    - 53.92859476
+    csr_bins: 196
+    datum:
+    - 1.849905
+    - 0.0
+    - 53.8670533
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-DIA-SCR-02:
+    centre:
+    - 2.04692094
+    - 0.0
+    - 54.23759476
+    csr_bins: 196
+    datum:
+    - 2.03908075
+    - 0.0
+    - 54.2228495
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-MAG-QUAD-07:
+    centre:
+    - 2.22064751
+    - 0.0
+    - 54.5643235
+    csr_bins: 196
+    datum:
+    - 2.22064751
+    - 0.0
+    - 54.5643235
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-QUAD-08:
+    centre:
+    - 2.47885751
+    - 0.0
+    - 55.0499445
+    csr_bins: 196
+    datum:
+    - 2.47885751
+    - 0.0
+    - 55.0499445
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-BPM-04:
+    centre:
+    - 2.60798073
+    - 0.0
+    - 55.29279476
+    csr_bins: 196
+    datum:
+    - 2.57525856
+    - 0.0
+    - 55.2312533
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-SIM-APER-05:
+    centre:
+    - 2.699509
+    - 0.0
+    - 55.46493
+    csr_bins: 196
+    datum:
+    - 2.699509
+    - 0.0
+    - 55.46493
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    horizontal_size: 0.034
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-DIP-03:
+    angle: 0.2443460953
+    centre:
+    - 2.74669114
+    - 0.0
+    - 55.5536667
+    csr_bins: 196
+    datum:
+    - 2.74669114
+    - 0.0
+    - 55.5536667
+    entrance_edge_angle: 0.1221730476
+    exit_edge_angle: 0.1221730476
+    global_rotation:
+    - 0
+    - 0
+    - -0.4886921906
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-FEA-SIM-DIP-03-END:
+    centre:
+    - 2.771004
+    - 0.0
+    - 55.651182
+    csr_bins: 196
+    datum:
+    - 2.771004
+    - 0.0
+    - 55.651182
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-SIM-DIP-03-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-SIM-APER-06:
+    centre:
+    - 2.771004
+    - 0.0
+    - 55.651182
+    csr_bins: 196
+    datum:
+    - 2.771004
+    - 0.0
+    - 55.651182
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-QUAD-09:
+    centre:
+    - 2.9427678
+    - 0.0
+    - 56.34009205
+    csr_bins: 196
+    datum:
+    - 2.9427678
+    - 0.0
+    - 56.34009205
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-QUAD-10:
+    centre:
+    - 3.0758248
+    - 0.0
+    - 56.87375505
+    csr_bins: 196
+    datum:
+    - 3.0758248
+    - 0.0
+    - 56.87375505
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-HVCOR-03:
+    centre:
+    - 3.15081764
+    - 0.0
+    - 57.17452957
+    csr_bins: 196
+    datum:
+    - 3.15081764
+    - 0.0
+    - 57.17452957
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-DIA-BPM-05:
+    centre:
+    - 3.23549219
+    - 0.0
+    - 57.51412957
+    csr_bins: 196
+    datum:
+    - 3.2186302
+    - 0.0
+    - 57.4465
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-05.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-DIA-COL-03-SCR:
+    centre:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    csr_bins: 196
+    datum:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-COL-03-SCR.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-DIA-RCOL-01:
+    centre:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    csr_bins: 196
+    datum:
+    - 3.294942
+    - 0.0
+    - 57.752576
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    horizontal_size: 1
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: collimator
+    vertical_size: 1
+  CLA-FEA-DIA-SCR-03:
+    centre:
+    - 3.31913419
+    - 0.0
+    - 57.84960557
+    csr_bins: 196
+    datum:
+    - 3.31913419
+    - 0.0
+    - 57.84960557
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-SCR-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-MAG-QUAD-11:
+    centre:
+    - 3.4096768
+    - 0.0
+    - 58.21276305
+    csr_bins: 196
+    datum:
+    - 3.4096768
+    - 0.0
+    - 58.21276305
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: 1.59249
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-SEXT-02:
+    centre:
+    - 3.45313409
+    - 0.0
+    - 58.38704779
+    csr_bins: 196
+    datum:
+    - 3.45313409
+    - 0.0
+    - 58.38704779
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k2l: 7.688623893199457
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: sextupole
+  CLA-FEA-MAG-QUAD-12:
+    centre:
+    - 3.5427338
+    - 0.0
+    - 58.74642505
+    csr_bins: 196
+    datum:
+    - 3.5427338
+    - 0.0
+    - 58.74642505
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    k1l: -1.10639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-BPM-06:
+    centre:
+    - 3.60925704
+    - 0.0
+    - 59.01322957
+    csr_bins: 196
+    datum:
+    - 3.59239509
+    - 0.0
+    - 58.9456
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-06.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-SIM-APER-07:
+    centre:
+    - 3.656438
+    - 0.0
+    - 59.202464
+    csr_bins: 196
+    datum:
+    - 3.656438
+    - 0.0
+    - 59.202464
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    horizontal_size: 0.034
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-MAG-DIP-04:
+    angle: 0.2443460953
+    centre:
+    - 3.68075128
+    - 0.0
+    - 59.29997924
+    csr_bins: 196
+    datum:
+    - 3.68075128
+    - 0.0
+    - 59.29997924
+    entrance_edge_angle: 0.1221730476
+    exit_edge_angle: 0.1221730476
+    global_rotation:
+    - 0
+    - 0
+    - -0.2443460953
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-FEA-SIM-DIP-04-END:
+    centre:
+    - 3.680751
+    - 0.0
+    - 59.400479
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 59.400479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-SIM-DIP-04-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-SIM-APER-08:
+    centre:
+    - 3.680751
+    - 0.0
+    - 59.400479
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 59.400479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 0.017
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 0.017
+  CLA-FEA-DIA-BAM-01:
+    centre:
+    - 3.680751
+    - 0.0
+    - 59.7115
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 59.7115
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BAM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_arrival_monitor
+  CLA-FEA-MAG-QUAD-13:
+    centre:
+    - 3.680751
+    - 0.0
+    - 60.110479
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 60.110479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 2.76203
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-BPM-07:
+    centre:
+    - 3.680751
+    - 0.0
+    - 60.385479
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 60.315779
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-07.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-MAG-QUAD-14:
+    centre:
+    - 3.680751
+    - 0.0
+    - 60.660479
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 60.660479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -1.26341
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-ICT-01:
+    centre:
+    - 3.680751
+    - 0.0
+    - 60.95
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 60.95
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: integrated_current_transformer
+  CLA-FEA-DIA-SCR-04:
+    centre:
+    - 3.680751
+    - 0.0
+    - 61.208709
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 61.208709
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-SCR-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEA-MAG-HVCOR-04:
+    centre:
+    - 3.680751
+    - 0.0
+    - 61.497979
+    csr_bins: 196
+    datum:
+    - 3.680751
+    - 0.0
+    - 61.497979
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-MAG-QUAD-15:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 61.840479
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 61.840479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 1.54787
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-DIA-BPM-08:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 62.115479
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 62.045779
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.2
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-08.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-MAG-QUAD-16:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 62.390479
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 62.390479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.853439
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEA-MAG-HVCOR-05:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 62.595479
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 62.595479
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-MAG-HVCOR-06:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 63.15
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 63.15
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEA-DIA-BPM-09:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 63.335
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 63.2653
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEA-DIA-BPM-09.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEA-PS-SHTR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 63.6708
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 63.6708
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.32
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: shutter
+  CLA-FEH-SIM-WALL-01-START:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 63.86084
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 63.86084
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-SIM-WALL-01-START.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-SIM-WALL-01-END:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 65.45184
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 65.45184
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-SIM-WALL-01-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB1-SIM-START-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 65.64
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 65.64
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB1-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB1-OPT-MIRROR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 65.88
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 65.88
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB1-OPT-MIRROR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB1-SIM-END-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 66.62
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 66.62
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB1-SIM-END-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-DIA-BPM-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 66.775
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 66.7053
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEH-MAG-QUAD-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.0275
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.0275
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -1.736535
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.166
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.166
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-MAG-QUAD-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.33
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.33
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 2.160786
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.4685
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.4685
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-DIA-SCR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.54603
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.52933
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC1-SIM-START-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 67.7345
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 67.7345
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC1-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC1-DIA-ECOL-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 68.6425
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 68.6425
+    elliptical: true
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 1.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 1.0
+  CLA-FEC1-SIM-FOCUS-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 68.655
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 68.655
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC1-SIM-FOCUS-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC1-DIA-ECOL-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 68.6625
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 68.6625
+    elliptical: true
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    horizontal_size: 1.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    number_of_elements: 1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: aperture
+    vertical_size: 1.0
+  CLA-FEC1-SIM-END-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 69.5755
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 69.5755
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC1-SIM-END-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-DIA-SCR-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 69.76104
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 69.74434
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-MAG-QUAD-03:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 69.98
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 69.98
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 2.160786
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-03:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 70.1185
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 70.1185
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-MAG-QUAD-04:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 70.2825
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 70.2825
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -1.736535
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-04:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 70.421
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 70.421
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-DIA-BPM-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 70.55
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 70.4803
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FMB2-SIM-START-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 70.695
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 70.695
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB2-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-SIM-MIDDLE-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.12
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.12
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-SIM-MIDDLE-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB2-SIM-MIDDLE-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.1825
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.1825
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB2-SIM-MIDDLE-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB2-OPT-MIRROR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.45
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.45
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB2-OPT-MIRROR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FMB2-SIM-END-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.695
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.695
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FMB2-SIM-END-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-DIA-ICT-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.7352
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.7352
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.04
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: integrated_current_transformer
+  CLA-FEH-DIA-BPM-03:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.7895
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.7953
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.059
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-BPM-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEH-MAG-QUAD-05:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 71.9575
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 71.9575
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -1.736535
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-05:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 72.096
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 72.096
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-MAG-QUAD-06:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 72.26
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 72.26
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 2.160786
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-06:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 72.3985
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 72.3985
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-DIA-SCR-03:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 72.47603
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 72.45933
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-SCR-03.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC2-SIM-START-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 72.6645
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 72.6645
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC2-SIM-START-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC2-SIM-FOCUS-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 73.585
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 73.585
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC2-SIM-FOCUS-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEC2-SIM-END-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 74.5055
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 74.5055
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEC2-SIM-END-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-DIA-SCR-04:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 74.69101
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 74.67431
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-SCR-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-MAG-QUAD-07:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 74.91
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 74.91
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 2.232481
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-07:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 75.0485
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 75.0485
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-MAG-QUAD-08:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 75.2125
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 75.2125
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -1.777059
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FEH-MAG-HVCOR-08:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 75.351
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 75.351
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FEH-DIA-BPM-04:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 75.4986725
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 75.4858
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.096345
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-DIA-BPM-04.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FEH-SIM-WALL-02-START:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 75.546845
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 75.546845
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-SIM-WALL-02-START.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FEH-SIM-WALL-02-END:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 77.13784
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 77.13784
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FEH-SIM-WALL-02-END.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FED-MAG-QUAD-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 77.321195
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 77.321195
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: -0.430639
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FED-PS-SHTR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 77.7199
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 77.7199
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.32
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: shutter
+  CLA-FED-MAG-QUAD-02:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 78.275
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 78.275
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    k1l: 0.515619
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FED-MAG-HVCOR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 78.47
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 78.47
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.1
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: kicker
+  CLA-FED-DIA-BPM-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 78.6668
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 78.5971
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FED-DIA-BPM-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FED-DIA-SCR-01:
+    centre:
+    - 3.6807505
+    - 0.0
+    - 78.93001
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 78.91331
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FED-DIA-SCR-01.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FED-MAG-DIP-01:
+    angle: 0.3490658504
+    centre:
+    - 3.6807505
+    - 0.0
+    - 79.6326698
+    csr_bins: 196
+    datum:
+    - 3.6807505
+    - 0.0
+    - 79.6326698
+    entrance_edge_angle: 0.1745329252
+    exit_edge_angle: 0.1745329252
+    global_rotation:
+    - 0
+    - 0
+    - 0
+    length: 0.5
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: dipole
+  CLA-FED-DIA-BPM-02:
+    centre:
+    - 3.454914
+    - 0.0
+    - 80.25315
+    csr_bins: 196
+    datum:
+    - 3.478753
+    - 0.0
+    - 80.187654
+    global_rotation:
+    - 0
+    - 0
+    - 0.3490658504
+    length: 0.21
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FED-DIA-BPM-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: beam_position_monitor
+  CLA-FED-MAG-QUAD-03:
+    centre:
+    - 3.279862
+    - 0.0
+    - 80.73410143
+    csr_bins: 196
+    datum:
+    - 3.279862
+    - 0.0
+    - 80.73410143
+    global_rotation:
+    - 0
+    - 0
+    - 0.3490658504
+    k1l: 0.354496
+    length: 0.277
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    strength_errors:
+    - 0
+    transverse_wakefield_enable: true
+    type: quadrupole
+  CLA-FED-DIA-SCR-02:
+    centre:
+    - 2.9391941
+    - 0.0
+    - 81.67007795
+    csr_bins: 196
+    datum:
+    - 2.9391941
+    - 0.0
+    - 81.67007795
+    global_rotation:
+    - 0
+    - 0
+    - 0.3490658504
+    length: 0.15
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FED-DIA-SCR-02.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
+  CLA-FED-SIM-DUMP-01-START:
+    centre:
+    - 2.6912102
+    - 0.0
+    - 82.351408
+    csr_bins: 196
+    datum:
+    - 2.6912102
+    - 0.0
+    - 82.351408
+    global_rotation:
+    - 0
+    - 0
+    - 0.3490658504
+    longitudinal_wakefield_enable: true
+    lsc_bins: 196
+    lsc_enable: true
+    lsc_high_frequency_cutoff_end: 0.25
+    lsc_high_frequency_cutoff_start: 0.2
+    output_filename: CLA-FED-SIM-DUMP-01-START.sdds
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    smoothing: 1
+    smoothing_half_width: 1
+    transverse_wakefield_enable: true
+    type: screen
