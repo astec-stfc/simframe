@@ -70,7 +70,7 @@ def write_gdf_field_file(self):
             zstep = zdata[1] - zdata[0]
             lambdaRF = speed_of_light/self.frequency
             ncells = (self.n_cells - 1) * self.mode_numerator / self.mode_denominator
-            nsteps = int(np.floor((ncells-1) * lambdaRF / zstep))
+            nsteps = int(np.floor((ncells) * lambdaRF / zstep))
             middleRF = np.array([[(x*zstep + halfcell1end + zstep), np.cos((2 * np.pi / lambdaRF) * (x*zstep))] for x in range(0, nsteps+1)])
             halfcell2[:, 0] += middleRF[-1, 0] + zstep
             zdata, ezdata = np.concatenate([halfcell1, middleRF, halfcell2]).transpose()

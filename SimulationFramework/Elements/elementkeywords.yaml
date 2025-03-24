@@ -116,6 +116,7 @@ wakefield:
       allow_long_beam,
       bunched_beam,
       coupling_cell_length,
+      fringe_field_coefficient,
     }
 collimator:
   keywords: { shape, horizontal_size, vertical_size }

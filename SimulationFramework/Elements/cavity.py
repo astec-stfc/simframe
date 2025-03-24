@@ -12,7 +12,7 @@ class cavity(frameworkElement):
     def __init__(self, name=None, type="cavity", **kwargs):
         super().__init__(name, type, **kwargs)
         self.add_default("tcolumn", '"t"')
-        self.add_default("zcolumn", '"Z"')
+        self.add_default("zcolumn", '"z"')
         self.add_default("ezcolumn", '"Ez"')
         self.add_default("change_p0", 1)
         self.add_default("n_kicks", self.n_cells)
@@ -324,36 +324,36 @@ class cavity(frameworkElement):
                 + subname
                 + ");\n"
             )
-            if wakefield_file_name is not None:
-                wccs_label, wvalue_text = ccs.ccs_text(self.middle, self.rotation)
-                self.set_wakefield_column_names(wakefield_file_name)
-                output += (
-                    "wakefield("
-                    + ccs.name
-                    + ", "
-                    + wccs_label
-                    + ", "
-                    + wvalue_text
-                    + ", "
-                    + str(self.length)
-                    + ', 50, "'
-                    + str(wakefield_file_name)
-                    + '", '
-                    + self.wakefieldcolumstring
-                    + ', "FieldFactorWz", '
-                    + str(self.cells)
-                    + " / "
-                    + str(self.length)
-                    + ', "FieldFactorWx", '
-                    + str(self.cells)
-                    + " / "
-                    + str(self.length)
-                    + ', "FieldFactorWy", '
-                    + str(self.cells)
-                    + " / "
-                    + str(self.length)
-                    + ") ;\n"
-                )
+            # if wakefield_file_name is not None:
+            #     wccs_label, wvalue_text = ccs.ccs_text(self.middle, self.rotation)
+            #     self.set_wakefield_column_names(wakefield_file_name)
+            #     output += (
+            #         "wakefield("
+            #         + ccs.name
+            #         + ", "
+            #         + wccs_label
+            #         + ", "
+            #         + wvalue_text
+            #         + ", "
+            #         + str(self.length)
+            #         + ', 50, "'
+            #         + str(wakefield_file_name)
+            #         + '", '
+            #         + self.wakefieldcolumstring
+            #         + ', "FieldFactorWz", '
+            #         + str(self.cells)
+            #         + " / "
+            #         + str(self.length)
+            #         + ', "FieldFactorWx", '
+            #         + str(self.cells)
+            #         + " / "
+            #         + str(self.length)
+            #         + ', "FieldFactorWy", '
+            #         + str(self.cells)
+            #         + " / "
+            #         + str(self.length)
+            #         + ") ;\n"
+            #     )
         else:
             output = ""
         return output

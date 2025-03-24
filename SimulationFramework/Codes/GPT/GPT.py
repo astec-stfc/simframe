@@ -8,10 +8,11 @@ from ...Framework_objects import (
     elementkeywords,
     getGrids,
 )
-from ...Framework_elements import screen, marker, gpt_ccs
+from ...Framework_elements import screen, marker, gpt_ccs, cavity, wakefield
 from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.merge_two_dicts import merge_two_dicts
+from ...Modules.Fields import field
 
 gpt_defaults = {}
 
@@ -127,6 +128,16 @@ class gptLattice(frameworkLattice):
                 self.ignore_start_screen = element
             else:
                 fulltext += element.write_GPT(self.Brho, ccs=ccs)
+                if isinstance(element, cavity) and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
+                    original_properties = {
+                        a: element[a]
+                        for a in element.objectproperties
+                        if a != "objectname" and a != "objecttype"
+                    }
+                    original_properties['field_definition'] = original_properties['wakefield_definition']
+                    original_properties['field_reference_position'] = "start"
+                    wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
+                    fulltext += wake_element.write_GPT(self.Brho, ccs=ccs)
                 new_ccs = element.gpt_ccs(ccs)
                 if not new_ccs == ccs:
                     # print('ccs = ', ccs, '  new_ccs = ', new_ccs)

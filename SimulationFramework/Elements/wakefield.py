@@ -10,11 +10,17 @@ class wakefield(cavity):
         super().__init__(name, type, **kwargs)
         self.add_default("coupling_cell_length", 0)
         self.add_default("scale_kick", 1)
+        self.add_default('fringe_field_coefficient', None)
 
     def _write_ASTRA(self, startn):
         field_ref_pos = self.get_field_reference_position()
-        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
-        efield_def = ["Wk_filename", {"value": "'" + field_file_name + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="astra"
+        )
+        efield_def = [
+            "Wk_filename",
+            {"value": "'" + field_file_name + "'", "default": ""},
+        ]
         output = ""
         if self.scale_kick > 0:
             for n in range(startn, startn + self.cells):
@@ -68,22 +74,30 @@ class wakefield(cavity):
             output += "\n"
         return output
 
-    def set_elegant_column_names(self, file_name: str) -> None:
+    def set_column_names(self, file_name: str) -> None:
         self.tcolumn = '"t"'
-        if self.field_definition.field_type == "LongitudinalWake":
-            etype = 'wake'
+        if self.field_definition.field_type.lower() == "longitudinalwake":
+            etype = "wake"
             self.wcolumn = '"Wz"'
             self.inputfile = file_name
-        elif self.field_definition.field_type == "TransverseWake":
-            etype = 'trwake'
+        elif self.field_definition.field_type.lower() == "transversewake":
+            etype = "trwake"
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
+            self.inputfile = file_name
+        elif self.field_definition.field_type.lower() == "3dwake":
+            etype = "wake3d"
+            self.wxcolumn = '"Wx"'
+            self.wycolumn = '"Wy"'
+            self.wzcolumn = '"Wz"'
             self.inputfile = file_name
         return etype
 
     def _write_Elegant(self):
-        wakefield_file_name = self.generate_field_file_name(self.field_definition, code="elegant")
-        etype = self.set_elegant_column_names(wakefield_file_name)
+        wakefield_file_name = self.generate_field_file_name(
+            self.field_definition, code="elegant"
+        )
+        etype = self.set_column_names(wakefield_file_name)
         wholestring = ""
         string = self.objectname + ": " + etype
         if self.length > 0:
@@ -117,3 +131,47 @@ class wakefield(cavity):
                     string += tmpstring
         wholestring += string + ";\n"
         return wholestring
+
+    def _write_GPT(self, Brho, ccs="wcs", output_ccs=None, *args, **kwargs):
+        field_ref_pos = self.get_field_reference_position()
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="gpt"
+        )
+        self.set_column_names(field_file_name)
+        self.fringe_field_coefficient = self.fringe_field_coefficient if self.fringe_field_coefficient is not None else 3.0/self.cell_length
+        output = ""
+        if self.scale_kick > 0:
+            for n in range(self.cells):
+                ccs_label, value_text = ccs.ccs_text([
+                    field_ref_pos[0],
+                    field_ref_pos[1],
+                    field_ref_pos[2]
+                    + self.coupling_cell_length
+                    + n * self.cell_length],
+                    self.rotation,
+                )
+                output += (
+                    "wakefield"
+                    + "( "
+                    + ccs.name
+                    + ", "
+                    + ccs_label
+                    + ", "
+                    + value_text
+                    + ", "
+                    + str(self.cell_length)
+                    + ", "
+                    + str(self.fringe_field_coefficient)
+                    + ", \""
+                    + str(field_file_name)
+                    + "\", "
+                    + self.zcolumn
+                    + ", "
+                    + self.wxcolumn
+                    + ", "
+                    + self.wycolumn
+                    + ", "
+                    + self.wzcolumn
+                    + ");\n"
+                )
+        return output
