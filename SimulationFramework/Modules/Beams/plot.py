@@ -466,23 +466,23 @@ def plotScreenImage(
         size[1] = size[1] / f2
 
     # print(meanvaly, minvaly, maxvaly)
-    major_ticksx = meanvalx + np.arange(
-        minvalx, maxvalx + (maxvalx - minvalx) / 100, (maxvalx - minvalx) / 4
-    )
-    minor_ticksx = meanvalx + np.arange(
-        minvalx, maxvalx + (maxvalx - minvalx) / 100, (maxvalx - minvalx) / 40
-    )
-    ax.set_xticks(major_ticksx)
-    ax.set_xticks(minor_ticksx, minor=True)
-    major_ticksy = meanvaly + np.arange(
-        minvaly, maxvaly + (maxvaly - minvaly) / 100, (maxvaly - minvaly) / 4
-    )
-    minor_ticksy = meanvaly + np.arange(
-        minvaly, maxvaly + (maxvaly - minvaly) / 100, (maxvaly - minvaly) / 40
-    )
-    # print(minvaly, maxvaly, meanvaly, major_ticksy)
-    ax.set_yticks(major_ticksy)
-    ax.set_yticks(minor_ticksy, minor=True)
+    # major_ticksx = meanvalx + np.arange(
+    #     minvalx, maxvalx + (maxvalx - minvalx) / 100, (maxvalx - minvalx) / 4
+    # )
+    # minor_ticksx = meanvalx + np.arange(
+    #     minvalx, maxvalx + (maxvalx - minvalx) / 100, (maxvalx - minvalx) / 40
+    # )
+    # ax.set_xticks(major_ticksx)
+    # ax.set_xticks(minor_ticksx, minor=True)
+    # major_ticksy = meanvaly + np.arange(
+    #     minvaly, maxvaly + (maxvaly - minvaly) / 100, (maxvaly - minvaly) / 4
+    # )
+    # minor_ticksy = meanvaly + np.arange(
+    #     minvaly, maxvaly + (maxvaly - minvaly) / 100, (maxvaly - minvaly) / 40
+    # )
+    # # print(minvaly, maxvaly, meanvaly, major_ticksy)
+    # ax.set_yticks(major_ticksy)
+    # ax.set_yticks(minor_ticksy, minor=True)
 
     if marginals:
         hist, bin_edges = myPDF.sum(axis=0)[:-1], v1

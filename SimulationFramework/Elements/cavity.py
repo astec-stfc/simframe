@@ -241,6 +241,8 @@ class cavity(frameworkElement):
                                 (self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2))
                             )
                         )
+                    if key == "phase":
+                        value *= -1
                 setattr(obj, self._convertKeword_Ocelot(key), value)
         scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
         return [obj, scr]

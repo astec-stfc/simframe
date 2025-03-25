@@ -46,4 +46,5 @@ ocelot_conversion_rules = {
     "lscdrift": Drift,
     "csrdrift": Drift,
     "kicker": Hcor,
+    "marker": Marker,
 }
