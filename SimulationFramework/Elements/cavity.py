@@ -289,8 +289,7 @@ class cavity(frameworkElement):
                     + subname
                     + " = "
                     + str(
-                        (1 + (0.005 * self.length**1.5))
-                        * (9.0 / (2.0 * np.pi))
+                        (9.0 / (2.0 * np.pi))
                         * self.field_amplitude
                     )
                     + ";\n"
