@@ -27,8 +27,10 @@ from .FrameworkHelperFunctions import (
 
 try:
     import MasterLattice  # type: ignore
-
-    MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
+    if MasterLattice.__file__ is not None:
+        MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
+    else:
+        MasterLatticeLocation = None
 except ImportError:
     MasterLatticeLocation = None
 try:

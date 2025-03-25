@@ -403,7 +403,7 @@ class gptLattice(frameworkLattice):
         if self.sample_interval > 1:
             self.headers["setreduce"] = gpt_setreduce(
                 set='"beam"',
-                setreduce=len(self.global_parameters["beam"].x) / self.sample_interval,
+                setreduce=int(len(self.global_parameters["beam"].x) / self.sample_interval),
             )
         # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
         if self.override_meanBz is not None and isinstance(
