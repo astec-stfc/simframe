@@ -1,6 +1,6 @@
 from ocelot.cpbd.elements import (
     Solenoid,
-    # SBend,
+    SBend,
     RBend,
     Bend,
     Quadrupole,
@@ -16,12 +16,11 @@ from ocelot.cpbd.elements import (
     TDCavity,
     Aperture,
     Drift,
-    Hcor,
 )
 from ocelot.cpbd.elements.cor_atom import CorAtom
 
 ocelot_conversion_rules = {
-    "dipole": RBend,
+    "dipole": SBend,
     "solenoid": Solenoid,
     "quadrupole": Quadrupole,
     "sextupole": Sextupole,
