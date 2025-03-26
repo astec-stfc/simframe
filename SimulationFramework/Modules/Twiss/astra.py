@@ -48,6 +48,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     )
 
     self.append("z", z)
+    self.append("s", z)
     self.append("t", t)
     self.append("kinetic_energy", e_kin)
     gamma = 1 + (e_kin / self.E0_eV)

@@ -23,6 +23,7 @@ def read_ocelot_twiss_files(self, filename, reset=True):
 
 def interpret_ocelot_data(self, fdat):
     self.append("z", fdat["s"])
+    self.append("s", fdat["s"])
     E = fdat["E"] * 1e9
     ke = E - self.E0_eV
     gamma = E / self.E0_eV

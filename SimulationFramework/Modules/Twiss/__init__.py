@@ -43,6 +43,7 @@ class twiss(munch.Munch):
 
     properties = {
         "z": twissParameter(name="z", unit="m"),
+        "s": twissParameter(name="s", unit="m"),
         "t": twissParameter(name="t", unit="s"),
         "kinetic_energy": twissParameter(name="kinetic_energy", unit="eV"),
         "gamma": twissParameter(name="gamma", unit=""),
@@ -153,9 +154,9 @@ class twiss(munch.Munch):
             return ocelot.read_ocelot_twiss_files(self, *args, **kwargs)
 
     def save_HDF5_twiss_file(self, *args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
+        # with warnings.catch_warnings():
+        #     warnings.simplefilter("ignore")
+        return hdf5.write_HDF5_twiss_file(self, *args, **kwargs)
 
     def read_HDF5_twiss_file(self, *args, **kwargs):
         with warnings.catch_warnings():
@@ -201,12 +202,12 @@ class twiss(munch.Munch):
 
     def sort(self, key="z", reverse=False):
         index = self[key].argsort()
-        for k in [p for p in self.properties]:
+        for k in self.properties:
             if len(self[k]) > 0:
                 if reverse:
                     self[k] = self[k][index[::-1]]
                 else:
-                    self[k] = self[k][index[::1]]
+                    self[k] = self[k][index]
 
     def append(self, array, data):
         self[array] = UnitValue(
