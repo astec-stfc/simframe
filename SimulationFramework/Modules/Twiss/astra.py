@@ -56,7 +56,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     cp = np.sqrt(e_kin * (2 * self.E0_eV + e_kin))
     self.append("cp", cp)
     self.append("mean_cp", cp)
-    p = cp * constants.elementary_charge * self.q_over_c
+    p = cp * self.q_over_c
     self.append("p", p)
     self.append("enx", exn)
     ex = exn / gamma

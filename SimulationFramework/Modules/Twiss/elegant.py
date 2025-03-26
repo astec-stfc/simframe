@@ -62,15 +62,13 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
                 elegantData[k] = elegantData[k][0]
         z = elegantData["Z"]
         self.append("z", z)
-        cp = elegantData["pCentral0"] * self.E0
-        # self.append('cp', cp)
-        self.append("cp", cp / constants.elementary_charge)
-        self.append("mean_cp", cp / constants.elementary_charge)
-        ke = np.array(
-            (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
-        )
+        cp = elegantData["pCentral0"] * (self.E0_eV)
+        E = np.sqrt(cp**2 + self.E0_eV**2)
+        self.append("cp", cp)
+        self.append("mean_cp", cp)
+        ke = E - self.E0_eV
         self.append("kinetic_energy", ke)
-        gamma = 1 + ke / self.E0_eV
+        gamma = E / self.E0_eV
         self.append("gamma", gamma)
         self.append("mean_gamma", gamma)
         self.append("p", cp * self.q_over_c)

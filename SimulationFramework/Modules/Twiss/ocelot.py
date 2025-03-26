@@ -14,8 +14,6 @@ def read_ocelot_twiss_files(self, filename, reset=True):
         for f in filename:
             self.read_ocelot_twiss_files(f, reset=False)
     elif os.path.isfile(filename):
-        if "xemit" not in filename.lower():
-            filename = filename.replace("Yemit", "Xemit").replace("Zemit", "Xemit")
         fdat = {}
         with np.load(filename) as data:
             for key, value in data.items():
@@ -24,17 +22,15 @@ def read_ocelot_twiss_files(self, filename, reset=True):
 
 
 def interpret_ocelot_data(self, fdat):
-    fdat["s"] += self.z[-1]
     self.append("z", fdat["s"])
-    cp = fdat["E"] * 1e-3
+    E = fdat["E"] * 1e9
+    ke = E - self.E0_eV
+    gamma = E / self.E0_eV
+    cp = np.sqrt(E**2 - self.E0_eV**2)
     # self.append('cp', cp)
-    self.append("cp", cp / constants.elementary_charge)
-    self.append("mean_cp", cp / constants.elementary_charge)
-    ke = np.array(
-        (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
-    )
+    self.append("cp", cp)
+    self.append("mean_cp", cp)
     self.append("kinetic_energy", ke)
-    gamma = 1 + ke / self.E0_eV
     self.append("gamma", gamma)
     self.append("mean_gamma", gamma)
     self.append("p", cp * self.q_over_c)
