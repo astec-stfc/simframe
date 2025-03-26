@@ -171,7 +171,10 @@ class ocelotLattice(frameworkLattice):
     def run(self):
         """Run the code with input 'filename'"""
         navi = self.navi_setup()
-        self.tws, self.pout = track(self.lat_obj, deepcopy(self.pin), navi=navi)
+        pin = deepcopy(self.pin)
+        if self.sample_interval > 1:
+            pin = pin.thin_out(nth=self.sample_interval)
+        self.tws, self.pout = track(self.lat_obj, pin, navi=navi)
 
     def postProcess(self):
         bfname = (
@@ -195,6 +198,9 @@ class ocelotLattice(frameworkLattice):
         twsdat = {e: [] for e in self.tws[0].__dict__.keys()}
         for t in self.tws:
             for k, v in t.__dict__.items():
+                # Offset the s values to the start of the lattice
+                if k == "s":
+                    v += self.startObject["position_start"][2]
                 twsdat[k].append(v)
         savez_compressed(
             f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz',
