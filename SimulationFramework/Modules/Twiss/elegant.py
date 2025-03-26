@@ -100,7 +100,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append("sigma_z", elegantData["St"] * (beta * constants.speed_of_light))
         # self.append('sigma_cp', elegantData['Sdelta'] * cp )
         self.append(
-            "sigma_cp", elegantData["Sdelta"] * cp / constants.elementary_charge
+            "sigma_cp", elegantData["Sdelta"] * cp
         )
         # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
         self.append("sigma_p", elegantData["Sdelta"])

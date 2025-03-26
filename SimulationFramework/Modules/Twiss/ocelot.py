@@ -49,20 +49,18 @@ def interpret_ocelot_data(self, fdat):
     self.append("beta_z", np.zeros(len(fdat["s"])))
     self.append("gamma_z", np.zeros(len(fdat["s"])))
     self.append("alpha_z", np.zeros(len(fdat["s"])))
-    self.append("sigma_x", fdat["xx"])
-    self.append("sigma_y", fdat["yy"])
-    self.append("sigma_xp", fdat["pxpx"])
-    self.append("sigma_yp", fdat["pypy"])
-    self.append("sigma_t", fdat["tautau"])
+    self.append("sigma_x", np.sqrt(fdat["xx"]))
+    self.append("sigma_y", np.sqrt(fdat["yy"]))
+    self.append("sigma_xp", np.sqrt(fdat["pxpx"]))
+    self.append("sigma_yp", np.sqrt(fdat["pypy"]))
+    self.append("sigma_t", np.sqrt(fdat["tautau"]) / constants.speed_of_light)
     self.append("mean_x", fdat["x"])
     self.append("mean_y", fdat["y"])
     beta = np.sqrt(1 - (gamma**-2))
     self.append("t", fdat["s"] / (beta * constants.speed_of_light))
-    self.append("sigma_z", fdat["tautau"] * (beta * constants.speed_of_light))
-    # self.append('sigma_cp', elegantData['Sdelta'] * cp )
-    self.append("sigma_cp", fdat["pp"] * cp / constants.elementary_charge)
-    # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
-    self.append("sigma_p", fdat["pp"])
+    self.append("sigma_z", np.sqrt(fdat["tautau"]) * beta)
+    self.append("sigma_cp", np.sqrt(fdat["pp"]) * cp)
+    self.append("sigma_p", np.sqrt(fdat["pp"]))
     self.append("mux", fdat["mux"])
     self.append("muy", fdat["muy"])
     self.append("eta_x", fdat["Dx"])
@@ -70,17 +68,17 @@ def interpret_ocelot_data(self, fdat):
     self.append("eta_y", fdat["Dy"])
     self.append("eta_yp", fdat["Dyp"])
     self.append("element_name", np.zeros(len(fdat["s"])))
-    ### BEAM parameters
+    # ## BEAM parameters
     self.append("ecnx", fdat["emit_xn"])
     self.append("ecny", fdat["emit_yn"])
     self.append("eta_x_beam", fdat["Dx"])
     self.append("eta_xp_beam", fdat["Dxp"])
     self.append("eta_y_beam", fdat["Dy"])
     self.append("eta_yp_beam", fdat["Dyp"])
-    self.append("beta_x_beam", np.sqrt(fdat["emit_x"] / fdat["xx"]))
-    self.append("beta_y_beam", np.sqrt(fdat["emit_y"] / fdat["yy"]))
-    self.append("alpha_x_beam", np.sqrt(fdat["emit_x"] / fdat["pxpx"]))
-    self.append("alpha_y_beam", np.sqrt(fdat["emit_y"] / fdat["pypy"]))
+    self.append("beta_x_beam", np.sqrt(fdat["emit_x"] / np.sqrt(fdat["xx"])))
+    self.append("beta_y_beam", np.sqrt(fdat["emit_y"] / np.sqrt(fdat["yy"])))
+    self.append("alpha_x_beam", np.sqrt(fdat["emit_x"] / np.sqrt(fdat["pxpx"])))
+    self.append("alpha_y_beam", np.sqrt(fdat["emit_y"] / np.sqrt(fdat["pypy"])))
     self["cp_eV"] = self["cp"]
     self["sigma_cp_eV"] = self["sigma_cp"]
     self["cp_eV"] = self["cp"]
@@ -89,5 +87,5 @@ def interpret_ocelot_data(self, fdat):
         try:
             if len(getattr(self, k)) < len(getattr(self, "z")):
                 self.append(k, np.zeros(len(fdat["s"])))
-        except Exception as e:
+        except Exception:
             pass
