@@ -1,5 +1,5 @@
 from ...Framework_objects import frameworkLattice, getGrids
-from ...Framework_elements import *
+from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.Fields import field
@@ -120,7 +120,7 @@ class ocelotLattice(frameworkLattice):
 
     def writeElements(self):
         self.w = None
-        if not self.endObject in self.screens_and_bpms:
+        if self.endObject not in self.screens_and_bpms:
             self.w = self.endScreen(output_filename=f"{self.endObject.objectname}.ocelot.npz")
         elements = self.createDrifts()
         mag_lat = []
@@ -149,13 +149,13 @@ class ocelotLattice(frameworkLattice):
         prefix = prefix if self.trackBeam else prefix + self.particle_definition + ".hdf5"
         self.hdf5_to_npz(prefix)
         # else:
-            # HDF5filename = prefix + self.particle_definition + ".hdf5"
-            # rbf.hdf5.read_HDF5_beam_file(
-            #     self.global_parameters["beam"],
-            #     os.path.abspath(
-            #         self.global_parameters["master_subdir"] + "/" + HDF5filename
-            #     ),
-            # )
+        # HDF5filename = prefix + self.particle_definition + ".hdf5"
+        # rbf.hdf5.read_HDF5_beam_file(
+        #     self.global_parameters["beam"],
+        #     os.path.abspath(
+        #         self.global_parameters["master_subdir"] + "/" + HDF5filename
+        #     ),
+        # )
 
     def hdf5_to_npz(self, prefix="", write=True):
         HDF5filename = prefix + self.particle_definition + ".hdf5"

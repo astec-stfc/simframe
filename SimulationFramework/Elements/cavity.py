@@ -252,7 +252,7 @@ class cavity(frameworkElement):
         field_file_name = self.generate_field_file_name(
             self.field_definition, code="gpt"
         )
-        wakefield_file_name = self.generate_field_file_name(
+        self.generate_field_file_name(
             self.wakefield_definition, code="gpt"
         )
         """

@@ -1092,16 +1092,10 @@ class Framework(Munch):
     def save_summary_files(self, twiss: bool = True, beams: bool = True) -> None:
         """Saves HDF5 summary files for the Twiss and/or Beam files"""
         t = rtf.load_directory(self.subdirectory)
-        try:
-            t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
-        except Exception:
-            pass
-        try:
-            rbf.save_HDF5_summary_file(
-                self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
-            )
-        except Exception:
-            pass
+        t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
+        rbf.save_HDF5_summary_file(
+            self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
+        )
 
     def pushRunSettings(self) -> None:
         """Updates the 'Run Settings' in each of the lattices"""
