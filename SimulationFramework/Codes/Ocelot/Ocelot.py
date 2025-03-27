@@ -317,7 +317,7 @@ class ocelotLattice(frameworkLattice):
         wake = Wake(
             step=100, w_sampling=self.wake_sampling, filter_order=self.wake_filter,
         )
-        wake.factor = ncell
+        wake.factor = 1
         wake.wake_table = WakeTable(expand_substitution(self, loc))
         w_ind = where(self.names == name)[0][0]
         return [wake, w_ind]
