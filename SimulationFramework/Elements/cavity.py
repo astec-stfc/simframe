@@ -238,7 +238,7 @@ class cavity(frameworkElement):
                             value
                             * 1e-9
                             * abs(
-                                (self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2))
+                                (self.cells + 5.5) * self.cell_length * (1 / np.sqrt(2))
                             )
                         )
                 setattr(obj, self._convertKeword_Ocelot(key), value)

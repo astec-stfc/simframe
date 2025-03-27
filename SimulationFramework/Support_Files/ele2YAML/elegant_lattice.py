@@ -532,3 +532,24 @@ class ReadElegantLattice:
         if stream is not None:
             yaml.dump(yaml_dict, stream, default_flow_style=False)
         return yaml.dump(yaml_dict, default_flow_style=False)
+
+
+    # def to_YAML(self, lattice: str, stream=None):
+    #     yaml_dict = {"elements": {}}
+    #     elements_dict = yaml_dict["elements"]
+    #     for elemname, elem in self.lattices[lattice].elements.items():
+    #         if 'drif' not in elem.type:
+    #             elements_dict.update({elemname: {}})
+    #             if elem.type == 'cavity':
+    #                 elem.properties.update({"lsc_cutoff_high": [0.2, 0.25]})
+    #                 elem.properties.update({"n_cells": 1})
+    #                 elem.properties.update({
+    #                                            "wakefield_definition": "$master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5"})
+    #             if elem.type == 'watch_point':
+    #                 elem.properties.update({"type": "screen"})
+    #             for key, prop in elem.properties.items():
+    #                 if key not in ["end", "start", "tcolumn", "wxcolumn", "wycolumn", "wzcolumn"]:
+    #                     elements_dict[elemname].update({key: prop})
+    #     if stream is not None:
+    #         yaml.dump(yaml_dict, stream, default_flow_style=False)
+    #     return yaml.dump(yaml_dict, default_flow_style=False)
