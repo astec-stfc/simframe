@@ -192,9 +192,9 @@ class ElegantElement(BaseModel):
                 90 - float(self.properties["phase"])
             )
             cells = 0
-            self.properties["field_amplitude"] = convert_numpy_types(
-                np.sqrt(2) * float(self.properties["field_amplitude"])
-            ) / ((4.1 + cells) * float(self.properties["cell_length"]))
+            self.properties["field_amplitude"] = float(self.properties["field_amplitude"])#convert_numpy_types(
+            #     np.sqrt(2) * float(self.properties["field_amplitude"])
+            # ) / ((4.1 + cells) * float(self.properties["cell_length"]))
             self._cavity_updated = True
 
     def update(self, properties: dict) -> None:
@@ -320,6 +320,7 @@ class ElegantLattice(BaseModel):
             new_lattice += [name]
             startpos = self.floor[name]["end"]
             startangle = self.floor[name]["end_rotation"]
+            startangle[2] *= -1
         self.lattice = new_lattice
         self.elements = new_elements
 
@@ -532,24 +533,3 @@ class ReadElegantLattice:
         if stream is not None:
             yaml.dump(yaml_dict, stream, default_flow_style=False)
         return yaml.dump(yaml_dict, default_flow_style=False)
-
-
-    # def to_YAML(self, lattice: str, stream=None):
-    #     yaml_dict = {"elements": {}}
-    #     elements_dict = yaml_dict["elements"]
-    #     for elemname, elem in self.lattices[lattice].elements.items():
-    #         if 'drif' not in elem.type:
-    #             elements_dict.update({elemname: {}})
-    #             if elem.type == 'cavity':
-    #                 elem.properties.update({"lsc_cutoff_high": [0.2, 0.25]})
-    #                 elem.properties.update({"n_cells": 1})
-    #                 elem.properties.update({
-    #                                            "wakefield_definition": "$master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5"})
-    #             if elem.type == 'watch_point':
-    #                 elem.properties.update({"type": "screen"})
-    #             for key, prop in elem.properties.items():
-    #                 if key not in ["end", "start", "tcolumn", "wxcolumn", "wycolumn", "wzcolumn"]:
-    #                     elements_dict[elemname].update({key: prop})
-    #     if stream is not None:
-    #         yaml.dump(yaml_dict, stream, default_flow_style=False)
-    #     return yaml.dump(yaml_dict, default_flow_style=False)

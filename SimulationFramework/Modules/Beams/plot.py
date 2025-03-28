@@ -365,6 +365,7 @@ def plotScreenImage(
     screen=False,
     use_scipy=False,
     subtract_mean=[False, False],
+    title="",
     **kwargs,
 ):
     # Do the self-consistent density estimate
@@ -592,7 +593,10 @@ def plotScreenImage(
     # Extract the screen name
     file, ext = os.path.splitext(os.path.basename(beam.filename))
     # Set the screen name as the title
-    plt.suptitle(file)
+    if title == "":
+        plt.suptitle(file)
+    else:
+        plt.suptitle(title)
     # Show the final image
     plt.draw()
 
