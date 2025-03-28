@@ -23,7 +23,7 @@ class elegantLattice(frameworkLattice):
     def __init__(self, *args, **kwargs):
         super(elegantLattice, self).__init__(*args, **kwargs)
         self.code = "elegant"
-        self.allow_negative_drifts = False
+        self.allow_negative_drifts = True
         self.particle_definition = self.allElementObjects[self.start].objectname
         self.bunch_charge = None
         self.q = charge(

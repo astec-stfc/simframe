@@ -1,0 +1,2677 @@
+elements:
+  W0MS1:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.0]
+  MS1.QF1:
+    type: quadrupole
+    k1l: 0.3162517828804302
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.15000000000000002]
+    length: 0.1
+  MS1.QF2:
+    type: quadrupole
+    k1l: -0.12650368957574082
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.35]
+    length: 0.1
+  MS1.QF3:
+    type: quadrupole
+    k1l: -0.028356397040551443
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.55]
+    length: 0.1
+  MS1.QF4:
+    type: quadrupole
+    k1l: -0.1523299781714953
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.75]
+    length: 0.1
+  W1MS1:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 0.7999999999999999]
+  LIN1_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -37.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 5.1520000239999995]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 5877144.038220725
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN1.QF1:
+    type: quadrupole
+    k1l: -0.0170841760489336
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 9.554000047999999]
+    length: 0.1
+  LIN1.QF2:
+    type: quadrupole
+    k1l: -0.011952792163621861
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 9.854000047999998]
+    length: 0.1
+  LIN1_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -37.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 14.256000071999999]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 5877144.038220725
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  MS2.QF1:
+    type: quadrupole
+    k1l: -0.024818159396613023
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 18.958000095999992]
+    length: 0.2
+  MS2.QF2:
+    type: quadrupole
+    k1l: 0.5130054476270345
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 19.40800009599999]
+    length: 0.2
+  MS2.QF3:
+    type: quadrupole
+    k1l: 0.23564697190752742
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 19.85800009599999]
+    length: 0.2
+  MS2.QF4:
+    type: quadrupole
+    k1l: -0.6361258136631638
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.30800009599999]
+    length: 0.2
+  W1MS2:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.40800009599999]
+  BC1M1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.40800009599999]
+  W1BC1:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.40800009599999]
+  ARCBC1M1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.40800009599999]
+  ARC.BC1.BEND11.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 20.458023546691095]
+    length: 0.1
+    exit_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.BENDR1.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.075]
+    centre: [-0.0494553639534295, 0.0, 21.116191551412093]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND12.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.075]
+    centre: [-0.09891072790685906, 0.0, 21.774359556133096]
+    length: 0.1
+    entrance_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.SEXTA11.1:
+    type: sextupole
+    k2l: 5.460963763859979
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.2857118979263415, 0.0, 23.010346590918264]
+    length: 0.1
+  ARC.BC1.QAC.1:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.30812761779738135, 0.0, 23.15866225260867]
+    length: 0.1
+  ARC.BC1.OCT1.1:
+    type: octupole
+    k3l: 58.166307261483354
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.33203771899315726, 0.0, 23.316865625078442]
+    length: 0.1
+  ARC.BC1.QAC.2:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.3559478201889333, 0.0, 23.475068997548213]
+    length: 0.1
+  ARC.BC1.SEXTA12.1:
+    type: sextupole
+    k2l: 2.525587184787882
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.3783635400599732, 0.0, 23.623384659238614]
+    length: 0.1
+  ARC.BC1.BEND11.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.5651647100794557, 0.0, 24.859371694023793]
+    length: 0.1
+    exit_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.BENDR1.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.225]
+    centre: [-0.7124201410847889, 0.0, 25.502758664284787]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND12.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.225]
+    centre: [-0.8596755720901221, 0.0, 26.146145634545782]
+    length: 0.1
+    entrance_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARCBC1M2.1:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-0.8744585125762699, 0.0, 26.19393486230297]
+  ARC.BC1.QST11.1:
+    type: quadrupole
+    k1l: -0.6527574689792228
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-0.9631145745746718, 0.0, 26.48053580904065]
+    length: 0.2
+  ARCBC1MID1.1:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.110874677905342, 0.0, 26.95820405360346]
+  ARC.BC1.QST12.1:
+    type: quadrupole
+    k1l: 1.3007994482739411
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.140426698571476, 0.0, 27.05373770251602]
+    length: 0.2
+  ARCBC1MID1.2:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.169978719237609, 0.0, 27.14927135142858]
+  ARC.BC1.QST11.2:
+    type: quadrupole
+    k1l: -0.6527574689792228
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.317738822568279, 0.0, 27.62693959599138]
+    length: 0.2
+  ARCBC1M2.2:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.406394884566681, 0.0, 27.91354054272906]
+  ARC.BC1.BEND21.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.2999999999999999]
+    centre: [-1.4211778250528289, 0.0, 27.961329770486245]
+    length: 0.1
+    exit_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.BENDR2.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.225]
+    centre: [-1.5684332560581618, 0.0, 28.604716740747246]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND22.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.225]
+    centre: [-1.7156886870634955, 0.0, 29.24810371100824]
+    length: 0.1
+    entrance_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.SEXTA21.1:
+    type: sextupole
+    k2l: -5.460963763859979
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-1.902489857082978, 0.0, 30.484090745793424]
+    length: 0.1
+  ARC.BC1.QAC.3:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-1.924905576954018, 0.0, 30.63240640748383]
+    length: 0.1
+  ARC.BC1.OCT1.2:
+    type: octupole
+    k3l: 58.166307261483354
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-1.9488156781497938, 0.0, 30.79060977995359]
+    length: 0.1
+  ARC.BC1.QAC.4:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-1.97272577934557, 0.0, 30.948813152423362]
+    length: 0.1
+  ARC.BC1.SEXTA22.1:
+    type: sextupole
+    k2l: -2.525587184787882
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-1.995141499216609, 0.0, 31.097128814113773]
+    length: 0.1
+  ARC.BC1.BEND21.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.1499999999999999]
+    centre: [-2.1819426692360917, 0.0, 32.33311584889894]
+    length: 0.1
+    exit_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.BENDR2.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.07499999999999994]
+    centre: [-2.2313980331895205, 0.0, 32.99128385361995]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND22.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.07499999999999994]
+    centre: [-2.2808533971429505, 0.0, 33.64945185834095]
+    length: 0.1
+    entrance_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARCBC1M3.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 33.69947530903205]
+  ARC.BC1.QST21.1:
+    type: quadrupole
+    k1l: -0.5605050576520391
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 33.999475309032064]
+    length: 0.2
+  ARC.BC1.SEXTMID1:
+    type: sextupole
+    k2l: 9.513186441795005e-06
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 34.549475309032054]
+    length: 0.1
+  ARCBC1MID2.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 34.69947530903206]
+  ARC.BC1.QST22:
+    type: quadrupole
+    k1l: 1.195128979356651
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 34.79947530903206]
+    length: 0.2
+  ARCBC1MID2.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 34.89947530903206]
+  ARC.BC1.QST21.2:
+    type: quadrupole
+    k1l: -0.5605050576520391
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 35.59947530903206]
+    length: 0.2
+  ARCBC1M3.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 35.89947530903207]
+  ARC.BC1.BEND21.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-2.280853397142951, 0.0, 35.94949875972317]
+    length: 0.1
+    exit_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.BENDR2.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.07500000000000004]
+    centre: [-2.2313980331895213, 0.0, 36.607666764444176]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND22.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.07500000000000004]
+    centre: [-2.1819426692360926, 0.0, 37.26583476916518]
+    length: 0.1
+    entrance_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.SEXTA21.2:
+    type: sextupole
+    k2l: -5.460963763859979
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.9951414992166092, 0.0, 38.50182180395035]
+    length: 0.1
+  ARC.BC1.QAC.5:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.972725779345569, 0.0, 38.650137465640746]
+    length: 0.1
+  ARC.BC1.OCT1.3:
+    type: octupole
+    k3l: 58.166307261483354
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.948815678149794, 0.0, 38.80834083811053]
+    length: 0.1
+  ARC.BC1.QAC.6:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.924905576954018, 0.0, 38.9665442105803]
+    length: 0.1
+  ARC.BC1.SEXTA22.2:
+    type: sextupole
+    k2l: -2.525587184787882
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.902489857082978, 0.0, 39.1148598722707]
+    length: 0.1
+  ARC.BC1.BEND21.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.7156886870634955, 0.0, 40.350846907055875]
+    length: 0.1
+    exit_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARC.BC1.BENDR2.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.225]
+    centre: [-1.5684332560581622, 0.0, 40.994233877316866]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND22.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.225]
+    centre: [-1.4211778250528284, 0.0, 41.637620847577864]
+    length: 0.1
+    entrance_edge_angle: -0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.075
+  ARCBC1M4.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-1.406394884566681, 0.0, 41.68541007533505]
+  ARC.BC1.QST11.3:
+    type: quadrupole
+    k1l: -0.6527574689792228
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-1.3177388225682791, 0.0, 41.97201102207273]
+    length: 0.2
+  ARCBC1MID1.3:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-1.169978719237609, 0.0, 42.44967926663553]
+  ARC.BC1.QST12.2:
+    type: quadrupole
+    k1l: 1.3007994482739411
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-1.140426698571475, 0.0, 42.545212915548085]
+    length: 0.2
+  ARCBC1MID1.4:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-1.110874677905342, 0.0, 42.64074656446066]
+  ARC.BC1.QST11.4:
+    type: quadrupole
+    k1l: -0.6527574689792228
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-0.9631145745746716, 0.0, 43.118414809023456]
+    length: 0.2
+  ARCBC1M4.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-0.8744585125762696, 0.0, 43.40501575576114]
+  ARC.BC1.BEND11.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.3]
+    centre: [-0.8596755720901218, 0.0, 43.45280498351833]
+    length: 0.1
+    exit_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.BENDR1.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.225]
+    centre: [-0.7124201410847883, 0.0, 44.09619195377931]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND12.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.225]
+    centre: [-0.565164710079455, 0.0, 44.739578924040316]
+    length: 0.1
+    entrance_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.SEXTA11.2:
+    type: sextupole
+    k2l: 5.460963763859979
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.37836354005997225, 0.0, 45.97556595882549]
+    length: 0.1
+  ARC.BC1.QAC.7:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.35594782018893234, 0.0, 46.12388162051589]
+    length: 0.1
+  ARC.BC1.OCT1.4:
+    type: octupole
+    k3l: 58.166307261483354
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.3320377189931563, 0.0, 46.28208499298566]
+    length: 0.1
+  ARC.BC1.QAC.8:
+    type: quadrupole
+    k1l: 0.4885019386278653
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.3081276177973804, 0.0, 46.44028836545543]
+    length: 0.1
+  ARC.BC1.SEXTA12.2:
+    type: sextupole
+    k2l: 2.525587184787882
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.28571189792634055, 0.0, 46.58860402714584]
+    length: 0.1
+  ARC.BC1.BEND11.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.09891072790685783, 0.0, 47.82459106193101]
+    length: 0.1
+    exit_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARC.BC1.BENDR1.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.07500000000000001]
+    centre: [-0.04945536395342811, 0.0, 48.482759066652015]
+    length: 0.12
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC1.BEND12.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.07500000000000001]
+    centre: [0.0, 0.0, 49.14092707137303]
+    length: 0.1
+    entrance_edge_angle: 0.075
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.075
+  ARCBC1M5:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 49.19095052206412]
+  W2BC1:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 49.19095052206412]
+  BC1M2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 49.19095052206412]
+  MS3.QF1:
+    type: quadrupole
+    k1l: -0.12620283601023263
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 49.54095052206412]
+    length: 0.2
+  MS3.QF2:
+    type: quadrupole
+    k1l: -0.05474966417875186
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 49.99095052206412]
+    length: 0.2
+  MS3.QF3:
+    type: quadrupole
+    k1l: -0.44231042469488346
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 50.44095052206413]
+    length: 0.2
+  MS3.QF4:
+    type: quadrupole
+    k1l: 0.6873988825117987
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 50.89095052206413]
+    length: 0.2
+  W1MS3:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 50.99095052206413]
+  LIN2_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 56.042950546064134]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF1.1:
+    type: quadrupole
+    k1l: 0.024202239392792722
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 60.64495057006414]
+    length: 0.2
+  LIN2_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 65.24695059406415]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.3:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 74.45095064206416]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF2.1:
+    type: quadrupole
+    k1l: -0.039855070795459746
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 79.05295066606415]
+    length: 0.2
+  LIN2_MOD.4:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 83.65495069006415]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.5:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 92.85895073806417]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF3.1:
+    type: quadrupole
+    k1l: 0.0023507737939881023
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 97.46095076206416]
+    length: 0.2
+  LIN2_MOD.6:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 102.06295078606416]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.7:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 111.2669508340642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF4.1:
+    type: quadrupole
+    k1l: 0.020021151813382702
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 115.8689508580642]
+    length: 0.2
+  LIN2_MOD.8:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 120.4709508820642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.9:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 129.6749509300642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF1.2:
+    type: quadrupole
+    k1l: 0.024202239392792722
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 134.2769509540642]
+    length: 0.2
+  LIN2_MOD.10:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 138.87895097806418]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.11:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 148.0829510260642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF2.2:
+    type: quadrupole
+    k1l: -0.039855070795459746
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 152.6849510500642]
+    length: 0.2
+  LIN2_MOD.12:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 157.28695107406418]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.13:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 166.4909511220642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF3.2:
+    type: quadrupole
+    k1l: 0.0023507737939881023
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 171.0929511460642]
+    length: 0.2
+  LIN2_MOD.14:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 175.6949511700642]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.15:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 184.89895121806418]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF4.2:
+    type: quadrupole
+    k1l: 0.020021151813382702
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 189.5009512420642]
+    length: 0.2
+  LIN2_MOD.16:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 194.10295126606408]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2_MOD.17:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 203.30695131406418]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN2.QF1.3:
+    type: quadrupole
+    k1l: 0.024202239392792722
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 207.90895133806418]
+    length: 0.2
+  LIN2_MOD.18:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: -21.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 212.51095136206408]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4516990.706313316
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  MS4.QF1:
+    type: quadrupole
+    k1l: 0.21862091932556604
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 217.9629513860642]
+    length: 0.2
+  MS4.QF2:
+    type: quadrupole
+    k1l: -1.0383977667530209
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 218.4629513860642]
+    length: 0.2
+  MS4.QF3:
+    type: quadrupole
+    k1l: 1.4644691813224002
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 218.9629513860642]
+    length: 0.2
+  MS4.QF4:
+    type: quadrupole
+    k1l: -0.52417671251751
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.4629513860642]
+    length: 0.2
+  W1MS4:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.5629513860642]
+  BC2M1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.5629513860642]
+  W1BC2:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.5629513860642]
+  ARCBC2M1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.5629513860642]
+  ARC.BC2.BEND11.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 219.81300348242166]
+    length: 0.5
+    exit_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.BENDR1.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.04999999999999999]
+    centre: [-0.041360366304149965, 0.0, 220.63952135414905]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND12.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.04999999999999999]
+    centre: [-0.08272073260830427, 0.0, 221.46603922587641]
+    length: 0.5
+    entrance_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.SEXTA11.1:
+    type: sextupole
+    k2l: 3.8563573206645745
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.23247605853590653, 0.0, 222.95859730988622]
+    length: 0.2
+  ARC.BC2.QAC.1:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.2574344126976136, 0.0, 223.2073483512057]
+    length: 0.2
+  ARC.BC2.OCT1.1:
+    type: octupole
+    k3l: 63.3759434743694
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.2833911010257889, 0.0, 223.466049434178]
+    length: 0.2
+  ARC.BC2.QAC.2:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.3093477893539642, 0.0, 223.7247505171503]
+    length: 0.2
+  ARC.BC2.SEXTA12.1:
+    type: sextupole
+    k2l: 4.148376904909535
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.3343061435156713, 0.0, 223.9735015584698]
+    length: 0.2
+  ARC.BC2.BEND11.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-0.4840614694432739, 0.0, 225.46605964247948]
+    length: 0.5
+    exit_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.BENDR1.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.6077293092475446, 0.0, 226.2843192208431]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND12.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-0.731397149051816, 0.0, 227.10257879920675]
+    length: 0.5
+    entrance_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARCBC2M2.1:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-0.7810748316990547, 0.0, 227.3476465015658]
+  ARC.BC2.QST11.1:
+    type: quadrupole
+    k1l: -1.1325898043981235
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-0.8804094975494674, 0.0, 227.83767979272062]
+    length: 0.2
+  ARCBC2MID1.1:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-0.9226300239550626, 0.0, 228.0459601884082]
+  ARC.BC2.QST12.1:
+    type: quadrupole
+    k1l: 2.38703536675051
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-0.9424969570345687, 0.0, 228.1439668461923]
+    length: 0.2
+  ARCBC2MID1.2:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-0.9623638901140749, 0.0, 228.2419735039764]
+  ARC.BC2.QST11.2:
+    type: quadrupole
+    k1l: -1.1325898043981235
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-1.00458441651967, 0.0, 228.450253899664]
+    length: 0.2
+  ARCBC2M2.2:
+    type: marker
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-1.103919082370083, 0.0, 228.9402871908188]
+  ARC.BC2.BEND21.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.2]
+    centre: [-1.153596765017322, 0.0, 229.18535489317787]
+    length: 0.5
+    exit_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.BENDR2.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-1.2772646048215928, 0.0, 230.0036144715415]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND22.1:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.15]
+    centre: [-1.4009324446258644, 0.0, 230.82187404990515]
+    length: 0.5
+    entrance_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.SEXTA21.1:
+    type: sextupole
+    k2l: -3.8563573206645745
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.5506877705534667, 0.0, 232.3144321339148]
+    length: 0.2
+  ARC.BC2.QAC.3:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.5756461247151738, 0.0, 232.56318317523431]
+    length: 0.2
+  ARC.BC2.OCT1.2:
+    type: octupole
+    k3l: 63.3759434743694
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.60160281304335, 0.0, 232.8218842582066]
+    length: 0.2
+  ARC.BC2.QAC.4:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.627559501371525, 0.0, 233.0805853411789]
+    length: 0.2
+  ARC.BC2.SEXTA22.1:
+    type: sextupole
+    k2l: -4.148376904909535
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.6525178555332318, 0.0, 233.3293363824984]
+    length: 0.2
+  ARC.BC2.BEND21.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.09999999999999998]
+    centre: [-1.8022731814608353, 0.0, 234.82189446650818]
+    length: 0.5
+    exit_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.BENDR2.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.04999999999999998]
+    centre: [-1.8436335477649894, 0.0, 235.64841233823554]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND22.2:
+    type: dipole
+    global_rotation: [0.0, 0.0, -0.04999999999999998]
+    centre: [-1.8849939140691436, 0.0, 236.4749302099629]
+    length: 0.5
+    entrance_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARCBC2M3.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 236.7249823063204]
+  ARC.BC2.QST21.1:
+    type: quadrupole
+    k1l: -0.33914770252278603
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 241.8249822823018]
+    length: 0.2
+  ARCBC2MID2.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 242.8547298744147]
+  ARC.BC2.QST22:
+    type: quadrupole
+    k1l: 0.6684173691784592
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 242.95472987441468]
+    length: 0.2
+  ARCBC2MID2.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 243.0547298744146]
+  ARC.BC2.QST21.2:
+    type: quadrupole
+    k1l: -0.33914770252278603
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 244.0844774665275]
+    length: 0.2
+  ARCBC2M3.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 249.1844774425089]
+  ARC.BC2.BEND21.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [-1.884993914069144, 0.0, 249.43452953886634]
+    length: 0.5
+    exit_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.BENDR2.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.05000000000000002]
+    centre: [-1.8436335477649906, 0.0, 250.26104741059376]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND22.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.05000000000000002]
+    centre: [-1.8022731814608364, 0.0, 251.08756528232112]
+    length: 0.5
+    entrance_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.SEXTA21.2:
+    type: sextupole
+    k2l: -3.8563573206645745
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.6525178555332332, 0.0, 252.5801233663309]
+    length: 0.2
+  ARC.BC2.QAC.5:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.627559501371526, 0.0, 252.8288744076504]
+    length: 0.2
+  ARC.BC2.OCT1.3:
+    type: octupole
+    k3l: 63.3759434743694
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.601602813043351, 0.0, 253.0875754906227]
+    length: 0.2
+  ARC.BC2.QAC.6:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.5756461247151752, 0.0, 253.346276573595]
+    length: 0.2
+  ARC.BC2.SEXTA22.2:
+    type: sextupole
+    k2l: -4.148376904909535
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.550687770553468, 0.0, 253.5950276149145]
+    length: 0.2
+  ARC.BC2.BEND21.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-1.4009324446258657, 0.0, 255.0875856989242]
+    length: 0.5
+    exit_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARC.BC2.BENDR2.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.2772646048215952, 0.0, 255.9058452772878]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND22.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-1.1535967650173236, 0.0, 256.72410485565143]
+    length: 0.5
+    entrance_edge_angle: -0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: -0.05
+  ARCBC2M4.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-1.103919082370085, 0.0, 256.9691725580105]
+  ARC.BC2.QST11.3:
+    type: quadrupole
+    k1l: -1.1325898043981235
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-1.004584416519672, 0.0, 257.45920584916524]
+    length: 0.2
+  ARCBC2MID1.3:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.9623638901140772, 0.0, 257.6674862448528]
+  ARC.BC2.QST12.2:
+    type: quadrupole
+    k1l: 2.38703536675051
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.942496957034571, 0.0, 257.76549290263694]
+    length: 0.2
+  ARCBC2MID1.4:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.9226300239550649, 0.0, 257.863499560421]
+  ARC.BC2.QST11.4:
+    type: quadrupole
+    k1l: -1.1325898043981235
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.8804094975494697, 0.0, 258.0717799561086]
+    length: 0.2
+  ARCBC2M4.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.781074831699057, 0.0, 258.5618132472633]
+  ARC.BC2.BEND11.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.2]
+    centre: [-0.731397149051818, 0.0, 258.8068809496224]
+    length: 0.5
+    exit_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.BENDR1.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.6077293092475463, 0.0, 259.625140527986]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND12.3:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.15]
+    centre: [-0.48406146944327505, 0.0, 260.4434001063495]
+    length: 0.5
+    entrance_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.SEXTA11.2:
+    type: sextupole
+    k2l: 3.8563573206645745
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.3343061435156719, 0.0, 261.9359581903593]
+    length: 0.2
+  ARC.BC2.QAC.7:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.3093477893539648, 0.0, 262.1847092316788]
+    length: 0.2
+  ARC.BC2.OCT1.4:
+    type: octupole
+    k3l: 63.3759434743694
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.28339110102578935, 0.0, 262.443410314651]
+    length: 0.2
+  ARC.BC2.QAC.8:
+    type: quadrupole
+    k1l: 0.39271407216132803
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.257434412697614, 0.0, 262.7021113976233]
+    length: 0.2
+  ARC.BC2.SEXTA12.2:
+    type: sextupole
+    k2l: 4.148376904909535
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.2324760585359069, 0.0, 262.9508624389428]
+    length: 0.2
+  ARC.BC2.BEND11.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.1]
+    centre: [-0.08272073260830413, 0.0, 264.44342052295247]
+    length: 0.5
+    exit_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARC.BC2.BENDR1.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.05000000000000005]
+    centre: [-0.041360366304149396, 0.0, 265.2699383946799]
+    length: 0.5
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+  ARC.BC2.BEND12.4:
+    type: dipole
+    global_rotation: [0.0, 0.0, 0.05000000000000005]
+    centre: [0.0, 0.0, 266.0964562664074]
+    length: 0.5
+    entrance_edge_angle: 0.05
+    edge_field_integral: 0.4
+    half_gap: 0.0075
+    csr_bins: 100
+    isr_enable: 1
+    angle: 0.05
+  ARCBC2M5:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 266.3465083627649]
+  BC2M2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 266.3465083627649]
+  W2BC2:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 266.3465083627649]
+  MS5.QF1:
+    type: quadrupole
+    k1l: 0.32427134888380604
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 266.7465083627649]
+    length: 0.2
+  MS5.QF2:
+    type: quadrupole
+    k1l: 0.2472616584757532
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 267.2465083627649]
+    length: 0.2
+  MS5.QF3:
+    type: quadrupole
+    k1l: -1.147863064974597
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 267.7465083627649]
+    length: 0.2
+  MS5.QF4:
+    type: quadrupole
+    k1l: 0.8016594731361192
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 268.2465083627649]
+    length: 0.2
+  W1MS5:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 268.3465083627649]
+  LIN3_MOD.1:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 273.39850838676495]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.1:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 278.0005084107649]
+    length: 0.3
+  LIN3_MOD.2:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 282.6025084347649]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.3:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 291.806508482765]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.1:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 296.408508506765]
+    length: 0.3
+  LIN3_MOD.4:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 301.01050853076504]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.5:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 310.214508578765]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.1:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 314.81650860276505]
+    length: 0.3
+  LIN3_MOD.6:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 319.4185086267651]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.7:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 328.62250867476513]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.1:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 333.2245086987652]
+    length: 0.3
+  LIN3_MOD.8:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 337.8265087227652]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.9:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 347.0305087707652]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.2:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 351.63250879476516]
+    length: 0.3
+  LIN3_MOD.10:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 356.23450881876533]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.11:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 365.4385088667653]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.2:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 370.0405088907653]
+    length: 0.3
+  LIN3_MOD.12:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 374.6425089147653]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.13:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 383.8465089627654]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.2:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 388.4485089867654]
+    length: 0.3
+  LIN3_MOD.14:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 393.05050901076544]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.15:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 402.2545090587654]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.2:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 406.85650908276546]
+    length: 0.3
+  LIN3_MOD.16:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 411.4585091067655]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.17:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 420.66250915476553]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.3:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 425.2645091787656]
+    length: 0.3
+  LIN3_MOD.18:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 429.8665092027656]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.19:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 439.0705092507656]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.3:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 443.67250927476556]
+    length: 0.3
+  LIN3_MOD.20:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 448.27450929876574]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.21:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 457.4785093467657]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.3:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 462.0805093707657]
+    length: 0.3
+  LIN3_MOD.22:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 466.6825093947657]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.23:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 475.8865094427658]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.3:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 480.4885094667658]
+    length: 0.3
+  LIN3_MOD.24:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 485.09050949076584]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.25:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 494.2945095387658]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.4:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 498.89650956276586]
+    length: 0.3
+  LIN3_MOD.26:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 503.4985095867659]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.27:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 512.7025096347659]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.4:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 517.3045096587658]
+    length: 0.3
+  LIN3_MOD.28:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 521.9065096827658]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.29:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 531.1105097307658]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.4:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 535.7125097547657]
+    length: 0.3
+  LIN3_MOD.30:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 540.3145097787657]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.31:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 549.5185098267657]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.4:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 554.1205098507656]
+    length: 0.3
+  LIN3_MOD.32:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 558.7225098747656]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.33:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 567.9265099227656]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.5:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 572.5285099467656]
+    length: 0.3
+  LIN3_MOD.34:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 577.1305099707655]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.35:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 586.3345100187655]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.5:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 590.9365100427655]
+    length: 0.3
+  LIN3_MOD.36:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 595.5385100667654]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.37:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 604.7425101147654]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.5:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 609.3445101387654]
+    length: 0.3
+  LIN3_MOD.38:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 613.9465101627653]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.39:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 623.1505102107653]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.5:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 627.7525102347653]
+    length: 0.3
+  LIN3_MOD.40:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 632.3545102587652]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.41:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 641.5585103067652]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.6:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 646.1605103307652]
+    length: 0.3
+  LIN3_MOD.42:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 650.7625103547651]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.43:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 659.9665104027652]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.6:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 664.5685104267651]
+    length: 0.3
+  LIN3_MOD.44:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 669.170510450765]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.45:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 678.3745104987651]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.6:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 682.976510522765]
+    length: 0.3
+  LIN3_MOD.46:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 687.578510546765]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.47:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 696.782510594765]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF4.6:
+    type: quadrupole
+    k1l: -0.000533682916600646
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 701.3845106187649]
+    length: 0.3
+  LIN3_MOD.48:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 705.9865106427649]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.49:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 715.1905106907649]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF1.7:
+    type: quadrupole
+    k1l: 0.006118024614531111
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 719.7925107147648]
+    length: 0.3
+  LIN3_MOD.50:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 724.3945107387648]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.51:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 733.5985107867648]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF2.7:
+    type: quadrupole
+    k1l: 0.009857440546969824
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 738.2005108107647]
+    length: 0.3
+  LIN3_MOD.52:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 742.8025108347647]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3_MOD.53:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 752.0065108827647]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  LIN3.QF3.7:
+    type: quadrupole
+    k1l: -0.015429865187272816
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 756.6085109067646]
+    length: 0.3
+  LIN3_MOD.54:
+    type: cavity
+    cell_length: 8.304000047999999
+    phase: 0.0
+    n_kicks: 80
+    lsc_bins: 100
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 760.9105109307646]
+    length: 8.304000047999999
+    lsc_enable: 1
+    frequency: 1300000000
+    field_amplitude: 4538392.4692809535
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    n_cells: 1
+    wakefield_definition: $master_lattice_location$Data_Files/TESLA_MODULE_wake_trim_interp.hdf5
+  ENDM1.1:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 765.9625109547646]
+  MS6.QF1:
+    type: quadrupole
+    k1l: -0.27495205359020003
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 766.3625109547647]
+    length: 0.4
+  MS6.QF2:
+    type: quadrupole
+    k1l: -0.20150727017354142
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 766.9625109547648]
+    length: 0.4
+  MS6.QF3:
+    type: quadrupole
+    k1l: 0.4472793170943488
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 767.8625109547647]
+    length: 0.4
+  MS6.QF4:
+    type: quadrupole
+    k1l: 0.13948585884896705
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 768.4625109547648]
+    length: 0.4
+  MS6.QF5:
+    type: quadrupole
+    k1l: 0.54375847534413
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 769.3625109547647]
+    length: 0.4
+  MS6.QF6:
+    type: quadrupole
+    k1l: -1.7344689984814918
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 769.9625109547648]
+    length: 0.4
+  W1MS6:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 770.1625109547647]
+  ENDM1.2:
+    type: marker
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 770.1625109547647]
+  W1END:
+    type: screen
+    global_rotation: [0.0, 0.0, 0.0]
+    centre: [0.0, 0.0, 770.1625109547647]

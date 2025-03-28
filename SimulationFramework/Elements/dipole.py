@@ -24,6 +24,7 @@ class dipole(frameworkElement):
         super().__init__(name, type, **kwargs)
         self.add_default("csr_bins", 100)
         self.add_default("deltaL", 0)
+        self.add_default("angle", 0)
         self.add_default("csr_enable", 1)
         self.add_default("isr_enable", True)
         self.add_default("n_kicks", 8)
