@@ -192,9 +192,9 @@ class ElegantElement(BaseModel):
                 90 - float(self.properties["phase"])
             )
             cells = 0
-            self.properties["field_amplitude"] = float(self.properties["field_amplitude"])#convert_numpy_types(
-            #     np.sqrt(2) * float(self.properties["field_amplitude"])
-            # ) / ((4.1 + cells) * float(self.properties["cell_length"]))
+            self.properties["field_amplitude"] = convert_numpy_types(
+                np.sqrt(2) * float(self.properties["field_amplitude"])
+            ) / ((4.1 + cells) * float(self.properties["cell_length"]))
             self._cavity_updated = True
 
     def update(self, properties: dict) -> None:
@@ -320,7 +320,6 @@ class ElegantLattice(BaseModel):
             new_lattice += [name]
             startpos = self.floor[name]["end"]
             startangle = self.floor[name]["end_rotation"]
-            startangle[2] *= -1
         self.lattice = new_lattice
         self.elements = new_elements
 

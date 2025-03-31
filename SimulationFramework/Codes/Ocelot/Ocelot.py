@@ -79,6 +79,11 @@ class ocelotLattice(frameworkLattice):
             if "sigmamin_csr" in list(self.oceglobal.keys())
             else 1e-5
         )
+        self.wake_factor = (
+            self.oceglobal["wake_factor"]
+            if "wake_sampling" in list(self.oceglobal.keys())
+            else 1
+        )
         self.wake_sampling = (
             self.oceglobal["wake_sampling"]
             if "wake_sampling" in list(self.oceglobal.keys())
@@ -146,7 +151,7 @@ class ocelotLattice(frameworkLattice):
             if "input" in self.file_block and "prefix" in self.file_block["input"]
             else ""
         )
-        prefix = prefix if self.trackBeam else prefix + self.particle_definition + ".hdf5"
+        prefix = prefix if self.trackBeam else prefix + self.particle_definition
         self.hdf5_to_npz(prefix)
         # else:
         # HDF5filename = prefix + self.particle_definition + ".hdf5"
@@ -158,7 +163,7 @@ class ocelotLattice(frameworkLattice):
         # )
 
     def hdf5_to_npz(self, prefix="", write=True):
-        HDF5filename = prefix + self.particle_definition + ".hdf5"
+        HDF5filename = prefix + self.particle_definition
         HDF5fnwpath = os.path.abspath(
             self.global_parameters["master_subdir"] + "/" + HDF5filename
         )
@@ -317,7 +322,7 @@ class ocelotLattice(frameworkLattice):
         wake = Wake(
             step=100, w_sampling=self.wake_sampling, filter_order=self.wake_filter,
         )
-        wake.factor = ncell
+        wake.factor = ncell * self.wake_factor
         wake.wake_table = WakeTable(expand_substitution(self, loc))
         w_ind = where(self.names == name)[0][0]
         return [wake, w_ind]
