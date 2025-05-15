@@ -3,6 +3,7 @@ from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.Fields import field
+from .mbi import MBI
 from ocelot.cpbd.magnetic_lattice import MagneticLattice
 from ocelot.cpbd.track import track
 from ocelot.cpbd.io import save_particle_array, load_particle_array
@@ -16,8 +17,16 @@ from ocelot.cpbd.transformations.kick import KickTM
 from ocelot.cpbd.transformations.runge_kutta import RungeKuttaTM
 from ocelot.cpbd.elements import Octupole, Undulator
 from copy import deepcopy
-from numpy import array, where, mean, savez_compressed
+from typing import Dict
+from numpy import array, where, mean, savez_compressed, linspace, save
 import os
+from yaml import safe_load
+
+with open(
+    os.path.dirname(os.path.abspath(__file__)) + "/ocelot_defaults.yaml",
+    "r",
+) as infile:
+    oceglobal = safe_load(infile)
 
 
 class ocelotLattice(frameworkLattice):
@@ -37,64 +46,22 @@ class ocelotLattice(frameworkLattice):
         self.pout = None
         self.tws = None
         self.names = None
+        self.mbi = {"min": 1e-6, "max": 50e-6, "nstep": 30, "slices": 0, "set_mbi": False}
+        self.mbi_navi = None
         self.grids = getGrids()
-        self.sample_interval = 1
-        self.oceglobal = (
-            self.settings["global"]["OCELOTsettings"]
-            if "OCELOTsettings" in list(self.settings["global"].keys())
-            else {}
-        )
-        self.unit_step = (
-            self.oceglobal["unit_step"]
-            if "unit_step" in list(self.oceglobal.keys())
-            else 0.01
-        )
-        self.smooth = (
-            self.oceglobal["smooth_param"]
-            if "smooth_param" in list(self.oceglobal.keys())
-            else 0.1
-        )
+        self.oceglobal = deepcopy(oceglobal)
+        if "OCELOTsettings" in list(self.settings["global"].keys()):
+            for k, v in self.settings["global"]["OCELOTsettings"].items():
+                if isinstance(v, Dict):
+                    for k1, v1 in v.items():
+                        self.oceglobal[k].update({k1: v1})
+                else:
+                    self.oceglobal.update({k: v})
         self.lsc = (
             self.oceglobal["lsc"]
             if "lsc" in list(self.oceglobal.keys())
             else self.lscDrifts
         )
-        self.random_mesh = (
-            self.oceglobal["random_mesh"]
-            if "random_mesh" in list(self.oceglobal.keys())
-            else True
-        )
-        self.nbin_csr = (
-            self.oceglobal["nbin_csr"]
-            if "nbin_csr" in list(self.oceglobal.keys())
-            else 10
-        )
-        self.mbin_csr = (
-            self.oceglobal["mbin_csr"]
-            if "mbin_csr" in list(self.oceglobal.keys())
-            else 5
-        )
-        self.sigmamin_csr = (
-            self.oceglobal["sigmamin_csr"]
-            if "sigmamin_csr" in list(self.oceglobal.keys())
-            else 1e-5
-        )
-        self.wake_factor = (
-            self.oceglobal["wake_factor"]
-            if "wake_sampling" in list(self.oceglobal.keys())
-            else 1
-        )
-        self.wake_sampling = (
-            self.oceglobal["wake_sampling"]
-            if "wake_sampling" in list(self.oceglobal.keys())
-            else 1000
-        )
-        self.wake_filter = (
-            self.oceglobal["wake_filter"]
-            if "wake_filter" in list(self.oceglobal.keys())
-            else 10
-        )
-
         if (
             "input" in self.file_block
             and "particle_definition" in self.file_block["input"]
@@ -153,14 +120,6 @@ class ocelotLattice(frameworkLattice):
         )
         prefix = prefix if self.trackBeam else prefix + self.particle_definition
         self.hdf5_to_npz(prefix)
-        # else:
-        # HDF5filename = prefix + self.particle_definition + ".hdf5"
-        # rbf.hdf5.read_HDF5_beam_file(
-        #     self.global_parameters["beam"],
-        #     os.path.abspath(
-        #         self.global_parameters["master_subdir"] + "/" + HDF5filename
-        #     ),
-        # )
 
     def hdf5_to_npz(self, prefix="", write=True):
         HDF5filename = prefix + self.particle_definition
@@ -211,6 +170,8 @@ class ocelotLattice(frameworkLattice):
             f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz',
             **twsdat,
         )
+        if self.mbi_navi is not None:
+            save(f'{self.global_parameters["master_subdir"]}/{self.objectname}_mbi.dat', self.mbi_navi.bf)
 
     def navi_setup(self):
         navi_processes = []
@@ -231,6 +192,8 @@ class ocelotLattice(frameworkLattice):
             navi_processes += [lsc]
             navi_locations_start += [self.lat_obj.sequence[0]]
             navi_locations_end += [self.lat_obj.sequence[-1]]
+        space_charge_set = False
+        csr_set = False
         if "charge" in list(self.file_block.keys()):
             if (
                 "space_charge_mode" in list(self.file_block["charge"].keys())
@@ -249,12 +212,27 @@ class ocelotLattice(frameworkLattice):
                 navi_processes += [sc]
                 navi_locations_start += [self.lat_obj.sequence[0]]
                 navi_locations_end += [self.lat_obj.sequence[-1]]
+                space_charge_set = True
         if "csr" in list(self.file_block.keys()):
             csr, start, end = self.physproc_csr()
             for i in range(len(csr)):
                 navi_processes += [csr[i]]
                 navi_locations_start += [start[i]]
                 navi_locations_end += [end[i]]
+        if self.mbi["set_mbi"]:
+            print(self.mbi)
+            self.mbi_navi = MBI(
+                lattice=self.lat_obj,
+                lamb_range=list(linspace(float(self.mbi["min"]), float(self.mbi["max"]), int(self.mbi["nstep"]))),
+                lsc=space_charge_set,
+                csr=csr_set,
+                slices=self.mbi["slices"],
+            )
+            # mbi1.step = self.unit_step
+            self.mbi_navi.navi = deepcopy(navi)
+            self.mbi_navi.lattice = deepcopy(self.lat_obj)
+            self.mbi_navi.lsc = True
+            navi.add_physics_proc(self.mbi_navi, self.lat_obj.sequence[0], self.lat_obj.sequence[-1])
         for name, obj in self.elements.items():
             if (obj["objecttype"] == "cavity") and hasattr(obj, "wakefield_definition"):
                 if isinstance(obj.wakefield_definition, field):
