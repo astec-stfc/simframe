@@ -1,7 +1,6 @@
 from logging import FileHandler
 
 import numpy as np
-from jedi.debug import speed
 
 from ..units import UnitValue
 from ..constants import speed_of_light
