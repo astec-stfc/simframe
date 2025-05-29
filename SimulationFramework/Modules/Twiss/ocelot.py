@@ -14,16 +14,17 @@ def read_ocelot_twiss_files(self, filename, reset=True):
         for f in filename:
             self.read_ocelot_twiss_files(f, reset=False)
     elif os.path.isfile(filename):
+        lattice_name = os.path.basename(filename).split(".")[0]
         if "xemit" not in filename.lower():
             filename = filename.replace("Yemit", "Xemit").replace("Zemit", "Xemit")
         fdat = {}
         with np.load(filename) as data:
             for key, value in data.items():
                 fdat.update({key: value})
-        interpret_ocelot_data(self, fdat)
+        interpret_ocelot_data(self, lattice_name, fdat)
 
 
-def interpret_ocelot_data(self, fdat):
+def interpret_ocelot_data(self, lattice_name, fdat):
     fdat["s"] += self.z[-1]
     self.append("z", fdat["s"])
     cp = fdat["E"] * 1e-3
@@ -74,7 +75,8 @@ def interpret_ocelot_data(self, fdat):
     self.append("eta_y", fdat["Dy"])
     self.append("eta_yp", fdat["Dyp"])
     self.append("element_name", np.zeros(len(fdat["s"])))
-    ### BEAM parameters
+    self.append("lattice_name", np.zeros(len(fdat["s"])), lattice_name)
+    # ## BEAM parameters
     self.append("ecnx", fdat["emit_xn"])
     self.append("ecny", fdat["emit_yn"])
     self.append("eta_x_beam", fdat["Dx"])

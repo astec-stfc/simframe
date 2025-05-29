@@ -14,6 +14,7 @@ def read_astra_twiss_files(self, filename, reset=True):
         for f in filename:
             self.read_astra_twiss_files(f, reset=False)
     elif os.path.isfile(filename):
+        lattice_name = os.path.basename(filename).split(".")[0]
         if "xemit" not in filename.lower():
             filename = filename.replace("Yemit", "Xemit").replace("Zemit", "Xemit")
         xemit = (
@@ -29,10 +30,10 @@ def read_astra_twiss_files(self, filename, reset=True):
         zemit = (
             np.loadtxt(filename, unpack=False) if os.path.isfile(filename) else False
         )
-        interpret_astra_data(self, xemit, yemit, zemit)
+        interpret_astra_data(self, lattice_name, xemit, yemit, zemit)
 
 
-def interpret_astra_data(self, xemit, yemit, zemit):
+def interpret_astra_data(self, lattice_name, xemit, yemit, zemit):
     z, t, mean_x, rms_x, rms_xp, exn, mean_xxp = np.transpose(xemit)
     z, t, mean_y, rms_y, rms_yp, eyn, mean_yyp = np.transpose(yemit)
     z, t, e_kin, rms_z, rms_e, ezn, mean_zep = np.transpose(zemit)
@@ -97,6 +98,7 @@ def interpret_astra_data(self, xemit, yemit, zemit):
     self.append("ecnx", exn)
     self.append("ecny", eyn)
     self.append("element_name", np.full(len(z), ""))
+    self.append("lattice_name", np.full(len(z), lattice_name))
     self.append("eta_x_beam", np.zeros(len(z)))
     self.append("eta_xp_beam", np.zeros(len(z)))
     self.append("eta_y_beam", np.zeros(len(z)))

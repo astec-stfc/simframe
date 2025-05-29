@@ -99,6 +99,7 @@ class twiss(munch.Munch):
         "eta_y": twissParameter(name='eta_y', unit='m'),
         "eta_yp": twissParameter(name='eta_yp', unit='mrad'),
         "element_name": twissParameter(name="element_name", unit="", dtype="U"),
+        "lattice_name": twissParameter(name="lattice_name", unit="", dtype="U"),
         "ecnx": twissParameter(name="ecnx", unit="m-mrad"),
         "ecny": twissParameter(name="ecny", unit="m-mrad"),
         "eta_x_beam": twissParameter(name="eta_x_beam", unit="m"),

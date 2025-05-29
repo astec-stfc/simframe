@@ -113,7 +113,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append('eta_y', elegantData['etay'])
         self.append('eta_yp', elegantData['etayp'])
         self.append("element_name", elegantData["ElementName"])
-        ### BEAM parameters
+        self.append("lattice_name", np.zeros(len(elegantData["ElementName"]), pre))
+        # ## BEAM parameters
         self.append("ecnx", elegantData["ecnx"])
         self.append("ecny", elegantData["ecny"])
         self.append("eta_x_beam", elegantData["s16"] / (elegantData["s6"] ** 2))
