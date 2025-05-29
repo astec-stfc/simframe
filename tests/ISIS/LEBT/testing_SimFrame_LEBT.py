@@ -18,8 +18,8 @@ class ISIS():
             os.path.join(os.path.dirname(__file__), "ISIS_LEBT.def")
         )
         self.framework.loadSettings(self.settings_file)
-        for elem in self.framework.elements:
-            self.framework[elem].centre[2] += 1.142
+        # for elem in self.framework.elements:
+        #     self.framework[elem].centre[2] += 1.142
 
 
 def export_HDF5_Field_Files():
