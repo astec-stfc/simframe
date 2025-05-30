@@ -1,7 +1,6 @@
 from logging import FileHandler
 
 import numpy as np
-from jedi.debug import speed
 
 from ..units import UnitValue
 from ..constants import speed_of_light
@@ -71,12 +70,13 @@ def write_SDDS_field_file(self, sddsindex=0, ascii=False):
         sddsfile.write_file(sdds_filename)
     return sdds_filename
 
+
 def read_SDDS_field_file(self, filename: str, field_type: str):
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     try:
         elegantObject = SDDSFile(index=1, ascii=True)
-    except:
+    except Exception:
         elegantObject = SDDSFile(index=1, ascii=False)
     elegantObject.read_file(filename, page=-1)
     if field_type in ["LongitudinalWake", "3DWake", "TransverseWake"]:

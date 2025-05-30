@@ -93,19 +93,22 @@ class fitnessFunc(object):
         best = []
         for n, p in [r[:2] for r in self.parameter_names]:
             if n in data:
+                # print("Loading from data dict", n, p)
                 best.append(data[n][p])
             elif n == "bunch_compressor" and p == "set_angle":
+                # print("Loading bunch_compressor set_angle", n, p)
                 best.append(data["CLA-VBC-MAG-DIP-01"]["angle"])
             elif n == "startcharge":
+                # print("Loading start charge from data dict", n, p)
                 best.append(self.startcharge)
             else:
-                # print(n, p)
+                print("Loading from lattice file", n, p)
                 if not hasattr(self, "framework"):
                     self.framework = fw.Framework(None)
                 if len(self.framework.elementObjects.keys()) < 1:
                     self.framework.loadSettings(self.lattice_file)
-                # print(self.framework.elementObjects, n,p)
                 try:
+                    print(n, p, self.framework[n][p])
                     best.append(self.framework[n][p])
                 except Exception:
                     raise ValueError("load_best error", os.path.abspath(datadict), n, p)

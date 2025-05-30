@@ -39,6 +39,21 @@ class twissParameter(BaseModel):
         return v
 
 
+class initialTwiss(BaseModel):
+    alpha_x:    float
+    beta_x:     float
+    alpha_y:    float
+    beta_y:     float
+    ex:         float
+    ey:         float
+    enx:        float
+    eny:        float
+    eta_x:      float
+    eta_xp:     float
+    eta_y:      float
+    eta_yp:     float
+
+
 class twiss(munch.Munch):
 
     properties = {

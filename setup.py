@@ -30,6 +30,7 @@ setup(
             "Codes/Elegant/*.yaml",
             "Codes/CSRTrack/*.yaml",
             "Codes/Ocelot/*.yaml",
+            "Elements/*.yaml",
             "*.yaml",
         ]
     },

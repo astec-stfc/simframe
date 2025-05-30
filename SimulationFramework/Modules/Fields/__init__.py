@@ -81,24 +81,26 @@ from . import opal  # noqa E402
 
 
 class field(BaseModel):
-    x: FieldParameter(name="x") = None
-    y: FieldParameter(name="y") = None
-    z: FieldParameter(name="z") = None
-    r: FieldParameter(name="r") = None
-    t: FieldParameter(name="t") = None
-    Ex: FieldParameter(name="Ex") = None
-    Ey: FieldParameter(name="Ey") = None
-    Ez: FieldParameter(name="Ez") = None
-    Er: FieldParameter(name="Er") = None
-    Bx: FieldParameter(name="Bx") = None
-    By: FieldParameter(name="By") = None
-    Bz: FieldParameter(name="Bz") = None
-    Br: FieldParameter(name="Br") = None
-    Wx: FieldParameter(name="Wx") = None
-    Wy: FieldParameter(name="Wy") = None
-    Wz: FieldParameter(name="Wz") = None
-    Wr: FieldParameter(name="Wr") = None
-    G: FieldParameter(name="G") = None
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    x: FieldParameter = None
+    y: FieldParameter = None
+    z: FieldParameter = None
+    r: FieldParameter = None
+    t: FieldParameter = None
+    Ex: FieldParameter = None
+    Ey: FieldParameter = None
+    Ez: FieldParameter = None
+    Er: FieldParameter = None
+    Bx: FieldParameter = None
+    By: FieldParameter = None
+    Bz: FieldParameter = None
+    Br: FieldParameter = None
+    Wx: FieldParameter = None
+    Wy: FieldParameter = None
+    Wz: FieldParameter = None
+    Wr: FieldParameter = None
+    G: FieldParameter = None
     filename: str | None = None
     field_type: fieldtype | None = None
     origin_code: str | None = None
