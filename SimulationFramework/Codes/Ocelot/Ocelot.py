@@ -57,6 +57,8 @@ class ocelotLattice(frameworkLattice):
                         self.oceglobal[k].update({k1: v1})
                 else:
                     self.oceglobal.update({k: v})
+        for k, v in self.oceglobal.items():
+            setattr(self, k, v)
         self.lsc = (
             self.oceglobal["lsc"]
             if "lsc" in list(self.oceglobal.keys())
@@ -122,7 +124,7 @@ class ocelotLattice(frameworkLattice):
         self.hdf5_to_npz(prefix)
 
     def hdf5_to_npz(self, prefix="", write=True):
-        HDF5filename = prefix + self.particle_definition
+        HDF5filename = prefix + self.particle_definition + ".hdf5"
         HDF5fnwpath = os.path.abspath(
             self.global_parameters["master_subdir"] + "/" + HDF5filename
         )
@@ -178,14 +180,6 @@ class ocelotLattice(frameworkLattice):
         navi_locations_start = []
         navi_locations_end = []
         settings = self.settings
-        self.unit_step = (
-            settings["unit_step"] if "unit_step" in settings.keys() else self.unit_step
-        )
-        self.smooth = (
-            self.oceglobal["smooth_param"]
-            if "smooth_param" in list(self.oceglobal.keys())
-            else 0.1
-        )
         navi = Navigator(self.lat_obj, unit_step=self.unit_step)
         if self.lsc:
             lsc = self.physproc_lsc()
@@ -203,8 +197,8 @@ class ocelotLattice(frameworkLattice):
                     (len(self.global_parameters["beam"].x) / self.sample_interval)
                 )
                 g1 = (
-                    self.oceglobal["sc_grid"]
-                    if "sc_grid" in list(self.oceglobal.keys())
+                    self.sc_grid
+                    if hasattr(self, "sc_grid")
                     else gridsize
                 )
                 grids = [g1 for _ in range(3)]
@@ -257,7 +251,7 @@ class ocelotLattice(frameworkLattice):
 
     def physproc_lsc(self):
         lsc = LSC()
-        lsc.smooth_param = self.smooth
+        lsc.smooth_param = self.smooth_param
         return lsc
 
     def physproc_sc(self, grids):
