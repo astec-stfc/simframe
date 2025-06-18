@@ -260,7 +260,7 @@ class astraLattice(frameworkLattice):
             if "input" in self.file_block and "prefix" in self.file_block["input"]
             else ""
         )
-        self.headers["newrun"].hdf5_to_astra(prefix)
+        self.headers["newrun"].hdf5_to_astra(prefix, self.initial_twiss)
         self.headers["charge"].npart = len(self.global_parameters["beam"].x)
 
     @lox.thread
@@ -422,23 +422,18 @@ class astra_newrun(astra_header):
             self.add_property("lprompt", False)
 
     def framework_dict(self):
-        astradict = dict(
-            [
-                [
-                    "Distribution",
-                    {"value": "'" + self.output_particle_definition + "'"},
-                ],
-                ["high_res", {"value": self.high_res, "default": True}],
-                ["n_red", {"value": self.sample_interval, "default": 1}],
-                ["auto_phase", {"value": self.auto_phase, "default": True}],
-                ["Toff", {"value": self.toffset, "default": None}],
-            ]
-        )
+        astradict = {
+            "Distribution": {"value": "'" + self.output_particle_definition + "'"},
+            "high_res": {"value": self.high_res, "default": True},
+            "n_red": {"value": self.sample_interval, "default": 1},
+            "auto_phase": {"value": self.auto_phase, "default": True},
+            "Toff": {"value": self.toffset, "default": None},
+        }
         if self.bunch_charge is not None:
             astradict["Qbunch"] = {"value": 1e9 * self.bunch_charge, "default": None}
         return astradict
 
-    def hdf5_to_astra(self, prefix=""):
+    def hdf5_to_astra(self, prefix: str = "", initial_twiss: dict = {"horizontal": {}, "vertical": {}}):
         HDF5filename = (
             prefix + self.input_particle_definition.replace(".astra", "") + ".hdf5"
         )
@@ -450,12 +445,13 @@ class astra_newrun(astra_header):
             self.global_parameters["beam"],
             filepath,
         )
+        self.global_parameters["beam"].beam.rematchXPlane(**initial_twiss["horizontal"])
+        self.global_parameters["beam"].beam.rematchYPlane(**initial_twiss["vertical"])
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
             self.starting_rotation,
             preOffset=self.starting_offset,
         )
-        # shutil.copyfile(self.global_parameters['master_subdir'] + '/' + HDF5filename, self.global_parameters['master_subdir'] + '/' + self.output_particle_definition.replace('.astra','')+'.hdf5') #copy src to dst
         astrabeamfilename = self.output_particle_definition
         rbf.astra.write_astra_beam_file(
             self.global_parameters["beam"],

@@ -32,6 +32,13 @@ files:
       mirror_charge: False
     input:
       particle_definition: '$master_lattice_location$LEBT_in'
+      twiss:
+        alpha_x: -2
+        beta_x: 0.304
+        nemit_x: 89.5e-6
+        alpha_y: -1.72
+        beta_y: 0.307
+        nemit_y: 67.7e-6
     output:
       start_element: ISIS-LEBT-SIM-AP-01
       end_element: ISIS-LEBT-DIA-SCR-03

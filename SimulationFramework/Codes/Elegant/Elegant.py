@@ -346,16 +346,19 @@ class elegantLattice(frameworkLattice):
             if "input" in self.file_block and "prefix" in self.file_block["input"]
             else ""
         )
+        HDF5filename = prefix + self.particle_definition + ".hdf5"
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
+        rbf.hdf5.read_HDF5_beam_file(
+            self.global_parameters["beam"],
+            os.path.abspath(filepath),
+        )
+        self.global_parameters["beam"].beam.rematchXPlane(**self.initial_twiss["horizontal"])
+        self.global_parameters["beam"].beam.rematchYPlane(**self.initial_twiss["vertical"])
         if self.trackBeam:
             self.hdf5_to_sdds(prefix)
-        else:
-            HDF5filename = prefix + self.particle_definition + ".hdf5"
-            rbf.hdf5.read_HDF5_beam_file(
-                self.global_parameters["beam"],
-                os.path.abspath(
-                    self.global_parameters["master_subdir"] + "/" + HDF5filename
-                ),
-            )
         self.createCommandFiles()
 
     @lox.thread
@@ -381,16 +384,7 @@ class elegantLattice(frameworkLattice):
         self.commandFiles = {}
 
     def hdf5_to_sdds(self, prefix="", write=True):
-        HDF5filename = prefix + self.particle_definition + ".hdf5"
-        if os.path.isfile(expand_substitution(self, HDF5filename)):
-            filepath = expand_substitution(self, HDF5filename)
-        else:
-            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
-        rbf.hdf5.read_HDF5_beam_file(
-            self.global_parameters["beam"],
-            os.path.abspath(filepath),
-        )
-        # print('HDF5 Total charge', self.global_parameters['beam']['total_charge'])
+        """convert the HDF5 beam file to an SDDS file, and create a charge object"""
         if self.bunch_charge is not None:
             self.q = charge(
                 name="START",
@@ -405,8 +399,6 @@ class elegantLattice(frameworkLattice):
                 global_parameters=self.global_parameters,
                 **{"total": abs(self.global_parameters["beam"].Q)}
             )
-        # print('mean cpz = ', np.mean(self.global_parameters['beam'].cpz), ' prefix = ', prefix)
-        # shutil.copyfile(self.global_parameters['master_subdir'] + '/' + HDF5filename, self.global_parameters['master_subdir'] + '/' + self.objectname+'.hdf5') #copy src to dst
         sddsbeamfilename = self.objectname + ".sdds"
         if write:
             rbf.sdds.write_SDDS_file(
