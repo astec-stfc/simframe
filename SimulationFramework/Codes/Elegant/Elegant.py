@@ -340,6 +340,7 @@ class elegantLattice(frameworkLattice):
             )  # ['global_settings', 'run_setup', 'error_elements', 'scan_elements', 'run_control', 'twiss', 'sdds_beam', 'track']
 
     def preProcess(self):
+        super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
             if "input" in self.file_block and "prefix" in self.file_block["input"]
@@ -365,6 +366,8 @@ class elegantLattice(frameworkLattice):
             return None
 
     def postProcess(self):
+        """postProcess the simulation results, i.e. gather the screens and markers"""
+        super().postProcess()
         if self.trackBeam:
             for i, s in enumerate(self.screens_and_markers_and_bpms):
                 self.screen_threaded_function.scatter(s, i)

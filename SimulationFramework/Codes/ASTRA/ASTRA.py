@@ -254,6 +254,7 @@ class astraLattice(frameworkLattice):
         saveFile(self.code_file, self.writeElements())
 
     def preProcess(self):
+        super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
             if "input" in self.file_block and "prefix" in self.file_block["input"]
@@ -305,6 +306,7 @@ class astraLattice(frameworkLattice):
         return 100
 
     def postProcess(self):
+        super().postProcess()
         cathode = (
             self.headers["newrun"]["particle_definition"] == "initial_distribution"
         )

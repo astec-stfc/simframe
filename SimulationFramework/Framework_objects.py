@@ -186,7 +186,7 @@ class frameworkLattice(Munch):
             print(("WARNING: Element ", element, " does not exist"))
             return {}
 
-    def getElementType(self, type, param=None):
+    def getElementType(self, type, param=None) -> list | tuple | zip:
         if isinstance(type, (list, tuple)):
             return [self.getElementType(t, param=param) for t in type]
         if isinstance(param, (list, tuple)):

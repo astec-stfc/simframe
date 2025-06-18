@@ -227,6 +227,7 @@ class gptLattice(frameworkLattice):
         return self.writeElements()
 
     def preProcess(self):
+        super().preProcess()
         self.headers["setfile"].particle_definition = self.objectname + ".gdf"
         prefix = (
             self.file_block["input"]["prefix"]
@@ -369,6 +370,7 @@ class gptLattice(frameworkLattice):
             )
 
     def postProcess(self):
+        super().postProcess()
         cathode = self.particle_definition == "laser"
         gdfbeam = rbf.gdf.read_gdf_beam_file_object(
             self.global_parameters["beam"],
