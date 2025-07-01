@@ -15,9 +15,11 @@ class twiss(munch.Munch):
         return {
             p: getattr(self, p)
             for p in (
+                "normalized_horizontal_emittance",
                 "horizontal_emittance",
                 "alpha_x",
                 "beta_x",
+                "normalized_vertical_emittance",
                 "vertical_emittance",
                 "alpha_y",
                 "beta_y",
@@ -29,14 +31,24 @@ class twiss(munch.Munch):
         return {
             p + "_corrected": getattr(self, p + "_corrected")
             for p in (
+                "normalized_horizontal_emittance",
                 "horizontal_emittance",
                 "alpha_x",
                 "beta_x",
+                "normalized_vertical_emittance",
                 "vertical_emittance",
                 "alpha_y",
                 "beta_y",
             )
         }
+
+    @property
+    def normalized_horizontal_emittance(self):
+        return self.beam.emittance.normalized_horizontal_emittance
+    
+    @property
+    def normalized_vertical_emittance(self):
+        return self.beam.emittance.normalized_vertical_emittance
 
     @property
     def horizontal_emittance(self):
