@@ -82,15 +82,39 @@ def read_SDDS_field_file(self, filename: str, field_type: str):
     if field_type in ["LongitudinalWake", "3DWake", "TransverseWake"]:
         for val in elegantObject._columns.values():
             if val.unit == "m":
-                setattr(self, "z", FieldParameter(name="z", value=UnitValue(val.data, units=val.unit)))
+                setattr(
+                    self,
+                    "z",
+                    FieldParameter(name="z", value=UnitValue(val.data, units=val.unit)),
+                )
             elif val.unit == "s":
-                setattr(self, "z", FieldParameter(name="z", value=UnitValue(val.data / speed_of_light, units="m")))
+                setattr(
+                    self,
+                    "z",
+                    FieldParameter(
+                        name="z", value=UnitValue(val.data / speed_of_light, units="m")
+                    ),
+                )
             elif val.unit == "V/C":
-                setattr(self, "Wz", FieldParameter(name="Wz", value=UnitValue(val.data, units="V/C")))
+                setattr(
+                    self,
+                    "Wz",
+                    FieldParameter(name="Wz", value=UnitValue(val.data, units="V/C")),
+                )
             elif val.unit == "V/C/m":
-                setattr(self, "Wx", FieldParameter(name="Wx", value=UnitValue(val.data, units="V/C/m")))
-                setattr(self, "Wy", FieldParameter(name="Wy", value=UnitValue(val.data, units="V/C/m")))
+                setattr(
+                    self,
+                    "Wx",
+                    FieldParameter(name="Wx", value=UnitValue(val.data, units="V/C/m")),
+                )
+                setattr(
+                    self,
+                    "Wy",
+                    FieldParameter(name="Wy", value=UnitValue(val.data, units="V/C/m")),
+                )
             else:
                 raise ValueError(f"Unit {val.unit} not recognised in {filename}")
     else:
-        raise NotImplementedError(f"{field_type} loading not implemented for SDDS files")
+        raise NotImplementedError(
+            f"{field_type} loading not implemented for SDDS files"
+        )

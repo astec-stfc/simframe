@@ -7,6 +7,7 @@ import re
 
 d = ",!?/&-:;@'\n \t"
 
+
 def write_opal_field_file(
     self,
     frequency: float = None,
@@ -86,7 +87,14 @@ def write_opal_field_file(
                 f.write(" ".join([str(x) for x in d]) + "\n")
     return opal_file
 
-def read_opal_field_file(self, filename: str, field_type: str, cavity_type: str | None =  None, frequency: float | None = None):
+
+def read_opal_field_file(
+    self,
+    filename: str,
+    field_type: str,
+    cavity_type: str | None = None,
+    frequency: float | None = None,
+):
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     if "Electro" in field_type:
@@ -101,35 +109,67 @@ def read_opal_field_file(self, filename: str, field_type: str, cavity_type: str 
     if field_type == "2DElectroDynamic":
         with open(filename) as f:
             rl = f.readlines()
-            setattr(self, "length", float(rl[1].split(' ')[1]) * 1e-2)
+            setattr(self, "length", float(rl[1].split(" ")[1]) * 1e-2)
             setattr(self, "frequency", float(rl[2]) * 1e6)
-            setattr(self, "radius", float(rl[3].split(' ')[1]) * 1e-2)
+            setattr(self, "radius", float(rl[3].split(" ")[1]) * 1e-2)
             setattr(self, "orientation", re.split("[" + "\\".join(d) + "]", rl[0]))
         fdat = np.loadtxt(filename, skiprows=4)
-        setattr(self, "Ez", FieldParameter(name="Ez", value=UnitValue(fdat[::, 0], units="V/m")))
-        setattr(self, "Er", FieldParameter(name="Er", value=UnitValue(fdat[::, 1], units="V/m")))
-        setattr(self, "Ex", FieldParameter(name="Ex", value=UnitValue(fdat[::, 2], units="V/m")))
-        setattr(self, "Br", FieldParameter(name="Br", value=UnitValue(fdat[::, 3], units="T")))
+        setattr(
+            self,
+            "Ez",
+            FieldParameter(name="Ez", value=UnitValue(fdat[::, 0], units="V/m")),
+        )
+        setattr(
+            self,
+            "Er",
+            FieldParameter(name="Er", value=UnitValue(fdat[::, 1], units="V/m")),
+        )
+        setattr(
+            self,
+            "Ex",
+            FieldParameter(name="Ex", value=UnitValue(fdat[::, 2], units="V/m")),
+        )
+        setattr(
+            self,
+            "Br",
+            FieldParameter(name="Br", value=UnitValue(fdat[::, 3], units="T")),
+        )
     elif field_type == "1DMagnetoStatic":
         with open(filename) as f:
             rl = f.readlines()
-            if rl[0].split(' ')[0] not in ["1DMagnetoStatic"]:
-                raise NotImplementedError(f"{rl[0].split(' ')[0]} field type not implemented for OPAL fields")
-            setattr(self, "fourier", int(rl[0].split(' ')[1]))
-            setattr(self, "radius", float(rl[2].split(' ')[1]) * 1e-2)
-            zstart = float(rl[1].split(' ')[0])
-            zend = float(rl[1].split(' ')[1])
+            if rl[0].split(" ")[0] not in ["1DMagnetoStatic"]:
+                raise NotImplementedError(
+                    f"{rl[0].split(' ')[0]} field type not implemented for OPAL fields"
+                )
+            setattr(self, "fourier", int(rl[0].split(" ")[1]))
+            setattr(self, "radius", float(rl[2].split(" ")[1]) * 1e-2)
+            zstart = float(rl[1].split(" ")[0])
+            zend = float(rl[1].split(" ")[1])
         fdat = np.loadtxt(filename, skiprows=3)
         zvals = np.linspace(zstart, zend, len(fdat))
         setattr(self, "z", FieldParameter(name="z", value=UnitValue(zvals, units="m")))
-        setattr(self, "Bz", FieldParameter(name="Bz", value=UnitValue(fdat / max(fdat), units="T")))
+        setattr(
+            self,
+            "Bz",
+            FieldParameter(name="Bz", value=UnitValue(fdat / max(fdat), units="T")),
+        )
     elif field_type == "1DElectroDynamic":
         with open(filename) as f:
             rl = f.readlines()
-            if rl[0].split(' ')[0] not in ["ASTRADynamic"]:
-                raise NotImplementedError(f"{rl[0].split(' ')[0]} field type not implemented for OPAL fields")
-            setattr(self, "fourier", int(rl[0].split(' ')[1]))
+            if rl[0].split(" ")[0] not in ["ASTRADynamic"]:
+                raise NotImplementedError(
+                    f"{rl[0].split(' ')[0]} field type not implemented for OPAL fields"
+                )
+            setattr(self, "fourier", int(rl[0].split(" ")[1]))
             setattr(self, "frequency", float(rl[1]) * 1e6)
         fdat = np.loadtxt(filename, skiprows=2)
-        setattr(self, "z", FieldParameter(name="z", value=UnitValue(fdat[::,0], units="m")))
-        setattr(self, "Ez", FieldParameter(name="Ez", value=UnitValue(fdat[::,1] / max(fdat[::,1]), units="V/m")))
+        setattr(
+            self, "z", FieldParameter(name="z", value=UnitValue(fdat[::, 0], units="m"))
+        )
+        setattr(
+            self,
+            "Ez",
+            FieldParameter(
+                name="Ez", value=UnitValue(fdat[::, 1] / max(fdat[::, 1]), units="V/m")
+            ),
+        )

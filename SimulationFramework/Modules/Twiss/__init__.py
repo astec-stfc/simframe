@@ -3,6 +3,7 @@ Simframe Twiss Module
 
 Twiss module for reading and manipulating twiss parameters from various simulation codes.
 """
+
 import os
 import math
 import warnings
@@ -51,11 +52,13 @@ code_signatures = [
     ["ocelot", "_twiss.npz"],
 ]
 
+
 class twissParameter(BaseModel):
     """
     A class to represent a twiss parameter with its name, unit, value, label, and data type.
     This class is used to store and validate twiss parameters in the simulation framework.
     """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str
@@ -81,29 +84,30 @@ class initialTwiss(BaseModel):
     """
     A class to represent the initial twiss parameters of a beam.
     """
-    alpha_x:    float
+
+    alpha_x: float
     """The alpha parameter in the x-direction."""
-    beta_x:     float
+    beta_x: float
     """The beta parameter in the x-direction."""
-    alpha_y:    float
+    alpha_y: float
     """The alpha parameter in the y-direction."""
-    beta_y:     float
+    beta_y: float
     """The beta parameter in the y-direction."""
-    ex:         float
+    ex: float
     """The horizontal emittance."""
-    ey:         float
+    ey: float
     """The vertical emittance."""
-    enx:        float
+    enx: float
     """The normalized horizontal emittance."""
-    eny:        float
+    eny: float
     """The normalized vertical emittance."""
-    eta_x:      float
+    eta_x: float
     """The horizontal dispersion."""
-    eta_xp:     float
+    eta_xp: float
     """The horizontal dispersion derivative."""
-    eta_y:      float
+    eta_y: float
     """The vertical dispersion."""
-    eta_yp:     float
+    eta_yp: float
     """The vertical dispersion derivative."""
 
 
@@ -113,10 +117,14 @@ class twiss(BaseModel):
     This class includes various twiss parameters such as position, time, kinetic energy,
     momentum, emittance, beta functions, and dispersion parameters.
 
-    It also provides methods to read twiss data from different simulation codes (e.g., ELEGANT, GPT, ASTRA, Ocelot),
-    save twiss data to HDF5 files, and perform various operations such as interpolation, sorting, and extracting values.
-    The class is designed to be flexible and extensible, allowing for the addition of new parameters and methods as needed.
+    It also provides methods to read twiss data from different simulation codes
+    (e.g., ELEGANT, GPT, ASTRA, Ocelot),
+    save twiss data to HDF5 files, and perform various operations such as interpolation,
+    sorting, and extracting values.
+    The class is designed to be flexible and extensible, allowing for the addition of
+    new parameters and methods as needed.
     """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     z: twissParameter = twissParameter(name="z", unit="m")
@@ -127,7 +135,9 @@ class twiss(BaseModel):
     """The kinetic energy of the beam."""
     gamma: twissParameter = twissParameter(name="gamma", unit="")
     """The Lorentz factor of the beam, defined as E/mc^2."""
-    mean_gamma: twissParameter = twissParameter(name="mean_gamma", unit="", label=r"|gamma|")
+    mean_gamma: twissParameter = twissParameter(
+        name="mean_gamma", unit="", label=r"|gamma|"
+    )
     """The mean Lorentz factor of the beam, averaged over the beam distribution."""
     cp: twissParameter = twissParameter(name="cp", unit="eV/c")
     """The momentum of the beam in eV/c."""
@@ -197,13 +207,17 @@ class twiss(BaseModel):
     """The horizontal dispersion of the beam."""
     eta_xp: twissParameter = twissParameter(name="eta_xp", unit="mrad")
     """The horizontal dispersion derivative of the beam."""
-    eta_y: twissParameter = twissParameter(name='eta_y', unit='m')
+    eta_y: twissParameter = twissParameter(name="eta_y", unit="m")
     """The vertical dispersion of the beam."""
-    eta_yp: twissParameter = twissParameter(name='eta_yp', unit='mrad')
+    eta_yp: twissParameter = twissParameter(name="eta_yp", unit="mrad")
     """The vertical dispersion derivative of the beam."""
-    element_name: twissParameter = twissParameter(name="element_name", unit="", dtype="U")
+    element_name: twissParameter = twissParameter(
+        name="element_name", unit="", dtype="U"
+    )
     """The name of the element in the simulation."""
-    lattice_name: twissParameter = twissParameter(name="lattice_name", unit="", dtype="U")
+    lattice_name: twissParameter = twissParameter(
+        name="lattice_name", unit="", dtype="U"
+    )
     """The name of the lattice in the simulation."""
     ecnx: twissParameter = twissParameter(name="ecnx", unit="m-mrad")
     """The normalized horizontal emittance of the beam, in m-mrad."""
@@ -245,16 +259,14 @@ class twiss(BaseModel):
     """A dictionary to store ELEGANT data."""
 
     def __init__(
-            self,
-            rest_mass=None,
+        self,
+        rest_mass=None,
     ):
         twiss.rest_mass = rest_mass
         super(
             twiss,
             self,
-        ).__init__(
-            rest_mass=rest_mass
-        )
+        ).__init__(rest_mass=rest_mass)
 
     @model_validator(mode="before")
     def validate_fields(cls, values):
@@ -330,12 +342,7 @@ class twiss(BaseModel):
             return hdf5.read_HDF5_twiss_file(self, *args, **kwargs)
 
     def __repr__(self):
-        return repr(
-            {
-                k: getattr(self, k)
-                for k in self.model_fields_set
-            }
-        )
+        return repr({k: getattr(self, k) for k in self.model_fields_set})
 
     def stat(self, key) -> twissParameter:
         """
@@ -358,13 +365,17 @@ class twiss(BaseModel):
             value: The value to find the nearest index for in the array.
 
         Returns:
-            The index of the nearest value in the array. If the value is exactly equal to an element, it returns that index.
+            The index of the nearest value in the array.
+            If the value is exactly equal to an element, it returns that index.
             If the value is less than the first element, it returns 0.
             If the value is greater than the last element, it returns the last index.
         """
         idx = np.searchsorted(array, value, side="left")
-        if idx > 0 and (idx == len(array) or math.fabs(value - array[idx-1]) < math.fabs(value - array[idx])):
-            return idx-1
+        if idx > 0 and (
+            idx == len(array)
+            or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])
+        ):
+            return idx - 1
         else:
             return idx
 
@@ -379,15 +390,19 @@ class twiss(BaseModel):
 
         """
         idx = np.searchsorted(array, value, side="left")
-        if idx > 0 and (idx == len(array) or math.fabs(value - array[idx-1]) < math.fabs(value - array[idx])):
-            return array[idx-1]
+        if idx > 0 and (
+            idx == len(array)
+            or math.fabs(value - array[idx - 1]) < math.fabs(value - array[idx])
+        ):
+            return array[idx - 1]
         else:
             return array[idx]
 
     def reset_dicts(self) -> None:
         """
         Reset the twiss parameters to their initial state.
-        This method initializes all twiss parameters to their default values and clears the elegantTwiss dictionary.
+        This method initializes all twiss parameters to their default values
+        and clears the elegantTwiss dictionary.
         This is useful for starting fresh with a new set of twiss parameters or when reloading data.
 
         Returns:
@@ -397,14 +412,18 @@ class twiss(BaseModel):
         self.sddsindex = 0
         for name in self.model_fields:
             if isinstance(getattr(self, name), twissParameter):
-                setattr(self, name, twissParameter(name=name, unit=getattr(self, name).unit))
+                setattr(
+                    self, name, twissParameter(name=name, unit=getattr(self, name).unit)
+                )
         self.elegantTwiss = {}
 
     def sort(self, key="z", reverse=False) -> None:
         """
         Sort the twiss parameters based on a specified key.
-        This method sorts the twiss parameters in ascending order by default, or in descending order if `reverse` is set to True.
-        The sorting is done based on the values of the specified key, which should be one of the twiss parameters (e.g., 'z', 'beta_x', etc.).
+        This method sorts the twiss parameters in ascending order by default,
+        or in descending order if `reverse` is set to True.
+        The sorting is done based on the values of the specified key,
+        which should be one of the twiss parameters (e.g., 'z', 'beta_x', etc.).
         If the key is not found, it raises an AttributeError.
 
         Args:
@@ -440,7 +459,8 @@ class twiss(BaseModel):
             None
         """
         newval = UnitValue(
-            np.concatenate([getattr(self, array), data]), units=getattr(self, array).units
+            np.concatenate([getattr(self, array), data]),
+            units=getattr(self, array).units,
         )
         setattr(self, array, newval)
 
@@ -507,10 +527,11 @@ class twiss(BaseModel):
             end: float
 
         Returns:
-            np.ndarray: An array of values from the specified twiss parameter array between the start and end z positions.
+            np.ndarray: An array of values from the specified twiss parameter array
+            between the start and end z positions.
         """
-        startidx = self.find_nearest_idx(getattr(self, 'z'), start)
-        endidx = self.find_nearest_idx(getattr(self, 'z'), end) + 1
+        startidx = self.find_nearest_idx(getattr(self, "z"), start)
+        endidx = self.find_nearest_idx(getattr(self, "z"), end) + 1
         return getattr(self, array)[startidx:endidx]
 
     def get_parameter_at_z(self, param, z, tol=1e-3) -> float:
@@ -538,7 +559,7 @@ class twiss(BaseModel):
                 return getattr(self, param).val[idx]
             else:
                 # print('interpolate!', z, self['z'])
-                return self.interpolate(z=z.val, value=param, index='z')
+                return self.interpolate(z=z.val, value=param, index="z")
 
     def get_parameter_at_element(self, param, element_name) -> float | None:
         """
@@ -575,7 +596,9 @@ class twiss(BaseModel):
                 pass
         return twissdict
 
-    def get_twiss_at_element(self, element_name, before=False) -> Dict[str, float] | None:
+    def get_twiss_at_element(
+        self, element_name, before=False
+    ) -> Dict[str, float] | None:
         """
         Get the twiss parameters at a specific element name.
 
@@ -585,7 +608,8 @@ class twiss(BaseModel):
 
         Returns:
             dict or None: A dictionary of twiss parameters at the specified element name.
-            If the element name is found, it returns the corresponding twiss parameters; otherwise, it returns None.
+            If the element name is found, it returns the corresponding twiss parameters;
+            otherwise, it returns None.
             If `before` is True, it returns the parameters before the specified element.
         """
         if element_name in self.element_name:
@@ -619,8 +643,10 @@ class twiss(BaseModel):
                 return self.get_twiss_dict(idx)
             else:
                 twissdict = {}
-                for param in [k for k in self.model_fields if getattr(self, k).dtype == 'f']:
-                    twissdict[param] = self.interpolate(z=z, value=param, index='z')
+                for param in [
+                    k for k in self.model_fields if getattr(self, k).dtype == "f"
+                ]:
+                    twissdict[param] = self.interpolate(z=z, value=param, index="z")
                 return twissdict
 
     if use_matplotlib:

@@ -1,10 +1,11 @@
 """
 Simframe Fields Module
 
-This module defines the base class and utilities for representing electromagnetic fields, including RF structures,
-wakefields and magnets.
+This module defines the base class and utilities for representing electromagnetic fields,
+including RF structures, wakefields and magnets.
 
-Functions are provided to read in existing files, and to write them in the format required for specific codes.
+Functions are provided to read in existing files, and to write them in the format
+required for specific codes.
 """
 
 import os
@@ -88,6 +89,7 @@ class FieldParameter(BaseModel):
         name (str): The name of the field parameter.
         value (UnitValue | None): The value of the field parameter, which can be a UnitValue or None.
     """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str
@@ -96,13 +98,17 @@ class FieldParameter(BaseModel):
 
 class field(BaseModel):
     """
-    Base class for representing electromagnetic fields, including RF structures, wakefields, and magnets.
-
-    This class provides methods to read and write field files in various formats, including ASTRA, SDDS, GDF, and OPAL.
-    It also includes properties for accessing field parameters such as position, electric and magnetic fields, and wakefields.
-    The class supports validation of field types and parameters, and allows for the initialization of field objects with
-    specific attributes such as filename, field type, frequency, and cavity type.
+    Base class for representing electromagnetic fields, including RF structures, wakefields,
+    and magnets.
+    This class provides methods to read and write field files in various formats,
+    including ASTRA, SDDS, GDF, and OPAL.
+    It also includes properties for accessing field parameters such as position, electric and
+    magnetic fields, and wakefields.
+    The class supports validation of field types and parameters, and allows for the
+    initialization of field objects with specific attributes such as filename, field type,
+    frequency, and cavity type.
     """
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     x: FieldParameter = None
@@ -168,9 +174,11 @@ class field(BaseModel):
     end_cell_z: float | None = None
     """Ending position of the cell in the Z direction, required for TravellingWave cavities."""
     mode_numerator: float | None = None
-    """Numerator for the mode of the TravellingWave cavity. For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
+    """Numerator for the mode of the TravellingWave cavity. 
+    For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
     mode_denominator: float | None = None
-    """Denominator for the mode of the TravellingWave cavity. For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
+    """Denominator for the mode of the TravellingWave cavity. 
+    For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
     orientation: str | None = None
     """Orientation of the field, e.g., 'horizontal', 'vertical', etc."""
     n_cells: int | float | None = None
@@ -187,9 +195,9 @@ class field(BaseModel):
         **kwargs,
     ):
         field.filename = filename
-        field.field_type = field_type,
-        field.frequency = frequency,
-        field.cavity_type = cavity_type,
+        field.field_type = (field_type,)
+        field.frequency = (frequency,)
+        field.cavity_type = (cavity_type,)
         super(
             field,
             self,
@@ -202,7 +210,12 @@ class field(BaseModel):
             **kwargs,
         )
         if filename is not None:
-            self.read_field_file(filename, field_type=field_type, frequency=frequency, cavity_type=cavity_type)
+            self.read_field_file(
+                filename,
+                field_type=field_type,
+                frequency=frequency,
+                cavity_type=cavity_type,
+            )
 
     @model_validator(mode="before")
     def validate_fields(cls, values):
@@ -258,19 +271,28 @@ class field(BaseModel):
             return abs(self.z.value.val / speed_of_light)
         return self.t.value.val
 
-    def read_field_file(self, filename: str, field_type: str | None = None, cavity_type: str | None = None, frequency: float | None = None) -> None:
+    def read_field_file(
+        self,
+        filename: str,
+        field_type: str | None = None,
+        cavity_type: str | None = None,
+        frequency: float | None = None,
+    ) -> None:
         """
         Read a field file and populate the field parameters based on the file type.
         This method supports various file formats including HDF5, ASTRA, SDDS, GDF, and OPAL.
 
         Args:
             filename: str: The path to the field file to be read.
-            field_type: fieldtype | None: The type of the field, e.g., '1DElectroStatic', '1DMagnetoStatic', etc.
-            cavity_type: cavitytype | None: The type of the cavity, e.g., 'StandingWave', 'TravellingWave'.
+            field_type: fieldtype | None: The type of the field,
+            e.g., '1DElectroStatic', '1DMagnetoStatic', etc.
+            cavity_type: cavitytype | None: The type of the cavity,
+             e.g., 'StandingWave', 'TravellingWave'.
             frequency: float | None: The frequency of the field, if applicable.
 
         Returns:
-            None: The method modifies the field object in place, populating its parameters based on the file content.
+            None: The method modifies the field object in place, populating its parameters
+            based on the file content.
         """
         fext = os.path.splitext(os.path.basename(filename))[-1]
         if fext == ".hdf5":
@@ -278,35 +300,58 @@ class field(BaseModel):
         else:
             if fext.lower() in [".astra", ".dat"]:
                 # print('Field: read_field_file: astra', filename, fext.lower())
-                astra.read_astra_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+                astra.read_astra_field_file(
+                    self,
+                    filename,
+                    field_type=field_type,
+                    cavity_type=cavity_type,
+                    frequency=frequency,
+                )
             elif fext.lower() in [".sdds"]:
                 # print('Field: read_field_file: SDDS', filename, fext.lower())
                 sdds.read_SDDS_field_file(self, filename, field_type=field_type)
             elif fext.lower() in [".gdf"]:
                 # print('Field: read_field_file: GPT', filename, fext.lower())
-                gdf.read_gdf_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+                gdf.read_gdf_field_file(
+                    self,
+                    filename,
+                    field_type=field_type,
+                    cavity_type=cavity_type,
+                    frequency=frequency,
+                )
             elif fext.lower() in [".opal"]:
                 # print('Field: read_field_file: opal', filename, fext.lower())
-                opal.read_opal_field_file(self, filename, field_type=field_type, cavity_type=cavity_type, frequency=frequency)
+                opal.read_opal_field_file(
+                    self,
+                    filename,
+                    field_type=field_type,
+                    cavity_type=cavity_type,
+                    frequency=frequency,
+                )
             self.read = True
 
-    def _output_filename(self, extension: str = ".hdf5", location: str | None = None) -> str:
+    def _output_filename(
+        self, extension: str = ".hdf5", location: str | None = None
+    ) -> str:
         """
         Generate an output filename based on the current field file's name and the specified extension.
-        If a location is provided, it uses that as the base directory; otherwise, it defaults to the directory of the current field file.
+        If a location is provided, it uses that as the base directory;
+        otherwise, it defaults to the directory of the current field file.
         The base filename is derived from the current field file's name, and the extension is appended to it.
 
         Args:
             extension: str: The file extension to be used for the output file. Default is ".hdf5".
-            location: str | None: Optional; if provided, it specifies the directory where the output file will be saved.
+            location: str | None: Optional; if provided, it specifies the
+            directory where the output file will be saved.
 
         Returns:
-            str: The relative path to the output file, constructed from the specified location or the current field file's directory.
+            str: The relative path to the output file, constructed from the
+            specified location or the current field file's directory.
         """
         if location is not None:
             _output_location = os.path.dirname(os.path.abspath(location))
         else:
-            if not hasattr(self, '_output_location'):
+            if not hasattr(self, "_output_location"):
                 _output_location = os.path.dirname(os.path.dirname(self.filename))
             else:
                 _output_location = self._output_location
@@ -321,10 +366,12 @@ class field(BaseModel):
         If the field file has not been read in, it raises a warning and returns None.
 
         Args:
-            code: str: The code for which the field data is to be generated. Supported codes include 'astra' and 'ocelot'.
+            code: str: The code for which the field data is to be generated.
+            Supported codes include 'astra' and 'ocelot'.
 
         Returns:
-            str | None: The generated field data in the format required by the specified code, or None if the field file has not been read.
+            str | None: The generated field data in the format required by the specified code,
+            or None if the field file has not been read.
         """
         if not self.read:
             warnings.warn(
@@ -353,11 +400,14 @@ class field(BaseModel):
         Write the field data to a file in the format required by the specified code.
         This method supports writing field data for ASTRA, SDDS, GDF, and OPAL.
         If the field file has not been read in, it raises a warning and returns None.
-        If a location is provided, it uses that as the base directory; otherwise, it defaults to the directory of the current field file.
+        If a location is provided, it uses that as the base directory;
+        otherwise, it defaults to the directory of the current field file.
 
         Args:
-            code: str: The code for which the field data is to be written. Supported codes include 'astra', 'sdds', 'opal', and 'gdf'.
-            location: str | None: Optional; if provided, it specifies the directory where the output file will be saved.
+            code: str: The code for which the field data is to be written.
+            Supported codes include 'astra', 'sdds', 'opal', and 'gdf'.
+            location: str | None: Optional; if provided, it specifies the directory
+            where the output file will be saved.
 
         Returns:
             str | None: The path to the written field file, or None if the field file has not been read.

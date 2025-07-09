@@ -70,24 +70,34 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.ez.val = np.append(self.ez.val, gdfbeamdata.nemizrms / gdfbeamdata.avgG)
         self.beta_x.val = np.append(self.beta_x.val, gdfbeamdata.CSbetax)
         self.alpha_x.val = np.append(self.alpha_x.val, gdfbeamdata.CSalphax)
-        self.gamma_x.val = np.append(self.gamma_x.val, (1 + gdfbeamdata.CSalphax ** 2) / gdfbeamdata.CSbetax)
+        self.gamma_x.val = np.append(
+            self.gamma_x.val, (1 + gdfbeamdata.CSalphax**2) / gdfbeamdata.CSbetax
+        )
         self.beta_y.val = np.append(self.beta_y.val, gdfbeamdata.CSbetay)
         self.alpha_y.val = np.append(self.alpha_y.val, gdfbeamdata.CSalphay)
-        self.gamma_y.val = np.append(self.gamma_y.val, (1 + gdfbeamdata.CSalphay ** 2) / gdfbeamdata.CSbetay)
+        self.gamma_y.val = np.append(
+            self.gamma_y.val, (1 + gdfbeamdata.CSalphay**2) / gdfbeamdata.CSbetay
+        )
         self.beta_z.val = np.append(self.beta_z.val, np.zeros(len(gdfbeamdata.stdx)))
         self.alpha_z.val = np.append(self.alpha_z.val, np.zeros(len(gdfbeamdata.stdx)))
         self.gamma_z.val = np.append(self.gamma_z.val, np.zeros(len(gdfbeamdata.stdx)))
         self.sigma_x.val = np.append(self.sigma_x.val, gdfbeamdata.stdx)
         self.sigma_y.val = np.append(self.sigma_y.val, gdfbeamdata.stdy)
-        self.sigma_xp.val = np.append(self.sigma_xp.val, gdfbeamdata.stdBx / gdfbeamdata.avgBz)
-        self.sigma_yp.val = np.append(self.sigma_yp.val, gdfbeamdata.stdx / gdfbeamdata.avgBz)
+        self.sigma_xp.val = np.append(
+            self.sigma_xp.val, gdfbeamdata.stdBx / gdfbeamdata.avgBz
+        )
+        self.sigma_yp.val = np.append(
+            self.sigma_yp.val, gdfbeamdata.stdx / gdfbeamdata.avgBz
+        )
         self.mean_x.val = np.append(self.mean_x.val, gdfbeamdata.avgx)
         self.mean_y.val = np.append(self.mean_y.val, gdfbeamdata.avgy)
         beta = np.sqrt(1 - (gamma**-2))
         if hasattr(gdfbeamdata, "stdt"):
             self.sigma_t.val = np.append(self.sigma_t.val, gdfbeamdata.stdt)
         else:
-            self.sigma_t.val = np.append(self.sigma_t.val, gdfbeamdata.stdz / (beta * constants.speed_of_light))
+            self.sigma_t.val = np.append(
+                self.sigma_t.val, gdfbeamdata.stdz / (beta * constants.speed_of_light)
+            )
         if hasattr(gdfbeamdata, "avgt"):
             self.t.val = np.append(self.t.val, gdfbeamdata.avgt)
         else:
@@ -98,25 +108,47 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
             self.sigma_cp.val,
             (gdfbeamdata.stdG / gdfbeamdata.avgG) * cp / constants.elementary_charge,
         )
-        self.sigma_p.val = np.append(self.sigma_p.val, (gdfbeamdata.stdG / gdfbeamdata.avgG))
+        self.sigma_p.val = np.append(
+            self.sigma_p.val, (gdfbeamdata.stdG / gdfbeamdata.avgG)
+        )
         self.mux.val = np.append(self.mux.val, np.zeros(len(gdfbeamdata.stdx)))
         self.muy.val = np.append(self.muy.val, np.zeros(len(gdfbeamdata.stdx)))
         self.eta_x.val = np.append(self.eta_x.val, np.zeros(len(gdfbeamdata.stdx)))
         self.eta_xp.val = np.append(self.eta_xp.val, np.zeros(len(gdfbeamdata.stdx)))
         self.eta_y.val = np.append(self.eta_y.val, np.zeros(len(gdfbeamdata.stdy)))
         self.eta_yp.val = np.append(self.eta_yp.val, np.zeros(len(gdfbeamdata.stdy)))
-        self.element_name = np.append(self.element_name.val, np.full(len(gdfbeamdata.stdx), ""))
-        self.lattice_name.val = np.append(self.lattice_name.val, np.full(len(gdfbeamdata.stdx), lattice_name))
+        self.element_name = np.append(
+            self.element_name.val, np.full(len(gdfbeamdata.stdx), "")
+        )
+        self.lattice_name.val = np.append(
+            self.lattice_name.val, np.full(len(gdfbeamdata.stdx), lattice_name)
+        )
         # ## BEAM parameters
         self.ecnx.val = np.append(self.ecnx.val, np.zeros(len(gdfbeamdata.stdx)))
         self.ecny.val = np.append(self.ecny.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.eta_x_beam.val = np.append(self.eta_x_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.eta_xp_beam.val = np.append(self.eta_xp_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.eta_y_beam.val = np.append(self.eta_y_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.eta_yp_beam.val = np.append(self.eta_yp_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.beta_x_beam.val = np.append(self.beta_x_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.beta_y_beam.val = np.append(self.beta_y_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.alpha_x_beam.val = np.append(self.alpha_x_beam.val, np.zeros(len(gdfbeamdata.stdx)))
-        self.alpha_y_beam = np.append(self.alpha_y_beam.val, np.zeros(len(gdfbeamdata.stdx)))
+        self.eta_x_beam.val = np.append(
+            self.eta_x_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.eta_xp_beam.val = np.append(
+            self.eta_xp_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.eta_y_beam.val = np.append(
+            self.eta_y_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.eta_yp_beam.val = np.append(
+            self.eta_yp_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.beta_x_beam.val = np.append(
+            self.beta_x_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.beta_y_beam.val = np.append(
+            self.beta_y_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.alpha_x_beam.val = np.append(
+            self.alpha_x_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
+        self.alpha_y_beam = np.append(
+            self.alpha_y_beam.val, np.zeros(len(gdfbeamdata.stdx))
+        )
         self.cp_eV = self.cp
         self.sigma_cp_eV = self.sigma_cp

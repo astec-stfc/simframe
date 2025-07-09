@@ -69,14 +69,20 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     ez = ezn / gamma
     self.ez.val = np.append(self.ez.val, ez)
     self.beta_x.val = np.append(self.beta_x.val, rms_x**2 / ex)
-    self.gamma_x.val = np.append(self.gamma_x.val, rms_xp ** 2 / ex)
-    self.alpha_x.val = np.append(self.alpha_x.val, (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex)
-    self.beta_y.val = np.append(self.beta_y.val, rms_y ** 2 / ey)
-    self.gamma_y.val = np.append(self.gamma_y.val, rms_yp ** 2 / ey)
-    self.alpha_y.val = np.append(self.alpha_y.val, (-1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey)
-    self.beta_z.val = np.append(self.beta_z.val, rms_z ** 2 / ez)
-    self.gamma_z.val = np.append(self.gamma_z.val, rms_e ** 2 / ez)
-    self.alpha_z.val = np.append(self.alpha_z.val, (-1 * np.sign(mean_zep) * rms_z * rms_e) / ez)
+    self.gamma_x.val = np.append(self.gamma_x.val, rms_xp**2 / ex)
+    self.alpha_x.val = np.append(
+        self.alpha_x.val, (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex
+    )
+    self.beta_y.val = np.append(self.beta_y.val, rms_y**2 / ey)
+    self.gamma_y.val = np.append(self.gamma_y.val, rms_yp**2 / ey)
+    self.alpha_y.val = np.append(
+        self.alpha_y.val, (-1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey
+    )
+    self.beta_z.val = np.append(self.beta_z.val, rms_z**2 / ez)
+    self.gamma_z.val = np.append(self.gamma_z.val, rms_e**2 / ez)
+    self.alpha_z.val = np.append(
+        self.alpha_z.val, (-1 * np.sign(mean_zep) * rms_z * rms_e) / ez
+    )
     self.sigma_x.val = np.append(self.sigma_x.val, rms_x)
     self.sigma_xp.val = np.append(self.sigma_xp.val, rms_xp)
     self.sigma_y.val = np.append(self.sigma_y.val, rms_y)
@@ -85,11 +91,13 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.mean_x.val = np.append(self.mean_x.val, mean_x)
     self.mean_y.val = np.append(self.mean_y.val, mean_y)
     beta = np.sqrt(1 - (gamma**-2))
-    self.sigma_t.val = np.append(self.sigma_t.val, rms_z / (beta * constants.speed_of_light))
+    self.sigma_t.val = np.append(
+        self.sigma_t.val, rms_z / (beta * constants.speed_of_light)
+    )
     self.sigma_p.val = np.append(self.sigma_p.val, (rms_e / (e_kin + self.E0_eV)))
     self.sigma_cp.val = np.append(self.sigma_cp.val, (0.5e6 * (rms_e / e_kin) * cp))
     self.mux.val = np.append(self.mux.val, cumtrapz(x=z, y=1 / (rms_x**2 / ex)))
-    self.muy.val = np.append(self.muy.val, cumtrapz(x=z, y=1 / (rms_y ** 2 / ey)))
+    self.muy.val = np.append(self.muy.val, cumtrapz(x=z, y=1 / (rms_y**2 / ey)))
     self.eta_x.val = np.append(self.eta_x.val, np.zeros(len(z)))
     self.eta_xp.val = np.append(self.eta_xp.val, np.zeros(len(z)))
     self.eta_y.val = np.append(self.eta_y.val, np.zeros(len(z)))
@@ -104,7 +112,11 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.element_name.val = np.append(self.element_name.val, np.full(len(z), ""))
     self.beta_x_beam.val = np.append(self.beta_x_beam.val, rms_x**2 / ex)
     self.beta_y_beam.val = np.append(self.beta_y_beam.val, rms_y**2 / ey)
-    self.alpha_x_beam.val = np.append(self.alpha_x_beam.val, (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex)
-    self.alpha_y_beam.val = np.append(self.alpha_y_beam.val, (1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey)
+    self.alpha_x_beam.val = np.append(
+        self.alpha_x_beam.val, (-1 * np.sign(mean_xxp) * rms_x * rms_xp) / ex
+    )
+    self.alpha_y_beam.val = np.append(
+        self.alpha_y_beam.val, (1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey
+    )
     self.cp_eV.val = self.cp.val
     self.sigma_cp_eV.val = self.sigma_cp.val

@@ -63,9 +63,13 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.mean_y.val = np.append(self.mean_y.val, fdat["y"])
     beta = np.sqrt(1 - (gamma**-2))
     self.t.val = np.append(self.t.val, fdat["s"] / (beta * constants.speed_of_light))
-    self.sigma_z.val = np.append(self.sigma_z.val, fdat["tautau"] * (beta * constants.speed_of_light))
+    self.sigma_z.val = np.append(
+        self.sigma_z.val, fdat["tautau"] * (beta * constants.speed_of_light)
+    )
     # self.append('sigma_cp', elegantData['Sdelta'] * cp )
-    self.sigma_cp.val = np.append(self.sigma_cp.val, fdat["pp"] * cp / constants.elementary_charge)
+    self.sigma_cp.val = np.append(
+        self.sigma_cp.val, fdat["pp"] * cp / constants.elementary_charge
+    )
     # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
     self.sigma_p.val = np.append(self.sigma_p.val, fdat["pp"])
     self.mux.val = np.append(self.mux.val, fdat["mux"])
@@ -75,7 +79,9 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.eta_y.val = np.append(self.eta_y.val, fdat["Dy"])
     self.eta_yp.val = np.append(self.eta_yp.val, fdat["Dyp"])
     self.element_name.val = np.append(self.element_name.val, np.zeros(len(fdat["s"])))
-    self.lattice_name.val = np.append(self.lattice_name.val, np.zeros(len(fdat["s"])), lattice_name)
+    self.lattice_name.val = np.append(
+        self.lattice_name.val, np.zeros(len(fdat["s"])), lattice_name
+    )
     # ## BEAM parameters
     self.ecnx.val = np.append(self.ecnx.val, fdat["emit_xn"])
     self.ecny.val = np.append(self.ecny.val, fdat["emit_yn"])
@@ -83,10 +89,18 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.eta_xp_beam.val = np.append(self.eta_xp_beam.val, fdat["Dxp"])
     self.eta_y_beam.val = np.append(self.eta_y_beam.val, fdat["Dy"])
     self.eta_yp_beam.val = np.append(self.eta_yp_beam.val, fdat["Dyp"])
-    self.beta_x_beam.val = np.append(self.beta_x_beam.val, np.sqrt(fdat["emit_x"] / fdat["xx"]))
-    self.beta_y_beam.val = np.append(self.beta_y_beam.val, np.sqrt(fdat["emit_y"] / fdat["yy"]))
-    self.alpha_x_beam.val = np.append(self.alpha_x_beam.val, np.sqrt(fdat["emit_x"] / fdat["pxpx"]))
-    self.alpha_y_beam.val = np.append(self.alpha_y_beam.val, np.sqrt(fdat["emit_y"] / fdat["pypy"]))
+    self.beta_x_beam.val = np.append(
+        self.beta_x_beam.val, np.sqrt(fdat["emit_x"] / fdat["xx"])
+    )
+    self.beta_y_beam.val = np.append(
+        self.beta_y_beam.val, np.sqrt(fdat["emit_y"] / fdat["yy"])
+    )
+    self.alpha_x_beam.val = np.append(
+        self.alpha_x_beam.val, np.sqrt(fdat["emit_x"] / fdat["pxpx"])
+    )
+    self.alpha_y_beam.val = np.append(
+        self.alpha_y_beam.val, np.sqrt(fdat["emit_y"] / fdat["pypy"])
+    )
     self.cp_eV = self.cp
     self.sigma_cp_eV = self.sigma_cp
     self.cp_eV = self.cp
