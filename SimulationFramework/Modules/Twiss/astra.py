@@ -7,7 +7,7 @@ def cumtrapz(x=[], y=[]):
     return [np.trapz(x=x[:n], y=y[:n]) for n in range(len(x))]
 
 
-def read_astra_twiss_files(self, filename, reset=True):
+def read_astra_twiss_files(self, filename, reset=True) -> None:
     if reset:
         self.reset_dicts()
     if isinstance(filename, (list, tuple)):
@@ -33,7 +33,7 @@ def read_astra_twiss_files(self, filename, reset=True):
         interpret_astra_data(self, lattice_name, xemit, yemit, zemit)
 
 
-def interpret_astra_data(self, lattice_name, xemit, yemit, zemit):
+def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     z, t, mean_x, rms_x, rms_xp, exn, mean_xxp = np.transpose(xemit)
     z, t, mean_y, rms_y, rms_yp, eyn, mean_yyp = np.transpose(yemit)
     z, t, e_kin, rms_z, rms_e, ezn, mean_zep = np.transpose(zemit)

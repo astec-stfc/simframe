@@ -444,7 +444,7 @@ def plot(
         Pnames = []
 
     # X axis scaling
-    units_x = str(twiss.units(xkey).unit)
+    units_x = str(twiss.stat(xkey).unit)
     if nice:
         X.val, factor_x, prefix_x = nice_array(X.val)
         units_x = prefix_x + units_x
@@ -470,7 +470,7 @@ def plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = [twiss.units(key).unit for key in keys]
+        ulist = [twiss.stat(key).unit for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -482,7 +482,7 @@ def plot(
         data = [twiss.stat(key).val[good] for key in keys]
 
         # Labels
-        labels = [twiss.units(key).label for key in keys]
+        labels = [twiss.stat(key).label for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
