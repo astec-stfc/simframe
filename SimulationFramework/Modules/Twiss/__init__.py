@@ -1,8 +1,16 @@
 import os
 import math
 import warnings
-from pydantic import BaseModel, ConfigDict, field_validator, ValidationInfo, Field
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    field_validator,
+    ValidationInfo,
+    model_validator,
+    Field,
+)
 import numpy as np
+from typing import Dict, Literal, List
 
 from .. import constants
 import munch
@@ -22,12 +30,28 @@ except ImportError:
 
 from ..units import UnitValue
 
+codes = {
+    "elegant": elegant.read_elegant_twiss_files,
+    "gpt": gpt.read_gdf_twiss_files,
+    "astra": astra.read_astra_twiss_files,
+    "ocelot": ocelot.read_ocelot_twiss_files,
+}
+
+code_signatures = [
+    ["elegant", ".twi"],
+    ["elegant", ".flr"],
+    ["elegant", ".sig"],
+    ["GPT", "emit.gdf"],
+    ["astra", "Xemit.001"],
+    ["ocelot", "_twiss.npz"],
+]
 
 class twissParameter(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str
     unit: str
+    val: List = []
     label: str = Field(default=None, validate_default=True)
     dtype: str = "f"
 
@@ -54,73 +78,91 @@ class initialTwiss(BaseModel):
     eta_yp:     float
 
 
-class twiss(munch.Munch):
+class twiss(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    properties = {
-        "z": twissParameter(name="z", unit="m"),
-        "t": twissParameter(name="t", unit="s"),
-        "kinetic_energy": twissParameter(name="kinetic_energy", unit="eV"),
-        "gamma": twissParameter(name="gamma", unit=""),
-        "mean_gamma": twissParameter(name="mean_gamma", unit="", label=r"|gamma|"),
-        "cp": twissParameter(name="cp", unit="eV/c"),
-        "mean_cp": twissParameter(name="mean_cp", unit="eV/c", label=r"|cp|"),
-        "cp_eV": twissParameter(name="cp_eV", unit="eV/c"),
-        "p": twissParameter(name="p", unit="kg*m/s"),
-        "enx": twissParameter(name="enx", unit="m-radians"),
-        "ex": twissParameter(name="ex", unit="m-radians"),
-        "eny": twissParameter(name="eny", unit="m-radians"),
-        "ey": twissParameter(name="ey", unit="m-radians"),
-        "enz": twissParameter(name="enz", unit="eV*s"),
-        "ez": twissParameter(name="ez", unit="eV*s"),
-        "beta_x": twissParameter(name="beta_x", unit="m"),
-        "gamma_x": twissParameter(name="gamma_x", unit=""),
-        "alpha_x": twissParameter(name="alpha_x", unit=""),
-        "beta_y": twissParameter(name="beta_y", unit="m"),
-        "gamma_y": twissParameter(name="gamma_y", unit=""),
-        "alpha_y": twissParameter(name="alpha_y", unit=""),
-        "beta_z": twissParameter(name="beta_z", unit="m"),
-        "gamma_z": twissParameter(name="gamma_z", unit=""),
-        "alpha_z": twissParameter(name="alpha_z", unit=""),
-        "sigma_x": twissParameter(name="sigma_x", unit="m"),
-        "sigma_xp": twissParameter(name="sigma_xp", unit="m"),
-        "sigma_y": twissParameter(name="sigma_y", unit="m"),
-        "sigma_yp": twissParameter(name="sigma_yp", unit="m"),
-        "sigma_z": twissParameter(name="sigma_z", unit="m"),
-        "sigma_t": twissParameter(name="sigma_t", unit="s"),
-        "sigma_p": twissParameter(name="sigma_p", unit="kg * m/s"),
-        "sigma_cp": twissParameter(name="sigma_cp", unit="eV/c"),
-        "sigma_cp_eV": twissParameter(name="sigma_cp_eV", unit="eV/c"),
-        "mean_x": twissParameter(name="mean_x", unit="m"),
-        "mean_y": twissParameter(name="mean_y", unit="m"),
-        "mux": twissParameter(name="mux", unit="2 pi"),
-        "muy": twissParameter(name="muy", unit="2 pi"),
-        "eta_x": twissParameter(name="eta_x", unit="m"),
-        "eta_xp": twissParameter(name="eta_xp", unit="mrad"),
-        "eta_y": twissParameter(name='eta_y', unit='m'),
-        "eta_yp": twissParameter(name='eta_yp', unit='mrad'),
-        "element_name": twissParameter(name="element_name", unit="", dtype="U"),
-        "lattice_name": twissParameter(name="lattice_name", unit="", dtype="U"),
-        "ecnx": twissParameter(name="ecnx", unit="m-mrad"),
-        "ecny": twissParameter(name="ecny", unit="m-mrad"),
-        "eta_x_beam": twissParameter(name="eta_x_beam", unit="m"),
-        "eta_xp_beam": twissParameter(name="eta_xp_beam", unit="radians"),
-        "eta_y_beam": twissParameter(name="eta_y_beam", unit="m"),
-        "eta_yp_beam": twissParameter(name="eta_yp_beam", unit="radians"),
-        "beta_x_beam": twissParameter(name="beta_x_beam", unit="m"),
-        "beta_y_beam": twissParameter(name="beta_y_beam", unit="m"),
-        "alpha_x_beam": twissParameter(name="alpha_x_beam", unit=""),
-        "alpha_y_beam": twissParameter(name="alpha_y_beam", unit=""),
-    }
+    z: twissParameter = twissParameter(name="z", unit="m")
+    t: twissParameter = twissParameter(name="t", unit="s")
+    kinetic_energy: twissParameter = twissParameter(name="kinetic_energy", unit="eV")
+    gamma: twissParameter = twissParameter(name="gamma", unit="")
+    mean_gamma: twissParameter = twissParameter(name="mean_gamma", unit="", label=r"|gamma|")
+    cp: twissParameter = twissParameter(name="cp", unit="eV/c")
+    mean_cp: twissParameter = twissParameter(name="mean_cp", unit="eV/c", label=r"|cp|")
+    cp_eV: twissParameter = twissParameter(name="cp_eV", unit="eV/c")
+    p: twissParameter = twissParameter(name="p", unit="kg*m/s")
+    enx: twissParameter = twissParameter(name="enx", unit="m-radians")
+    ex: twissParameter = twissParameter(name="ex", unit="m-radians")
+    eny: twissParameter = twissParameter(name="eny", unit="m-radians")
+    ey: twissParameter = twissParameter(name="ey", unit="m-radians")
+    enz: twissParameter = twissParameter(name="enz", unit="eV*s")
+    ez: twissParameter = twissParameter(name="ez", unit="eV*s")
+    beta_x: twissParameter = twissParameter(name="beta_x", unit="m")
+    gamma_x: twissParameter = twissParameter(name="gamma_x", unit="")
+    alpha_x: twissParameter = twissParameter(name="alpha_x", unit="")
+    beta_y: twissParameter = twissParameter(name="beta_y", unit="m")
+    gamma_y: twissParameter = twissParameter(name="gamma_y", unit="")
+    alpha_y: twissParameter = twissParameter(name="alpha_y", unit="")
+    beta_z: twissParameter = twissParameter(name="beta_z", unit="m")
+    gamma_z: twissParameter = twissParameter(name="gamma_z", unit="")
+    alpha_z: twissParameter = twissParameter(name="alpha_z", unit="")
+    sigma_x: twissParameter = twissParameter(name="sigma_x", unit="m")
+    sigma_xp: twissParameter = twissParameter(name="sigma_xp", unit="m")
+    sigma_y: twissParameter = twissParameter(name="sigma_y", unit="m")
+    sigma_yp: twissParameter = twissParameter(name="sigma_yp", unit="m")
+    sigma_z: twissParameter = twissParameter(name="sigma_z", unit="m")
+    sigma_t: twissParameter = twissParameter(name="sigma_t", unit="s")
+    sigma_p: twissParameter = twissParameter(name="sigma_p", unit="kg * m/s")
+    sigma_cp: twissParameter = twissParameter(name="sigma_cp", unit="eV/c")
+    sigma_cp_eV: twissParameter = twissParameter(name="sigma_cp_eV", unit="eV/c")
+    mean_x: twissParameter = twissParameter(name="mean_x", unit="m")
+    mean_y: twissParameter = twissParameter(name="mean_y", unit="m")
+    mux: twissParameter = twissParameter(name="mux", unit="2 pi")
+    muy: twissParameter = twissParameter(name="muy", unit="2 pi")
+    eta_x: twissParameter = twissParameter(name="eta_x", unit="m")
+    eta_xp: twissParameter = twissParameter(name="eta_xp", unit="mrad")
+    eta_y: twissParameter = twissParameter(name='eta_y', unit='m')
+    eta_yp: twissParameter = twissParameter(name='eta_yp', unit='mrad')
+    element_name: twissParameter = twissParameter(name="element_name", unit="", dtype="U")
+    lattice_name: twissParameter = twissParameter(name="lattice_name", unit="", dtype="U")
+    ecnx: twissParameter = twissParameter(name="ecnx", unit="m-mrad")
+    ecny: twissParameter = twissParameter(name="ecny", unit="m-mrad")
+    eta_x_beam: twissParameter = twissParameter(name="eta_x_beam", unit="m")
+    eta_xp_beam: twissParameter = twissParameter(name="eta_xp_beam", unit="radians")
+    eta_y_beam: twissParameter = twissParameter(name="eta_y_beam", unit="m")
+    eta_yp_beam: twissParameter = twissParameter(name="eta_yp_beam", unit="radians")
+    beta_x_beam: twissParameter = twissParameter(name="beta_x_beam", unit="m")
+    beta_y_beam: twissParameter = twissParameter(name="beta_y_beam", unit="m")
+    alpha_x_beam: twissParameter = twissParameter(name="alpha_x_beam", unit="")
+    alpha_y_beam: twissParameter = twissParameter(name="alpha_y_beam", unit="")
+    rest_mass: float | None = None
+    codes: Dict = codes
+    code_signatures: Literal = code_signatures
+    sddsindex: int = 0
+    q_over_c: float = constants.e / constants.speed_of_light
+    E0: float = constants.m_e * constants.speed_of_light**2
+    E0_eV: float = E0 / constants.elementary_charge
+    elegantTwiss: Dict = {}
+    elegantData: Dict = {}
 
-    def __init__(self, rest_mass=None):
-        super(twiss, self).__init__()
-        if rest_mass is not None:
-            self.E0 = rest_mass * constants.speed_of_light**2
-            self.E0_eV = self.E0 / constants.elementary_charge
-        else:
-            self.E0 = constants.m_e * constants.speed_of_light**2
-            self.E0_eV = self.E0 / constants.elementary_charge
-        self.q_over_c = constants.e / constants.speed_of_light
+    def __init__(
+            self,
+            rest_mass=None,
+    ):
+        twiss.rest_mass = rest_mass
+        super(
+            twiss,
+            self,
+        ).__init__(
+            rest_mass=rest_mass
+        )
+
+    @model_validator(mode="before")
+    def validate_fields(cls, values):
+        return values
+
+    def set_E0(self, value):
+        self.E0 = value * constants.speed_of_light**2
+        self.E0_eV = self.E0 / constants.elementary_charge
 
         self.reset_dicts()
         self.sddsindex = 0
@@ -181,19 +223,16 @@ class twiss(munch.Munch):
     def __repr__(self):
         return repr(
             {
-                k.name: self[k.name].val
-                for k in self.properties.values()
-                if len(self[k.name]) > 0
+                k: getattr(self, k)
+                for k in self.model_fields_set
             }
         )
 
     def stat(self, key):
-        if key in self.properties:
-            return self[key]
+        return getattr(self, key)
 
     def units(self, key):
-        if key in self.properties:
-            return self.properties[key]
+        return getattr(self, key)
 
     def find_nearest_idx(self, array, value):
         idx = np.searchsorted(array, value, side="left")
@@ -211,23 +250,31 @@ class twiss(munch.Munch):
 
     def reset_dicts(self):
         self.sddsindex = 0
-        for name, prop in self.properties.items():
-            self[prop.name] = UnitValue([], units=prop.unit)
+        for name in self.model_fields_set:
+            if isinstance(getattr(self, name), twissParameter):
+                setattr(self, name, twissParameter(name=name, unit=getattr(self, name).unit))
         self.elegantTwiss = {}
 
     def sort(self, key="z", reverse=False):
-        index = self[key].argsort()
-        for k in [p for p in self.properties]:
-            if len(self[k]) > 0:
-                if reverse:
-                    self[k] = self[k][index[::-1]]
-                else:
-                    self[k] = self[k][index[::1]]
+        flat = np.array(getattr(self, key).val)
+        index = flat.argsort()
+        for k in [p for p in self.model_fields]:
+            if isinstance(getattr(self, k), twissParameter):
+                if len(getattr(self, k).val) > 0:
+                    try:
+                        flat = np.array([x for xs in getattr(self, k).val for x in xs])
+                    except Exception:
+                        flat = getattr(self, k).val
+                    if reverse:
+                        getattr(self, k).val = flat[index[::-1]]
+                    else:
+                        getattr(self, k).val = flat[index[::1]]
 
     def append(self, array, data):
-        self[array] = UnitValue(
-            np.concatenate([self[array], data]), units=self[array].units
+        newval = UnitValue(
+            np.concatenate([getattr(self, array), data]), units=getattr(self, array).units
         )
+        setattr(self, array, newval)
 
     def _which_code(self, name):
         if name.lower() in self.codes.keys():
@@ -243,7 +290,7 @@ class twiss(munch.Munch):
 
     def interpolate(self, z=None, value="z", index="z"):
         if z is None:
-            return np.interp(z, self[index], self[value])
+            return np.interp(z, getattr(self, index), getattr(self, value))
         else:
             if z > max(self[index]):
                 return 10**6
@@ -251,58 +298,58 @@ class twiss(munch.Munch):
                 return float(np.interp(z, self[index], self[value]))
 
     def extract_values(self, array, start, end):
-        startidx = self.find_nearest_idx(self['z'], start)
-        endidx = self.find_nearest_idx(self['z'], end) + 1
-        return self[array][startidx:endidx]
+        startidx = self.find_nearest_idx(getattr(self, 'z'), start)
+        endidx = self.find_nearest_idx(getattr(self, 'z'), end) + 1
+        return getattr(self, array)[startidx:endidx]
 
     def get_parameter_at_z(self, param, z, tol=1e-3):
-        if z in self['z']:
-            idx = list(self['z']).index(z)
-            return self[param][idx]
+        if z in self.z:
+            idx = list(self.z).index(z)
+            return getattr(self, param)[idx]
         else:
-            nearest_z = self.find_nearest(self['z'], z)
+            nearest_z = self.find_nearest(self.z, z)
             if abs(nearest_z - z) < tol:
-                idx = list(self['z']).index(nearest_z)
-                return self[param][idx]
+                idx = list(self.z).index(nearest_z)
+                return getattr(self, param)[idx]
             else:
                 # print('interpolate!', z, self['z'])
                 return self.interpolate(z=z, value=param, index='z')
 
     def get_parameter_at_element(self, param, element_name):
-        if element_name in self['element_name']:
-            idx = list(self['element_name']).index(element_name)
+        if element_name in self.element_name:
+            idx = list(self.element_name).index(element_name)
             return self[param][idx]
         return None
 
     def get_twiss_dict(self, idx):
         twissdict = {}
-        for param in self.properties.keys():
+        for param in self.model_fields:
             try:
-                twissdict[param] = (self[param].val)[idx]
+                twissdict[param] = getattr(self, param).val[idx]
             except Exception:
                 pass
         return twissdict
 
     def get_twiss_at_element(self, element_name, before=False):
-        if element_name in self['element_name']:
-            idx = list(self['element_name']).index(element_name)
+        if element_name in self.element_name:
+            idx = list(self.element_name).index(element_name)
             if before:
                 idx = idx - 1
             return self.get_twiss_dict(idx)
         return None
 
     def get_twiss_at_z(self, z, tol=1e-3):
-        if z in self['z']:
-            idx = list(self['z']).index(z)
+        if z in self.z:
+            idx = list(self.z).index(z)
             return self.get_twiss_dict(idx)
         else:
-            nearest_z = self.find_nearest(self['z'], z)
+            nearest_z = self.find_nearest(self.z, z)
             if abs(nearest_z - z) < tol:
-                idx = list(self['z']).index(nearest_z)
+                idx = list(self.z).index(nearest_z)
                 return self.get_twiss_dict(idx)
             else:
                 twissdict = {}
-                for param in [k for k, v in self.properties.items() if v.dtype == 'f']:
+                for param in [k for k in self.model_fields if getattr(self, k).dtype == 'f']:
                     twissdict[param] = self.interpolate(z=z, value=param, index='z')
                 return twissdict
 
