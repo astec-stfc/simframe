@@ -250,7 +250,7 @@ class twiss(BaseModel):
 
     def reset_dicts(self):
         self.sddsindex = 0
-        for name in self.model_fields_set:
+        for name in self.model_fields:
             if isinstance(getattr(self, name), twissParameter):
                 setattr(self, name, twissParameter(name=name, unit=getattr(self, name).unit))
         self.elegantTwiss = {}
