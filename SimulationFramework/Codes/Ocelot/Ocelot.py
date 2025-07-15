@@ -20,6 +20,7 @@ from copy import deepcopy
 from typing import Dict
 from numpy import array, where, mean, savez_compressed, linspace, save
 import os
+import re
 from yaml import safe_load
 
 with open(
@@ -124,12 +125,14 @@ class ocelotLattice(frameworkLattice):
         self.hdf5_to_npz(prefix)
 
     def hdf5_to_npz(self, prefix="", write=True):
-        HDF5filename = prefix + self.particle_definition + ".hdf5"
-        HDF5fnwpath = os.path.abspath(
-            self.global_parameters["master_subdir"] + "/" + HDF5filename
+        HDF5filename = prefix + self.particle_definition
+        rootname = re.split(r"[\\/]", HDF5filename)
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5filename)
+        rbf.hdf5.write_HDF5_beam_file(
+            self.global_parameters["beam"],
+            f'{self.global_parameters["master_subdir"]}/{self.allElementObjects[self.start].objectname}.hdf5',
         )
-        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5fnwpath)
-        ocebeamfilename = HDF5fnwpath.replace("hdf5", "ocelot.npz")
+        ocebeamfilename = HDF5filename.replace("hdf5", "ocelot.npz")
         self.pin = rbf.beam.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
         )
