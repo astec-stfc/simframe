@@ -53,10 +53,8 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.kinetic_energy.val = np.append(self.kinetic_energy.val, e_kin)
     gamma = 1 + (e_kin / self.E0_eV)
     self.gamma.val = np.append(self.gamma.val, gamma)
-    self.mean_gamma.val = np.append(self.mean_gamma.val, gamma)
     cp = np.sqrt(e_kin * (2 * self.E0_eV + e_kin))
     self.cp.val = np.append(self.cp.val, cp)
-    self.mean_cp.val = np.append(self.mean_cp.val, cp)
     p = cp * constants.elementary_charge * self.q_over_c
     self.p.val = np.append(self.p.val, p)
     self.enx.val = np.append(self.enx.val, exn)
@@ -109,7 +107,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.ecnx.val = np.append(self.ecnx.val, exn)
     self.ecny.val = np.append(self.ecny.val, eyn)
     self.element_name.val = np.append(self.element_name.val, np.full(len(z), ""))
-    self.element_name.val = np.append(self.element_name.val, np.full(len(z), ""))
+    self.lattice_name.val = np.append(self.lattice_name.val, np.full(len(z), lattice_name))
     self.beta_x_beam.val = np.append(self.beta_x_beam.val, rms_x**2 / ex)
     self.beta_y_beam.val = np.append(self.beta_y_beam.val, rms_y**2 / ey)
     self.alpha_x_beam.val = np.append(
@@ -119,4 +117,3 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
         self.alpha_y_beam.val, (1 * np.sign(mean_yyp) * rms_y * rms_yp) / ey
     )
     self.cp_eV.val = self.cp.val
-    self.sigma_cp_eV.val = self.sigma_cp.val

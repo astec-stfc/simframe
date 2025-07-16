@@ -135,14 +135,8 @@ class twiss(BaseModel):
     """The kinetic energy of the beam."""
     gamma: twissParameter = twissParameter(name="gamma", unit="")
     """The Lorentz factor of the beam, defined as E/mc^2."""
-    mean_gamma: twissParameter = twissParameter(
-        name="mean_gamma", unit="", label=r"|gamma|"
-    )
-    """The mean Lorentz factor of the beam, averaged over the beam distribution."""
     cp: twissParameter = twissParameter(name="cp", unit="eV/c")
     """The momentum of the beam in eV/c."""
-    mean_cp: twissParameter = twissParameter(name="mean_cp", unit="eV/c", label=r"|cp|")
-    """The mean momentum of the beam in eV/c, averaged over the beam distribution."""
     cp_eV: twissParameter = twissParameter(name="cp_eV", unit="eV/c")
     """The momentum of the beam in eV/c, specifically for energy calculations."""
     p: twissParameter = twissParameter(name="p", unit="kg*m/s")
@@ -193,8 +187,6 @@ class twiss(BaseModel):
     """The standard deviation of the beam momentum in kg*m/s."""
     sigma_cp: twissParameter = twissParameter(name="sigma_cp", unit="eV/c")
     """The standard deviation of the beam momentum in eV/c."""
-    sigma_cp_eV: twissParameter = twissParameter(name="sigma_cp_eV", unit="eV/c")
-    """The standard deviation of the beam momentum in eV/c, specifically for energy calculations."""
     mean_x: twissParameter = twissParameter(name="mean_x", unit="m")
     """The mean position of the beam in the x-direction."""
     mean_y: twissParameter = twissParameter(name="mean_y", unit="m")

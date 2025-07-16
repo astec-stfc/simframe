@@ -51,8 +51,6 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
             self.append("z", gdfbeamdata.position)
         cp = self.E0 * np.sqrt(gdfbeamdata.avgG**2 - 1)
         self.cp.val = np.append(self.cp.val, cp / constants.elementary_charge)
-        self.mean_cp.val = np.append(self.mean_cp.val, cp / constants.elementary_charge)
-        self.append("mean_cp", cp / constants.elementary_charge)
         ke = np.array(
             (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
         )
@@ -60,7 +58,6 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         gamma = 1 + ke / self.E0_eV
         self.cp.val = np.append(self.cp.val, cp / constants.elementary_charge)
         self.gamma.val = np.append(self.gamma.val, gamma)
-        self.mean_gamma.val = np.append(self.gamma.val, gamma)
         self.p.val = np.append(self.p.val, cp * self.q_over_c)
         self.enx.val = np.append(self.enx.val, gdfbeamdata.nemixrms)
         self.ex.val = np.append(self.ex.val, gdfbeamdata.nemixrms / gdfbeamdata.avgG)
@@ -147,8 +144,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.alpha_x_beam.val = np.append(
             self.alpha_x_beam.val, np.zeros(len(gdfbeamdata.stdx))
         )
-        self.alpha_y_beam = np.append(
+        self.alpha_y_beam.val = np.append(
             self.alpha_y_beam.val, np.zeros(len(gdfbeamdata.stdx))
         )
         self.cp_eV = self.cp
-        self.sigma_cp_eV = self.sigma_cp
