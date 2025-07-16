@@ -150,7 +150,7 @@ class twiss(BaseModel):
     ey: twissParameter = twissParameter(name="ey", unit="m-radians")
     """The vertical emittance of the beam."""
     enz: twissParameter = twissParameter(name="enz", unit="eV*s")
-    """The longitudinal emittance of the beam, typically in eV*s."""
+    """The normalized longitudinal emittance of the beam, typically in eV*s."""
     ez: twissParameter = twissParameter(name="ez", unit="eV*s")
     """The longitudinal emittance of the beam, typically in eV*s."""
     beta_x: twissParameter = twissParameter(name="beta_x", unit="m")
@@ -173,12 +173,12 @@ class twiss(BaseModel):
     """The alpha function in the z-direction."""
     sigma_x: twissParameter = twissParameter(name="sigma_x", unit="m")
     """The standard deviation of the beam in the x-direction."""
-    sigma_xp: twissParameter = twissParameter(name="sigma_xp", unit="m")
-    """The standard deviation of the beam in the x-direction momentum."""
+    sigma_xp: twissParameter = twissParameter(name="sigma_xp", unit="rad")
+    """The standard deviation of the beam in the xp-direction."""
     sigma_y: twissParameter = twissParameter(name="sigma_y", unit="m")
     """The standard deviation of the beam in the y-direction."""
-    sigma_yp: twissParameter = twissParameter(name="sigma_yp", unit="m")
-    """The standard deviation of the beam in the y-direction momentum."""
+    sigma_yp: twissParameter = twissParameter(name="sigma_yp", unit="rad")
+    """The standard deviation of the beam in the yp-direction."""
     sigma_z: twissParameter = twissParameter(name="sigma_z", unit="m")
     """The standard deviation of the beam in the z-direction."""
     sigma_t: twissParameter = twissParameter(name="sigma_t", unit="s")
@@ -197,11 +197,11 @@ class twiss(BaseModel):
     """The vertical phase advance of the beam, in units of 2 pi."""
     eta_x: twissParameter = twissParameter(name="eta_x", unit="m")
     """The horizontal dispersion of the beam."""
-    eta_xp: twissParameter = twissParameter(name="eta_xp", unit="mrad")
+    eta_xp: twissParameter = twissParameter(name="eta_xp", unit="rad")
     """The horizontal dispersion derivative of the beam."""
     eta_y: twissParameter = twissParameter(name="eta_y", unit="m")
     """The vertical dispersion of the beam."""
-    eta_yp: twissParameter = twissParameter(name="eta_yp", unit="mrad")
+    eta_yp: twissParameter = twissParameter(name="eta_yp", unit="rad")
     """The vertical dispersion derivative of the beam."""
     element_name: twissParameter = twissParameter(
         name="element_name", unit="", dtype="U"
