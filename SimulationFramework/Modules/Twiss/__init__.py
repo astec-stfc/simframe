@@ -258,25 +258,9 @@ class twiss(BaseModel):
         super(
             twiss,
             self,
-        ).__init__(rest_mass=rest_mass)
-
-    @model_validator(mode="before")
-    def validate_fields(cls, values):
-        return values
-
-    def set_E0(self, value) -> None:
-        """
-        Set the rest energy of the particle.
-
-        Args:
-            value: The rest energy in Joules to set for the particle.
-
-        Returns:
-            None
-        """
-        self.E0 = value * constants.speed_of_light**2
-        self.E0_eV = self.E0 / constants.elementary_charge
-
+        ).__init__(
+            rest_mass=rest_mass,
+        )
         self.reset_dicts()
         self.sddsindex = 0
         self.codes = {
@@ -293,6 +277,25 @@ class twiss(BaseModel):
             ["astra", "Xemit.001"],
             ["ocelot", "_twiss.npz"],
         ]
+
+    @model_validator(mode="before")
+    def validate_fields(cls, values):
+        return values
+
+    def set_E0(self, value) -> None:
+        """
+        Set the rest energy of the particle.
+
+        Parameters:
+        -----------
+        value: float
+            The rest energy in Joules to set for the particle.
+        Returns:
+        -----------
+        None
+        """
+        self.E0 = value * constants.speed_of_light**2
+        self.E0_eV = self.E0 / constants.elementary_charge
 
     # def __getitem__(self, key):
     #     if key in super(twiss, self).__getitem__('data') and super(twiss, self).__getitem__('data') is not None:
@@ -340,23 +343,32 @@ class twiss(BaseModel):
         """
         Get the value of a twiss parameter by its key.
 
-        Args:
-            key: The key of the twiss parameter to retrieve, e.g., 'z', 'beta_x', etc.
+        Parameters:
+        -----------
+        key: str
+            The key of the twiss parameter to retrieve, e.g., 'z', 'beta_x', etc.
 
         Returns:
+        -----------
+        twissParameter:
             The value of the twiss parameter associated with the given key.
         """
         return getattr(self, key)
 
-    def find_nearest_idx(self, array, value) -> int:
+    def find_nearest_idx(self, array: List, value: float) -> int:
         """
         Find the index of the nearest value in a sorted array.
 
-        Args:
-            array: A sorted array to search within.
-            value: The value to find the nearest index for in the array.
+        Parameters:
+        -----------
+        array: List
+            A sorted array to search within.
+        value: float
+            The value to find the nearest index for in the array.
 
         Returns:
+        -----------
+        int:
             The index of the nearest value in the array.
             If the value is exactly equal to an element, it returns that index.
             If the value is less than the first element, it returns 0.
@@ -371,15 +383,21 @@ class twiss(BaseModel):
         else:
             return idx
 
-    def find_nearest(self, array, value) -> float:
+    def find_nearest(self, array: List, value: float) -> float:
         """
         Find the nearest value in a sorted array to a given value.
 
-        Args:
-            array: A sorted array to search within.
-            value: The value to find the nearest element for in the array.
-        Returns:
+        Parameters:
+        -----------
+        array: List
+            A sorted array to search within.
+        value: float
+            The value to find the nearest element for in the array.
 
+        Returns:
+        -----------
+        float:
+            The value in the array
         """
         idx = np.searchsorted(array, value, side="left")
         if idx > 0 and (
@@ -398,6 +416,7 @@ class twiss(BaseModel):
         This is useful for starting fresh with a new set of twiss parameters or when reloading data.
 
         Returns:
+        -----------
             None
 
         """
@@ -409,7 +428,7 @@ class twiss(BaseModel):
                 )
         self.elegantTwiss = {}
 
-    def sort(self, key="z", reverse=False) -> None:
+    def sort(self, key: str="z", reverse: bool=False) -> None:
         """
         Sort the twiss parameters based on a specified key.
         This method sorts the twiss parameters in ascending order by default,
@@ -418,12 +437,16 @@ class twiss(BaseModel):
         which should be one of the twiss parameters (e.g., 'z', 'beta_x', etc.).
         If the key is not found, it raises an AttributeError.
 
-        Args:
-            key: str
-            reverse: bool, optional
+        Parameters:
+        -----------
+        key: str
+            The key by which to sort all the Twiss parameters
+        reverse: bool, optional
+            Reverse the Twiss parameter arrays
 
         Returns:
-            None
+        -----------
+        None
         """
         flat = np.array(getattr(self, key).val)
         index = flat.argsort()
@@ -439,16 +462,20 @@ class twiss(BaseModel):
                     else:
                         getattr(self, k).val = flat[index[::1]]
 
-    def append(self, array, data) -> None:
+    def append(self, array: str, data: List | np.ndarray) -> None:
         """
         Append data to a specified twiss parameter array.
 
-        Args:
-            array: str
-            data: list or np.ndarray
+        Parameters:
+        -----------
+        array: str
+            Name of existing Twiss parameter array
+        data: List | np.ndarray
+            Data to append
 
         Returns:
-            None
+        -----------
+        None
         """
         newval = UnitValue(
             np.concatenate([getattr(self, array), data]),
@@ -456,28 +483,36 @@ class twiss(BaseModel):
         )
         setattr(self, array, newval)
 
-    def _which_code(self, name) -> callable | None:
+    def _which_code(self, name: str) -> callable | None:
         """
         Determine the function associated with a specific simulation code name.
 
-        Args:
-            name: str
+        Parameters:
+        -----------
+        name: str
+            The name of the code which produced the Twiss file
 
         Returns:
+        -----------
+        callable | None:
             The function associated with the specified simulation code name, or None if not found.
         """
         if name.lower() in self.codes.keys():
             return self.codes[name.lower()]
         return None
 
-    def _determine_code(self, filename) -> callable | None:
+    def _determine_code(self, filename: str) -> callable | None:
         """
         Determine the simulation code based on the filename.
 
-        Args:
-            filename: str
+        Parameters:
+        -----------
+        filename: str
+            Based on the filename, determine the code which produced it.
 
         Returns:
+        -----------
+        callable | None:
             The function associated with the simulation code if found, otherwise None.
         """
         for k, v in self.code_signatures:
@@ -509,34 +544,45 @@ class twiss(BaseModel):
             else:
                 return float(np.interp(z, self[index], self[value]))
 
-    def extract_values(self, array, start, end) -> np.ndarray:
+    def extract_values(self, name: str, start: float, end: float) -> np.ndarray:
         """
         Extract values from a specified twiss parameter array between two z positions.
 
-        Args:
-            array: str
-            start: float
-            end: float
+        Parameters:
+        -----------
+        array: str
+            Name of Twiss parameter
+        start: float
+            Initial z position
+        end: float
+            Final z position
 
         Returns:
-            np.ndarray: An array of values from the specified twiss parameter array
-            between the start and end z positions.
+        -----------
+        np.ndarray:
+        An array of values from the specified twiss parameter array between the start and end z positions.
         """
         startidx = self.find_nearest_idx(getattr(self, "z"), start)
         endidx = self.find_nearest_idx(getattr(self, "z"), end) + 1
-        return getattr(self, array)[startidx:endidx]
+        return getattr(self, name)[startidx:endidx]
 
-    def get_parameter_at_z(self, param, z, tol=1e-3) -> float:
+    def get_parameter_at_z(self, param: str, z: UnitValue, tol: float=1e-3) -> float:
         """
         Get the value of a twiss parameter at a specific z position.
 
-        Args:
-            param: str
-            z: float
-            tol: float, optional
+        Parameters:
+        -----------
+        param: str
+            The name of the Twiss parameter
+        z: float
+            The z position of interest
+        tol: float, optional
+            The z-position tolerance
 
         Returns:
-            float: The value of the specified twiss parameter at the given z position.
+        -----------
+        float:
+            The value of the specified twiss parameter at the given z position.
             If z is exactly in the list of z positions, it returns the corresponding value.
             If z is not found, it finds the nearest z position and checks if it's within the tolerance.
             If it is, it returns the corresponding value; otherwise, it interpolates the value.
@@ -553,15 +599,21 @@ class twiss(BaseModel):
                 # print('interpolate!', z, self['z'])
                 return self.interpolate(z=z.val, value=param, index="z")
 
-    def get_parameter_at_element(self, param, element_name) -> float | None:
+    def get_parameter_at_element(self, param: str, element_name: str) -> float | None:
         """
         Get the value of a twiss parameter at a specific element name.
-        Args:
-            param: str
-            element_name: str
+
+        Parameters:
+        -----------
+        param: str
+            The Twiss parameter of interest
+        element_name: str
+            The element name
 
         Returns:
-            float or None: The value of the specified twiss parameter at the given element name.
+        -----------
+        float | None:
+            The value of the specified twiss parameter at the given element name.
             If the element name is found, it returns the corresponding value; otherwise, it returns None.
         """
         if element_name in self.element_name:
@@ -569,15 +621,19 @@ class twiss(BaseModel):
             return self[param][idx]
         return None
 
-    def get_twiss_dict(self, idx) -> Dict[str, float]:
+    def get_twiss_dict(self, idx: int) -> Dict[str, float]:
         """
         Get a dictionary of twiss parameters at a specific index.
 
-        Args:
-            idx: int
+        Parameters:
+        -----------
+        idx: int
+            The index in the Twiss parameter list
 
         Returns:
-            dict: A dictionary containing the twiss parameters at the specified index.
+        -----------
+        Dict[str, float]:
+            A dictionary containing the twiss parameters at the specified index.
             The keys are the parameter names, and the values are the corresponding values at that index.
         """
         twissdict = {}
@@ -588,18 +644,21 @@ class twiss(BaseModel):
                 pass
         return twissdict
 
-    def get_twiss_at_element(
-        self, element_name, before=False
-    ) -> Dict[str, float] | None:
+    def get_twiss_at_element(self, element_name: str, before: bool=False) -> Dict[str, float] | None:
         """
         Get the twiss parameters at a specific element name.
 
-        Args:
-            element_name: str
-            before: bool, optional
+        Parameters:
+        -----------
+        element_name: str
+            The name of the element
+        before:
+            Get the parameters before the specified element
 
         Returns:
-            dict or None: A dictionary of twiss parameters at the specified element name.
+        -----------
+        Dict[str, float] | None:
+            A dictionary of twiss parameters at the specified element name.
             If the element name is found, it returns the corresponding twiss parameters;
             otherwise, it returns None.
             If `before` is True, it returns the parameters before the specified element.
@@ -611,16 +670,21 @@ class twiss(BaseModel):
             return self.get_twiss_dict(idx)
         return None
 
-    def get_twiss_at_z(self, z, tol=1e-3) -> Dict[str, float]:
+    def get_twiss_at_z(self, z: float, tol: float=1e-3) -> Dict[str, float]:
         """
         Get the twiss parameters at a specific z position.
 
-        Args:
-            z: float
-            tol: float, optional
+        Parameters:
+        -----------
+        z: float
+            The z-position of interest
+        tol: float, optional
+            Tolerance on the z-position
 
         Returns:
-            dict: A dictionary of twiss parameters at the specified z position.
+        -----------
+        Dict[str, float]:
+            A dictionary of twiss parameters at the specified z position.
             If z is exactly in the list of z positions, it returns the corresponding twiss parameters.
             If z is not found, it finds the nearest z position and checks if it's within the tolerance.
             If it is, it returns the corresponding twiss parameters; otherwise, it interpolates the values.
@@ -646,16 +710,21 @@ class twiss(BaseModel):
         def plot(self, *args, **kwargs):
             return plot.plot(self, *args, **kwargs)
 
-    def covariance(self, u, up) -> float:
+    def covariance(self, u: np.ndarray, up: np.ndarray) -> float:
         """
         Calculate the covariance between two twiss parameters.
 
-        Args:
-            u: array-like
-            up: array-like
+        Parameters:
+        -----------
+        u: array-like
+            First Twiss parameter set
+        up: array-like
+            Second Twiss parameter set
 
         Returns:
-            float: The covariance between the two twiss parameters.
+        -----------
+        float:
+            The covariance between the two twiss parameters.
             The covariance is calculated as the mean of the product of the deviations from their means.
             If the input arrays are empty, it returns NaN.
         """
@@ -663,16 +732,21 @@ class twiss(BaseModel):
         up2 = up - np.mean(up)
         return np.mean(u2 * up2) - np.mean(u2) * np.mean(up2)
 
-    def read_sdds_file(self, filename, ascii=False) -> Dict[str, float]:
+    def read_sdds_file(self, filename: str, ascii: bool=False) -> Dict[str, float]:
         """
         Read an SDDS file and extract the twiss parameters.
 
-        Args:
-            filename: str
-            ascii: bool, optional
+        Parameters:
+        -----------
+        filename: str
+            SDDS filename
+        ascii: bool, optional
+            Convert to ascii
 
         Returns:
-            Dict: A dictionary containing the twiss parameters extracted from the SDDS file.
+        -----------
+        Dict[str, float]:
+            A dictionary containing the twiss parameters extracted from the SDDS file.
             The dictionary is stored in the `elegantTwiss` attribute of the twiss object.
         """
         sddsobject = munch.Munch()
@@ -683,29 +757,37 @@ class twiss(BaseModel):
 
     def load_directory(
         self,
-        directory=".",
-        types={
+        directory: str=".",
+        types: Dict={
             "elegant": ".twi",
             "GPT": "emit.gdf",
             "ASTRA": "Xemit.001",
             "ocelot": "_twiss.npz",
         },
-        preglob="*",
-        verbose=False,
-        sortkey="z",
+        preglob: str="*",
+        verbose: bool=False,
+        sortkey: str="z",
     ) -> "twiss":
         """
         Load twiss files from a specified directory based on the provided types and preglob pattern.
 
-        Args:
-            directory: str
-            types: Dict[str, str]
-            preglob: str
-            verbose: bool, optional
-            sortkey: str, optional
+        Parameters:
+        -----------
+        directory: str
+            The directory to load
+        types: Dict[str, str]
+            Keys for codes and the Twiss file extensions that they produce
+        preglob: str
+            Territorial globbing
+        verbose: bool, optional
+            Print out status of loading
+        sortkey: str, optional
+            Sort Twiss data by the key provided
 
         Returns:
-            self: The twiss object with the loaded twiss parameters.
+        -----------
+        twiss:
+            The twiss object with the loaded twiss parameters.
             The method reads twiss files from the specified directory, processes them based on the types,
             and sorts the parameters based on the specified sortkey.
         """

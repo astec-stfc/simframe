@@ -7,7 +7,27 @@ from ..units import UnitValue
 d = ",!?/&-:;@'\n \t"
 
 
-def generate_astra_field_data(self):
+def generate_astra_field_data(self) -> np.ndarray:
+    """
+    Generate the field data in a format that is suitable for ASTRA, based on the
+    :class:`~SimulationFramework.Modules.Fields.field` object provided.
+    The `field_type` parameter determines the format of the file.
+    See the `ASTRA manual`_ for more details.
+
+    A warning is raised if the field type is not supported (perhaps elevate to a `NotImplementedError`?
+
+    .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
+
+    Parameters:
+    -----------
+    self: :class:`~SimulationFramework.Modules.Fields.field`
+        The field object
+
+    Returns:
+    -----------
+    np.ndarray:
+        The formatted field data.
+    """
     length = str(self.length)
     data = None
     zdata = self.z_values
@@ -91,7 +111,23 @@ def generate_astra_field_data(self):
     return data
 
 
-def write_astra_field_file(self):
+def write_astra_field_file(self) -> str:
+    """
+    Write the field data in an ASTRA-compatible format, based on the
+    :class:`~SimulationFramework.Modules.Fields.field` object provided.
+    The absolute location of the file to be written is generated using
+    :func:`~SimulationFramework.Modules.Fields.field._output_filename`, which is parsed from the Master Lattice.
+
+    Parameters:
+    -----------
+    self: :class:`~SimulationFramework.Modules.Fields.field`
+        The field object
+
+    Returns:
+    -----------
+    str:
+        The converted filename
+    """
     astra_file = self._output_filename(extension=".astra")
     data = generate_astra_field_data(self)
     if data is not None:
@@ -108,6 +144,41 @@ def read_astra_field_file(
     cavity_type: str | None = None,
     frequency: float | None = None,
 ):
+    """
+    Read a field file from ASTRA format and convert it into a
+    :class:`~SimulationFramework.Modules.Fields.field` object (self).
+    Certain parameters must be included, particularly for RF cavities.
+
+    See the `ASTRA manual`_ for more details.
+
+    .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
+
+    Parameters:
+    -----------
+    self: :class:`~SimulationFramework.Modules.Fields.field`
+        The field object to be updated.
+    filename: str
+        The path to the ASTRA field file
+    field_type: str
+        The name of the field, see :attr:`~SimulationFramework.Modules.Fields.allowed_fields`
+    cavity_type: str, optional
+        The type of RF cavity, see :attr:`~SimulationFramework.Modules.Fields.allowed_cavities`
+    frequency: float, optional
+        The frequency of the RF cavity.
+
+    Returns:
+    -----------
+    None
+
+    Raises:
+    -----------
+    ValueError:
+        if the cavity `field_type` contains the string `Electro` and `cavity_type` is not provided
+    ValueError:
+        if the cavity `field_type` contains the string `Electro` and `frequency` is not provided
+    NotImplementedError:
+        if a given `field_type` is not implemented
+    """
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     try:

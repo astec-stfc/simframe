@@ -86,8 +86,11 @@ class FieldParameter(BaseModel):
     FieldParameter class to represent a field parameter with a name and an optional value.
 
     Attributes:
-        name (str): The name of the field parameter.
-        value (UnitValue | None): The value of the field parameter, which can be a UnitValue or None.
+    -----------
+    name (str):
+        The name of the field parameter.
+    value (UnitValue | None):
+        The value of the field parameter, which can be a UnitValue or None.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -252,7 +255,9 @@ class field(BaseModel):
         If the time parameter is set and Z is not, it calculates Z based on the time and speed of light.
 
         Returns:
-            List[float] | None: A list of Z values if available, otherwise None.
+        -----------
+        List[float] | None:
+            A list of Z values if available, otherwise None.
         """
         if self.t.value is not None and self.z.value is None:
             return -1 * abs(self.t.value.val * speed_of_light)
@@ -265,7 +270,10 @@ class field(BaseModel):
         If the Z parameter is set and time is not, it calculates time based on Z and speed of light.
 
         Returns:
-            List[float] | None: A list of time values if available, otherwise None.
+        Parameters:
+        -----------
+        List[float] | None:
+            A list of time values if available, otherwise None.
         """
         if self.z is not None and self.t.value is None:
             return abs(self.z.value.val / speed_of_light)
@@ -282,17 +290,21 @@ class field(BaseModel):
         Read a field file and populate the field parameters based on the file type.
         This method supports various file formats including HDF5, ASTRA, SDDS, GDF, and OPAL.
 
-        Args:
-            filename: str: The path to the field file to be read.
-            field_type: fieldtype | None: The type of the field,
-            e.g., '1DElectroStatic', '1DMagnetoStatic', etc.
-            cavity_type: cavitytype | None: The type of the cavity,
-             e.g., 'StandingWave', 'TravellingWave'.
-            frequency: float | None: The frequency of the field, if applicable.
+        Parameters:
+        -----------
+        filename: str:
+            The path to the field file to be read.
+        field_type: fieldtype | None:
+            The type of the field, e.g., '1DElectroStatic', '1DMagnetoStatic', etc.
+        cavity_type: cavitytype | None:
+            The type of the cavity, e.g., 'StandingWave', 'TravellingWave'.
+        frequency: float | None:
+            The frequency of the field, if applicable.
 
         Returns:
-            None: The method modifies the field object in place, populating its parameters
-            based on the file content.
+        -----------
+        None:
+            The method modifies the field object in place, populating its parameters based on the file content.
         """
         fext = os.path.splitext(os.path.basename(filename))[-1]
         if fext == ".hdf5":
@@ -339,13 +351,17 @@ class field(BaseModel):
         otherwise, it defaults to the directory of the current field file.
         The base filename is derived from the current field file's name, and the extension is appended to it.
 
-        Args:
-            extension: str: The file extension to be used for the output file. Default is ".hdf5".
-            location: str | None: Optional; if provided, it specifies the
-            directory where the output file will be saved.
+        Parameters:
+        -----------
+        extension: str:
+            The file extension to be used for the output file. Default is ".hdf5".
+        location: str | None:
+            Optional; if provided, it specifies the directory where the output file will be saved.
 
         Returns:
-            str: The relative path to the output file, constructed from the
+        -----------
+        str:
+            The relative path to the output file, constructed from the
             specified location or the current field file's directory.
         """
         if location is not None:
@@ -359,18 +375,22 @@ class field(BaseModel):
         pre, _ = os.path.splitext(basefilename)
         return os.path.relpath(os.path.join(_output_location, pre + extension))
 
-    def get_field_data(self, code: str) -> str | None:
+    def get_field_data(self, code: str) -> np.ndarray | None:
         """
         Generate field data in a format suitable for the specified code.
         This method supports generating field data for ASTRA and Ocelot.
         If the field file has not been read in, it raises a warning and returns None.
 
-        Args:
-            code: str: The code for which the field data is to be generated.
+        Parameters:
+        -----------
+        code: str:
+            The code for which the field data is to be generated.
             Supported codes include 'astra' and 'ocelot'.
 
         Returns:
-            str | None: The generated field data in the format required by the specified code,
+        -----------
+        np.ndarray | None:
+            The generated field data in the format required by the specified code,
             or None if the field file has not been read.
         """
         if not self.read:
@@ -403,14 +423,18 @@ class field(BaseModel):
         If a location is provided, it uses that as the base directory;
         otherwise, it defaults to the directory of the current field file.
 
-        Args:
-            code: str: The code for which the field data is to be written.
+        Parameters:
+        -----------
+        code: str:
+            The code for which the field data is to be written.
             Supported codes include 'astra', 'sdds', 'opal', and 'gdf'.
-            location: str | None: Optional; if provided, it specifies the directory
-            where the output file will be saved.
+        location: str | None:
+            Optional; if provided, it specifies the directory where the output file will be saved.
 
         Returns:
-            str | None: The path to the written field file, or None if the field file has not been read.
+        -----------
+        str | None:
+            The path to the written field file, or None if the field file has not been read.
         """
         if not self.read:
             print(

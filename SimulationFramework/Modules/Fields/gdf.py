@@ -1,4 +1,4 @@
-from math import floor
+from typing import List
 import numpy as np
 import easygdf
 from warnings import warn
@@ -7,7 +7,25 @@ from ..units import UnitValue
 from ..constants import speed_of_light
 
 
-def write_gdf_field_file(self):
+def write_gdf_field_file(self) -> str:
+    """
+    Generate the field data in a format that is suitable for GPT, based on the
+    :class:`~SimulationFramework.Modules.Fields.field` object provided.
+    This is then written to a GDF file.
+    The `field_type` parameter determines the format of the file.
+
+    A warning is raised if the field type is not supported (perhaps elevate to a `NotImplementedError`?
+
+    Parameters:
+    -----------
+    self: :class:`~SimulationFramework.Modules.Fields.field`
+        The field object
+
+    Returns:
+    -----------
+    str:
+        The name of the GDF field file.
+    """
     gdf_file = self._output_filename(extension=".gdf")
     blocks = None
     zdata = self.z.value.val
@@ -101,7 +119,20 @@ def write_gdf_field_file(self):
     return gdf_file
 
 
-def union(blocks):
+def union(blocks: List) -> List:
+    """
+    Update the field data into a format compatible for easyGDF
+
+    Parameters:
+    -----------
+    blocks: List[Dict]
+        The field parameters, keyed by name
+
+    Returns:
+    -----------
+    List:
+        A list of easyGDF-compatible dictionaries
+    """
     names = [b["name"] for b in blocks]
     if "z" in names:
         zidx = names.index("z")
@@ -120,6 +151,35 @@ def read_gdf_field_file(
     cavity_type: str | None = None,
     frequency: float | None = None,
 ):
+    """
+    Read a GDF field file and convert it into a :class:`SimulationFramework.Modules.Fields.field` object
+
+    Parameters:
+    -----------
+    self: :class:`~SimulationFramework.Modules.Fields.field`
+        The field object to be updated.
+    filename: str
+        The path to the GDF field file
+    field_type: str
+        The name of the field, see :attr:`~SimulationFramework.Modules.Fields.allowed_fields`
+    cavity_type: str, optional
+        The type of RF cavity, see :attr:`~SimulationFramework.Modules.Fields.allowed_cavities`
+    frequency: float, optional
+        The frequency of the RF cavity.
+
+    Returns:
+    -----------
+    None
+
+    Raises:
+    -----------
+    ValueError:
+        if the cavity `field_type` contains the string `Electro` and `cavity_type` is not provided
+    ValueError:
+        if the cavity `field_type` contains the string `Electro` and `frequency` is not provided
+    NotImplementedError:
+        if a given `field_type` is not implemented
+    """
     self.reset_dicts()
     setattr(self, "field_type", field_type)
     if "Electro" in field_type:
