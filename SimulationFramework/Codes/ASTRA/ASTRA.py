@@ -2,6 +2,8 @@ import os
 from copy import copy
 import numpy as np
 import lox
+from lox.worker.thread import ScatterGatherDescriptor
+from typing import ClassVar, Dict, List
 
 # from .ASTRARules import ASTRARules
 from ...Framework_objects import (
@@ -32,13 +34,25 @@ section_header_text_ASTRA = {
 
 
 class astraLattice(frameworkLattice):
-    def __init__(self, *args, **kwargs):
-        super(astraLattice, self).__init__(*args, **kwargs)
-        self.code = "astra"
-        self.allow_negative_drifts = True
-        self._bunch_charge = None
-        self._toffset = None
-        self.headers = dict()
+
+    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = ScatterGatherDescriptor
+    code: str = "astra"
+    allow_negative_drifts: bool = True
+    _bunch_charge: float | None = None
+    _toffset: float | None = None
+    headers: Dict = {}
+    starting_offset: List = [0, 0, 0]
+    starting_rotation: float = 0
+
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(astraLattice, self).__init__(
+            *args,
+            **kwargs
+        )
         self.starting_offset = (
             eval(expand_substitution(self, self.file_block["starting_offset"]))
             if "starting_offset" in self.file_block
@@ -47,8 +61,8 @@ class astraLattice(frameworkLattice):
 
         # This calculated the starting rotation based on the input file and the number of dipoles
         self.starting_rotation = (
-            -1 * self.allElementObjects[self.start].global_rotation[2]
-            if self.allElementObjects[self.start].global_rotation is not None
+            -1 * self.elementObjects[self.start].global_rotation[2]
+            if self.elementObjects[self.start].global_rotation is not None
             else 0
         )
         self.starting_rotation = (
@@ -90,7 +104,7 @@ class astraLattice(frameworkLattice):
                 )
         else:
             self.headers["newrun"].input_particle_definition = (
-                self.allElementObjects[self.start].objectname + ".astra"
+                self.elementObjects[self.start].objectname + ".astra"
             )
             self.headers["newrun"].output_particle_definition = (
                 self.objectname + "_input.astra"
@@ -188,8 +202,8 @@ class astraLattice(frameworkLattice):
     def writeElements(self):
         fulltext = ""
         # Create objects for the newrun, output and charge blocks
-        self.headers["output"].start_element = self.allElementObjects[self.start]
-        self.headers["output"].end_element = self.allElementObjects[self.end]
+        self.headers["output"].start_element = self.elementObjects[self.start]
+        self.headers["output"].end_element = self.elementObjects[self.end]
         self.headers["output"].screens = self.screens_and_bpms
         # write the headers and their elements
         for header in self.headers:
@@ -287,7 +301,7 @@ class astraLattice(frameworkLattice):
     def get_screen_scaling(self):
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0, 0, 0]:
-                e.zstart = self.allElementObjects[self.start].start
+                e.zstart = self.elementObjects[self.start].start
             else:
                 e.zstart = [0, 0, 0]
         master_run_no = (
@@ -313,7 +327,7 @@ class astraLattice(frameworkLattice):
         mult = self.get_screen_scaling()
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0, 0, 0]:
-                e.zstart = self.allElementObjects[self.start].start
+                e.zstart = self.elementObjects[self.start].start
             else:
                 e.zstart = [0, 0, 0]
             if not os.name == "nt":
@@ -336,11 +350,11 @@ class astraLattice(frameworkLattice):
             else 1
         )
         if not self.starting_offset == [0, 0, 0]:
-            zstart = self.allElementObjects[self.start].start
+            zstart = self.elementObjects[self.start].start
         else:
             zstart = [0, 0, 0]
-        startpos = np.array(self.allElementObjects[self.start].start) - np.array(zstart)
-        endpos = np.array(self.allElementObjects[self.end].end) - np.array(zstart)
+        startpos = np.array(self.elementObjects[self.start].start) - np.array(zstart)
+        endpos = np.array(self.elementObjects[self.end].end) - np.array(zstart)
         astrabeamfilename = (
             self.objectname
             + "."
@@ -371,14 +385,14 @@ class astraLattice(frameworkLattice):
             preOffset=[0, 0, 0],
             postOffset=-1 * np.array(self.starting_offset),
         )
-        HDF5filename = self.allElementObjects[self.end].objectname + ".hdf5"
+        HDF5filename = self.elementObjects[self.end].objectname + ".hdf5"
         toffset = self.global_parameters["beam"]["toffset"]
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
             self.global_parameters["master_subdir"] + "/" + HDF5filename,
             centered=False,
             sourcefilename=astrabeamfilename,
-            pos=self.allElementObjects[self.end].middle,
+            pos=self.elementObjects[self.end].middle,
             cathode=cathode,
             toffset=toffset,
         )

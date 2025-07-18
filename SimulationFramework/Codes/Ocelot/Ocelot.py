@@ -1,5 +1,5 @@
 from ...Framework_objects import frameworkLattice, getGrids
-from ...Framework_elements import *
+from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
 from ocelot.cpbd.magnetic_lattice import MagneticLattice
@@ -10,80 +10,47 @@ from ocelot.cpbd.sc import SpaceCharge, LSC
 from ocelot.cpbd.csr import CSR
 from ocelot.cpbd.wake3D import Wake, WakeTable
 from ocelot.cpbd.physics_proc import SaveBeam
+from ocelot.cpbd.beam import ParticleArray
 from copy import deepcopy
 from numpy import array, where, mean, savez_compressed
 import os
+from typing import Dict, List
 
 
 class ocelotLattice(frameworkLattice):
+
+    code: str = "ocelot"
+    trackBeam: bool = True
+    lat_obj: MagneticLattice | None = None
+    pin: ParticleArray | None = None
+    pout: ParticleArray | None = None
+    tws: Dict | None = None
+    names: List = []
+    grids: getGrids | None = None
+    oceglobal: Dict = {}
+    unit_step: float = 0.01
+    smooth: float = 0.01
+    lsc: bool = True
+    random_mesh: bool = True
+    nbin_csr: int = 10
+    mbin_csr: int = 5
+    sigmamin_csr: float = 1e-5
+    wake_sampling: int = 1000
+    wake_filter: int = 10
+    particle_definition: str | None = None
+    final_screen: screen | None = None
+
+
     def __init__(self, *args, **kwargs):
         super(ocelotLattice, self).__init__(*args, **kwargs)
-        self.code = "ocelot"
-        self.allow_negative_drifts = False
-        self.bunch_charge = None
-        self.trackBeam = True
-        self.betax = None
-        self.betay = None
-        self.alphax = None
-        self.alphay = None
-        self.commandFiles = {}
-        self.lat_obj = None
-        self.pin = None
-        self.pout = None
-        self.tws = None
-        self.names = None
-        self.grids = getGrids()
-        self.sample_interval = 1
         self.oceglobal = (
             self.settings["global"]["OCELOTsettings"]
             if "OCELOTsettings" in list(self.settings["global"].keys())
-            else {}
+            else self.oceglobal
         )
-        self.unit_step = (
-            self.oceglobal["unit_step"]
-            if "unit_step" in list(self.oceglobal.keys())
-            else 0.01
-        )
-        self.smooth = (
-            self.oceglobal["smooth_param"]
-            if "smooth_param" in list(self.oceglobal.keys())
-            else 0.1
-        )
-        self.lsc = (
-            self.oceglobal["lsc"]
-            if "lsc" in list(self.oceglobal.keys())
-            else self.lscDrifts
-        )
-        self.random_mesh = (
-            self.oceglobal["random_mesh"]
-            if "random_mesh" in list(self.oceglobal.keys())
-            else True
-        )
-        self.nbin_csr = (
-            self.oceglobal["nbin_csr"]
-            if "nbin_csr" in list(self.oceglobal.keys())
-            else 10
-        )
-        self.mbin_csr = (
-            self.oceglobal["mbin_csr"]
-            if "mbin_csr" in list(self.oceglobal.keys())
-            else 5
-        )
-        self.sigmamin_csr = (
-            self.oceglobal["sigmamin_csr"]
-            if "sigmamin_csr" in list(self.oceglobal.keys())
-            else 1e-5
-        )
-        self.wake_sampling = (
-            self.oceglobal["wake_sampling"]
-            if "wake_sampling" in list(self.oceglobal.keys())
-            else 1000
-        )
-        self.wake_filter = (
-            self.oceglobal["wake_filter"]
-            if "wake_filter" in list(self.oceglobal.keys())
-            else 10
-        )
+        for field in self.model_fields_set:
+            if field in list(self.oceglobal.keys()):
+                setattr(self, field, self.oceglobal[field])
 
         if (
             "input" in self.file_block
@@ -99,7 +66,7 @@ class ocelotLattice(frameworkLattice):
                     "particle_definition"
                 ]
         else:
-            self.particle_definition = self.allElementObjects[self.start].objectname
+            self.particle_definition = self.elementObjects[self.start].objectname
 
     def endScreen(self, **kwargs):
         return screen(
@@ -114,9 +81,9 @@ class ocelotLattice(frameworkLattice):
         )
 
     def writeElements(self):
-        self.w = None
+        self.final_screen = None
         if not self.endObject in self.screens_and_bpms:
-            self.w = self.endScreen(output_filename=self.endObject.objectname + ".npz")
+            self.final_screen = self.endScreen(output_filename=self.endObject.objectname + ".npz")
         elements = self.createDrifts()
         mag_lat = []
         for element in list(elements.values()):

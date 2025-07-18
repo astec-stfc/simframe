@@ -74,23 +74,23 @@ class wakefield(cavity):
             output += "\n"
         return output
 
-    def set_column_names(self, file_name: str) -> None:
+    def set_column_names(self, file_name: str) -> str:
         self.tcolumn = '"t"'
         if self.field_definition.field_type.lower() == "longitudinalwake":
             etype = "wake"
             self.wcolumn = '"Wz"'
-            self.inputfile = file_name
+            self.inputfile = "\"" + file_name + "\""
         elif self.field_definition.field_type.lower() == "transversewake":
             etype = "trwake"
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
-            self.inputfile = file_name
+            self.inputfile = "\"" + file_name + "\""
         elif self.field_definition.field_type.lower() == "3dwake":
             etype = "wake3d"
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wzcolumn = '"Wz"'
-            self.inputfile = file_name
+            self.inputfile = "\"" + file_name + "\""
         return etype
 
     def _write_Elegant(self):

@@ -13,9 +13,19 @@ from .FrameworkHelperFunctions import (
 )
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Modules.Fields import field
+from .Codes import Executables as exes
 from .Codes.Ocelot import ocelot_conversion
 from ocelot.cpbd.elements import Marker, Aperture
 import numpy as np
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+)
+from typing import (
+    Dict,
+    List,
+    Any,
+)
 
 if os.name == "nt":
     # from .Modules.symmlinks import has_symlink_privilege
@@ -75,30 +85,142 @@ with open(
 ) as infile:
     elements_Ocelot = yaml.safe_load(infile)
 
+class runSetup(object):
+    """class defining settings for simulations that include multiple runs"""
 
-class frameworkLattice(Munch):
+    def __init__(self):
+        # define the number of runs and the random number seed
+        self.nruns = 1
+        self.seed = 0
+
+        # init errorElement and elementScan settings as None
+        self.elementErrors = None
+        self.elementScan = None
+
+    def setNRuns(self, nruns):
+        """sets the number of simulation runs to a new value"""
+        # enforce integer argument type
+        if isinstance(nruns, (int, float)):
+            self.nruns = int(nruns)
+        else:
+            raise TypeError(
+                "Argument nruns passed to runSetup instance must be an integer"
+            )
+
+    def setSeedValue(self, seed):
+        """sets the random number seed to a new value for all lattice objects"""
+        # enforce integer argument type
+        if isinstance(seed, (int, float)):
+            self.seed = int(seed)
+        else:
+            raise TypeError("Argument seed passed to runSetup must be an integer")
+
+    def loadElementErrors(self, file):
+        # load error definitions from markup file
+        if isinstance(file, str) and (".yaml" in file):
+            with open(file, "r") as infile:
+                error_setup = dict(yaml.safe_load(infile))
+        # define errors from dictionary
+        elif isinstance(file, dict):
+            error_setup = file
+
+        # assign the element error definitions
+        self.elementErrors = error_setup["elements"]
+        self.elementScan = None
+
+        # set the number of runs and random number seed, if available
+        if "nruns" in error_setup:
+            self.setNRuns(error_setup["nruns"])
+        if "seed" in error_setup:
+            self.setSeedValue(error_setup["seed"])
+
+    def setElementScan(self, name, item, scanrange, multiplicative=False):
+        """define a parameter scan for a single parameter of a given machine element"""
+        if not (isinstance(name, str) and isinstance(item, str)):
+            raise TypeError(
+                "Machine element name and item (parameter) must be defined as strings"
+            )
+
+        if (
+            isinstance(scanrange, (list, tuple, np.ndarray))
+            and (len(scanrange) == 2)
+            and all([isinstance(x, (float, int)) for x in scanrange])
+        ):
+            minval, maxval = scanrange
+        else:
+            raise TypeError("Scan range (min. and max.) must be defined as floats")
+
+        if not isinstance(multiplicative, bool):
+            raise ValueError(
+                "Argument multiplicative passed to runSetup.setElementScan must be a boolean"
+            )
+
+        # if no type errors were raised, build an assign a dictionary
+        self.elementScan = {
+            "name": name,
+            "item": item,
+            "min": minval,
+            "max": maxval,
+            "multiplicative": multiplicative,
+        }
+        self.elementErrors = None
+
+
+class frameworkLattice(BaseModel):
+    class Config:
+        extra = "allow"
+        arbitrary_types_allowed = True
+
+    name: str
+    file_block: Dict
+    elementObjects: Dict
+    groupObjects: Dict
+    runSettings: runSetup
+    settings: Dict
+    executables: exes.Executables
+    global_parameters: Dict
+    allow_negative_drifts: bool = False
+    _csr_enable: bool = True
+    csrDrifts: bool = True
+    lscDrifts: bool = True
+    lsc_bins: int = 20
+    lsc_high_frequency_cutoff_start: float = -1
+    lsc_high_frequency_cutoff_end: float = -1
+    lsc_low_frequency_cutoff_start: float = -1
+    lsc_low_frequency_cutoff_end: float = -1
+    _sample_interval: int = 1
+    globalSettings: Dict = {"charge": None}
+    groupSettings: Dict = {}
+    allElements: List = []
+
     def __init__(
-        self,
-        name,
-        file_block,
-        elementObjects,
-        groupObjects,
-        runSettings,
-        settings,
-        executables,
-        global_parameters,
+            self,
+            name,
+            file_block,
+            elementObjects,
+            groupObjects,
+            runSettings,
+            settings,
+            executables,
+            global_parameters,
+            *args,
+            **kwargs,
     ):
-        super(frameworkLattice, self).__init__()
-        self.allow_negative_drifts = False
-        self.global_parameters = global_parameters
-        self.objectname = name
-        for key, value in list(elementObjects.items()):
+        super(frameworkLattice, self).__init__(
+            name=name,
+            file_block=file_block,
+            elementObjects=elementObjects,
+            groupObjects=groupObjects,
+            runSettings=runSettings,
+            settings=settings,
+            executables=executables,
+            global_parameters=global_parameters,
+            *args,
+            **kwargs,
+        )
+        for key, value in list(self.elementObjects.items()):
             setattr(self, key, value)
-        self.allElementObjects = elementObjects
-        self.groupObjects = groupObjects
-        self.allElements = list(self.allElementObjects.keys())
-        self.file_block = file_block
-        self.settings = settings
+        self.allElements = list(self.elementObjects.keys())
         self.globalSettings = (
             settings["global"] if settings["global"] is not None else {"charge": None}
         )
@@ -108,21 +230,13 @@ class frameworkLattice(Munch):
             else {}
         )
         self.update_groups()
-        self.executables = executables
-        self._csr_enable = True
-        self.csrDrifts = True
-        self.lscDrifts = True
-        self.lsc_bins = 20
-        self.lsc_high_frequency_cutoff_start = -1
-        self.lsc_high_frequency_cutoff_end = -1
-        self.lsc_low_frequency_cutoff_start = -1
-        self.lsc_low_frequency_cutoff_end = -1
         self._sample_interval = (
             self.file_block["input"]["sample_interval"]
             if "input" in self.file_block
             and "sample_interval" in self.file_block["input"]
             else 1
         )
+        self.objectname = self.name
 
         # define settings for simulations with multiple runs
         self.updateRunSettings(runSettings)
@@ -174,7 +288,7 @@ class frameworkLattice(Munch):
     def getElement(self, element, param=None):
         if element in self.allElements:
             if param is not None:
-                return getattr(self.allElementObjects[element], param.lower())
+                return getattr(self.elementObjects[element], param.lower())
             else:
                 return self.allElements[element]
         elif element in list(self.groupObjects.keys()):
@@ -285,18 +399,18 @@ class frameworkLattice(Munch):
         if "start_element" in self.file_block["output"]:
             return self.file_block["output"]["start_element"]
         elif "zstart" in self.file_block["output"]:
-            for e in list(self.allElementObjects.keys()):
+            for e in list(self.elementObjects.keys()):
                 if (
-                    self.allElementObjects[e].position_start[2]
+                    self.elementObjects[e].position_start[2]
                     == self.file_block["output"]["zstart"]
                 ):
                     return e
         else:
-            return self.allElementObjects[0]
+            return self.elementObjects[0]
 
     @property
     def startObject(self):
-        return self.allElementObjects[self.start]
+        return self.elementObjects[self.start]
 
     @property
     def end(self):
@@ -304,25 +418,25 @@ class frameworkLattice(Munch):
             return self.file_block["output"]["end_element"]
         elif "zstop" in self.file_block["output"]:
             endelems = []
-            for e in list(self.allElementObjects.keys()):
+            for e in list(self.elementObjects.keys()):
                 if (
-                    self.allElementObjects[e]["position_end"]
+                    self.elementObjects[e]["position_end"]
                     == self.file_block["output"]["zstop"]
                 ):
                     endelems.append(e)
                 elif (
-                    self.allElementObjects[e]["position_end"]
+                    self.elementObjects[e]["position_end"]
                     > self.file_block["output"]["zstop"]
                     and len(endelems) == 0
                 ):
                     endelems.append(e)
             return endelems[-1]
         else:
-            return self.allElementObjects[0]
+            return self.elementObjects[0]
 
     @property
     def endObject(self):
-        return self.allElementObjects[self.end]
+        return self.elementObjects[self.end]
 
     @property
     def elements(self):
@@ -330,7 +444,7 @@ class frameworkLattice(Munch):
         index_end = self.allElements.index(self.end)
         f = dict(
             [
-                [e, self.allElementObjects[e]]
+                [e, self.elementObjects[e]]
                 for e in self.allElements[index_start: index_end + 1]
             ]
         )
@@ -341,12 +455,12 @@ class frameworkLattice(Munch):
 
     def run(self):
         """Run the code with input 'filename'"""
-        command = self.executables[self.code] + [self.objectname]
+        command = self.executables[self.code] + [self.name]
         with open(
             os.path.relpath(
                 self.global_parameters["master_subdir"]
                 + "/"
-                + self.objectname
+                + self.name
                 + ".log",
                 ".",
             ),
@@ -401,7 +515,7 @@ class frameworkLattice(Munch):
         return self.elements
 
     def __str__(self):
-        str = self.objectname + " = ("
+        str = self.name + " = ("
         for e in self.elements:
             if len((str + e).splitlines()[-1]) > 60:
                 str += "&\n"
@@ -417,7 +531,7 @@ class frameworkLattice(Munch):
         for name in list(self.elements.keys()):
             if not self.elements[name].subelement:
                 originalelements[name] = self.elements[name]
-                pos = np.array(self.allElementObjects[name].position_start)
+                pos = np.array(self.elementObjects[name].position_start)
                 # If element is a cavity, we need to offset the cavity by the coupling cell length
                 # to make it consistent with ASTRA
                 if originalelements[name].objecttype == "cavity" and hasattr(
@@ -426,7 +540,7 @@ class frameworkLattice(Munch):
                     pos += originalelements[name].coupling_cell_length
                     # print('Adding coupling_cell_length of ', originalelements[name].coupling_cell_length,'to the start position')
                 positions.append(pos)
-                positions.append(self.allElementObjects[name].position_end)
+                positions.append(self.elementObjects[name].position_end)
         positions = positions[1:]
         positions.append(positions[-1])
         driftdata = list(
@@ -593,19 +707,32 @@ class frameworkLattice(Munch):
             )
 
 
-class frameworkObject(Munch):
+class frameworkObject(BaseModel):
+    class Config:
+        extra = "allow"
+        arbitrary_types_allowed = True
+    objectname: str
+    objecttype: str
+    objectdefaults: Dict = {}
+    allowedkeywords: List | Dict = {}
 
-    def __init__(self, objectname=None, objecttype=None, **kwargs):
-        super(frameworkObject, self).__init__()
+    def __init__(
+            self,
+            objectname,
+            objecttype,
+            *args,
+            **kwargs
+    ):
+        frameworkObject.objectname = objectname
+        frameworkObject.objecttyp = objecttype
+        super(frameworkObject, self).__init__(
+            objectname=objectname,
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
         if "global_parameters" in kwargs:
             self.global_parameters = kwargs["global_parameters"]
-        if objectname is None:
-            raise NameError("Command does not have a name")
-        if objecttype is None:
-            raise NameError("Command does not have a type")
-        setattr(self, "objectdefaults", dict())
-        setattr(self, "objectname", objectname)
-        setattr(self, "objecttype", objecttype)
         if self.objecttype in commandkeywords:
             self.allowedkeywords = commandkeywords[self.objecttype]
         elif self.objecttype in elementkeywords:
@@ -1533,84 +1660,3 @@ class edrift(csrdrift):
 
     def __init__(self, name=None, type="edrift", **kwargs):
         super().__init__(name, type, **kwargs)
-
-
-class runSetup(object):
-    """class defining settings for simulations that include multiple runs"""
-
-    def __init__(self):
-        # define the number of runs and the random number seed
-        self.nruns = 1
-        self.seed = 0
-
-        # init errorElement and elementScan settings as None
-        self.elementErrors = None
-        self.elementScan = None
-
-    def setNRuns(self, nruns):
-        """sets the number of simulation runs to a new value"""
-        # enforce integer argument type
-        if isinstance(nruns, (int, float)):
-            self.nruns = int(nruns)
-        else:
-            raise TypeError(
-                "Argument nruns passed to runSetup instance must be an integer"
-            )
-
-    def setSeedValue(self, seed):
-        """sets the random number seed to a new value for all lattice objects"""
-        # enforce integer argument type
-        if isinstance(seed, (int, float)):
-            self.seed = int(seed)
-        else:
-            raise TypeError("Argument seed passed to runSetup must be an integer")
-
-    def loadElementErrors(self, file):
-        # load error definitions from markup file
-        if isinstance(file, str) and (".yaml" in file):
-            with open(file, "r") as infile:
-                error_setup = dict(yaml.safe_load(infile))
-        # define errors from dictionary
-        elif isinstance(file, dict):
-            error_setup = file
-
-        # assign the element error definitions
-        self.elementErrors = error_setup["elements"]
-        self.elementScan = None
-
-        # set the number of runs and random number seed, if available
-        if "nruns" in error_setup:
-            self.setNRuns(error_setup["nruns"])
-        if "seed" in error_setup:
-            self.setSeedValue(error_setup["seed"])
-
-    def setElementScan(self, name, item, scanrange, multiplicative=False):
-        """define a parameter scan for a single parameter of a given machine element"""
-        if not (isinstance(name, str) and isinstance(item, str)):
-            raise TypeError(
-                "Machine element name and item (parameter) must be defined as strings"
-            )
-
-        if (
-            isinstance(scanrange, (list, tuple, np.ndarray))
-            and (len(scanrange) == 2)
-            and all([isinstance(x, (float, int)) for x in scanrange])
-        ):
-            minval, maxval = scanrange
-        else:
-            raise TypeError("Scan range (min. and max.) must be defined as floats")
-
-        if not isinstance(multiplicative, bool):
-            raise ValueError(
-                "Argument multiplicative passed to runSetup.setElementScan must be a boolean"
-            )
-
-        # if no type errors were raised, build an assign a dictionary
-        self.elementScan = {
-            "name": name,
-            "item": item,
-            "min": minval,
-            "max": maxval,
-            "multiplicative": multiplicative,
-        }
-        self.elementErrors = None

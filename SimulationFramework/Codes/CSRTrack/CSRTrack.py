@@ -48,12 +48,12 @@ class csrtrackLattice(frameworkLattice):
             )
         else:
             self.CSRTrackelementObjects["particles"].particle_definition = (
-                self.allElementObjects[self.start].objectname
+                self.elementObjects[self.start].objectname
             )
             self.CSRTrackelementObjects["particles"].add_default(
                 "array",
                 "#file{name="
-                + self.allElementObjects[self.start].objectname
+                + self.elementObjects[self.start].objectname
                 + ".astra"
                 + "}",
             )

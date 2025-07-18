@@ -8,6 +8,8 @@ try:
 except Exception:
     print("No SDDS available!")
 import lox
+from lox.worker.thread import ScatterGatherDescriptor
+from typing import ClassVar
 from ...Framework_objects import (
     frameworkLattice,
     frameworkCommand,
@@ -17,27 +19,34 @@ from ...Framework_objects import (
 from ...Framework_elements import charge, screen
 from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
+from typing import Dict
 
 
 class elegantLattice(frameworkLattice):
+
+    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = ScatterGatherDescriptor
+    code: str = "elegant"
+    allow_negative_drifts: bool = False
+    particle_definition: str | None = None
+    bunch_charge: float | None = None
+    q: charge | None = None
+    trackBeam: bool = True
+    betax: float | None = None
+    betay: float | None = None
+    alphax: float | None = None
+    alphay: float | None = None
+    commandFiles: Dict = {}
+    final_screen: screen | None = None
+
     def __init__(self, *args, **kwargs):
         super(elegantLattice, self).__init__(*args, **kwargs)
-        self.code = "elegant"
-        self.allow_negative_drifts = False
-        self.particle_definition = self.allElementObjects[self.start].objectname
-        self.bunch_charge = None
+        self.particle_definition = self.elementObjects[self.start].objectname
         self.q = charge(
             name="START",
             type="charge",
             global_parameters=self.global_parameters,
             **{"total": 250e-12}
         )
-        self.trackBeam = True
-        self.betax = None
-        self.betay = None
-        self.alphax = None
-        self.alphay = None
-        self.commandFiles = {}
 
     def endScreen(self, **kwargs):
         return screen(
@@ -50,9 +59,9 @@ class elegantLattice(frameworkLattice):
         )
 
     def writeElements(self):
-        self.w = None
+        self.final_screen = None
         if self.endObject not in self.screens_and_markers_and_bpms:
-            self.w = self.endScreen(output_filename=self.endObject.objectname + ".sdds")
+            self.final_screen = self.endScreen(output_filename=self.endObject.objectname + ".sdds")
         elements = self.createDrifts()
         fulltext = ""
         fulltext += self.q.write_Elegant()
@@ -60,7 +69,7 @@ class elegantLattice(frameworkLattice):
             # print(element.write_Elegant())
             if not element.subelement:
                 fulltext += element.write_Elegant()
-        fulltext += self.w.write_Elegant() if self.w is not None else ""
+        fulltext += self.final_screen.write_Elegant() if self.final_screen is not None else ""
         fulltext += self.objectname + ": Line=(START, "
         for e, element in list(elements.items()):
             if not element.subelement:
@@ -68,7 +77,7 @@ class elegantLattice(frameworkLattice):
                     fulltext += "&\n"
                 fulltext += e + ", "
         fulltext = (
-            fulltext[:-2] + ", END )\n" if self.w is not None else fulltext[:-2] + ")\n"
+            fulltext[:-2] + ", END )\n" if self.final_screen is not None else fulltext[:-2] + ")\n"
         )
         return fulltext
 
@@ -115,7 +124,7 @@ class elegantLattice(frameworkLattice):
             element_exists = False
             if (ele in self.elements) and not wildcard:
                 element_exists = True
-                element_types = [self.allElementObjects[ele].objecttype]
+                element_types = [self.elementObjects[ele].objecttype]
             elif wildcard:
                 element_matches = [
                     x for x in self.elements if (ele.replace("*", "") in x)
@@ -123,7 +132,7 @@ class elegantLattice(frameworkLattice):
                 if len(element_matches) != 0:
                     element_exists = True
                     element_types = [
-                        self.allElementObjects[x].objecttype for x in element_matches
+                        self.elementObjects[x].objecttype for x in element_matches
                     ]
 
             # if the element exists in the local lattice, do processing
@@ -179,7 +188,7 @@ class elegantLattice(frameworkLattice):
         # check if the lattice element exists in the local lattice section and fetch the element type
         element_exists = ele in self.elements
         if element_exists:
-            ele_type = self.allElementObjects[ele].objecttype
+            ele_type = self.elementObjects[ele].objecttype
 
             # check that the element type has the parameter corresponding to the scan variable
             if param not in elementkeywords[ele_type]["keywords"]:
@@ -374,11 +383,11 @@ class elegantLattice(frameworkLattice):
         if self.trackBeam:
             for i, s in enumerate(self.screens_and_markers_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
-            if self.w is not None and not self.w["output_filename"].lower() in [
+            if self.final_screen is not None and not self.final_screen["output_filename"].lower() in [
                 s["output_filename"].lower() for s in self.screens_and_markers_and_bpms
             ]:
                 self.screen_threaded_function.scatter(
-                    self.w, len(self.screens_and_markers_and_bpms)
+                    self.final_screen, len(self.screens_and_markers_and_bpms)
                 )
         self.screen_threaded_function.gather()
         self.commandFiles = {}

@@ -1,6 +1,5 @@
 import os
 import subprocess
-import random
 import numpy as np
 from ...Framework_objects import (
     frameworkLattice,
@@ -13,18 +12,37 @@ from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules.Fields import field
+from ...Modules.units import UnitValue
+from typing import Dict
 
 gpt_defaults = {}
 
 
 class gptLattice(frameworkLattice):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.code = "gpt"
-        self.allow_negative_drifts = True
-        self.bunch_charge = None
-        # self.particle_definition = self.allElementObjects[self.start].objectname
-        self.headers = dict()
+
+    code: str = "gpt"
+    allow_negative_drifts: bool = True
+    bunch_charge: float | None = None
+    headers: Dict = {}
+    ignore_start_screen: screen | None = None
+    screen_step_size: float = 0.1
+    time_step_size: str = "0.1/c"
+    override_meanBz: float | int | None = None
+    override_tout: float | int | None = None
+    accuracy: int = 6
+    code_file: str = ""
+    endScreenObject: screen | None = None
+    Brho: UnitValue | None = None
+
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super().__init__(
+            *args,
+            **kwargs
+        )
         if (
             "input" in self.file_block
             and "particle_definition" in self.file_block["input"]
@@ -39,19 +57,13 @@ class gptLattice(frameworkLattice):
                     "particle_definition"
                 ]
         else:
-            self.particle_definition = self.allElementObjects[self.start].objectname
+            self.particle_definition = self.elementObjects[self.start].name
         self.headers["setfile"] = gpt_setfile(
-            set='"beam"', filename='"' + self.objectname + '.gdf"'
+            set='"beam"', filename='"' + self.name + '.gdf"'
         )
         self.headers["floorplan"] = gpt_writefloorplan(
             filename='"' + self.objectname + '_floor.gdf"'
         )
-        self.ignore_start_screen = None
-        self.screen_step_size = 0.1
-        self.time_step_size = "0.1/c"
-        self.override_meanBz = None
-        self.override_tout = None
-        self.accuracy = 6
 
     @property
     def space_charge_mode(self):
@@ -436,7 +448,7 @@ class gptLattice(frameworkLattice):
         rbf.gdf.write_gdf_beam_file(
             self.global_parameters["beam"],
             self.global_parameters["master_subdir"] + "/" + gdfbeamfilename,
-            normaliseX=self.allElementObjects[self.start].start[0],
+            normaliseX=self.elementObjects[self.start].start[0],
             cathode=cathode,
         )
         self.Brho = self.global_parameters["beam"].Brho
