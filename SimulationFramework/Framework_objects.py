@@ -500,7 +500,7 @@ class frameworkLattice(Munch):
                     raise exc
                 if self.allow_negative_drifts or (round(length, 6) > 0 and vector < 1e-6):
                     elementno += 1
-                    name = "drift" + str(elementno)
+                    name = self.objectname+"_DRIFT_" + str(elementno).zfill(2)
                     middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
                     newdrift = drifttype(
                         name,
