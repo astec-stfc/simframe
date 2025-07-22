@@ -1,5 +1,6 @@
 import os
 import subprocess
+from copy import copy, deepcopy
 import yaml
 from munch import Munch
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -461,7 +462,9 @@ class frameworkLattice(Munch):
                     }
                 )
                 newelements[name] = newdrift
-                newelements[e[0]] = e[1]
+                new_bpm_screen = deepcopy(e[1])
+                new_bpm_screen.length = 0
+                newelements[e[0]] = new_bpm_screen
                 name = e[0] + "-drift-02"
                 newdrift = drifttype(
                     name,
