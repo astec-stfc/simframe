@@ -227,6 +227,7 @@ class gptLattice(frameworkLattice):
         return self.writeElements()
 
     def preProcess(self):
+        super().preProcess()
         self.headers["setfile"].particle_definition = self.objectname + ".gdf"
         prefix = (
             self.file_block["input"]["prefix"]
@@ -369,6 +370,7 @@ class gptLattice(frameworkLattice):
             )
 
     def postProcess(self):
+        super().postProcess()
         cathode = self.particle_definition == "laser"
         gdfbeam = rbf.gdf.read_gdf_beam_file_object(
             self.global_parameters["beam"],
@@ -399,13 +401,11 @@ class gptLattice(frameworkLattice):
             self.global_parameters["beam"],
             filepath,
         )
-        # print('beam charge = ', self.global_parameters['beam'].charge)
         if self.sample_interval > 1:
             self.headers["setreduce"] = gpt_setreduce(
                 set='"beam"',
                 setreduce=int(len(self.global_parameters["beam"].x) / self.sample_interval),
             )
-        # self.headers['settotalcharge'] = gpt_charge(set="\"beam\"", charge=self.global_parameters['beam'].charge)
         if self.override_meanBz is not None and isinstance(
             self.override_meanBz, (int, float)
         ):
@@ -429,7 +429,8 @@ class gptLattice(frameworkLattice):
                 / 2.998e8,
                 step=str(self.time_step_size),
             )
-
+        self.global_parameters["beam"].beam.rematchXPlane(**self.initial_twiss["horizontal"])
+        self.global_parameters["beam"].beam.rematchYPlane(**self.initial_twiss["vertical"])
         gdfbeamfilename = self.objectname + ".gdf"
         cathode = self.particle_definition == "laser"
         rbf.gdf.write_gdf_beam_file(

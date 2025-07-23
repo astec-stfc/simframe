@@ -112,6 +112,7 @@ class csrtrackLattice(frameworkLattice):
         saveFile(self.code_file, self.writeElements())
 
     def preProcess(self):
+        super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
             if "input" in self.file_block and "prefix" in self.file_block["input"]
@@ -120,6 +121,7 @@ class csrtrackLattice(frameworkLattice):
         self.CSRTrackelementObjects["particles"].hdf5_to_astra(prefix)
 
     def postProcess(self):
+        super().postProcess()
         self.CSRTrackelementObjects["monitor"].csrtrack_to_hdf5()
 
 

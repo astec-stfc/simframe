@@ -48,6 +48,7 @@ class mad8Lattice(frameworkLattice):
         saveFile(self.command_file, self.commandFile.write())
 
     def preProcess(self):
+        super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
             if "input" in self.file_block and "prefix" in self.file_block["input"]
@@ -68,6 +69,7 @@ class mad8Lattice(frameworkLattice):
         )
 
     def postProcess(self):
+        super().postProcess()
         if self.trackBeam:
             for s in self.screens:
                 s.tfs_to_hdf5()

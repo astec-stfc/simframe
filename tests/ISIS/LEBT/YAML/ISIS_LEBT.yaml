@@ -1,6 +1,6 @@
 elements:
   ISIS-LEBT-SIM-AP-01:
-    centre: [0.0, 0.0, 0]
+    centre: [0.0, 0.0, 1.142]
     shape: circular
     type: aperture
     radius: 0.1
@@ -8,12 +8,12 @@ elements:
     positive_extent: 1
   ISIS-LEBT-DIA-SCR-01:
     type: screen
-    centre: [0, 0, 0.025]
+    centre: [0, 0, 1.167]
   ISIS-LEBT-MAG-SOL-01:
     type: solenoid
     field_definition: "$master_lattice_location$/sol12.hdf5"
     field_scale: 0.210606
-    centre: [0, 0, 0.225]
+    centre: [0, 0, 1.367]
     global_rotation: [0, 0, 0]
     field_amplitude: 1
     field_type: 1DMagnetoStatic
@@ -21,12 +21,12 @@ elements:
     field_reference_position: middle
   ISIS-LEBT-DIA-SCR-02:
     type: screen
-    centre: [0, 0, 0.6975]
+    centre: [0, 0, 1.8395]
   ISIS-LEBT-MAG-SOL-03:
     type: solenoid
     field_definition: "$master_lattice_location$sol3.hdf5"
     field_scale: 0.928472
-    centre: [0, 0, 0.940]
+    centre: [0, 0, 2.082]
     global_rotation: [0, 0, 0]
     field_amplitude: -0.351984
     field_type: 3DMagnetoStatic
@@ -34,4 +34,4 @@ elements:
     field_reference_position: middle
   ISIS-LEBT-DIA-SCR-03:
     type: screen
-    centre: [0, 0, 1.1440]
+    centre: [0, 0, 2.286]

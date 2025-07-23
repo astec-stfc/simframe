@@ -28,10 +28,11 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.reset_dicts()
     if isinstance(filename, (list, tuple)):
         for f in filename:
-            print('reading new file', f)
+            # print('reading new file', f)
             read_elegant_twiss_files(self, f, reset=False)
     elif os.path.isfile(filename):
         pre, ext = os.path.splitext(filename)
+        lattice_name = os.path.basename(pre)
         self.sddsindex += 1
         elegantObject = SDDSFile(index=(self.sddsindex))
         elegantObject.read_file(pre + ".flr")
@@ -96,6 +97,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append('eta_y', elegantData['etay'])
         self.append('eta_yp', elegantData['etayp'])
         self.append("element_name", elegantData["ElementName"])
+        self.append("lattice_name", np.full(len(elegantData["ElementName"]), lattice_name))
         # ## BEAM parameters
         self.append("ecnx", elegantData["ecnx"])
         self.append("ecny", elegantData["ecny"])

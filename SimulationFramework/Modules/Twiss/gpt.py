@@ -20,6 +20,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         for f in filename:
             self.read_gdf_twiss_files(filename=f, reset=False)
     elif os.path.isfile(filename):
+        lattice_name = os.path.basename(filename).split(".")[0]
         if gdfbeam is None and filename is not None:
             self.gdfbeam = gdfbeamdata = read_gdf_emit_file_object(self, filename)
 
@@ -104,7 +105,8 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.append("eta_xp", np.zeros(len(gdfbeamdata.stdx)))
         self.append('eta_y', np.zeros(len(gdfbeamdata.stdy)))
         self.append('eta_yp', np.zeros(len(gdfbeamdata.stdy)))
-        self.append("element_name", np.zeros(len(gdfbeamdata.stdx)))
+        self.append("element_name", np.full(len(gdfbeamdata.stdx), ""))
+        self.append("lattice_name", np.full(len(gdfbeamdata.stdx), lattice_name))
         # ## BEAM parameters
         self.append("ecnx", np.zeros(len(gdfbeamdata.stdx)))
         self.append("ecny", np.zeros(len(gdfbeamdata.stdx)))

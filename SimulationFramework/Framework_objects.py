@@ -1,5 +1,6 @@
 import os
 import subprocess
+from copy import copy, deepcopy
 import yaml
 from munch import Munch
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -186,7 +187,7 @@ class frameworkLattice(Munch):
             print(("WARNING: Element ", element, " does not exist"))
             return {}
 
-    def getElementType(self, type, param=None):
+    def getElementType(self, type, param=None) -> list | tuple | zip:
         if isinstance(type, (list, tuple)):
             return [self.getElementType(t, param=param) for t in type]
         if isinstance(param, (list, tuple)):
@@ -356,10 +357,45 @@ class frameworkLattice(Munch):
                 command, stdout=f, cwd=self.global_parameters["master_subdir"]
             )
 
-    def postProcess(self):
-        pass
+    def getInitialTwiss(self):
+        """Get the initial Twiss parameters from the file block"""
+        if "input" in self.file_block and "twiss" in self.file_block["input"] and self.file_block["input"]["twiss"]:
+            alpha_x = self.file_block["input"]["twiss"]["alpha_x"] if "alpha_x" in self.file_block["input"]["twiss"] else False
+            alpha_y = self.file_block["input"]["twiss"]["alpha_y"] if "alpha_y" in self.file_block["input"]["twiss"] else False
+            beta_x = self.file_block["input"]["twiss"]["beta_x"] if "beta_x" in self.file_block["input"]["twiss"] else False
+            beta_y = self.file_block["input"]["twiss"]["beta_y"] if "beta_y" in self.file_block["input"]["twiss"] else False
+            nemit_x = self.file_block["input"]["twiss"]["nemit_x"] if "nemit_x" in self.file_block["input"]["twiss"] else False
+            nemit_y = self.file_block["input"]["twiss"]["nemit_y"] if "nemit_y" in self.file_block["input"]["twiss"] else False
+            return {
+                "horizontal": {
+                    "alpha": alpha_x,
+                    "beta": beta_x,
+                    "nEmit": nemit_x,
+                },
+                "vertical": {
+                    "alpha": alpha_y,
+                    "beta": beta_y,
+                    "nEmit": nemit_y,
+                    }
+            }
+        else:
+            return {
+                "horizontal": {
+                    "alpha": False,
+                    "beta": False,
+                    "nEmit": False,
+                },
+                "vertical": {
+                    "alpha": False,
+                    "beta": False,
+                    "nEmit": False,
+                }
+            }
 
     def preProcess(self):
+        self.initial_twiss = self.getInitialTwiss()
+
+    def postProcess(self):
         pass
 
     def __repr__(self):
@@ -426,7 +462,9 @@ class frameworkLattice(Munch):
                     }
                 )
                 newelements[name] = newdrift
-                newelements[e[0]] = e[1]
+                new_bpm_screen = deepcopy(e[1])
+                new_bpm_screen.length = 0
+                newelements[e[0]] = new_bpm_screen
                 name = e[0] + "-drift-02"
                 newdrift = drifttype(
                     name,
@@ -465,7 +503,7 @@ class frameworkLattice(Munch):
                     raise exc
                 if self.allow_negative_drifts or (round(length, 6) > 0 and vector < 1e-6):
                     elementno += 1
-                    name = "drift" + str(elementno)
+                    name = self.objectname+"_DRIFT_" + str(elementno).zfill(2)
                     middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
                     newdrift = drifttype(
                         name,
@@ -543,10 +581,11 @@ class frameworkLattice(Munch):
         elems = self.getElems()
         return names, elems, z
 
-    def findS(self, elem):
+    def findS(self, elem) -> list:
         if elem in self.allElements:
             sNames = self.getSNames()
             return [a for a in sNames if a[0] == elem]
+        return []
 
     def updateRunSettings(self, runSettings):
         if isinstance(runSettings, runSetup):

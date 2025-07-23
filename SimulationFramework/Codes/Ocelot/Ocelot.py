@@ -116,6 +116,7 @@ class ocelotLattice(frameworkLattice):
         )
 
     def preProcess(self):
+        super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
             if "input" in self.file_block and "prefix" in self.file_block["input"]
@@ -146,6 +147,7 @@ class ocelotLattice(frameworkLattice):
         self.tws, self.pout = track(self.lat_obj, pin, navi=navi)
 
     def postProcess(self):
+        super().postProcess()
         bfname = (
             f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.ocelot.npz'
         )

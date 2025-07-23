@@ -335,8 +335,9 @@ class Particles(Munch):
     def performTransformation(self, x, xp, beta=False, alpha=False, nEmit=False):
         p = self.cp
         pAve = np.mean(p)
+        gamma = np.mean(self.gamma)
         p = [a / pAve - 1 for a in p]
-        eta1, etap1, _ = self.calculate_etax()
+        eta1, etap1, _ = self.twiss.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1
@@ -352,7 +353,7 @@ class Particles(Munch):
         R21 = (alpha1 - alpha2) / np.sqrt(beta1 * beta2)
         R22 = beta1 / np.sqrt(beta1 * beta2)
         if nEmit is not False:
-            factor = np.sqrt(nEmit / (emit * pAve))
+            factor = np.sqrt(float(nEmit) / (emit * gamma))
             R11 *= factor
             R12 *= factor
             R22 *= factor
@@ -365,28 +366,30 @@ class Particles(Munch):
         return x, xp
 
     def rematchXPlane(self, beta=False, alpha=False, nEmit=False):
-        x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
-        self["x"] = x
-        self["xp"] = xp
+        if not (beta is False and alpha is False):
+            x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
+            self["x"] = x
+            self["xp"] = xp
 
-        cpz = self.cp / np.sqrt(self["xp"] ** 2 + self.yp**2 + 1)
-        cpx = self["xp"] * cpz
-        cpy = self.yp * cpz
-        self["px"] = cpx * self.q_over_c
-        self["py"] = cpy * self.q_over_c
-        self["pz"] = cpz * self.q_over_c
+            cpz = self.cp / np.sqrt(self["xp"] ** 2 + self.yp**2 + 1)
+            cpx = self["xp"] * cpz
+            cpy = self.yp * cpz
+            self["px"] = cpx * self.q_over_c
+            self["py"] = cpy * self.q_over_c
+            self["pz"] = cpz * self.q_over_c
 
     def rematchYPlane(self, beta=False, alpha=False, nEmit=False):
-        y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
-        self["y"] = y
-        self["yp"] = yp
+        if not (beta is False and alpha is False):
+            y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
+            self["y"] = y
+            self["yp"] = yp
 
-        cpz = self.cp / np.sqrt(self.xp**2 + self["yp"] ** 2 + 1)
-        cpx = self.xp * cpz
-        cpy = self["yp"] * cpz
-        self["px"] = cpx * self.q_over_c
-        self["py"] = cpy * self.q_over_c
-        self["pz"] = cpz * self.q_over_c
+            cpz = self.cp / np.sqrt(self.xp ** 2 + self["yp"] ** 2 + 1)
+            cpx = self.xp * cpz
+            cpy = self["yp"] * cpz
+            self["px"] = cpx * self.q_over_c
+            self["py"] = cpy * self.q_over_c
+            self["pz"] = cpz * self.q_over_c
 
     def performTransformationPeakISlice(
         self, xslice, xpslice, x, xp, beta=False, alpha=False, nEmit=False
@@ -394,7 +397,7 @@ class Particles(Munch):
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
-        eta1, etap1, _ = self.calculate_etax()
+        eta1, etap1, _ = self.twiss.calculate_etax()
         for i, ii in enumerate(x):
             x[i] -= p[i] * eta1
             xp[i] -= p[i] * etap1
