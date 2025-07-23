@@ -49,6 +49,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit):
     )
 
     self.append("z", z)
+    self.append("s", z)
     self.append("t", t)
     self.append("kinetic_energy", e_kin)
     gamma = 1 + (e_kin / self.E0_eV)
@@ -57,7 +58,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit):
     cp = np.sqrt(e_kin * (2 * self.E0_eV + e_kin))
     self.append("cp", cp)
     self.append("mean_cp", cp)
-    p = cp * constants.elementary_charge * self.q_over_c
+    p = cp * self.q_over_c
     self.append("p", p)
     self.append("enx", exn)
     ex = exn / gamma

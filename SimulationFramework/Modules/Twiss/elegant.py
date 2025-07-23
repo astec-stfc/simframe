@@ -9,34 +9,18 @@ def read_elegant_floor_file(
 ):
     if reset:
         self.reset_dicts()
-    elegantObject = read_sdds_file(filename)
+    elegantObject = SDDSFile(index=(self.sddsindex))
+    elegantObject.read_file(filename)
     elegantData = elegantObject.data
-    self["x"] = twissData(
-        [np.round(x + offset[0], decimals=6) for x in elegantData["X"]], units="m"
-    )
-    self["y"] = twissData(
-        [np.round(y + offset[1], decimals=6) for y in elegantData["Y"]], units="m"
-    )
-    self["z"] = twissData(
-        [np.round(z + offset[2], decimals=6) for z in elegantData["Z"]], units="m"
-    )
-    self["theta"] = twissData(
-        [np.round(theta + rotation[0], decimals=6) for theta in elegantData["theta"]],
-        units="radians",
-    )
-    self["phi"] = twissData(
-        [np.round(phi + rotation[1], decimals=6) for phi in elegantData["phi"]],
-        units="radians",
-    )
-    self["psi"] = twissData(
-        [np.round(psi + rotation[2], decimals=6) for psi in elegantData["psi"]],
-        units="radians",
-    )
+    self["x"] = [np.round(x + offset[0], decimals=6) for x in elegantData["X"]]
+    self["y"] = [np.round(y + offset[1], decimals=6) for y in elegantData["Y"]]
+    self["z"] = [np.round(z + offset[2], decimals=6) for z in elegantData["Z"]]
+    self["theta"] = [np.round(theta + rotation[0], decimals=6) for theta in elegantData["theta"]]
+    self["phi"] = [np.round(phi + rotation[1], decimals=6) for phi in elegantData["phi"]]
+    self["psi"] = [np.round(psi + rotation[2], decimals=6) for psi in elegantData["psi"]]
     xyz = list(zip(self["x"], self["y"], self["z"]))
     thetaphipsi = list(zip(self["phi"], self["psi"], self["theta"]))
-    return list(zip(elegantData["ElementName"], xyz[-1:] + xyz[:-1], xyz, thetaphipsi))[
-        1:
-    ]
+    return list(zip(elegantData["ElementName"], xyz[-1:] + xyz[:-1], xyz, thetaphipsi))[1:]
 
 
 def read_elegant_twiss_files(self, filename, startS=0, reset=True):
@@ -63,15 +47,14 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
                 elegantData[k] = elegantData[k][0]
         z = elegantData["Z"]
         self.append("z", z)
-        cp = elegantData["pCentral0"] * self.E0
-        # self.append('cp', cp)
-        self.append("cp", cp / constants.elementary_charge)
-        self.append("mean_cp", cp / constants.elementary_charge)
-        ke = np.array(
-            (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
-        )
+        self.append("s", elegantData["s"])
+        cp = elegantData["pCentral0"] * (self.E0_eV)
+        E = np.sqrt(cp**2 + self.E0_eV**2)
+        self.append("cp", cp)
+        self.append("mean_cp", cp)
+        ke = E - self.E0_eV
         self.append("kinetic_energy", ke)
-        gamma = 1 + ke / self.E0_eV
+        gamma = E / self.E0_eV
         self.append("gamma", gamma)
         self.append("mean_gamma", gamma)
         self.append("p", cp * self.q_over_c)
@@ -103,7 +86,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.append("sigma_z", elegantData["St"] * (beta * constants.speed_of_light))
         # self.append('sigma_cp', elegantData['Sdelta'] * cp )
         self.append(
-            "sigma_cp", elegantData["Sdelta"] * cp / constants.elementary_charge
+            "sigma_cp", elegantData["Sdelta"] * cp
         )
         # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
         self.append("sigma_p", elegantData["Sdelta"])

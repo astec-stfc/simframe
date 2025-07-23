@@ -1355,8 +1355,9 @@ class frameworkElement(frameworkObject):
         string = self.objectname + ": " + etype
         k1 = self.k1 if self.k1 is not None else 0
         k2 = self.k2 if self.k2 is not None else 0
+        k3 = self.k3 if self.k3 is not None else 0
         keydict = merge_two_dicts(
-            {"k1": k1, "k2": k2},
+            {"k1": k1, "k2": k2, "k3": k3},
             merge_two_dicts(self.objectproperties, self.objectdefaults),
         )
         for key, value in keydict.items():
@@ -1406,8 +1407,9 @@ class frameworkElement(frameworkObject):
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
         k1 = self.k1 if self.k1 is not None else 0
         k2 = self.k2 if self.k2 is not None else 0
+        k3 = self.k3 if self.k3 is not None else 0
         keydict = merge_two_dicts(
-            {"k1": k1, "k2": k2},
+            {"k1": k1, "k2": k2, "k3": k3},
             merge_two_dicts(self.objectproperties, self.objectdefaults),
         )
         for key, value in keydict.items():

@@ -182,18 +182,24 @@ class cavity(frameworkElement):
 
                     # In ELEGANT the voltages need to be compensated
                     if key == "volt":
-                        value = abs(
-                            (self.cells + 4.1)
-                            * self.cell_length
-                            * (1 / np.sqrt(2))
-                            * value
-                        )
+                        if self.Structure_Type == "TravellingWave":
+                            value = abs(
+                                (self.cells + 4.1)
+                                * self.cell_length
+                                * (1 / np.sqrt(2))
+                                * value
+                            )
+                        else:
+                            value = value
                     # If using rftmez0 or similar
                     if key == "ez_peak":
                         value = abs(1e-3 / (np.sqrt(2)) * value)
 
+                    if key == "wakefile":
+                        value = "\"" + value + "\""
+
                     # In CAVITY NKICK = n_cells
-                    if key == "n_kicks" and self.cells > 0:
+                    if key == "n_kicks" and self.cells > 1:
                         value = 3 * self.cells
 
                     if key == "n_bins" and value > 0:
@@ -234,13 +240,16 @@ class cavity(frameworkElement):
                 )
                 if self.objecttype in ["cavity", "rf_deflecting_cavity"]:
                     if key == "field_amplitude":
-                        value = (
-                            value
-                            * 1e-9
-                            * abs(
-                                (self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2))
+                        if self.Structure_Type == "TravellingWave":
+                            value = (
+                                value
+                                * 1e-9
+                                * abs(
+                                    (self.cells + 5.5) * self.cell_length * (1 / np.sqrt(2))
+                                )
                             )
-                        )
+                        else:
+                            value = value * 1e-9
                 setattr(obj, self._convertKeword_Ocelot(key), value)
         scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
         return [obj, scr]
@@ -252,7 +261,7 @@ class cavity(frameworkElement):
         field_file_name = self.generate_field_file_name(
             self.field_definition, code="gpt"
         )
-        wakefield_file_name = self.generate_field_file_name(
+        self.generate_field_file_name(
             self.wakefield_definition, code="gpt"
         )
         """

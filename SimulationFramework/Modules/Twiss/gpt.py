@@ -46,9 +46,11 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
 
             # original code begins
             self.append("z", gdfbeamdata.avgz)
+            self.append("s", gdfbeamdata.avgz)
 
         elif hasattr(gdfbeamdata, "position"):
             self.append("z", gdfbeamdata.position)
+            self.append("s", gdfbeamdata.position)
         cp = self.E0 * np.sqrt(gdfbeamdata.avgG**2 - 1)
         self.append("cp", cp / constants.elementary_charge)
         self.append("mean_cp", cp / constants.elementary_charge)
