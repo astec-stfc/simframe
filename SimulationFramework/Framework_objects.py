@@ -253,6 +253,14 @@ class frameworkLattice(BaseModel):
                 cls.globalSettings = value["global"]
         return value
 
+    def __setattr__(self, name, value):
+        # Let Pydantic set known fields normally
+        if name in self.model_fields:
+            super().__setattr__(name, value)
+        else:
+            # Store extras in __dict__ (allowed by Config.extra = 'allow')
+            self.__dict__[name] = value
+
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
             k, v = self.elements.popitem(False)
@@ -400,19 +408,16 @@ class frameworkLattice(BaseModel):
     @property
     def start(self):
         if "start_element" in self.file_block["output"]:
-            print('here')
             return self.file_block["output"]["start_element"]
         elif "zstart" in self.file_block["output"]:
-            print(self.file_blocks["output"]["zstart"])
             for e in list(self.elementObjects.keys()):
-                print(f'{e} {np.array(self.elementObjects[e].position_start[2])}')
                 if (
                     self.elementObjects[e].position_start[2]
                     == self.file_block["output"]["zstart"]
                 ):
                     return e
+                return self.elementObjects[0]
         else:
-            print('her1')
             return self.elementObjects[0]
 
     @property
@@ -769,6 +774,14 @@ class frameworkObject(BaseModel):
             raise ValueError("objecttype must be a string.")
         return value
 
+    def __setattr__(self, name, value):
+        # Let Pydantic set known fields normally
+        if name in self.model_fields:
+            super().__setattr__(name, value)
+        else:
+            # Store extras in __dict__ (allowed by Config.extra = 'allow')
+            self.__dict__[name] = value
+
     def change_Parameter(self, key, value):
         setattr(self, key, value)
 
@@ -1118,12 +1131,11 @@ class frameworkElement(frameworkObject):
     position_errors: List[float] = [0, 0, 0]
     rotation_errors: List[float] = [0, 0, 0]
     global_rotation: List[float] = [0, 0, 0]
-    rotation: List[float] = [0, 0, 0]
+    rotation: List[float] | float = [0, 0, 0]
     starting_rotation: float = 0.0
     conversion_rules_elegant: Dict = {}
     conversion_rules_ocelot: Dict = {}
-    position_start: List[float] = Field(default_factory=lambda: [0, 0, 0])
-    position_end: List[float] = Field(default_factory=lambda: [0, 0, 0])
+    starting_offset: List[float] = [0, 0, 0]
 
     def __init__(
             self,
@@ -1165,6 +1177,14 @@ class frameworkElement(frameworkObject):
                 keyword_conversion_rules_ocelot[value],
             )
         return value
+
+    def __setattr__(self, name, value):
+        # Let Pydantic set known fields normally
+        if name in self.model_fields:
+            super().__setattr__(name, value)
+        else:
+            # Store extras in __dict__ (allowed by Config.extra = 'allow')
+            self.__dict__[name] = value
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -1371,8 +1391,6 @@ class frameworkElement(frameworkObject):
             offset=self.starting_offset,
             theta=self.y_rot,
         )
-        print(f'start = {start}, centre = {self.centre}, length = {self.length}, y_rot = {self.y_rot}')
-        print(f'middle = {middle}, offset = {self.starting_offset}')
         return start
 
     @property

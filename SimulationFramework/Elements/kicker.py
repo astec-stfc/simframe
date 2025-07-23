@@ -16,6 +16,15 @@ class kicker(dipole):
             **kwargs
         )
 
+
+    def __setattr__(self, name, value):
+        # Let Pydantic set known fields normally
+        if name in self.model_fields:
+            super().__setattr__(name, value)
+        else:
+            # Store extras in __dict__ (allowed by Config.extra = 'allow')
+            self.__dict__[name] = value
+
     @property
     def angle(self):
         hkick = self.horizontal_kick if self.horizontal_kick is not None else 0

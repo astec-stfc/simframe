@@ -32,7 +32,6 @@ class dipole(frameworkElement):
     edge1_effects: int = 1
     edge2_effects: int = 1
 
-
     def __init__(
             self,
             *args,
@@ -42,6 +41,15 @@ class dipole(frameworkElement):
             *args,
             **kwargs,
         )
+
+
+    def __setattr__(self, name, value):
+        # Let Pydantic set known fields normally
+        if name in self.model_fields:
+            super().__setattr__(name, value)
+        else:
+            # Store extras in __dict__ (allowed by Config.extra = 'allow')
+            self.__dict__[name] = value
 
     # @property
     # def middle(self):
@@ -138,9 +146,11 @@ class dipole(frameworkElement):
 
     @property
     def position_start(self):
+        print(f'centre = {self.centre}, angle = {self.angle}, length = {self.length}')
         middle = self.centre
         angle = -self.angle
         len = self.length
+        print(f'middle = {middle}, angle = {angle}, len = {len}')
         if abs(angle) > 0:
             cx = 0
             cy = 0
@@ -149,6 +159,7 @@ class dipole(frameworkElement):
         else:
             vec = [0, 0, -len / 2.0]
         # print(self.objectname, 'start', np.array(middle) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot))
+        print(f'start vec = {vec}, offset = {self.starting_offset}, theta = {self.y_rot}')
         return np.array(middle) + self.rotated_position(
             np.array(vec), offset=self.starting_offset, theta=self.y_rot
         )

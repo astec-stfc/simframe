@@ -2,6 +2,7 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class aperture(frameworkElement):
+    number_of_elements: int = 1
 
     def __init__(
             self,
@@ -12,7 +13,6 @@ class aperture(frameworkElement):
             *args,
             **kwargs
         )
-        self.number_of_elements = 1
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         return ""

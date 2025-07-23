@@ -604,8 +604,10 @@ class Framework(Munch):
         """Checks that there are no positioning errors in the lattice and returns True/False"""
         noerror = True
         for elem in self.elementObjects.values():
+            print(elem.objectname)
+            print(elem.start)
             start = elem.position_start
-            end = elem.position_end
+            end = elem.end
             length = elem.length
             theta = elem.global_rotation[2]
             if elem.objecttype == "dipole" and abs(float(elem.angle)) > 0:

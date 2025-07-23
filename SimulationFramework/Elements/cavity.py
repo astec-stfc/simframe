@@ -40,6 +40,7 @@ class cavity(frameworkElement):
     ez_peak: float | None = None
     field_definition: str | field | None = None
     wakefield_definition: str | field | None = None
+    Structure_Type: str | None = None
 
     def __init__(
             self,

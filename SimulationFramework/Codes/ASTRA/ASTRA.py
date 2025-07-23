@@ -147,7 +147,8 @@ class astraLattice(frameworkLattice):
             self.globalSettings["global_errors"] = {}
         if "global_errors" in self.file_block or "global_errors" in self.globalSettings:
             self.global_error = global_error(
-                name=self.objectname + "_global_error",
+                objectname=self.objectname + "_global_error",
+                objecttype="global_error",
                 global_parameters=self.global_parameters,
             )
             self.headers["global_errors"] = astra_errors(
@@ -401,8 +402,15 @@ class astraLattice(frameworkLattice):
 
 class astra_header(frameworkElement):
 
-    def __init__(self, name=None, type=None, **kwargs):
-        super(astra_header, self).__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(astra_header, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def framework_dict(self):
         return dict()
@@ -423,17 +431,35 @@ class astra_header(frameworkElement):
 
 
 class astra_newrun(astra_header):
-    def __init__(self, offset, rotation, **kwargs):
-        super(astra_header, self).__init__("newrun", "astra_newrun", **kwargs)
-        self.starting_offset = offset
-        self.starting_rotation = rotation
-        self.sample_interval = 1
-        if "run" not in kwargs:
-            self.run = 1
-        if "head" not in kwargs:
-            self.head = "trial"
-        if "lprompt" not in kwargs:
-            self.add_property("lprompt", False)
+    sample_interval: int = 1
+    run: int = 1
+    head: str = "trial"
+    lprompt: bool = False
+    input_particle_definition: str = ""
+    output_particle_definition: str = ""
+    high_res: bool = True
+    auto_phase: bool = True
+    bunch_charge: float | None = None
+    toffset: float | None = None
+
+
+    def __init__(
+            self,
+            offset,
+            rotation,
+            objectname="newrun",
+            objecttype="astra_newrun",
+            *args,
+            **kwargs,
+    ):
+        super(astra_header, self).__init__(
+            offset=offset,
+            rotation=rotation,
+            objectname=objectname,
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
 
     def framework_dict(self):
         astradict = {
@@ -463,8 +489,8 @@ class astra_newrun(astra_header):
         self.global_parameters["beam"].beam.rematchYPlane(**initial_twiss["vertical"])
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
-            self.starting_rotation,
-            preOffset=self.starting_offset,
+            self.rotation,
+            preOffset=self.offset,
         )
         astrabeamfilename = self.output_particle_definition
         rbf.astra.write_astra_beam_file(
@@ -475,17 +501,31 @@ class astra_newrun(astra_header):
 
 
 class astra_output(astra_header):
-    def __init__(self, screens, offset, rotation, **kwargs):
-        super(astra_header, self).__init__("output", "astra_output", **kwargs)
-        self.screens = screens
-        self.starting_offset = offset
-        self.starting_rotation = rotation
+    def __init__(
+            self,
+            screens,
+            offset,
+            rotation,
+            objectname="output",
+            objecttype="astra_output",
+            *args,
+            **kwargs
+    ):
+        super(astra_header, self).__init__(
+            screens=screens,
+            offset=offset,
+            rotation=rotation,
+            objectname=objectname,
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
 
     def framework_dict(self):
-        self.start_element.starting_offset = self.starting_offset
-        self.end_element.starting_offset = self.starting_offset
-        self.start_element.starting_rotation = self.starting_rotation
-        self.end_element.starting_rotation = self.starting_rotation
+        self.start_element.starting_offset = self.offset
+        self.end_element.starting_offset = self.offset
+        self.start_element.starting_rotation = self.rotation
+        self.end_element.starting_rotation = self.rotation
         # print self.end_element.objectname, self.end_element.end, self.start_element.objectname, self.start_element.end
         keyworddict = dict(
             [
@@ -504,8 +544,8 @@ class astra_output(astra_header):
             ]
         )
         for i, element in enumerate(self.screens, 1):
-            element.starting_offset = self.starting_offset
-            element.starting_rotation = self.starting_rotation
+            element.starting_offset = self.offset
+            element.starting_rotation = self.rotation
             keyworddict["Screen(" + str(i) + ")"] = {"value": element.middle[2]}
             # if abs(element.theta) > 0:
             # keyworddict['Scr_xrot('+str(i)+')'] = {'value': element.theta}
@@ -513,10 +553,31 @@ class astra_output(astra_header):
 
 
 class astra_charge(astra_header):
-    def __init__(self, **kwargs):
-        super(astra_header, self).__init__("charge", "astra_charge", **kwargs)
-        self.npart = 2 ** (3 * 5)
-        self.sample_interval = 1
+    npart: int = 2 ** (3 * 5)
+    sample_interval: int = 1
+    space_charge_mode: str = "False"
+    space_charge_2D: bool = True
+    space_charge_3D: bool = False
+    grid_size: int = 32
+    cathode: bool = False
+    min_grid: float | None = None
+    max_scale: float | None = None
+    cell_var: float | None = None
+    nrad: int | None = None
+    nlong_in: int | None = None
+
+    def __init__(
+            self,
+            objectname="charge",
+            objecttype="astra_charge",
+            *args,
+            **kwargs,
+    ):
+        super(astra_header, self).__init__(
+            objectname=objectname,
+            objecttype=objecttype,
+            *args,
+            **kwargs)
         self.grids = getGrids()
 
     @property
@@ -527,14 +588,6 @@ class astra_charge(astra_header):
             or self.space_charge_mode is None
             or self.space_charge_mode == "None"
         )
-
-    @property
-    def space_charge_2D(self):
-        return self.space_charge and self.space_charge_mode != "3D"
-
-    @property
-    def space_charge_3D(self):
-        return self.space_charge and not self.space_charge_2D
 
     @property
     def grid_size(self):
@@ -580,13 +633,26 @@ class astra_charge(astra_header):
 
 
 class astra_errors(astra_header):
-    def __init__(self, element=None, **kwargs):
-        super(astra_errors, self).__init__("astra_error", "global_error", **kwargs)
+    global_errors: bool = True
+    Log_Error: bool = True
+    generate_output: bool = True
+    Suppress_output: bool = False
+
+    def __init__(
+            self,
+            element=None,
+            objectname="astra_error",
+            objecttype="global_error",
+            *args,
+            **kwargs,
+    ):
+        super(astra_errors, self).__init__(
+            objectname=objectname,
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
         self._element = element
-        self.add_property("global_errors", True)
-        self.add_property("Log_Error", True)
-        self.add_property("generate_output", True)
-        self.add_property("Suppress_output", False)
 
     def write_ASTRA(self, n):
         keyword_dict = {}

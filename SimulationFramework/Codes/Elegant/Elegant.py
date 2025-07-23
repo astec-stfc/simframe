@@ -42,8 +42,8 @@ class elegantLattice(frameworkLattice):
         super(elegantLattice, self).__init__(*args, **kwargs)
         self.particle_definition = self.elementObjects[self.start].objectname
         self.q = charge(
-            name="START",
-            type="charge",
+            objectname="START",
+            objecttype="charge",
             global_parameters=self.global_parameters,
             **{"total": 250e-12}
         )
