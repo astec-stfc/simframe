@@ -6,8 +6,15 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 class kicker(dipole):
 
-    def __init__(self, name=None, type="kicker", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(kicker, self).__init__(
+            *args,
+            **kwargs
+        )
 
     @property
     def angle(self):

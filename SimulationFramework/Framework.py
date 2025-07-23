@@ -697,8 +697,6 @@ class Framework(Munch):
         # try:
         if typ is None:
             typ = kwargs["type"]
-        print(name)
-        print(typ)
         element = getattr(frameworkElements, typ)(
             objectname=name, objecttype=typ, global_parameters=self.global_parameters, **kwargs
         )

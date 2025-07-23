@@ -1,10 +1,18 @@
+from SimulationFramework.Elements.beam_arrival_monitor import beam_arrival_monitor
 from SimulationFramework.Elements.screen import screen
 
 
 class beam_position_monitor(screen):
 
-    def __init__(self, name=None, type="beam_position_monitor", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(beam_position_monitor, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def _write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA_dictionary(

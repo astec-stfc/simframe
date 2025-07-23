@@ -3,11 +3,20 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class wiggler(frameworkElement):
+    k: float = 0.0
+    peak_field: float = 0.0
+    radius: float = 0.0
 
-    def __init__(self, name=None, type="wiggler", **kwargs):
-        super().__init__(name, type, **kwargs)
-        # self.add_default('k1l', 0)
-        # self.add_default('n_steps', 1*self.periods)
+
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(wiggler, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def _write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA_dictionary(

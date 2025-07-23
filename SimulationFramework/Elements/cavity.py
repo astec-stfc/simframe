@@ -4,30 +4,58 @@ from SimulationFramework.Framework_objects import (
     type_conversion_rules_Ocelot,
 )
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
+from SimulationFramework.Modules.Fields import field
 import numpy as np
+from pydantic import field_validator
 
 
 class cavity(frameworkElement):
-    field_type: str
+    field_type: str | None = None
+    tcolumn: str = '"t"'
+    zcolumn: str = '"z"'
+    ezcolumn: str = '"Ez"'
+    wxcolumn: str = '"Wx"'
+    wycolumn: str = '"Wy"'
+    wzcolumn: str = '"Wz"'
+    wakefile: str | None = None
+    zwakefile: str | None = None
+    trwakefile: str | None = None
+    wakefieldcolumstring: str = '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: float = 0.0
+    crest: float = 0.0
+    field_reference_position: str = "start"
+    change_p0: int = 1
+    n_kicks: int = 0
+    end1_focus: int = 1
+    end2_focus: int = 1
+    body_focus_model: str = "SRS"
+    lsc_bins: int = 100
+    current_bins: int = 0
+    interpolate_current_bins: int = 1
+    smooth_current_bins: int = 1
+    coupling_cell_length: float = 0.0
+    frequency: float | None = None
+    cavity_type: str | None = None
+    n_cells: int | float | None = None
+    ez_peak: float | None = None
+    field_definition: str | field | None = None
+    wakefield_definition: str | field | None = None
 
-    def __init__(self, name=None, type="cavity", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("tcolumn", '"t"')
-        self.add_default("zcolumn", '"z"')
-        self.add_default("ezcolumn", '"Ez"')
-        self.add_default("change_p0", 1)
-        self.add_default("n_kicks", self.n_cells)
-        self.add_default("end1_focus", 1)
-        self.add_default("end2_focus", 1)
-        self.add_default("body_focus_model", "SRS")
-        self.add_default("lsc_bins", 100)
-        self.add_default("current_bins", 0)
-        self.add_default("interpolate_current_bins", 1)
-        self.add_default("smooth_current_bins", 1)
-        self.add_default("coupling_cell_length", 0)
-        self.add_default("field_amplitude", 0)
-        self.add_default("crest", 0)
-        self.add_default("field_reference_position", "start")
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(cavity, self).__init__(
+            *args,
+            **kwargs
+        )
+
+    @field_validator("n_kicks", mode="before")
+    @classmethod
+    def validate_n_kicks(cls, v: int) -> int:
+        cls.n_cells = int(v)
+        return int(v)
 
     @property
     def cells(self):

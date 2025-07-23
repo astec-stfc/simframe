@@ -1,14 +1,23 @@
 from SimulationFramework.Framework_objects import frameworkElement, expand_substitution
+from SimulationFramework.Modules.Fields import field
 
 
 class solenoid(frameworkElement):
+    scale_field: bool = True
+    field_scale: float = 1.0
+    field_type: str = "1DMagnetoStatic"
+    default_array_names: list[str] = ["Z", "Bz"]
+    field_definition: str | field | None = None
 
-    def __init__(self, name=None, type="solenoid", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("scale_field", True)
-        self.add_default("field_scale", 1)
-        self.add_default("field_type", "1DMagnetoStatic")
-        self.add_default("default_array_names", ["Z", "Bz"])
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(solenoid, self).__init__(
+            *args,
+            **kwargs
+        )
 
     def _write_ASTRA(self, n, **kwargs):
         field_ref_pos = self.get_field_reference_position()

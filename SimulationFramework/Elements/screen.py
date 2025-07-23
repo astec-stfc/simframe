@@ -6,9 +6,18 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class screen(frameworkElement):
+    beam: rbf.beam | None = None
+    output_filename: str = ""
 
-    def __init__(self, name=None, type="screen", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(screen, self).__init__(
+            *args,
+            **kwargs,
+        )
         self.beam = rbf.beam()
         if "output_filename" not in kwargs:
             self.output_filename = str(self.objectname) + ".sdds"

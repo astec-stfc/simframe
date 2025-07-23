@@ -19,21 +19,29 @@ def add(x, y):
 
 
 class dipole(frameworkElement):
+    csr_bins: int = 100
+    deltaL: float = 0
+    csr_enable: int = 1
+    isr_enable: bool = True
+    n_kicks: int = 8
+    sr_enable: bool = True
+    integration_order: int = 4
+    nonlinear: int = 1
+    smoothing_half_width: int = 1
+    edge_order: int = 2
+    edge1_effects: int = 1
+    edge2_effects: int = 1
 
-    def __init__(self, name=None, type="dipole", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("csr_bins", 100)
-        self.add_default("deltaL", 0)
-        self.add_default("csr_enable", 1)
-        self.add_default("isr_enable", True)
-        self.add_default("n_kicks", 8)
-        self.add_default("sr_enable", True)
-        self.add_default("integration_order", 4)
-        self.add_default("nonlinear", 1)
-        self.add_default("smoothing_half_width", 1)
-        self.add_default("edge_order", 2)
-        self.add_default("edge1_effects", 1)
-        self.add_default("edge2_effects", 1)
+
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(dipole, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     # @property
     # def middle(self):

@@ -2,9 +2,19 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class sextupole(frameworkElement):
+    k2l: float = 0.0
+    n_kicks: int = 20
+    strength_errors: list = [0]
 
-    def __init__(self, name=None, type="sextupole", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(sextupole, self).__init__(
+            *args,
+            **kwargs,
+        )
         self.add_default("k2l", 0)
         self.add_default("n_kicks", 20)
         self.strength_errors = [0]

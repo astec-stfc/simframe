@@ -3,8 +3,15 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 class drift(frameworkElement):
 
-    def __init__(self, name=None, type="drift", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(drift, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     # def _write_Elegant(self):
     #     wholestring=''

@@ -2,14 +2,21 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class quadrupole(frameworkElement):
+    k1l: float = 0.0
+    n_kicks: int = 4
+    field_reference_position: str = "middle"
+    fringe_field_coefficient: float = 0.0
+    strength_errors: list = [0]
 
-    def __init__(self, name=None, type="quadrupole", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("k1l", 0)
-        self.add_default("n_kicks", 4)
-        self.add_default("field_reference_position", "middle")
-        self.add_default("fringe_field_coefficient", 0)
-        self.strength_errors = [0]
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(quadrupole, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     @property
     def k1(self) -> float:

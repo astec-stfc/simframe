@@ -3,5 +3,12 @@ from SimulationFramework.Elements.wall_current_monitor import wall_current_monit
 
 class faraday_cup(wall_current_monitor):
 
-    def __init__(self, name=None, type="faraday_cup", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(faraday_cup, self).__init__(
+            *args,
+            **kwargs,
+        )

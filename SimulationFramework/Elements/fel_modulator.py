@@ -3,11 +3,21 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class fel_modulator(frameworkElement):
+    k1l: float = 0.0
+    n_steps: int = 1
+    periods: int = 1
 
-    def __init__(self, name=None, type="modulator", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("k1l", 0)
-        self.add_default("n_steps", 1 * self.periods)
+    def __init__(
+            self,
+            objecttype="modulator",
+            *args,
+            **kwargs,
+    ):
+        super(fel_modulator, self).__init__(
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
 
     def _write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA_dictionary(

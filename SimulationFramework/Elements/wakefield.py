@@ -5,12 +5,40 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class wakefield(cavity):
+    coupling_cell_length: float = 0.0
+    scale_kick: float = 1.0
+    fringe_field_coefficient: float = None
+    x_offset: float = 0.0
+    y_offset: float = 0.0
+    zcolumn: str = '"z"'
+    wxcolumn: str = '"Wx"'
+    wycolumn: str = '"Wy"'
+    wzcolumn: str = '"Wz"'
+    interpolation_method: int = 2
+    equal_grid: float = 0.66
+    smooth: float = 0.25
+    subbins: int = 10
+    field_definition: str = None
+    waketype: str = "Taylor_Method_F"
+    field_file_name: str = None
+    inputfile: str = None
+    tcolumn: str = '"t"'
+    wcolumn: str = '"Wz"'
 
-    def __init__(self, name=None, type="longitudinal_wakefield", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("coupling_cell_length", 0)
-        self.add_default("scale_kick", 1)
-        self.add_default('fringe_field_coefficient', None)
+
+
+
+    def __init__(
+            self,
+            objecttype="longitudinal_wakefield",
+            *args,
+            **kwargs,
+    ):
+        super(wakefield).__init__(
+            objecttype=objecttype,
+            *args,
+            **kwargs,
+        )
 
     def _write_ASTRA(self, startn):
         field_ref_pos = self.get_field_reference_position()

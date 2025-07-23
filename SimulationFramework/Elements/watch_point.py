@@ -3,5 +3,12 @@ from SimulationFramework.Elements.screen import screen
 
 class watch_point(screen):
 
-    def __init__(self, name=None, type="watch_point", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(watch_point, self).__init__(
+            *args,
+            **kwargs,
+        )

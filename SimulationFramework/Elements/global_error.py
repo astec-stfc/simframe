@@ -3,9 +3,15 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 class global_error(frameworkElement):
 
-    def __init__(self, name=None, type="global_error", **kwargs):
-        super().__init__(name, type, **kwargs)
-        # self._errordict = {}
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(global_error, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def add_Error(self, type, sigma):
         if type in global_Error_Types:

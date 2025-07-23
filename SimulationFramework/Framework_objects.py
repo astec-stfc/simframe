@@ -400,15 +400,19 @@ class frameworkLattice(BaseModel):
     @property
     def start(self):
         if "start_element" in self.file_block["output"]:
+            print('here')
             return self.file_block["output"]["start_element"]
         elif "zstart" in self.file_block["output"]:
+            print(self.file_blocks["output"]["zstart"])
             for e in list(self.elementObjects.keys()):
+                print(f'{e} {np.array(self.elementObjects[e].position_start[2])}')
                 if (
                     self.elementObjects[e].position_start[2]
                     == self.file_block["output"]["zstart"]
                 ):
                     return e
         else:
+            print('her1')
             return self.elementObjects[0]
 
     @property
@@ -730,11 +734,6 @@ class frameworkObject(BaseModel):
         )
         if "global_parameters" in kwargs:
             self.global_parameters = kwargs["global_parameters"]
-        print(f'objecttype = {self.objecttype}, objectname = {self.objectname}')
-        print(merge_two_dicts(
-                elementkeywords[self.objecttype]["keywords"],
-                elementkeywords["common"]["keywords"],
-            ))
         if self.objecttype in commandkeywords:
             self.allowedkeywords = commandkeywords[self.objecttype]
         elif self.objecttype in elementkeywords:
@@ -760,7 +759,6 @@ class frameworkObject(BaseModel):
         """Validate the objectname to ensure it is a string."""
         if not isinstance(value, str):
             raise ValueError("objectname must be a string.")
-        print(value)
         return value
 
     @field_validator("objecttype", mode="before")
@@ -769,7 +767,6 @@ class frameworkObject(BaseModel):
         """Validate the objecttype to ensure it is a string."""
         if not isinstance(value, str):
             raise ValueError("objecttype must be a string.")
-        print(value)
         return value
 
     def change_Parameter(self, key, value):
@@ -1123,8 +1120,10 @@ class frameworkElement(frameworkObject):
     global_rotation: List[float] = [0, 0, 0]
     rotation: List[float] = [0, 0, 0]
     starting_rotation: float = 0.0
-    keyword_conversion_rules_elegant: Dict = keyword_conversion_rules_elegant["general"]
-    keyword_conversion_rules_ocelot: Dict = keyword_conversion_rules_ocelot["general"]
+    conversion_rules_elegant: Dict = {}
+    conversion_rules_ocelot: Dict = {}
+    position_start: List[float] = Field(default_factory=lambda: [0, 0, 0])
+    position_end: List[float] = Field(default_factory=lambda: [0, 0, 0])
 
     def __init__(
             self,
@@ -1135,43 +1134,36 @@ class frameworkElement(frameworkObject):
             *args,
             **kwargs,
         )
-        print(self.objecttype)
-        if self.objecttype in keyword_conversion_rules_elegant:
-            self.keyword_conversion_rules_elegant = merge_two_dicts(
-                self.keyword_conversion_rules_elegant,
-                keyword_conversion_rules_elegant[self.objecttype],
-            )
-        if self.objecttype in keyword_conversion_rules_elegant:
-            self.keyword_conversion_rules_elegant = merge_two_dicts(
-                self.keyword_conversion_rules_elegant,
-                keyword_conversion_rules_elegant[self.objecttype],
-            )
-        self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot[
-            "general"
-        ]
-        if self.objecttype in keyword_conversion_rules_ocelot:
-            self.keyword_conversion_rules_ocelot = merge_two_dicts(
-                self.keyword_conversion_rules_ocelot,
-                keyword_conversion_rules_ocelot[self.objecttype],
-            )
+
+    @field_validator("conversion_rules_elegant", mode="before")
+    @classmethod
+    def validate_conversion_rules_elegant(cls, value: Dict) -> Dict:  #
+        """Validate the conversion rules for elegant."""
+        if not isinstance(value, dict):
+            raise ValueError("conversion_rules_elegant must be a dictionary.")
+        return value
+
+    @field_validator("conversion_rules_ocelot", mode="before")
+    @classmethod
+    def validate_conversion_rules_ocelot(cls, value: Dict) -> Dict:  #
+        """Validate the conversion rules for ocelot."""
+        if not isinstance(value, dict):
+            raise ValueError("conversion_rules_ocelot must be a dictionary.")
+        return value
 
     @field_validator("objecttype", mode="before")
     @classmethod
     def validate_element_type(cls, value: str) -> str:
-        print(value)
-        print(type(value))
         if value in keyword_conversion_rules_elegant:
-            cls.keyword_conversion_rules_elegant = merge_two_dicts(
-                cls.keyword_conversion_rules_elegant,
+            cls.conversion_rules_elegant = merge_two_dicts(
+                keyword_conversion_rules_elegant["general"],
                 keyword_conversion_rules_elegant[value],
             )
         if value in keyword_conversion_rules_ocelot:
-            cls.keyword_conversion_rules_ocelot = merge_two_dicts(
-                cls.keyword_conversion_rules_ocelot,
+            cls.conversion_rules_ocelot = merge_two_dicts(
+                keyword_conversion_rules_ocelot["general"],
                 keyword_conversion_rules_ocelot[value],
             )
-        print(value)
-        print(type(value))
         return value
 
     def __mul__(self, other):
@@ -1186,7 +1178,8 @@ class frameworkElement(frameworkObject):
     def __repr__(self):
         disallowed = [
             "allowedkeywords",
-            "keyword_conversion_rules_elegant",
+            "conversion_rules_elegant",
+            "conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
             "objectname",
@@ -1200,7 +1193,8 @@ class frameworkElement(frameworkObject):
     def propertiesDict(self):
         disallowed = [
             "allowedkeywords",
-            "keyword_conversion_rules_elegant",
+            "conversion_rules_elegant",
+            "conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
             "subelement",
@@ -1377,6 +1371,8 @@ class frameworkElement(frameworkObject):
             offset=self.starting_offset,
             theta=self.y_rot,
         )
+        print(f'start = {start}, centre = {self.centre}, length = {self.length}, y_rot = {self.y_rot}')
+        print(f'middle = {middle}, offset = {self.starting_offset}')
         return start
 
     @property
@@ -1415,13 +1411,19 @@ class frameworkElement(frameworkObject):
         """Updates the field definitions to allow for the relative sub-directory location"""
         if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
             # print('update_field_definition', self.objectname, self.field_definition, self.field_type, self.frequency, self.Structure_Type)
-            self.field_definition = field(
-                filename=expand_substitution(self, self.field_definition),
-                field_type=self.field_type,
-                frequency=self.frequency,
-                cavity_type=self.Structure_Type,
-                n_cells=self.n_cells
-            )
+            field_kwargs = {
+                "filename": expand_substitution(self, self.field_definition),
+                "field_type": self.field_type,
+            }
+            if self.objecttype == "cavity":
+                field_kwargs.update(
+                    {
+                        "frequency": self.frequency,
+                        "cavity_type": self.Structure_Type,
+                        "n_cells": self.n_cells,
+                    }
+                )
+            self.field_definition = field(**field_kwargs)
         if (
             hasattr(self, "wakefield_definition")
             and self.wakefield_definition is not None
@@ -1566,8 +1568,8 @@ class frameworkElement(frameworkObject):
 
     def _convertKeyword_Elegant(self, keyword):
         return (
-            self.keyword_conversion_rules_elegant[keyword]
-            if keyword in self.keyword_conversion_rules_elegant
+            self.conversion_rules_elegant[keyword]
+            if keyword in self.conversion_rules_elegant
             else keyword
         )
 
@@ -1604,8 +1606,8 @@ class frameworkElement(frameworkObject):
 
     def _convertKeword_Ocelot(self, keyword):
         return (
-            self.keyword_conversion_rules_ocelot[keyword]
-            if keyword in self.keyword_conversion_rules_ocelot
+            self.conversion_rules_ocelot[keyword]
+            if keyword in self.conversion_rules_ocelot
             else keyword
         )
 

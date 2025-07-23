@@ -4,8 +4,15 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 class scatter(frameworkElement):
 
-    def __init__(self, name=None, type="scatter", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(scatter, self).__init__(
+            *args,
+            **kwargs,
+        )
         # print('Scatter object ', self.objectname,' - DP = ', self.objectproperties)
 
     def _write_Elegant(self):

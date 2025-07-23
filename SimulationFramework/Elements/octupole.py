@@ -2,12 +2,19 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class octupole(frameworkElement):
+    k3l: float = 0.0
+    n_kicks: int = 20
+    strength_errors: list = [0]
 
-    def __init__(self, name=None, type="octupole", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("k3l", 0)
-        self.add_default("n_kicks", 20)
-        self.strength_errors = [0]
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(octupole, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     @property
     def k3(self):

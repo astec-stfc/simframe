@@ -3,10 +3,17 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class rf_deflecting_cavity(cavity):
+    n_kicks: int = 10
 
-    def __init__(self, name=None, type="rf_deflecting_cavity", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("n_kicks", 10)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(rf_deflecting_cavity, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def _write_Elegant(self):
         wholestring = ""
