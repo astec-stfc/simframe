@@ -116,20 +116,20 @@ class cavity(frameworkElement):
     def set_wakefield_column_names(self, wakefield_file_name: str) -> None:
         self.tcolumn = '"t"'
         if self.wakefield_definition.field_type == "3DWake":
-            self.wakefile = wakefield_file_name
+            self.wakefile = "\"" + wakefield_file_name + "\""
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wzcolumn = '"Wz"'
             self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
         elif self.wakefield_definition.field_type == "LongitudinalWake":
             self.wzcolumn = '"Wz"'
-            self.zwakefile = wakefield_file_name
+            self.zwakefile = "\"" + wakefield_file_name + "\""
             self.wakefieldcolumstring = '"z", "Wz"'
         elif self.wakefield_definition.field_type == "TransverseWake":
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
-            self.trwakefile = wakefield_file_name
+            self.trwakefile = "\"" + wakefield_file_name + "\""
 
     def _write_Elegant(self):
         wholestring = ""
