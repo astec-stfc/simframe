@@ -678,7 +678,7 @@ class Framework(Munch):
             if subelement:
                 if "subelement" in element:
                     del element["subelement"]
-                self.add_Element(elementname, subelement=True, parent=parent, **element)
+                self.add_Element(elementname, subelement=True, **element)
             else:
                 self.add_Element(elementname, **element)
             if "sub_elements" in element:

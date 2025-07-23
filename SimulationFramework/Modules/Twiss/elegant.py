@@ -44,7 +44,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         self.reset_dicts()
     if isinstance(filename, (list, tuple)):
         for f in filename:
-            print('reading new file', f)
+            # print('reading new file', f)
             read_elegant_twiss_files(self, f, reset=False)
     elif os.path.isfile(filename):
         pre, ext = os.path.splitext(filename)

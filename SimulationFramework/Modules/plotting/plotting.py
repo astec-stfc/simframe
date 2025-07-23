@@ -452,8 +452,9 @@ def plot(
         factor_x = 1
 
     # set all but the layout
-    ax_magnet_layout.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
-    ax_magnet_layout.set_xlabel(f"{xkey} ({units_x})")
+    if include_layout is not False:
+        ax_magnet_layout.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
+        ax_magnet_layout.set_xlabel(f"{xkey} ({units_x})")
 
     # Draw for Y1 and Y2
     linestyles = ["solid", "dashed"]
