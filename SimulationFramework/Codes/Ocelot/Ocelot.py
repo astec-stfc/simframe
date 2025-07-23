@@ -126,9 +126,12 @@ class ocelotLattice(frameworkLattice):
         self.hdf5_to_npz(prefix)
 
     def hdf5_to_npz(self, prefix="", write=True):
-        HDF5filename = prefix + self.particle_definition
-        rootname = re.split(r"[\\/]", HDF5filename)
-        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5filename)
+        HDF5filename = prefix + self.particle_definition + ".hdf5"
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], os.path.abspath(filepath),)
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
             f'{self.global_parameters["master_subdir"]}/{self.allElementObjects[self.start].objectname}.hdf5',

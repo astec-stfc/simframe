@@ -30,7 +30,7 @@ def write_HDF5_twiss_file(self, filename, sourcefilename=None, version=2):
             twissgrp["units"] = np.array(list(self.properties.values()), dtype="S")
             array = np.array(
                 [
-                    self[k] if not k == "element_name" else np.array(self[k], dtype="S")
+                    self[k] if not k == "element_name" and not k == "lattice_name" else np.array(self[k], dtype="S")
                     for k in self.properties.keys()
                     if len(self[k]) > 0
                 ]
@@ -39,7 +39,7 @@ def write_HDF5_twiss_file(self, filename, sourcefilename=None, version=2):
         if str(version) == "2":
             for name, unit in self.properties.items():
                 if len(self[name]) > 0:
-                    array = self[name] if not name == "element_name" else np.array(self[name], dtype="S")
+                    array = self[name] if not name == "element_name" and not name == "lattice_name" else np.array(self[name], dtype="S")
                     dataset = twissgrp.create_dataset(name, data=array)
                     dataset.attrs.create('Units', str(unit.unit))
 

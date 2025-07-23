@@ -15,19 +15,22 @@ def read_ocelot_twiss_files(self, filename, reset=True):
             self.read_ocelot_twiss_files(f, reset=False)
     elif os.path.isfile(filename):
         lattice_name = os.path.basename(filename).split(".")[0]
-        if "xemit" not in filename.lower():
-            filename = filename.replace("Yemit", "Xemit").replace("Zemit", "Xemit")
         fdat = {}
-        with np.load(filename) as data:
+        print('loading ocelot twiss file', filename)
+        with np.load(filename, allow_pickle=True) as data:
             for key, value in data.items():
-                fdat.update({key: value})
+                try:
+                    data[key]
+                    fdat.update({key: value})
+                except ValueError:
+                    pass
         interpret_ocelot_data(self, lattice_name, fdat)
 
 
-def interpret_ocelot_data(self, fdat):
+def interpret_ocelot_data(self, lattice_name, fdat):
     self.append("z", fdat["s"])
     self.append("s", fdat["s"])
-    E = fdat["E"] * 1e9
+    E = fdat["_E"] * 1e9
     ke = E - self.E0_eV
     gamma = E / self.E0_eV
     cp = np.sqrt(E**2 - self.E0_eV**2)
@@ -38,18 +41,18 @@ def interpret_ocelot_data(self, fdat):
     self.append("gamma", gamma)
     self.append("mean_gamma", gamma)
     self.append("p", cp * self.q_over_c)
-    self.append("enx", fdat["emit_xn"])
-    self.append("ex", fdat["emit_x"])
-    self.append("eny", fdat["emit_yn"])
-    self.append("ey", fdat["emit_y"])
+    self.append("enx", fdat["_emit_xn"])
+    self.append("ex", fdat["eigemit_1"])
+    self.append("eny", fdat["_emit_yn"])
+    self.append("ey", fdat["eigemit_2"])
     self.append("enz", np.zeros(len(fdat["s"])))
     self.append("ez", np.zeros(len(fdat["s"])))
-    self.append("beta_x", fdat["beta_x"])
-    self.append("alpha_x", fdat["alpha_x"])
-    self.append("gamma_x", fdat["gamma_x"])
-    self.append("beta_y", fdat["beta_y"])
-    self.append("alpha_y", fdat["alpha_y"])
-    self.append("gamma_y", fdat["gamma_y"])
+    self.append("beta_x", fdat["_beta_x"])
+    self.append("alpha_x", fdat["_alpha_x"])
+    self.append("gamma_x", (1 + fdat["_alpha_x"]**2) / fdat["_beta_x"])
+    self.append("beta_y", fdat["_beta_y"])
+    self.append("alpha_y", fdat["_alpha_y"])
+    self.append("gamma_y", (1 + fdat["_alpha_y"]**2) / fdat["_beta_y"])
     self.append("beta_z", np.zeros(len(fdat["s"])))
     self.append("gamma_z", np.zeros(len(fdat["s"])))
     self.append("alpha_z", np.zeros(len(fdat["s"])))
@@ -72,18 +75,18 @@ def interpret_ocelot_data(self, fdat):
     self.append("eta_y", fdat["Dy"])
     self.append("eta_yp", fdat["Dyp"])
     self.append("element_name", np.zeros(len(fdat["s"])))
-    self.append("lattice_name", np.zeros(len(fdat["s"])), lattice_name)
+    self.append("lattice_name", np.full(len(fdat["s"]), lattice_name))
     # ## BEAM parameters
-    self.append("ecnx", fdat["emit_xn"])
-    self.append("ecny", fdat["emit_yn"])
+    self.append("ecnx", fdat["_emit_xn"])
+    self.append("ecny", fdat["_emit_yn"])
     self.append("eta_x_beam", fdat["Dx"])
     self.append("eta_xp_beam", fdat["Dxp"])
     self.append("eta_y_beam", fdat["Dy"])
     self.append("eta_yp_beam", fdat["Dyp"])
-    self.append("beta_x_beam", np.sqrt(fdat["emit_x"] / np.sqrt(fdat["xx"])))
-    self.append("beta_y_beam", np.sqrt(fdat["emit_y"] / np.sqrt(fdat["yy"])))
-    self.append("alpha_x_beam", np.sqrt(fdat["emit_x"] / np.sqrt(fdat["pxpx"])))
-    self.append("alpha_y_beam", np.sqrt(fdat["emit_y"] / np.sqrt(fdat["pypy"])))
+    self.append("beta_x_beam", np.sqrt(fdat["eigemit_1"] / np.sqrt(fdat["xx"])))
+    self.append("beta_y_beam", np.sqrt(fdat["eigemit_2"] / np.sqrt(fdat["yy"])))
+    self.append("alpha_x_beam", np.sqrt(fdat["eigemit_1"] / np.sqrt(fdat["pxpx"])))
+    self.append("alpha_y_beam", np.sqrt(fdat["eigemit_2"] / np.sqrt(fdat["pypy"])))
     self["cp_eV"] = self["cp"]
     self["sigma_cp_eV"] = self["sigma_cp"]
     self["cp_eV"] = self["cp"]
