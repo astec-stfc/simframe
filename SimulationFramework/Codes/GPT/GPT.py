@@ -456,8 +456,8 @@ class gptLattice(frameworkLattice):
 
 class gpt_element(frameworkElement):
 
-    def __init__(self, elementName=None, elementType=None, **kwargs):
-        super(gpt_element, self).__init__(elementName, elementType, **kwargs)
+    def __init__(self, objectname=None, objecttype=None, **kwargs):
+        super(gpt_element, self).__init__(objectname, objecttype, **kwargs)
         # if elementName in gpt_defaults:
         #     for k, v in list(gpt_defaults[elementName].items()):
         #         self.add_default(k, v)
@@ -482,7 +482,7 @@ class gpt_setfile(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_setfile, self).__init__(
-            elementName="setfile", elementType="gpt_setfile", **kwargs
+            objectname="setfile", objecttype="gpt_setfile", **kwargs
         )
 
 
@@ -490,7 +490,7 @@ class gpt_charge(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_charge, self).__init__(
-            elementName="settotalcharge", elementType="gpt_charge", **kwargs
+            objectname="settotalcharge", objecttype="gpt_charge", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -504,7 +504,7 @@ class gpt_setreduce(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_setreduce, self).__init__(
-            elementName="setreduce", elementType="gpt_setreduce", **kwargs
+            objectname="setreduce", objecttype="gpt_setreduce", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -518,7 +518,7 @@ class gpt_accuracy(gpt_element):
 
     def __init__(self, accuracy=6, **kwargs):
         super(gpt_accuracy, self).__init__(
-            elementName="accuracy", elementType="gpt_accuracy", **kwargs
+            objectname="accuracy", objecttype="gpt_accuracy", **kwargs
         )
         self.accuracy = accuracy
 
@@ -533,7 +533,7 @@ class gpt_spacecharge(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_spacecharge, self).__init__(
-            elementName="spacecharge", elementType="gpt_spacecharge", **kwargs
+            objectname="spacecharge", objecttype="gpt_spacecharge", **kwargs
         )
         self.grids = getGrids()
         self.add_default("ngrids", None)
@@ -565,7 +565,7 @@ class gpt_tout(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_tout, self).__init__(
-            elementName="tout", elementType="gpt_tout", **kwargs
+            objectname="tout", objecttype="gpt_tout", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -584,7 +584,7 @@ class gpt_csr1d(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_csr1d, self).__init__(
-            elementName="csr1d", elementType="gpt_csr1d", **kwargs
+            objectname="csr1d", objecttype="gpt_csr1d", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -596,7 +596,7 @@ class gpt_writefloorplan(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_writefloorplan, self).__init__(
-            elementName="writefloorplan", elementType="gpt_writefloorplan", **kwargs
+            objectname="writefloorplan", objecttype="gpt_writefloorplan", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -608,7 +608,7 @@ class gpt_Zminmax(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_Zminmax, self).__init__(
-            elementName="Zminmax", elementType="gpt_Zminmax", **kwargs
+            objectname="Zminmax", objecttype="gpt_Zminmax", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -629,7 +629,7 @@ class gpt_forwardscatter(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_forwardscatter, self).__init__(
-            elementName="forwardscatter", elementType="gpt_forwardscatter", **kwargs
+            objectname="forwardscatter", objecttype="gpt_forwardscatter", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -650,7 +650,7 @@ class gpt_scatterplate(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_scatterplate, self).__init__(
-            elementName="scatterplate", elementType="gpt_scatterplate", **kwargs
+            objectname="scatterplate", objecttype="gpt_scatterplate", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -673,7 +673,7 @@ class gpt_dtmaxt(gpt_element):
 
     def __init__(self, **kwargs):
         super(gpt_dtmaxt, self).__init__(
-            elementName="dtmaxt", elementType="gpt_dtmaxt", **kwargs
+            objectname="dtmaxt", objecttype="gpt_dtmaxt", **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):

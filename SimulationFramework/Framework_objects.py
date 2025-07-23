@@ -20,6 +20,8 @@ import numpy as np
 from pydantic import (
     BaseModel,
     ConfigDict,
+    field_validator,
+    Field,
 )
 from typing import (
     Dict,
@@ -188,7 +190,7 @@ class frameworkLattice(BaseModel):
     lsc_high_frequency_cutoff_end: float = -1
     lsc_low_frequency_cutoff_start: float = -1
     lsc_low_frequency_cutoff_end: float = -1
-    _sample_interval: int = 1
+    sample_interval: int = 1
     globalSettings: Dict = {"charge": None}
     groupSettings: Dict = {}
     allElements: List = []
@@ -221,25 +223,35 @@ class frameworkLattice(BaseModel):
         for key, value in list(self.elementObjects.items()):
             setattr(self, key, value)
         self.allElements = list(self.elementObjects.keys())
-        self.globalSettings = (
-            settings["global"] if settings["global"] is not None else {"charge": None}
-        )
-        self.groupSettings = (
-            file_block["groups"]
-            if "groups" in file_block and file_block["groups"] is not None
-            else {}
-        )
-        self.update_groups()
-        self._sample_interval = (
-            self.file_block["input"]["sample_interval"]
-            if "input" in self.file_block
-            and "sample_interval" in self.file_block["input"]
-            else 1
-        )
         self.objectname = self.name
 
         # define settings for simulations with multiple runs
         self.updateRunSettings(runSettings)
+
+    @field_validator("file_block", mode="before")
+    @classmethod
+    def validate_file_block(cls, value: Dict) -> Dict:
+        """Validate the file_block dictionary to ensure it has the required structure."""
+        if not isinstance(value, dict):
+            raise ValueError("file_block must be a dictionary.")
+        if "groups" in value:
+            if value["groups"] is not None:
+                cls.groupSettings = value["groups"]
+        if "input" in value:
+            if "sample_interval" in value["input"]:
+                cls.sample_interval = value["input"]["sample_interval"]
+        return value
+
+    @field_validator("settings", mode="before")
+    @classmethod
+    def validate_settings(cls, value: Dict) -> Dict:
+        """Validate the settings dictionary to ensure it has the required structure."""
+        if not isinstance(value, dict):
+            raise ValueError("settings must be a dictionary.")
+        if "global" in value:
+            if value["global"] is not None:
+                cls.globalSettings = value["global"]
+        return value
 
     def insert_element(self, index, element):
         for i, _ in enumerate(range(len(self.elements))):
@@ -254,15 +266,6 @@ class frameworkLattice(BaseModel):
     def csr_enable(self, csr):
         self.csrDrifts = csr
         self._csr_enable = csr
-
-    @property
-    def sample_interval(self):
-        return self._sample_interval
-
-    @sample_interval.setter
-    def sample_interval(self, interval):
-        # print('Setting new sample_interval = ', interval)
-        self._sample_interval = interval
 
     @property
     def prefix(self):
@@ -718,21 +721,20 @@ class frameworkObject(BaseModel):
 
     def __init__(
             self,
-            objectname,
-            objecttype,
             *args,
             **kwargs
     ):
-        frameworkObject.objectname = objectname
-        frameworkObject.objecttyp = objecttype
         super(frameworkObject, self).__init__(
-            objectname=objectname,
-            objecttype=objecttype,
             *args,
             **kwargs,
         )
         if "global_parameters" in kwargs:
             self.global_parameters = kwargs["global_parameters"]
+        print(f'objecttype = {self.objecttype}, objectname = {self.objectname}')
+        print(merge_two_dicts(
+                elementkeywords[self.objecttype]["keywords"],
+                elementkeywords["common"]["keywords"],
+            ))
         if self.objecttype in commandkeywords:
             self.allowedkeywords = commandkeywords[self.objecttype]
         elif self.objecttype in elementkeywords:
@@ -746,11 +748,29 @@ class frameworkObject(BaseModel):
                     elementkeywords[self.objecttype]["framework_keywords"],
                 )
         else:
-            print(("Unknown type = ", objecttype))
+            print(("Unknown type = ", self.objecttype))
             raise NameError
         self.allowedkeywords = [x.lower() for x in self.allowedkeywords]
         for key, value in list(kwargs.items()):
             self.add_property(key, value)
+
+    @field_validator("objectname", mode="before")
+    @classmethod
+    def validate_objectname(cls, value: str) -> str:
+        """Validate the objectname to ensure it is a string."""
+        if not isinstance(value, str):
+            raise ValueError("objectname must be a string.")
+        print(value)
+        return value
+
+    @field_validator("objecttype", mode="before")
+    @classmethod
+    def validate_objecttype(cls, value: str) -> str:
+        """Validate the objecttype to ensure it is a string."""
+        if not isinstance(value, str):
+            raise ValueError("objecttype must be a string.")
+        print(value)
+        return value
 
     def change_Parameter(self, key, value):
         setattr(self, key, value)
@@ -1096,38 +1116,63 @@ class frameworkCounter(dict):
             self[type] = self[type] - 1 if self[type] > 0 else 0
         return self[type]
 
-
 class frameworkElement(frameworkObject):
+    length: float = 0.0
+    position_errors: List[float] = [0, 0, 0]
+    rotation_errors: List[float] = [0, 0, 0]
+    global_rotation: List[float] = [0, 0, 0]
+    rotation: List[float] = [0, 0, 0]
+    starting_rotation: float = 0.0
+    keyword_conversion_rules_elegant: Dict = keyword_conversion_rules_elegant["general"]
+    keyword_conversion_rules_ocelot: Dict = keyword_conversion_rules_ocelot["general"]
 
-    def __init__(self, elementName=None, elementType=None, **kwargs):
-        super().__init__(elementName, elementType, **kwargs)
-        self.add_default("length", 0)
-        self.add_property("position_errors", [0, 0, 0])
-        self.add_property("rotation_errors", [0, 0, 0])
-        self.add_default("global_rotation", [0, 0, 0])
-        self.add_default("rotation", [0, 0, 0])
-        self.add_default("starting_rotation", 0)
-        self.keyword_conversion_rules_elegant = keyword_conversion_rules_elegant[
-            "general"
-        ]
-        if elementType in keyword_conversion_rules_elegant:
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(frameworkElement, self).__init__(
+            *args,
+            **kwargs,
+        )
+        print(self.objecttype)
+        if self.objecttype in keyword_conversion_rules_elegant:
             self.keyword_conversion_rules_elegant = merge_two_dicts(
                 self.keyword_conversion_rules_elegant,
-                keyword_conversion_rules_elegant[elementType],
+                keyword_conversion_rules_elegant[self.objecttype],
             )
-        if elementType in keyword_conversion_rules_elegant:
+        if self.objecttype in keyword_conversion_rules_elegant:
             self.keyword_conversion_rules_elegant = merge_two_dicts(
                 self.keyword_conversion_rules_elegant,
-                keyword_conversion_rules_elegant[elementType],
+                keyword_conversion_rules_elegant[self.objecttype],
             )
         self.keyword_conversion_rules_ocelot = keyword_conversion_rules_ocelot[
             "general"
         ]
-        if elementType in keyword_conversion_rules_ocelot:
+        if self.objecttype in keyword_conversion_rules_ocelot:
             self.keyword_conversion_rules_ocelot = merge_two_dicts(
                 self.keyword_conversion_rules_ocelot,
-                keyword_conversion_rules_ocelot[elementType],
+                keyword_conversion_rules_ocelot[self.objecttype],
             )
+
+    @field_validator("objecttype", mode="before")
+    @classmethod
+    def validate_element_type(cls, value: str) -> str:
+        print(value)
+        print(type(value))
+        if value in keyword_conversion_rules_elegant:
+            cls.keyword_conversion_rules_elegant = merge_two_dicts(
+                cls.keyword_conversion_rules_elegant,
+                keyword_conversion_rules_elegant[value],
+            )
+        if value in keyword_conversion_rules_ocelot:
+            cls.keyword_conversion_rules_ocelot = merge_two_dicts(
+                cls.keyword_conversion_rules_ocelot,
+                keyword_conversion_rules_ocelot[value],
+            )
+        print(value)
+        print(type(value))
+        return value
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]

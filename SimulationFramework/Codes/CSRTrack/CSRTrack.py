@@ -127,11 +127,11 @@ class csrtrackLattice(frameworkLattice):
 
 class csrtrack_element(frameworkElement):
 
-    def __init__(self, elementName=None, elementType=None, **kwargs):
-        super(csrtrack_element, self).__init__(elementName, elementType, **kwargs)
+    def __init__(self, objectname=None, objecttype=None, **kwargs):
+        super(csrtrack_element, self).__init__(objectname, objecttype, **kwargs)
         self.header = ""
-        if elementName in csrtrack_defaults:
-            for k, v in list(csrtrack_defaults[elementName].items()):
+        if objectname in csrtrack_defaults:
+            for k, v in list(csrtrack_defaults[objectname].items()):
                 self.add_default(k, v)
 
     def CSRTrack_str(self, s):
@@ -192,7 +192,7 @@ class csrtrack_monitor(csrtrack_element):
 
     def __init__(self, **kwargs):
         super(csrtrack_monitor, self).__init__(
-            elementName="monitor", elementType="csrtrack_monitor", **kwargs
+            objectname="monitor", objecttype="csrtrack_monitor", **kwargs
         )
         self.header = "monitor"
 

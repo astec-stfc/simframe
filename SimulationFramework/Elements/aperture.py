@@ -3,8 +3,15 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 class aperture(frameworkElement):
 
-    def __init__(self, name=None, type="aperture", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(aperture, self).__init__(
+            *args,
+            **kwargs
+        )
         self.number_of_elements = 1
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):

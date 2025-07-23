@@ -8,6 +8,7 @@ import numpy as np
 
 
 class cavity(frameworkElement):
+    field_type: str
 
     def __init__(self, name=None, type="cavity", **kwargs):
         super().__init__(name, type, **kwargs)

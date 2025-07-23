@@ -686,7 +686,7 @@ class Framework(Munch):
                     self.read_Element(name, elem, subelement=True, parent=elementname)
 
     def add_Element(
-        self, name: str | None = None, type: str | None = None, **kwargs
+        self, name: str | None = None, typ: str | None = None, **kwargs
     ) -> dict:
         """Instantiates and adds the element definition to the list of all elements"""
         if name is None:
@@ -694,14 +694,18 @@ class Framework(Munch):
                 raise NameError("Element does not have a name")
             else:
                 name = kwargs["name"]
-        try:
-            element = getattr(frameworkElements, type)(
-                name, type, global_parameters=self.global_parameters, **kwargs
-            )
-            element.update_field_definition()
-        except Exception as e:
-            print('add_Element error:', e)
-            print('add_Element error:', type, name, kwargs)
+        # try:
+        if typ is None:
+            typ = kwargs["type"]
+        print(name)
+        print(typ)
+        element = getattr(frameworkElements, typ)(
+            objectname=name, objecttype=typ, global_parameters=self.global_parameters, **kwargs
+        )
+        element.update_field_definition()
+        # except Exception as e:
+        #     print('add_Element error:', e)
+        #     print('add_Element error:', typ, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:
