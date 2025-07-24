@@ -5,7 +5,6 @@ import lox
 from lox.worker.thread import ScatterGatherDescriptor
 from typing import ClassVar, Dict, List
 
-# from .ASTRARules import ASTRARules
 from ...Framework_objects import (
     frameworkLattice,
     frameworkCounter,
@@ -233,13 +232,13 @@ class astraLattice(frameworkLattice):
                 if element.objecttype == "cavity":
                     elemstr = element.write_ASTRA(
                         counter.counter(element.objecttype),
-                        auto_phase=self.headers["newrun"]["auto_phase"],
+                        auto_phase=self.headers["newrun"].auto_phase,
                     )
                     if t[0] == "wakefields" and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
                         original_properties = {
-                            a: element[a]
+                            a: getattr(element, a[0])
                             for a in element.objectproperties
-                            if a != "objectname" and a != "objecttype"
+                            if a[0] not in ["objectname", "objecttype"]
                         }
                         original_properties['field_definition'] = original_properties['wakefield_definition']
                         wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
@@ -323,7 +322,7 @@ class astraLattice(frameworkLattice):
     def postProcess(self):
         super().postProcess()
         cathode = (
-            self.headers["newrun"]["particle_definition"] == "initial_distribution"
+            self.headers["newrun"].particle_definition == "initial_distribution"
         )
         mult = self.get_screen_scaling()
         for e in self.screens_and_bpms:
@@ -418,8 +417,9 @@ class astra_header(frameworkElement):
     def write_ASTRA(self, n):
         keyword_dict = dict()
         for k in elementkeywords[self.objecttype]["keywords"]:
-            if getattr(self, k.lower()) is not None:
-                keyword_dict[k.lower()] = {"value": getattr(self, k.lower())}
+            if hasattr(self, k.lower()):
+                if getattr(self, k.lower()) is not None:
+                    keyword_dict[k.lower()] = {"value": getattr(self, k.lower())}
         output = "&" + section_header_text_ASTRA[self.objecttype]["header"] + "\n"
         output += (
             self._write_ASTRA_dictionary(
@@ -441,7 +441,6 @@ class astra_newrun(astra_header):
     auto_phase: bool = True
     bunch_charge: float | None = None
     toffset: float | None = None
-
 
     def __init__(
             self,
@@ -664,11 +663,11 @@ class astra_errors(astra_header):
             )
         )
         for k in elementkeywords[self.objecttype]["keywords"]:
-            # print k, conversion[k]
-            if getattr(self, k.lower()) is not None:
-                keyword_dict[conversion[k].lower()] = {
-                    "value": getattr(self, k.lower())
-                }
+            if hasattr(self, k.lower()):
+                if getattr(self, k.lower()) is not None:
+                    keyword_dict[conversion[k].lower()] = {
+                        "value": getattr(self, k.lower())
+                    }
         joineddict = merge_two_dicts(self.framework_dict(), keyword_dict)
         if len(joineddict) > 0:
             output = "&" + section_header_text_ASTRA[self.objecttype]["header"] + "\n"

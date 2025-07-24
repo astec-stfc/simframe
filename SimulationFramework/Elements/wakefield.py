@@ -2,6 +2,7 @@ from SimulationFramework.Elements.cavity import cavity
 from SimulationFramework.Elements.drift import drift
 from SimulationFramework.Framework_objects import elements_Elegant
 from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
+from SimulationFramework.Modules.Fields import field
 
 
 class wakefield(cavity):
@@ -18,24 +19,26 @@ class wakefield(cavity):
     equal_grid: float = 0.66
     smooth: float = 0.25
     subbins: int = 10
-    field_definition: str = None
+    field_definition: str | field | None = None
     waketype: str = "Taylor_Method_F"
     field_file_name: str = None
     inputfile: str = None
     tcolumn: str = '"t"'
     wcolumn: str = '"Wz"'
-
-
+    scale_field_ex: float = 0.0
+    scale_field_ey: float = 0.0
+    scale_field_ez: float = 1.0
+    scale_field_hx: float = 1.0
+    scale_field_hy: float = 0.0
+    scale_field_hz: float = 0.0
 
 
     def __init__(
             self,
-            objecttype="longitudinal_wakefield",
             *args,
             **kwargs,
     ):
-        super(wakefield).__init__(
-            objecttype=objecttype,
+        super(wakefield, self).__init__(
             *args,
             **kwargs,
         )
@@ -104,6 +107,8 @@ class wakefield(cavity):
 
     def set_column_names(self, file_name: str) -> str:
         self.tcolumn = '"t"'
+        if not isinstance(self.field_definition, field):
+            self.update_field_definition()
         if self.field_definition.field_type.lower() == "longitudinalwake":
             etype = "wake"
             self.wcolumn = '"Wz"'

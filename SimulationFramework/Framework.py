@@ -463,26 +463,26 @@ class Framework(Munch):
                 if not self.original_elementObjects[e] == unmunched_element:
                     orig = self.original_elementObjects[e]
                     new = unmunched_element
-                    try:
-                        changedict[e] = {
+                    # try:
+                    changedict[e] = {
+                        k: convert_numpy_types(new[k])
+                        for k in new
+                        if k in orig
+                        and not new[k] == orig[k]
+                        and k not in disallowed
+                    }
+                    changedict[e].update(
+                        {
                             k: convert_numpy_types(new[k])
                             for k in new
-                            if k in orig
-                            and not new[k] == orig[k]
-                            and k not in disallowed
+                            if k not in orig and k not in disallowed
                         }
-                        changedict[e].update(
-                            {
-                                k: convert_numpy_types(new[k])
-                                for k in new
-                                if k not in orig and k not in disallowed
-                            }
-                        )
-                        if changedict[e] == {}:
-                            del changedict[e]
-                    except Exception:
-                        print("##### ERROR IN CHANGE ELEMS: ")  # , e, new)
-                        pass
+                    )
+                    if changedict[e] == {}:
+                        del changedict[e]
+                    # except Exception:
+                    #     print("##### ERROR IN CHANGE ELEMS: ")  # , e, new)
+                    #     pass
         return changedict
 
     def save_changes_file(
@@ -537,27 +537,32 @@ class Framework(Munch):
             "beam",
         ]
         for e in elements:
-            new = unmunchify(self.elementObjects[e])
-            try:
-                if (
-                    "subelement" in new and not new["subelement"]
-                ) or "subelement" not in new:
-                    latticedict[e] = {
-                        k.replace("object", ""): convert_numpy_types(new[k])
-                        for k in new
-                        if k not in disallowed
-                    }
-                    if "sub_elements" in new:
-                        for subelem in new["sub_elements"]:
-                            newsub = self.elementObjects[subelem]
-                            latticedict[e]["sub_elements"][subelem] = {
-                                k.replace("object", ""): convert_numpy_types(newsub[k])
-                                for k in newsub
-                                if k not in disallowed
-                            }
-            except Exception:
-                print("##### ERROR IN CHANGE ELEMS: ", e, new)
-                pass
+            new = self.elementObjects[e]
+            # try:
+            if (
+                "subelement" in new and not new["subelement"]
+            ) or "subelement" not in new:
+                # latticedict.update({e: {}})
+                # for k in new:
+                #     if k not in disallowed:
+                #         latticedict[e][k[0].replace("object", "")] = convert_numpy_types(getattr(new, k[0]))
+                latticedict[e] = {
+                    k[0].replace("object", ""): convert_numpy_types(getattr(new, k[0]))
+                    for k in new
+                    if k not in disallowed
+                }
+                if "sub_elements" in new:
+                    latticedict[e].update({"sub_elements": {}})
+                    for subelem in new["sub_elements"]:
+                        newsub = self.elementObjects[subelem]
+                        latticedict[e]["sub_elements"][subelem] = {
+                            k[0].replace("object", ""): convert_numpy_types(getattr(newsub, k[0]))
+                            for k in newsub
+                            if k not in disallowed
+                        }
+            # except Exception:
+            #     print("##### ERROR IN CHANGE ELEMS: ", e, new)
+            #     pass
         if dictionary:
             return dic
         else:
@@ -604,8 +609,6 @@ class Framework(Munch):
         """Checks that there are no positioning errors in the lattice and returns True/False"""
         noerror = True
         for elem in self.elementObjects.values():
-            print(elem.objectname)
-            print(elem.start)
             start = elem.position_start
             end = elem.end
             length = elem.length

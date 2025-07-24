@@ -5,6 +5,8 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class kicker(dipole):
+    horizontal_kick: float = 0.0
+    vertical_kick: float = 0.0
 
     def __init__(
             self,
@@ -25,8 +27,7 @@ class kicker(dipole):
             # Store extras in __dict__ (allowed by Config.extra = 'allow')
             self.__dict__[name] = value
 
-    @property
-    def angle(self):
+    def get_angle(self):
         hkick = self.horizontal_kick if self.horizontal_kick is not None else 0
         vkick = self.vertical_kick if self.vertical_kick is not None else 0
         return np.sqrt(hkick**2 + vkick**2)

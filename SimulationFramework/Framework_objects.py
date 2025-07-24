@@ -364,11 +364,11 @@ class frameworkLattice(BaseModel):
     @property
     def wakefields_and_cavity_wakefields(self):
         cavities = [cav for cav in self.getElementType("cavity") if
-                    (hasattr(cav, 'longitudinal_wakefield') and cav['longitudinal_wakefield'] is not None and cav['longitudinal_wakefield'] != '')
+                    (isinstance(cav.longitudinal_wakefield, field) or cav.longitudinal_wakefield != '')
                     or
-                    (hasattr(cav, 'transverse_wakefield') and cav['transverse_wakefield'] is not None and cav['transverse_wakefield'] != '')
+                    (isinstance(cav.transverse_wakefield, field) or cav.transverse_wakefield != '')
                     or
-                    (hasattr(cav, 'wakefield_definition') and cav['wakefield_definition'] is not None and cav['wakefield_definition'] != '')]
+                    (isinstance(cav.wakefield_definition, field) or cav.wakefield_definition != '')]
         wakes = self.getElementType("wakefield")
         return cavities + wakes
 
@@ -813,22 +813,22 @@ class frameworkObject(BaseModel):
     def objectproperties(self):
         return self
 
-    def __getitem__(self, key):
-        lkey = key.lower()
-        defaults = super(frameworkObject, self).__getitem__("objectdefaults")
-        if lkey in defaults:
-            try:
-                return super(frameworkObject, self).__getitem__(lkey)
-            except Exception:
-                return defaults[lkey]
-        else:
-            try:
-                return super(frameworkObject, self).__getitem__(lkey)
-            except Exception:
-                try:
-                    return super(frameworkObject, self).__getattribute__(key)
-                except Exception:
-                    return None
+    # def __getitem__(self, key):
+    #     lkey = key.lower()
+    #     defaults = self.objectdefaults
+    #     if lkey in defaults:
+    #         try:
+    #             return getattr(self, lkey)
+    #         except Exception:
+    #             return defaults[lkey]
+    #     else:
+    #         try:
+    #             return getattr(self, lkey)
+    #         except Exception:
+    #             try:
+    #                 return getattr(self, key)
+    #             except Exception:
+    #                 return None
 
     def __repr__(self):
         string = ""

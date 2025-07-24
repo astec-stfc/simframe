@@ -40,7 +40,11 @@ class cavity(frameworkElement):
     ez_peak: float | None = None
     field_definition: str | field | None = None
     wakefield_definition: str | field | None = None
+    longitudinal_wakefield: str | field | None = None
+    transverse_wakefield: str | field | None = None
     Structure_Type: str | None = None
+    smooth: int | None = None
+
 
     def __init__(
             self,
@@ -90,7 +94,7 @@ class cavity(frameworkElement):
                 [
                     ["C_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
                     efield_def,
-                    ["C_numb", {"value": self.cells}],
+                    ["C_numb", {"value": self.n_cells}],
                     ["Nue", {"value": float(self.frequency) / 1e9, "default": 2998.5}],
                     [
                         "MaxE",
