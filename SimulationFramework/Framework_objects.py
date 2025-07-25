@@ -1,17 +1,11 @@
 import os
 import subprocess
-from copy import copy, deepcopy
+from copy import deepcopy
 import yaml
 from munch import Munch
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules.MathParser import MathParser
-from .FrameworkHelperFunctions import (
-    chunks,
-    expand_substitution,
-    checkValue,
-    chop,
-    dot
-)
+from .FrameworkHelperFunctions import chunks, expand_substitution, checkValue, chop, dot
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Modules.Fields import field
 from .Codes.Ocelot import ocelot_conversion
@@ -239,12 +233,25 @@ class frameworkLattice(Munch):
 
     @property
     def wakefields_and_cavity_wakefields(self):
-        cavities = [cav for cav in self.getElementType("cavity") if
-                    (hasattr(cav, 'longitudinal_wakefield') and cav['longitudinal_wakefield'] is not None and cav['longitudinal_wakefield'] != '')
-                    or
-                    (hasattr(cav, 'transverse_wakefield') and cav['transverse_wakefield'] is not None and cav['transverse_wakefield'] != '')
-                    or
-                    (hasattr(cav, 'wakefield_definition') and cav['wakefield_definition'] is not None and cav['wakefield_definition'] != '')]
+        cavities = [
+            cav
+            for cav in self.getElementType("cavity")
+            if (
+                hasattr(cav, "longitudinal_wakefield")
+                and cav["longitudinal_wakefield"] is not None
+                and cav["longitudinal_wakefield"] != ""
+            )
+            or (
+                hasattr(cav, "transverse_wakefield")
+                and cav["transverse_wakefield"] is not None
+                and cav["transverse_wakefield"] != ""
+            )
+            or (
+                hasattr(cav, "wakefield_definition")
+                and cav["wakefield_definition"] is not None
+                and cav["wakefield_definition"] != ""
+            )
+        ]
         wakes = self.getElementType("wakefield")
         return cavities + wakes
 
@@ -332,7 +339,7 @@ class frameworkLattice(Munch):
         f = dict(
             [
                 [e, self.allElementObjects[e]]
-                for e in self.allElements[index_start: index_end + 1]
+                for e in self.allElements[index_start : index_end + 1]
             ]
         )
         return f
@@ -359,13 +366,41 @@ class frameworkLattice(Munch):
 
     def getInitialTwiss(self):
         """Get the initial Twiss parameters from the file block"""
-        if "input" in self.file_block and "twiss" in self.file_block["input"] and self.file_block["input"]["twiss"]:
-            alpha_x = self.file_block["input"]["twiss"]["alpha_x"] if "alpha_x" in self.file_block["input"]["twiss"] else False
-            alpha_y = self.file_block["input"]["twiss"]["alpha_y"] if "alpha_y" in self.file_block["input"]["twiss"] else False
-            beta_x = self.file_block["input"]["twiss"]["beta_x"] if "beta_x" in self.file_block["input"]["twiss"] else False
-            beta_y = self.file_block["input"]["twiss"]["beta_y"] if "beta_y" in self.file_block["input"]["twiss"] else False
-            nemit_x = self.file_block["input"]["twiss"]["nemit_x"] if "nemit_x" in self.file_block["input"]["twiss"] else False
-            nemit_y = self.file_block["input"]["twiss"]["nemit_y"] if "nemit_y" in self.file_block["input"]["twiss"] else False
+        if (
+            "input" in self.file_block
+            and "twiss" in self.file_block["input"]
+            and self.file_block["input"]["twiss"]
+        ):
+            alpha_x = (
+                self.file_block["input"]["twiss"]["alpha_x"]
+                if "alpha_x" in self.file_block["input"]["twiss"]
+                else False
+            )
+            alpha_y = (
+                self.file_block["input"]["twiss"]["alpha_y"]
+                if "alpha_y" in self.file_block["input"]["twiss"]
+                else False
+            )
+            beta_x = (
+                self.file_block["input"]["twiss"]["beta_x"]
+                if "beta_x" in self.file_block["input"]["twiss"]
+                else False
+            )
+            beta_y = (
+                self.file_block["input"]["twiss"]["beta_y"]
+                if "beta_y" in self.file_block["input"]["twiss"]
+                else False
+            )
+            nemit_x = (
+                self.file_block["input"]["twiss"]["nemit_x"]
+                if "nemit_x" in self.file_block["input"]["twiss"]
+                else False
+            )
+            nemit_y = (
+                self.file_block["input"]["twiss"]["nemit_y"]
+                if "nemit_y" in self.file_block["input"]["twiss"]
+                else False
+            )
             return {
                 "horizontal": {
                     "alpha": alpha_x,
@@ -376,7 +411,7 @@ class frameworkLattice(Munch):
                     "alpha": alpha_y,
                     "beta": beta_y,
                     "nEmit": nemit_y,
-                    }
+                },
             }
         else:
             return {
@@ -389,7 +424,7 @@ class frameworkLattice(Munch):
                     "alpha": False,
                     "beta": False,
                     "nEmit": False,
-                }
+                },
             }
 
     def preProcess(self):
@@ -409,7 +444,7 @@ class frameworkLattice(Munch):
             str += e + ", "
         return str + ")"
 
-    def createDrifts(self):
+    def createDrifts(self, drift_elements=["screen", "beam_position_monitor"]):
         """Insert drifts into a sequence of 'elements'"""
         positions = []
         originalelements = dict()
@@ -441,9 +476,10 @@ class frameworkLattice(Munch):
 
         for e, d in driftdata:
             if (
-                e[1]["objecttype"] == "screen"
-                or e[1]["objecttype"] == "beam_position_monitor"
-            ) and round(e[1]["length"] / 2, 6) > 0:
+                e[1]["objecttype"] in drift_elements
+                and round(e[1]["length"] / 2, 6) > 0
+            ):
+                # print('Drift Element', e[1]["objecttype"])
                 name = e[0] + "-drift-01"
                 newdrift = drifttype(
                     name,
@@ -459,7 +495,7 @@ class frameworkLattice(Munch):
                         "lsc_high_frequency_cutoff_end": self.lsc_high_frequency_cutoff_end,
                         "lsc_low_frequency_cutoff_start": self.lsc_low_frequency_cutoff_start,
                         "lsc_low_frequency_cutoff_end": self.lsc_low_frequency_cutoff_end,
-                    }
+                    },
                 )
                 newelements[name] = newdrift
                 new_bpm_screen = deepcopy(e[1])
@@ -480,10 +516,11 @@ class frameworkLattice(Munch):
                         "lsc_high_frequency_cutoff_end": self.lsc_high_frequency_cutoff_end,
                         "lsc_low_frequency_cutoff_start": self.lsc_low_frequency_cutoff_start,
                         "lsc_low_frequency_cutoff_end": self.lsc_low_frequency_cutoff_end,
-                    }
+                    },
                 )
                 newelements[name] = newdrift
             else:
+                # print('NOT Drift Element', e[1]["objecttype"], round(e[1]["length"] / 2, 6))
                 newelements[e[0]] = e[1]
             if e[1]["objecttype"] == "dipole":
                 drifttype = (
@@ -501,9 +538,11 @@ class frameworkLattice(Munch):
                     print("Element with error = ", e[0])
                     print(d)
                     raise exc
-                if self.allow_negative_drifts or (round(length, 6) > 0 and vector < 1e-6):
+                if self.allow_negative_drifts or (
+                    round(length, 6) > 0 and vector < 1e-6
+                ):
                     elementno += 1
-                    name = self.objectname+"_DRIFT_" + str(elementno).zfill(2)
+                    name = self.objectname + "_DRIFT_" + str(elementno).zfill(2)
                     middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
                     newdrift = drifttype(
                         name,
@@ -522,11 +561,17 @@ class frameworkLattice(Munch):
                             "lsc_high_frequency_cutoff_end": self.lsc_high_frequency_cutoff_end,
                             "lsc_low_frequency_cutoff_start": self.lsc_low_frequency_cutoff_start,
                             "lsc_low_frequency_cutoff_end": self.lsc_low_frequency_cutoff_end,
-                        }
+                        },
                     )
                     newelements[name] = newdrift
                 elif length < 0 or vector > 1e-6:
-                    raise Exception("Lattice has negative drifts!", self.allow_negative_drifts, e[0], e[1], length)
+                    raise Exception(
+                        "Lattice has negative drifts!",
+                        self.allow_negative_drifts,
+                        e[0],
+                        e[1],
+                        length,
+                    )
         return newelements
 
     def getSValues(self, drifts: bool = True, as_dict: bool = False, at_entrance=False):
@@ -637,7 +682,7 @@ class frameworkObject(Munch):
             try:
                 setattr(self, key, value)
             except Exception as e:
-                print('add_property error:', (self.objecttype, "[", key, "]: ", e))
+                print("add_property error:", (self.objecttype, "[", key, "]: ", e))
 
     def add_properties(self, **keyvalues):
         for key, value in keyvalues.items():
@@ -646,7 +691,9 @@ class frameworkObject(Munch):
                 try:
                     setattr(self, key, value)
                 except Exception as e:
-                    print('add_properties error:', (self.objecttype, "[", key, "]: ", e))
+                    print(
+                        "add_properties error:", (self.objecttype, "[", key, "]: ", e)
+                    )
 
     def add_default(self, key, value):
         self.objectdefaults[key] = value
@@ -1148,7 +1195,10 @@ class frameworkElement(frameworkObject):
             return float(expand_substitution(self, self.field_amplitude))
 
     def get_field_reference_position(self):
-        if hasattr(self, "field_reference_position") and self.field_reference_position is not None:
+        if (
+            hasattr(self, "field_reference_position")
+            and self.field_reference_position is not None
+        ):
             if self.field_reference_position.lower() == "start":
                 return self.start
             elif self.field_reference_position.lower() == "middle":
@@ -1244,14 +1294,18 @@ class frameworkElement(frameworkObject):
 
     def update_field_definition(self) -> None:
         """Updates the field definitions to allow for the relative sub-directory location"""
-        if hasattr(self, "field_definition") and self.field_definition is not None and isinstance(self.field_definition, str):
+        if (
+            hasattr(self, "field_definition")
+            and self.field_definition is not None
+            and isinstance(self.field_definition, str)
+        ):
             # print('update_field_definition', self.objectname, self.field_definition, self.field_type, self.frequency, self.Structure_Type)
             self.field_definition = field(
                 filename=expand_substitution(self, self.field_definition),
                 field_type=self.field_type,
                 frequency=self.frequency,
                 cavity_type=self.Structure_Type,
-                n_cells=self.n_cells
+                n_cells=self.n_cells,
             )
         if (
             hasattr(self, "wakefield_definition")
@@ -1263,7 +1317,7 @@ class frameworkElement(frameworkObject):
                 field_type=self.field_type,
                 frequency=self.frequency,
                 cavity_type=self.Structure_Type,
-                n_cells=self.n_cells
+                n_cells=self.n_cells,
             )
 
     def _write_ASTRA_dictionary(self, d, n=1):
@@ -1330,8 +1384,10 @@ class frameworkElement(frameworkObject):
         return self._write_ASTRA(n, **kwargs)
 
     def generate_field_file_name(self, param, code):
-        if hasattr(param, 'filename'):
-            basename = os.path.basename(param.filename).replace('"', "").replace("'", "")
+        if hasattr(param, "filename"):
+            basename = (
+                os.path.basename(param.filename).replace('"', "").replace("'", "")
+            )
             # location = os.path.abspath(
             #     expand_substitution(self, param.filename)
             #     .replace("\\", "/")
@@ -1343,7 +1399,9 @@ class frameworkElement(frameworkObject):
                 + "/"
                 + basename.replace("\\", "/")
             )
-            return os.path.basename(param.write_field_file(code=code, location=efield_basename))
+            return os.path.basename(
+                param.write_field_file(code=code, location=efield_basename)
+            )
         else:
             pass
             # print(f'param does not have a filename: {param}')
