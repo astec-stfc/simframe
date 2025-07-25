@@ -20,7 +20,6 @@ from copy import deepcopy
 from typing import Dict
 from numpy import array, where, mean, savez_compressed, linspace, save
 import os
-import re
 from yaml import safe_load
 
 with open(
@@ -97,7 +96,7 @@ class ocelotLattice(frameworkLattice):
         self.w = None
         if self.endObject not in self.screens_and_bpms:
             self.w = self.endScreen(output_filename=f"{self.endObject.objectname}.ocelot.npz")
-        elements = self.createDrifts()
+        elements = self.createDrifts(drift_elements=["screen", "beam_position_monitor", "aperture", "collimator"])
         mag_lat = []
         for element in list(elements.values()):
             if not element.subelement:
@@ -147,7 +146,7 @@ class ocelotLattice(frameworkLattice):
         pin = deepcopy(self.pin)
         if self.sample_interval > 1:
             pin = pin.thin_out(nth=self.sample_interval)
-        self.tws, self.pout = track(self.lat_obj, pin, navi=navi)
+        self.tws, self.pout = track(self.lat_obj, pin, navi=navi, calc_tws=True, twiss_disp_correction=True)
 
     def postProcess(self):
         super().postProcess()
@@ -187,7 +186,7 @@ class ocelotLattice(frameworkLattice):
         navi_processes = []
         navi_locations_start = []
         navi_locations_end = []
-        settings = self.settings
+        # settings = self.settings
         navi = Navigator(self.lat_obj, unit_step=self.unit_step)
         if self.lsc:
             lsc = self.physproc_lsc()
