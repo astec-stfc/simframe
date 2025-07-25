@@ -22,7 +22,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
     elif os.path.isfile(filename):
         lattice_name = os.path.basename(filename).split(".")[0]
         if gdfbeam is None and filename is not None:
-            self.gdfbeam = gdfbeamdata = read_gdf_emit_file_object(self, filename)
+            gdfbeamdata = read_gdf_emit_file_object(self, filename)
 
         if hasattr(gdfbeamdata, "avgz"):
             # mjohnson code added 2022-08-11
@@ -45,8 +45,8 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
                 gdfbeamdata.avgz[order[i]] = z_sort[i] + offset
 
             # original code begins
-            self.append("z", gdfbeamdata.avgz)
-            self.append("s", gdfbeamdata.avgz)
+            self.z.val = np.append(self.z.val, gdfbeamdata.avgz)
+            self.s.val = np.append(self.s.val, gdfbeamdata.avgz)
 
         elif hasattr(gdfbeamdata, "position"):
             self.append("z", gdfbeamdata.position)
@@ -116,7 +116,7 @@ def read_gdf_twiss_files(self, filename=None, gdfbeam=None, reset=True):
         self.eta_xp.val = np.append(self.eta_xp.val, np.zeros(len(gdfbeamdata.stdx)))
         self.eta_y.val = np.append(self.eta_y.val, np.zeros(len(gdfbeamdata.stdy)))
         self.eta_yp.val = np.append(self.eta_yp.val, np.zeros(len(gdfbeamdata.stdy)))
-        self.element_name = np.append(
+        self.element_name.val = np.append(
             self.element_name.val, np.full(len(gdfbeamdata.stdx), "")
         )
         self.lattice_name.val = np.append(

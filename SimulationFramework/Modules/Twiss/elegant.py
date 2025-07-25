@@ -15,50 +15,38 @@ def read_elegant_floor_file(
     setattr(
         self,
         "x",
-        twissData(
-            [np.round(x + offset[0], decimals=6) for x in elegantData["X"]], units="m"
-        ),
+        [np.round(x + offset[0], decimals=6) for x in elegantData["X"]],
+        units="m",
     )
     setattr(
         self,
         "y",
-        twissData(
-            [np.round(y + offset[1], decimals=6) for y in elegantData["Y"]], units="m"
-        ),
+        [np.round(y + offset[1], decimals=6) for y in elegantData["Y"]],
+        units="m",
     )
     setattr(
         self,
         "z",
-        twissData(
-            [np.round(z + offset[2], decimals=6) for z in elegantData["Z"]], units="m"
-        ),
+        [np.round(z + offset[2], decimals=6) for z in elegantData["Z"]],
+        units="m",
     )
     setattr(
         self,
         "theta",
-        twissData(
-            [
-                np.round(theta + rotation[0], decimals=6)
-                for theta in elegantData["theta"]
-            ],
-            units="radians",
-        ),
+        [np.round(theta + rotation[0], decimals=6) for theta in elegantData["theta"]],
+        units="radians",
     )
     setattr(
         self,
         "phi",
-        twissData(
-            [np.round(phi + rotation[1], decimals=6) for phi in elegantData["phi"]],
-            units="radians",
-        ),
+        [np.round(phi + rotation[1], decimals=6) for phi in elegantData["phi"]],
+        units="radians",
     )
     setattr(
         self,
         "psi",
-        twissData(
-            [np.round(psi + rotation[2], decimals=6) for psi in elegantData["psi"]],
-            units="radians",
-        ),
+        [np.round(psi + rotation[2], decimals=6) for psi in elegantData["psi"]],
+        units="radians",
     )
     xyz = list(zip(self.x, self.y, self.z))
     thetaphipsi = list(zip(self.phi, self.psi, self.theta))
@@ -91,6 +79,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
                 elegantData[k] = elegantData[k][0]
         z = elegantData["Z"]
         self.z.val = np.append(self.z.val, z)
+        self.s.val = np.append(self.s.val, elegantData["s"])
         cp = elegantData["pCentral0"] * self.E0
         # self.append('cp', cp)
         self.cp.val = np.append(self.cp.val, cp / constants.elementary_charge)

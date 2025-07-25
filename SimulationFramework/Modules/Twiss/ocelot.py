@@ -28,8 +28,8 @@ def read_ocelot_twiss_files(self, filename, reset=True):
 
 
 def interpret_ocelot_data(self, lattice_name, fdat):
-    self.append("z", fdat["s"])
-    self.append("s", fdat["s"])
+    self.z.val = np.append(self.z.val, fdat["s"])
+    self.s.val = np.append(self.s.val, fdat["s"])
     E = fdat["_E"] * 1e9
     ke = E - self.E0_eV
     gamma = E / self.E0_eV
@@ -58,24 +58,24 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.beta_z.val = np.append(self.beta_z.val, np.zeros(len(fdat["s"])))
     self.gamma_z.val = np.append(self.gamma_z.val, np.zeros(len(fdat["s"])))
     self.alpha_z.val = np.append(self.alpha_z.val, np.zeros(len(fdat["s"])))
-    self.sigma_x.val = np.append(self.sigma_x.val, fdat["xx"])
-    self.sigma_y.val = np.append(self.sigma_y.val, fdat["yy"])
-    self.sigma_xp.val = np.append(self.sigma_xp.val, fdat["pxpx"])
-    self.sigma_yp.val = np.append(self.sigma_yp.val, fdat["pypy"])
-    self.sigma_t.val = np.append(self.sigma_t.val, fdat["tautau"])
+    self.sigma_x.val = np.append(self.sigma_x.val, np.sqrt(fdat["xx"]))
+    self.sigma_y.val = np.append(self.sigma_y.val, np.sqrt(fdat["yy"]))
+    self.sigma_xp.val = np.append(self.sigma_xp.val, np.sqrt(fdat["pxpx"]))
+    self.sigma_yp.val = np.append(self.sigma_yp.val, np.sqrt(fdat["pypy"]))
+    self.sigma_t.val = np.append(self.sigma_t.val, np.sqrt(fdat["tautau"]) / constants.speed_of_light)
     self.mean_x.val = np.append(self.mean_x.val, fdat["x"])
     self.mean_y.val = np.append(self.mean_y.val, fdat["y"])
     beta = np.sqrt(1 - (gamma**-2))
     self.t.val = np.append(self.t.val, fdat["s"] / (beta * constants.speed_of_light))
     self.sigma_z.val = np.append(
-        self.sigma_z.val, fdat["tautau"] * (beta * constants.speed_of_light)
+        self.sigma_z.val, np.sqrt(fdat["tautau"]) * beta
     )
     # self.append('sigma_cp', elegantData['Sdelta'] * cp )
     self.sigma_cp.val = np.append(
-        self.sigma_cp.val, fdat["pp"] * cp / constants.elementary_charge
+        self.sigma_cp.val, np.sqrt(fdat["pp"]) * cp / constants.elementary_charge
     )
     # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
-    self.sigma_p.val = np.append(self.sigma_p.val, fdat["pp"])
+    self.sigma_p.val = np.append(self.sigma_p.val, np.sqrt(fdat["pp"]))
     self.mux.val = np.append(self.mux.val, fdat["mux"])
     self.muy.val = np.append(self.muy.val, fdat["muy"])
     self.eta_x.val = np.append(self.eta_x.val, fdat["Dx"])
@@ -94,23 +94,22 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.eta_y_beam.val = np.append(self.eta_y_beam.val, fdat["Dy"])
     self.eta_yp_beam.val = np.append(self.eta_yp_beam.val, fdat["Dyp"])
     self.beta_x_beam.val = np.append(
-        self.beta_x_beam.val, np.sqrt(fdat["eigemit_1"] / fdat["xx"])
+        self.beta_x_beam.val, fdat["xx"] / fdat["eigemit_1"]
     )
     self.beta_y_beam.val = np.append(
-        self.beta_y_beam.val, np.sqrt(fdat["eigemit_2"] / fdat["yy"])
+        self.beta_y_beam.val, fdat["yy"] / fdat["eigemit_2"]
     )
     self.alpha_x_beam.val = np.append(
-        self.alpha_x_beam.val, np.sqrt(fdat["eigemit_1"] / fdat["pxpx"])
+        self.alpha_x_beam.val, -1 * np.sign(fdat["xpx"]) * np.sqrt(fdat["xx"]) * np.sqrt(fdat["pxpx"]) / fdat["eigemit_1"]
     )
     self.alpha_y_beam.val = np.append(
-        self.alpha_y_beam.val, np.sqrt(fdat["eigemit_2"] / fdat["pypy"])
+        self.alpha_y_beam.val, -1 * np.sign(fdat["ypy"]) * np.sqrt(fdat["yy"]) * np.sqrt(fdat["pypy"]) / fdat["eigemit_2"]
     )
     self.cp_eV = self.cp
     self.cp_eV = self.cp
-    self.sigma_cp_eV = self.sigma_cp
-    for k in self.__dict__.keys():
-        try:
-            if len(getattr(self, k)) < len(getattr(self, "z")):
-                self.append(k, np.zeros(len(fdat["s"])))
-        except Exception:
-            pass
+    # for k in self.__dict__.keys():
+    #     try:
+    #         if len(getattr(self, k)) < len(getattr(self, "z")):
+    #             self.append(k, np.zeros(len(fdat["s"])))
+    #     except Exception:
+    #         pass

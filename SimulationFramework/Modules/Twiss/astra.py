@@ -49,6 +49,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     )
 
     self.z.val = np.append(self.z.val, z)
+    self.s.val = np.append(self.s.val, z)
     self.t.val = np.append(self.t.val, t)
     self.kinetic_energy.val = np.append(self.kinetic_energy.val, e_kin)
     gamma = 1 + (e_kin / self.E0_eV)
@@ -106,7 +107,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.eta_yp_beam.val = np.append(self.eta_yp_beam.val, np.zeros(len(z)))
     self.ecnx.val = np.append(self.ecnx.val, exn)
     self.ecny.val = np.append(self.ecny.val, eyn)
-    self.element_name.val = np.append(self.element_name.val, np.full(len(z), ""))
+    self.element_name.val = np.append(self.element_name.val, z)
     self.lattice_name.val = np.append(self.lattice_name.val, np.full(len(z), lattice_name))
     self.beta_x_beam.val = np.append(self.beta_x_beam.val, rms_x**2 / ex)
     self.beta_y_beam.val = np.append(self.beta_y_beam.val, rms_y**2 / ey)

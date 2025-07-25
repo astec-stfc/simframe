@@ -16,7 +16,7 @@ from pydantic import (
     Field,
 )
 import numpy as np
-from typing import Dict, Literal, List
+from typing import Dict, List, Callable
 
 from .. import constants
 import munch
@@ -129,6 +129,8 @@ class twiss(BaseModel):
 
     z: twissParameter = twissParameter(name="z", unit="m")
     """The longitudinal position of the beam in the simulation."""
+    s: twissParameter = twissParameter(name="s", unit="m")
+    """The longitudinal position of the beam in the simulation."""
     t: twissParameter = twissParameter(name="t", unit="s")
     """The time coordinate of the beam in the simulation."""
     kinetic_energy: twissParameter = twissParameter(name="kinetic_energy", unit="eV")
@@ -235,7 +237,7 @@ class twiss(BaseModel):
     """The rest mass of the particle, in kg. If None, it will be set to the electron rest mass."""
     codes: Dict = codes
     """A dictionary of functions to read twiss data from different simulation codes."""
-    code_signatures: Literal = code_signatures
+    code_signatures: Dict = code_signatures
     """A list of code signatures to identify twiss files from different simulation codes."""
     sddsindex: int = 0
     """An index for SDDS files, used to track the current file being processed."""
@@ -281,6 +283,11 @@ class twiss(BaseModel):
     @model_validator(mode="before")
     def validate_fields(cls, values):
         return values
+
+    @property
+    def properties(self):
+        keys = twiss.model_fields.keys()
+        return {k: getattr(self, k) for k in keys if isinstance(getattr(self, k), twissParameter)}
 
     def set_E0(self, value) -> None:
         """
@@ -428,7 +435,7 @@ class twiss(BaseModel):
                 )
         self.elegantTwiss = {}
 
-    def sort(self, key: str="z", reverse: bool=False) -> None:
+    def sort(self, key: str = "z", reverse: bool = False) -> None:
         """
         Sort the twiss parameters based on a specified key.
         This method sorts the twiss parameters in ascending order by default,
@@ -448,13 +455,13 @@ class twiss(BaseModel):
         -----------
         None
         """
-        flat = np.array(getattr(self, key).val)
+        flat = np.array(getattr(self, key).val).flatten()
         index = flat.argsort()
-        for k in [p for p in self.model_fields]:
+        for k in twiss.model_fields:
             if isinstance(getattr(self, k), twissParameter):
                 if len(getattr(self, k).val) > 0:
                     try:
-                        flat = np.array([x for xs in getattr(self, k).val for x in xs])
+                        flat = np.array(getattr(self, k).val).flatten()
                     except Exception:
                         flat = getattr(self, k).val
                     if reverse:
@@ -483,7 +490,7 @@ class twiss(BaseModel):
         )
         setattr(self, array, newval)
 
-    def _which_code(self, name: str) -> callable | None:
+    def _which_code(self, name: str) -> Callable | None:
         """
         Determine the function associated with a specific simulation code name.
 
@@ -501,7 +508,7 @@ class twiss(BaseModel):
             return self.codes[name.lower()]
         return None
 
-    def _determine_code(self, filename: str) -> callable | None:
+    def _determine_code(self, filename: str) -> Callable | None:
         """
         Determine the simulation code based on the filename.
 
@@ -566,7 +573,7 @@ class twiss(BaseModel):
         endidx = self.find_nearest_idx(getattr(self, "z"), end) + 1
         return getattr(self, name)[startidx:endidx]
 
-    def get_parameter_at_z(self, param: str, z: UnitValue, tol: float=1e-3) -> float:
+    def get_parameter_at_z(self, param: str, z: UnitValue, tol: float = 1e-3) -> float:
         """
         Get the value of a twiss parameter at a specific z position.
 
@@ -644,7 +651,9 @@ class twiss(BaseModel):
                 pass
         return twissdict
 
-    def get_twiss_at_element(self, element_name: str, before: bool=False) -> Dict[str, float] | None:
+    def get_twiss_at_element(
+        self, element_name: str, before: bool = False
+    ) -> Dict[str, float] | None:
         """
         Get the twiss parameters at a specific element name.
 
@@ -670,7 +679,7 @@ class twiss(BaseModel):
             return self.get_twiss_dict(idx)
         return None
 
-    def get_twiss_at_z(self, z: float, tol: float=1e-3) -> Dict[str, float]:
+    def get_twiss_at_z(self, z: float, tol: float = 1e-3) -> Dict[str, float]:
         """
         Get the twiss parameters at a specific z position.
 
@@ -732,7 +741,7 @@ class twiss(BaseModel):
         up2 = up - np.mean(up)
         return np.mean(u2 * up2) - np.mean(u2) * np.mean(up2)
 
-    def read_sdds_file(self, filename: str, ascii: bool=False) -> Dict[str, float]:
+    def read_sdds_file(self, filename: str, ascii: bool = False) -> Dict[str, float]:
         """
         Read an SDDS file and extract the twiss parameters.
 
@@ -757,16 +766,16 @@ class twiss(BaseModel):
 
     def load_directory(
         self,
-        directory: str=".",
-        types: Dict={
+        directory: str = ".",
+        types: Dict = {
             "elegant": ".twi",
             "GPT": "emit.gdf",
             "ASTRA": "Xemit.001",
             "ocelot": "_twiss.npz",
         },
-        preglob: str="*",
-        verbose: bool=False,
-        sortkey: str="z",
+        preglob: str = "*",
+        verbose: bool = False,
+        sortkey: str = "z",
     ) -> "twiss":
         """
         Load twiss files from a specified directory based on the provided types and preglob pattern.
