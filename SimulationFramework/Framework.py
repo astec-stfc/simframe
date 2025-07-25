@@ -136,6 +136,12 @@ class Framework(Munch):
             }
         )
 
+    def clear(self):
+        self.elementObjects = dict()
+        self.latticeObjects = dict()
+        self.commandObjects = dict()
+        self.groupObjects = dict()
+
     def change_subdirectory(self, *args, **kwargs):
         self.setSubDirectory(*args, **kwargs)
 
