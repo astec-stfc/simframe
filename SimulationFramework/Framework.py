@@ -27,6 +27,7 @@ from .FrameworkHelperFunctions import (
 
 try:
     import MasterLattice  # type: ignore
+
     if MasterLattice.__file__ is not None:
         MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
     else:
@@ -623,7 +624,7 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print('check_lattice error:', elem.objectname, cend, end, cend - end)
+                print("check_lattice error:", elem.objectname, cend, end, cend - end)
         return noerror
 
     def check_lattice_drifts(self, decimals: int = 4) -> bool:
@@ -643,7 +644,13 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print('check_lattice_drifts error:', elem.objectname, cend, end, cend - end)
+                print(
+                    "check_lattice_drifts error:",
+                    elem.objectname,
+                    cend,
+                    end,
+                    cend - end,
+                )
         return noerror
 
     def change_Lattice_Code(
@@ -675,7 +682,11 @@ class Framework(Munch):
                 )
 
     def read_Element(
-        self, elementname: str, element: dict, subelement: bool = False, parent: str = None
+        self,
+        elementname: str,
+        element: dict,
+        subelement: bool = False,
+        parent: str = None,
     ) -> None:
         """Reads an element definition and creates the element and any sub-elements"""
         if elementname == "filename":
@@ -708,8 +719,8 @@ class Framework(Munch):
             )
             element.update_field_definition()
         except Exception as e:
-            print('add_Element error:', e)
-            print('add_Element error:', type, name, kwargs)
+            print("add_Element error:", e)
+            print("add_Element error:", type, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:
