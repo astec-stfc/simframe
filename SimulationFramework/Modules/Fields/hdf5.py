@@ -1,13 +1,21 @@
 import os
 import h5py
+from .FieldParameter import FieldParameter
 from ..units import UnitValue
-from . import FieldParameter
-from ..constants import speed_of_light
 from warnings import warn
-from . import (
-    allowed_cavities,
-    tw_required_attrs,
-)
+
+
+allowed_cavities = [
+    "StandingWave",
+    "TravellingWave",
+]
+
+tw_required_attrs = [
+    "start_cell_z",
+    "end_cell_z",
+    "mode_numerator",
+    "mode_denominator",
+]
 
 
 def read_HDF5_field_file(self, filename: str) -> str:
@@ -61,7 +69,7 @@ def read_HDF5_field_file(self, filename: str) -> str:
                 setattr(self, "cavity_type", cavtype)
             if cavtype == "TravellingWave":
                 for param in tw_required_attrs:
-                    if not param in (h5file.attrs.keys()):
+                    if param not in (h5file.attrs.keys()):
                         raise KeyError(
                             f"{param} must be an attribute of {filename} for a travelling wave linac"
                         )

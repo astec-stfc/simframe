@@ -10,7 +10,8 @@ required for specific codes.
 
 import os
 import warnings
-from ..units import UnitValue
+import numpy as np
+from .FieldParameter import FieldParameter
 from ..constants import speed_of_light
 from pydantic import (
     BaseModel,
@@ -47,18 +48,6 @@ allowed_formats = [
     "gdf",
 ]
 
-allowed_cavities = [
-    "StandingWave",
-    "TravellingWave",
-]
-
-tw_required_attrs = [
-    "start_cell_z",
-    "end_cell_z",
-    "mode_numerator",
-    "mode_denominator",
-]
-
 fieldtype = Literal[
     "1DElectroStatic",
     "1DMagnetoStatic",
@@ -79,24 +68,6 @@ cavitytype = Literal[
     "StandingWave",
     "TravellingWave",
 ]
-
-
-class FieldParameter(BaseModel):
-    """
-    FieldParameter class to represent a field parameter with a name and an optional value.
-
-    Attributes:
-    -----------
-    name (str):
-        The name of the field parameter.
-    value (UnitValue | None):
-        The value of the field parameter, which can be a UnitValue or None.
-    """
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    name: str
-    value: UnitValue | None = None
 
 
 class field(BaseModel):

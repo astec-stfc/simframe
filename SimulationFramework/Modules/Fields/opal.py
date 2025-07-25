@@ -2,7 +2,8 @@ import numpy as np
 from .sdds import write_SDDS_field_file
 from warnings import warn
 from collections import Counter
-from . import UnitValue, FieldParameter
+from .FieldParameter import FieldParameter
+from ..units import UnitValue
 import re
 
 d = ",!?/&-:;@'\n \t"

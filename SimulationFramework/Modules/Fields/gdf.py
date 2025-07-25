@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 import easygdf
 from warnings import warn
-from . import FieldParameter
+from .FieldParameter import FieldParameter
 from ..units import UnitValue
 from ..constants import speed_of_light
 
@@ -82,7 +82,7 @@ def write_gdf_field_file(self) -> str:
         fielddata = np.array([zdata, ezdata]).transpose()
         if self.cavity_type == "TravellingWave":
             startpos = list(zdata).index(self.start_cell_z)
-            stoppos = list(zdata).index(self.end_cell_z)
+            # stoppos = list(zdata).index(self.end_cell_z)
             halfcell1 = 1.0 * fielddata[:startpos]
             halfcell2 = 1.0 * halfcell1[::-1]
             halfcell1[:, 1] /= max(halfcell1[:, 1])

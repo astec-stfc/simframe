@@ -1,7 +1,7 @@
 import numpy as np
 import re
 from warnings import warn
-from . import FieldParameter
+from .FieldParameter import FieldParameter
 from ..units import UnitValue
 
 d = ",!?/&-:;@'\n \t"
@@ -265,7 +265,7 @@ def read_astra_field_file(
                     units="V/C",
                 ),
             )
-        except:
+        except Exception:
             fdat = np.loadtxt(filename, skiprows=1)
             setattr(
                 self,
