@@ -184,7 +184,7 @@ class cavity(frameworkElement):
                     if key == "volt":
                         if self.Structure_Type == "TravellingWave":
                             value = abs(
-                                (self.cells + 4.1)
+                                (self.cells + 3.8)
                                 * self.cell_length
                                 * (1 / np.sqrt(2))
                                 * value
@@ -196,7 +196,7 @@ class cavity(frameworkElement):
                         value = abs(1e-3 / (np.sqrt(2)) * value)
 
                     if key == "wakefile":
-                        value = "\"" + value + "\""
+                        value = value
 
                     # In CAVITY NKICK = n_cells
                     if key == "n_kicks" and self.cells > 1:
@@ -245,7 +245,7 @@ class cavity(frameworkElement):
                                 value
                                 * 1e-9
                                 * abs(
-                                    (self.cells + 5.5) * self.cell_length * (1 / np.sqrt(2))
+                                    (self.cells + 3.8) * self.cell_length * (1 / np.sqrt(2))
                                 )
                             )
                         else:
@@ -294,7 +294,7 @@ class cavity(frameworkElement):
                 output += (
                     "ffac"
                     + subname
-                    + " = "
+                    + " = 1.007 * "
                     + str(
                         (9.0 / (2.0 * np.pi))
                         * self.field_amplitude
