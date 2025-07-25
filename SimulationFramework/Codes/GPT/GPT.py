@@ -128,7 +128,7 @@ class gptLattice(frameworkLattice):
                 self.ignore_start_screen = element
             else:
                 fulltext += element.write_GPT(self.Brho, ccs=ccs)
-                if isinstance(element, cavity) and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
+                if isinstance(element, cavity) and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field) and element.longitudinal_wakefield_enable:
                     original_properties = {
                         a: element[a]
                         for a in element.objectproperties
