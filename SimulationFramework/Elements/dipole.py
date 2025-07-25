@@ -294,7 +294,7 @@ class dipole(frameworkElement):
         )
         valdict = {"eid": self.objectname}
         for key, value in keydict.items():
-            if (not key in ["name", "type", "commandtype"]) and (
+            if (key not in ["name", "type", "commandtype"]) and (
                 not type(type_conversion_rules_Ocelot[self.objecttype])
                 in [Aperture, Marker]
             ):
