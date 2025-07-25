@@ -1,15 +1,14 @@
-from logging import FileHandler
-
 import numpy as np
 
 from ..units import UnitValue
 from ..constants import speed_of_light
-from . import FieldParameter
+
+from .FieldParameter import FieldParameter
 from warnings import warn
 from ..SDDSFile import SDDSFile, SDDS_Types
 
 
-def write_SDDS_field_file(self, sddsindex: int=0, ascii: bool=False) -> str:
+def write_SDDS_field_file(self, sddsindex: int = 0, ascii: bool = False) -> str:
     """
     Generate the field data in a format that is suitable for SDDS, based on the
     :class:`~SimulationFramework.Modules.Fields.field` object provided.
