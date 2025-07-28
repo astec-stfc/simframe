@@ -7,6 +7,7 @@ class quadrupole(frameworkElement):
     field_reference_position: str = "middle"
     fringe_field_coefficient: float = 0.0
     strength_errors: list = [0]
+    gradient: float = 0.0
 
     def __init__(
             self,
@@ -120,7 +121,7 @@ class quadrupole(frameworkElement):
             + ", "
             + str(self.length)
             + ", "
-            + str((-Brho * self.k1) if not self.gradient else -1 * self.gradient)
+            + str((-Brho * self.k1) if abs(self.gradient) > 0 else -1 * self.gradient)
             + (
                 ", " + str(self.fringe_field_coefficient)
                 if self.fringe_field_coefficient > 0

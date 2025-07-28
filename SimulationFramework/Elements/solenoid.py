@@ -9,6 +9,7 @@ class solenoid(frameworkElement):
     default_array_names: list[str] = ["Z", "Bz"]
     field_definition: str | field | None = None
     smooth: float = 10.0
+    array_names: list[str] = None
 
     def __init__(
             self,

@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 import subprocess
 import numpy as np
 from ...Framework_objects import (
@@ -57,7 +58,7 @@ class gptLattice(frameworkLattice):
                     "particle_definition"
                 ]
         else:
-            self.particle_definition = self.elementObjects[self.start].name
+            self.particle_definition = self.elementObjects[self.start].objectname
         self.headers["setfile"] = gpt_setfile(
             set='"beam"', filename='"' + self.name + '.gdf"'
         )
@@ -88,8 +89,8 @@ class gptLattice(frameworkLattice):
 
     def endScreen(self, **kwargs):
         return screen(
-            name=self.endObject.objectname,
-            type="screen",
+            objectname=self.endObject.objectname,
+            objecttype="screen",
             centre=self.endObject.centre,
             position_start=self.endObject.position_start,
             position_end=self.endObject.position_start,
@@ -141,14 +142,16 @@ class gptLattice(frameworkLattice):
             else:
                 fulltext += element.write_GPT(self.Brho, ccs=ccs)
                 if isinstance(element, cavity) and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
-                    original_properties = {
-                        a: element[a]
-                        for a in element.objectproperties
-                        if a != "objectname" and a != "objecttype"
-                    }
-                    original_properties['field_definition'] = original_properties['wakefield_definition']
-                    original_properties['field_reference_position'] = "start"
-                    wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
+                    original_properties = deepcopy(element.objectproperties)
+                    original_properties.objectname = f'{element.objectname}_wake'
+                    original_properties.objecttype = "wakefield"
+                    setattr(original_properties, "field_definition", original_properties.wakefield_definition)
+                    wake_element = wakefield(
+                        **{
+                            k: getattr(original_properties, k) for k in original_properties.model_fields_set
+                        }
+                    )
+                    wake_element.cells = original_properties.get_cells()
                     fulltext += wake_element.write_GPT(self.Brho, ccs=ccs)
                 new_ccs = element.gpt_ccs(ccs)
                 if not new_ccs == ccs:
@@ -456,11 +459,15 @@ class gptLattice(frameworkLattice):
 
 class gpt_element(frameworkElement):
 
-    def __init__(self, objectname=None, objecttype=None, **kwargs):
-        super(gpt_element, self).__init__(objectname, objecttype, **kwargs)
-        # if elementName in gpt_defaults:
-        #     for k, v in list(gpt_defaults[elementName].items()):
-        #         self.add_default(k, v)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(gpt_element, self).__init__(
+            *args,
+            **kwargs
+        )
 
     def write_GPT(self, *args, **kwargs):
         return self._write_GPT(*args, **kwargs)
@@ -480,17 +487,33 @@ class gpt_element(frameworkElement):
 
 class gpt_setfile(gpt_element):
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_setfile, self).__init__(
-            objectname="setfile", objecttype="gpt_setfile", **kwargs
+            objectname="setfile",
+            objecttype="gpt_setfile",
+            *args,
+            **kwargs,
         )
 
 
 class gpt_charge(gpt_element):
+    set: str = '"beam"'
+    charge: float = 0.0
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_charge, self).__init__(
-            objectname="settotalcharge", objecttype="gpt_charge", **kwargs
+            objectname="settotalcharge",
+            objecttype="gpt_charge",
+            *args,
+            **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -501,6 +524,8 @@ class gpt_charge(gpt_element):
 
 
 class gpt_setreduce(gpt_element):
+    set: str = '"beam"'
+    setreduce: int = 1
 
     def __init__(self, **kwargs):
         super(gpt_setreduce, self).__init__(
@@ -516,11 +541,19 @@ class gpt_setreduce(gpt_element):
 
 class gpt_accuracy(gpt_element):
 
-    def __init__(self, accuracy=6, **kwargs):
+    def __init__(
+            self,
+            accuracy,
+            *args,
+            **kwargs,
+    ):
         super(gpt_accuracy, self).__init__(
-            objectname="accuracy", objecttype="gpt_accuracy", **kwargs
+            accuracy=accuracy,
+            objectname="accuracy",
+            objecttype="gpt_accuracy",
+            *args,
+            **kwargs,
         )
-        self.accuracy = accuracy
 
     def _write_GPT(self, *args, **kwargs):
         output = (
@@ -530,13 +563,23 @@ class gpt_accuracy(gpt_element):
 
 
 class gpt_spacecharge(gpt_element):
+    grids: getGrids = None
+    ngrids: int | None = None
+    space_charge_mode: str | None = None
+    cathode: bool = False
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_spacecharge, self).__init__(
-            objectname="spacecharge", objecttype="gpt_spacecharge", **kwargs
+            objectname="spacecharge",
+            objecttype="gpt_spacecharge",
+            *args,
+            **kwargs,
         )
         self.grids = getGrids()
-        self.add_default("ngrids", None)
 
     def _write_GPT(self, *args, **kwargs):
         output = ""
@@ -562,10 +605,21 @@ class gpt_spacecharge(gpt_element):
 
 
 class gpt_tout(gpt_element):
+    startpos: float = 0.0
+    endpos: float = 0.0
+    starttime: float | None = None
+    step: str = "0.1/c"
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_tout, self).__init__(
-            objectname="tout", objecttype="gpt_tout", **kwargs
+            objectname="tout",
+            objecttype="gpt_tout",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -582,9 +636,16 @@ class gpt_tout(gpt_element):
 
 class gpt_csr1d(gpt_element):
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_csr1d, self).__init__(
-            objectname="csr1d", objecttype="gpt_csr1d", **kwargs
+            objectname="csr1d",
+            objecttype="gpt_csr1d",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -593,10 +654,18 @@ class gpt_csr1d(gpt_element):
 
 
 class gpt_writefloorplan(gpt_element):
+    filename: str = ""
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_writefloorplan, self).__init__(
-            objectname="writefloorplan", objecttype="gpt_writefloorplan", **kwargs
+            objectname="writefloorplan",
+            objecttype="gpt_writefloorplan",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -605,10 +674,20 @@ class gpt_writefloorplan(gpt_element):
 
 
 class gpt_Zminmax(gpt_element):
+    zmin: float = 0.0
+    zmax: float = 0.0
+    ECS: str = '"wcs", "I"'
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_Zminmax, self).__init__(
-            objectname="Zminmax", objecttype="gpt_Zminmax", **kwargs
+            objectname="Zminmax",
+            objecttype="gpt_Zminmax",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -626,10 +705,21 @@ class gpt_Zminmax(gpt_element):
 
 
 class gpt_forwardscatter(gpt_element):
+    zmin: float = 0.0
+    zmax: float = 0.0
+    ECS: str = '"wcs", "I"'
+    probability: float = 0.0
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_forwardscatter, self).__init__(
-            objectname="forwardscatter", objecttype="gpt_forwardscatter", **kwargs
+            objectname="forwardscatter",
+            objecttype="gpt_forwardscatter",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -647,10 +737,19 @@ class gpt_forwardscatter(gpt_element):
 
 
 class gpt_scatterplate(gpt_element):
+    zmin: float = 0.0
+    zmax: float = 0.0
+    ECS: str = '"wcs", "I"'
+    a: float = 0.0
+    b: float = 0.0
+    model: str = "cathode"
 
     def __init__(self, **kwargs):
         super(gpt_scatterplate, self).__init__(
-            objectname="scatterplate", objecttype="gpt_scatterplate", **kwargs
+            objectname="scatterplate",
+            objecttype="gpt_scatterplate",
+            *args,
+            **kwargs
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -670,10 +769,20 @@ class gpt_scatterplate(gpt_element):
 
 
 class gpt_dtmaxt(gpt_element):
+    tend: float = 0.0
+    tstart: float = 0.0
+    dtmax: float = 0.0
 
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
         super(gpt_dtmaxt, self).__init__(
-            objectname="dtmaxt", objecttype="gpt_dtmaxt", **kwargs
+            objectname="dtmaxt",
+            objecttype="gpt_dtmaxt",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
