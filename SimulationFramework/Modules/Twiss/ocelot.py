@@ -75,7 +75,7 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.append("eta_y", fdat["Dy"])
     self.append("eta_yp", fdat["Dyp"])
     self.append("element_name", np.zeros(len(fdat["s"])))
-    self.append("lattice_name", np.zeros(len(fdat["s"])), lattice_name)
+    self.append("lattice_name", np.zeros(len(fdat["s"])))
     # ## BEAM parameters
     self.append("ecnx", fdat["emit_xn"])
     self.append("ecny", fdat["emit_yn"])

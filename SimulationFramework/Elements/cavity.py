@@ -245,13 +245,7 @@ class cavity(frameworkElement):
 
     def _write_Ocelot(self):
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
-        k1 = self.k1 if self.k1 is not None else 0
-        k2 = self.k2 if self.k2 is not None else 0
-        keydict = merge_two_dicts(
-            {"k1": k1, "k2": k2},
-            merge_two_dicts(self.objectproperties, self.objectdefaults),
-        )
-        for key, value in keydict.items():
+        for key, value in self.objectproperties:
             if key not in [
                 "name",
                 "type",

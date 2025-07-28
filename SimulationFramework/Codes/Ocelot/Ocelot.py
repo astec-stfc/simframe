@@ -2,6 +2,7 @@ from ...Framework_objects import frameworkLattice, getGrids
 from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
+from ...Modules import Fields as field
 from ocelot.cpbd.magnetic_lattice import MagneticLattice
 from ocelot.cpbd.track import track
 from ocelot.cpbd.io import save_particle_array
@@ -21,12 +22,12 @@ class ocelotLattice(frameworkLattice):
 
     code: str = "ocelot"
     trackBeam: bool = True
-    lat_obj: MagneticLattice | None = None
-    pin: ParticleArray | None = None
-    pout: ParticleArray | None = None
-    tws: Dict | None = None
-    names: List = []
-    grids: getGrids | None = None
+    lat_obj: MagneticLattice = None
+    pin: ParticleArray = None
+    pout: ParticleArray = None
+    tws: List = None
+    names: List = None
+    grids: getGrids = None
     oceglobal: Dict = {}
     unit_step: float = 0.01
     smooth: float = 0.01
@@ -37,7 +38,7 @@ class ocelotLattice(frameworkLattice):
     sigmamin_csr: float = 1e-5
     wake_sampling: int = 1000
     wake_filter: int = 10
-    particle_definition: str | None = None
+    particle_definition: str = None
     final_screen: screen | None = None
 
 
@@ -48,9 +49,9 @@ class ocelotLattice(frameworkLattice):
             if "OCELOTsettings" in list(self.settings["global"].keys())
             else self.oceglobal
         )
-        for field in self.model_fields_set:
-            if field in list(self.oceglobal.keys()):
-                setattr(self, field, self.oceglobal[field])
+        for f in self.model_fields_set:
+            if f in list(self.oceglobal.keys()):
+                setattr(self, field, self.oceglobal[f])
 
         if (
             "input" in self.file_block
@@ -67,11 +68,12 @@ class ocelotLattice(frameworkLattice):
                 ]
         else:
             self.particle_definition = self.elementObjects[self.start].objectname
+        self.grids = getGrids()
 
     def endScreen(self, **kwargs):
         return screen(
-            name=self.endObject.objectname,
-            type="screen",
+            objectname=self.endObject.objectname,
+            objecttype="screen",
             centre=self.endObject.centre,
             position_start=self.endObject.position_start,
             position_end=self.endObject.position_start,
@@ -93,7 +95,7 @@ class ocelotLattice(frameworkLattice):
                 except Exception as e:
                     print('Ocelot writeElements error:', element.objectname, e)
         self.lat_obj = MagneticLattice(mag_lat)
-        self.names = array([lat.id for lat in self.lat_obj.sequence])
+        self.names = [str(x) for x in array([lat.id for lat in self.lat_obj.sequence])]
 
     def write(self):
         self.writeElements()
@@ -138,13 +140,13 @@ class ocelotLattice(frameworkLattice):
     def postProcess(self):
         super().postProcess()
         bfname = (
-            f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.npz'
+            f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.ocelot.npz'
         )
         save_particle_array(bfname, self.pout)
         rbf.beam.read_beam_file(self.global_parameters["beam"], bfname)
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
-            bfname.replace("npz", "hdf5"),
+            bfname.replace("ocelot.npz", "hdf5"),
             centered=False,
             sourcefilename=bfname,
             pos=0.0,
@@ -205,18 +207,21 @@ class ocelotLattice(frameworkLattice):
                 navi_locations_start += [start[i]]
                 navi_locations_end += [end[i]]
         for name, obj in self.elements.items():
-            if (obj["objecttype"] == "cavity") and ("sub_elements" in list(obj.keys())):
-                for sename, seobj in obj["sub_elements"].items():
-                    if seobj["type"] == "wakefield":
-                        wake, w_ind = self.physproc_wake(
-                            name, seobj["field_definition"]
-                        )
-                        navi_processes += [wake]
-                        navi_locations_start += [self.lat_obj.sequence[w_ind]]
-                        navi_locations_end += [self.lat_obj.sequence[w_ind + 1]]
+            if obj.objecttype == "cavity":
+                fieldstr = "wakefield_definition"
+            elif obj.objecttype == "wakefield":
+                fieldstr = "field_definition"
+            else:
+                fieldstr = None
+            if fieldstr is not None:
+                if getattr(obj, fieldstr) is not None:
+                    wake, w_ind = self.physproc_wake(name, getattr(obj, fieldstr))
+                    navi_processes += [wake]
+                    navi_locations_start += [self.lat_obj.sequence[w_ind]]
+                    navi_locations_end += [self.lat_obj.sequence[w_ind + 1]]
         for w in self.screens_and_bpms:
-            name = w["output_filename"].replace(".sdds", "")
-            loc = self.lat_obj.sequence[where(self.names == name)[0][0]]
+            name = w.output_filename.replace(".sdds", "")
+            loc = self.lat_obj.sequence[self.names.index(name)]
             subdir = self.global_parameters["master_subdir"]
             navi_processes += [SaveBeam(filename=f"{subdir}/{name}.npz")]
             navi_locations_start += [loc]
@@ -268,9 +273,11 @@ class ocelotLattice(frameworkLattice):
         return [csrlist, stlist, enlist]
 
     def physproc_wake(self, name, loc):
+        if isinstance(loc, field.field):
+            loc = loc.write_field_file(code="astra")
         wake = Wake(
             step=100, w_sampling=self.wake_sampling, filter_order=self.wake_filter
         )
         wake.wake_table = WakeTable(expand_substitution(self, loc))
-        w_ind = where(self.names == name)[0][0]
+        w_ind = self.names.index(name)
         return [wake, w_ind]

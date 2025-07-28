@@ -53,8 +53,6 @@ class kicker(dipole):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        k1 = self.k1 if self.k1 is not None else 0
-        k2 = self.k2 if self.k2 is not None else 0
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         for key, value in self.objectproperties:
             if (

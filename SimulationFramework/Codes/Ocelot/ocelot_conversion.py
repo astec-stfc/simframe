@@ -30,6 +30,7 @@ ocelot_conversion_rules = {
     "beam_arrival_monitor": Drift,
     "bunch_length_monitor": Drift,
     "screen": Marker,
+    "marker": Marker,
     "rcollimator": Aperture,
     "collimator": Aperture,
     "monitor": Monitor,

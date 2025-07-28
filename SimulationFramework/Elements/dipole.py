@@ -291,14 +291,9 @@ class dipole(frameworkElement):
         return wholestring
 
     def _write_Ocelot(self):
-        k1 = self.k1 if self.k1 is not None else 0
-        k2 = self.k2 if self.k2 is not None else 0
-        keydict = merge_two_dicts(
-            {"k1": k1, "k2": k2},
-            merge_two_dicts(self.objectproperties, self.objectdefaults),
-        )
+        setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         valdict = {"eid": self.objectname}
-        for key, value in keydict.items():
+        for key, value in self.objectproperties:
             if (not key in ["name", "type", "commandtype"]) and (
                 not type(type_conversion_rules_Ocelot[self.objecttype])
                 in [Aperture, Marker]
