@@ -1,5 +1,6 @@
 import numpy as np
 from .. import constants
+from ..units import UnitValue
 from ocelot.cpbd.io import load_particle_array, save_particle_array
 from ocelot.cpbd.beam import ParticleArray
 
@@ -7,7 +8,11 @@ from ocelot.cpbd.beam import ParticleArray
 def read_ocelot_beam_file(self, filename):
     self.filename = filename
     self["code"] = "OCELOT"
+    self._beam["particle_rest_energy_eV"] = self.E0_eV
     parray = load_particle_array(filename)
+    self._beam["particle_mass"] = np.full(len(parray.x()), UnitValue(constants.m_e, "kg"))
+    self._beam["particle_charge"] = parray.q_array
+    self._beam["gamma"] = parray.gamma
     self._beam["x"] = parray.x()
     self._beam["y"] = parray.y()
     self._beam["t"] = (parray.s + parray.tau()) / constants.speed_of_light
@@ -19,7 +24,7 @@ def read_ocelot_beam_file(self, filename):
         self.q_over_c * cp / np.sqrt(parray.px() ** 2 + parray.py() ** 2 + 1)
     )
     self._beam["total_charge"] = -1 * abs(np.sum(parray.q_array))
-    self._beam["z"] = parray.s + (-1 * self._beam.Bz * constants.speed_of_light) * (
+    self._beam["z"] = (1 * self._beam.Bz * constants.speed_of_light) * (
         self._beam["t"] - np.mean(self._beam["t"])
     )  # np.full(len(self.t), 0)
     self._beam["charge"] = np.full(
@@ -37,7 +42,7 @@ def write_ocelot_beam_file(self, filename, write=True):
     xp = self.cpx.val / self.cpz.val
     yp = self.cpy.val / self.cpz.val
     p = ((self.energy.val * 1e-9) - E) / E
-    tau = -(self.t.val - np.mean(self.t.val)) * constants.speed_of_light
+    tau = (self.t.val - np.mean(self.t.val)) * constants.speed_of_light
     s = np.mean(self.t.val) * constants.speed_of_light
 
     rparticles = np.array([x, xp, y, yp, tau, p])

@@ -210,29 +210,35 @@ class cavity(frameworkElement):
                                 # In ELEGANT all phases are +90degrees!!
                                 value = 90 - value
 
-                        # In ELEGANT the voltages need to be compensated
-                        if key == "volt":
+                    # In ELEGANT the voltages need to be compensated
+                    if key == "volt":
+                        if self.Structure_Type == "TravellingWave":
                             value = abs(
-                                (self.get_cells() + 4.1)
+                                (self.get_cells() + 3.8)
                                 * self.cell_length
                                 * (1 / np.sqrt(2))
                                 * value
                             )
-                        # If using rftmez0 or similar
-                        if key == "ez_peak":
-                            value = abs(1e-3 / (np.sqrt(2)) * value)
+                        else:
+                            value = value
+                    # If using rftmez0 or similar
+                    if key == "ez_peak":
+                        value = abs(1e-3 / (np.sqrt(2)) * value)
 
-                        # In CAVITY NKICK = n_cells
-                        if key == "n_kicks" and self.get_cells() > 0:
-                            value = 3 * self.get_cells()
+                    if key == "wakefile":
+                        value = value
 
-                        if key == "n_bins" and value > 0:
-                            print(
-                                "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
-                            )
-                        value = 1 if value is True else value
-                        value = 0 if value is False else value
-                    # print("elegant cavity", key, value)
+                    # In CAVITY NKICK = n_cells
+                    if key == "n_kicks" and self.get_cells() > 1:
+                        value = 3 * self.get_cells()
+
+                    if key == "n_bins" and value > 0:
+                        print(
+                            "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
+                        )
+                    value = 1 if value is True else value
+                    value = 0 if value is False else value
+                # print("elegant cavity", key, value)
                     tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -258,13 +264,16 @@ class cavity(frameworkElement):
                 )
                 if self.objecttype in ["cavity", "rf_deflecting_cavity"]:
                     if key == "field_amplitude":
-                        value = (
-                            value
-                            * 1e-9
-                            * abs(
-                                (self.get_cells() + 4.1) * self.cell_length * (1 / np.sqrt(2))
+                        if self.Structure_Type == "TravellingWave":
+                            value = (
+                                value
+                                * 1e-9
+                                * abs(
+                                    (self.get_cells() + 3.8) * self.cell_length * (1 / np.sqrt(2))
+                                )
                             )
-                        )
+                        else:
+                            value = value * 1e-9
                 setattr(obj, self._convertKeword_Ocelot(key), value)
         scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
         return [obj, scr]
@@ -276,7 +285,7 @@ class cavity(frameworkElement):
         field_file_name = self.generate_field_file_name(
             self.field_definition, code="gpt"
         )
-        wakefield_file_name = self.generate_field_file_name(
+        self.generate_field_file_name(
             self.wakefield_definition, code="gpt"
         )
         """
@@ -309,7 +318,7 @@ class cavity(frameworkElement):
                 output += (
                     "ffac"
                     + subname
-                    + " = "
+                    + " = 1.007 * "
                     + str(
                         (9.0 / (2.0 * np.pi))
                         * self.field_amplitude

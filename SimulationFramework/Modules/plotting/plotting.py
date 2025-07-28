@@ -1,6 +1,4 @@
-import os
 import math
-from io import StringIO
 import matplotlib.pyplot as plt
 from copy import copy
 import numpy as np
@@ -410,7 +408,7 @@ def plot(
 
     # Only get the data we need
     if limits:
-        good = np.logical_and(X >= limits[0], X <= limits[1])
+        good = np.logical_and(X.val >= limits[0], X.val <= limits[1])
         idx = list(np.where(good is True)[0])
         if len(idx) > 0:
             if idx[0] > 0:
@@ -418,12 +416,12 @@ def plot(
             if (idx[-1] + 1) < len(good):
                 good[idx[-1] + 1] = True
             X = X[good]
-        if X.min() > limits[0]:
-            limits[0] = X.min()
-        if X.max() < limits[1]:
-            limits[1] = X.max()
+        if X.val.min() > limits[0]:
+            limits[0] = X.val.min()
+        if X.val.max() < limits[1]:
+            limits[1] = X.val.max()
     else:
-        limits = X.min(), X.max()
+        limits = X.val.min(), X.val.max()
         good = slice(None, None, None)  # everything
 
     # Try particles within these bounds
@@ -444,16 +442,17 @@ def plot(
         Pnames = []
 
     # X axis scaling
-    units_x = str(twiss.units(xkey).unit)
+    units_x = str(twiss.stat(xkey).unit)
     if nice:
-        X, factor_x, prefix_x = nice_array(X)
+        X.val, factor_x, prefix_x = nice_array(X.val)
         units_x = prefix_x + units_x
     else:
         factor_x = 1
 
     # set all but the layout
-    ax_magnet_layout.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
-    ax_magnet_layout.set_xlabel(f"{xkey} ({units_x})")
+    if include_layout is not False:
+        ax_magnet_layout.set_xlim(limits[0] / factor_x, limits[1] / factor_x)
+        ax_magnet_layout.set_xlabel(f"{xkey} ({units_x})")
 
     # Draw for Y1 and Y2
     linestyles = ["solid", "dashed"]
@@ -470,7 +469,7 @@ def plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = [twiss.units(key).unit for key in keys]
+        ulist = [twiss.stat(key).unit for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -479,10 +478,10 @@ def plot(
         unit = str(ulist[0])
 
         # Data
-        data = [twiss.stat(key)[good] for key in keys]
+        data = [twiss.stat(key).val[good] for key in keys]
 
         # Labels
-        labels = [twiss.units(key).label for key in keys]
+        labels = [twiss.stat(key).label for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
@@ -496,7 +495,7 @@ def plot(
             ii += 1
             color = "C" + str(ii)
             ax.plot(
-                X,
+                X.val,
                 dat / factor,
                 label=f"{label} ({unit})",
                 color=color,
@@ -560,7 +559,7 @@ def plot(
             include_labels=include_labels,
             magnets=magnets,
             kinetic_energy=list(
-                zip(twiss.stat("z")[good], twiss.stat("kinetic_energy")[good])
+                zip(twiss.stat("z").val[good], twiss.stat("kinetic_energy").val[good])
             ),
         )
     return plt, fig, all_axis

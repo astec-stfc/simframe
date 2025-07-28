@@ -2,19 +2,32 @@ from ...Framework_objects import frameworkLattice, getGrids
 from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
 from ...Modules import Beams as rbf
-from ...Modules import Fields as field
+from ...Modules.Fields import field
+from .mbi import MBI
 from ocelot.cpbd.magnetic_lattice import MagneticLattice
 from ocelot.cpbd.track import track
-from ocelot.cpbd.io import save_particle_array
+from ocelot.cpbd.io import save_particle_array, load_particle_array
 from ocelot.cpbd.navi import Navigator
 from ocelot.cpbd.sc import SpaceCharge, LSC
 from ocelot.cpbd.csr import CSR
 from ocelot.cpbd.wake3D import Wake, WakeTable
 from ocelot.cpbd.physics_proc import SaveBeam
 from ocelot.cpbd.beam import ParticleArray
+from ocelot.cpbd.transformations.second_order import SecondTM
+from ocelot.cpbd.transformations.kick import KickTM
+from ocelot.cpbd.transformations.runge_kutta import RungeKuttaTM
+from ocelot.cpbd.elements import Octupole, Undulator
 from copy import deepcopy
-from numpy import array, where, mean, savez_compressed
+from typing import Dict
+from numpy import array, where, mean, savez_compressed, linspace, save
 import os
+from yaml import safe_load
+
+with open(
+    os.path.dirname(os.path.abspath(__file__)) + "/ocelot_defaults.yaml",
+    "r",
+) as infile:
+    oceglobal = safe_load(infile)
 from typing import Dict, List
 
 
@@ -94,7 +107,8 @@ class ocelotLattice(frameworkLattice):
                     mag_lat.append(element.write_Ocelot())
                 except Exception as e:
                     print('Ocelot writeElements error:', element.objectname, e)
-        self.lat_obj = MagneticLattice(mag_lat)
+        method = {"global": SecondTM, Octupole: KickTM, Undulator: RungeKuttaTM}
+        self.lat_obj = MagneticLattice(mag_lat, method=method)
         self.names = [str(x) for x in array([lat.id for lat in self.lat_obj.sequence])]
 
     def write(self):
@@ -110,24 +124,21 @@ class ocelotLattice(frameworkLattice):
             if "input" in self.file_block and "prefix" in self.file_block["input"]
             else ""
         )
-        if self.trackBeam:
-            self.hdf5_to_npz(prefix)
-        else:
-            HDF5filename = prefix + self.particle_definition + ".hdf5"
-            rbf.hdf5.read_HDF5_beam_file(
-                self.global_parameters["beam"],
-                os.path.abspath(
-                    self.global_parameters["master_subdir"] + "/" + HDF5filename
-                ),
-            )
+        prefix = prefix if self.trackBeam else prefix + self.particle_definition
+        self.hdf5_to_npz(prefix)
 
     def hdf5_to_npz(self, prefix="", write=True):
         HDF5filename = prefix + self.particle_definition + ".hdf5"
-        HDF5fnwpath = os.path.abspath(
-            self.global_parameters["master_subdir"] + "/" + HDF5filename
+        if os.path.isfile(expand_substitution(self, HDF5filename)):
+            filepath = expand_substitution(self, HDF5filename)
+        else:
+            filepath = self.global_parameters["master_subdir"] + "/" + HDF5filename
+        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], os.path.abspath(filepath),)
+        rbf.hdf5.write_HDF5_beam_file(
+            self.global_parameters["beam"],
+            f'{self.global_parameters["master_subdir"]}/{self.allElementObjects[self.start].objectname}.hdf5',
         )
-        rbf.hdf5.read_HDF5_beam_file(self.global_parameters["beam"], HDF5fnwpath)
-        ocebeamfilename = HDF5fnwpath.replace("hdf5", "npz")
+        ocebeamfilename = HDF5filename.replace("hdf5", "ocelot.npz")
         self.pin = rbf.beam.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
         )
@@ -135,7 +146,10 @@ class ocelotLattice(frameworkLattice):
     def run(self):
         """Run the code with input 'filename'"""
         navi = self.navi_setup()
-        self.tws, self.pout = track(self.lat_obj, deepcopy(self.pin), navi=navi)
+        pin = deepcopy(self.pin)
+        if self.sample_interval > 1:
+            pin = pin.thin_out(nth=self.sample_interval)
+        self.tws, self.pout = track(self.lat_obj, pin, navi=navi, calc_tws=True, twiss_disp_correction=True)
 
     def postProcess(self):
         super().postProcess()
@@ -143,45 +157,47 @@ class ocelotLattice(frameworkLattice):
             f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.ocelot.npz'
         )
         save_particle_array(bfname, self.pout)
-        rbf.beam.read_beam_file(self.global_parameters["beam"], bfname)
-        rbf.hdf5.write_HDF5_beam_file(
-            self.global_parameters["beam"],
-            bfname.replace("ocelot.npz", "hdf5"),
-            centered=False,
-            sourcefilename=bfname,
-            pos=0.0,
-            xoffset=mean(self.pout.x()),
-            yoffset=mean(self.pout.y()),
-            zoffset=self.pout.s,
-        )
+        for elem in self.screens_and_bpms + [self.endObject]:
+            ocebeamname = f'{self.global_parameters["master_subdir"]}/{elem.objectname}.ocelot.npz'
+            parray = load_particle_array(ocebeamname)
+            beam = rbf.beam(ocebeamname)
+            rbf.hdf5.write_HDF5_beam_file(
+                beam,
+                ocebeamname.replace("ocelot.npz", "hdf5"),
+                centered=False,
+                sourcefilename=ocebeamname,
+                pos=0.0,
+                xoffset=mean(parray.x()),
+                yoffset=mean(parray.y()),
+                zoffset=[parray.s],
+            )
         twsdat = {e: [] for e in self.tws[0].__dict__.keys()}
         for t in self.tws:
             for k, v in t.__dict__.items():
+                # Offset the s values to the start of the lattice
+                if k == "s":
+                    v += self.startObject["position_start"][2]
                 twsdat[k].append(v)
         savez_compressed(
             f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz',
             **twsdat,
         )
+        if self.mbi_navi is not None:
+            save(f'{self.global_parameters["master_subdir"]}/{self.objectname}_mbi.dat', self.mbi_navi.bf)
 
     def navi_setup(self):
         navi_processes = []
         navi_locations_start = []
         navi_locations_end = []
-        settings = self.settings
-        self.unit_step = (
-            settings["unit_step"] if "unit_step" in settings.keys() else self.unit_step
-        )
-        self.smooth = (
-            self.oceglobal["smooth_param"]
-            if "smooth_param" in list(self.oceglobal.keys())
-            else 0.1
-        )
+        # settings = self.settings
         navi = Navigator(self.lat_obj, unit_step=self.unit_step)
         if self.lsc:
             lsc = self.physproc_lsc()
             navi_processes += [lsc]
             navi_locations_start += [self.lat_obj.sequence[0]]
             navi_locations_end += [self.lat_obj.sequence[-1]]
+        space_charge_set = False
+        csr_set = False
         if "charge" in list(self.file_block.keys()):
             if (
                 "space_charge_mode" in list(self.file_block["charge"].keys())
@@ -191,8 +207,8 @@ class ocelotLattice(frameworkLattice):
                     (len(self.global_parameters["beam"].x) / self.sample_interval)
                 )
                 g1 = (
-                    self.oceglobal["sc_grid"]
-                    if "sc_grid" in list(self.oceglobal.keys())
+                    self.sc_grid
+                    if hasattr(self, "sc_grid")
                     else gridsize
                 )
                 grids = [g1 for _ in range(3)]
@@ -200,12 +216,27 @@ class ocelotLattice(frameworkLattice):
                 navi_processes += [sc]
                 navi_locations_start += [self.lat_obj.sequence[0]]
                 navi_locations_end += [self.lat_obj.sequence[-1]]
+                space_charge_set = True
         if "csr" in list(self.file_block.keys()):
             csr, start, end = self.physproc_csr()
             for i in range(len(csr)):
                 navi_processes += [csr[i]]
                 navi_locations_start += [start[i]]
                 navi_locations_end += [end[i]]
+        if self.mbi["set_mbi"]:
+            print(self.mbi)
+            self.mbi_navi = MBI(
+                lattice=self.lat_obj,
+                lamb_range=list(linspace(float(self.mbi["min"]), float(self.mbi["max"]), int(self.mbi["nstep"]))),
+                lsc=space_charge_set,
+                csr=csr_set,
+                slices=self.mbi["slices"],
+            )
+            # mbi1.step = self.unit_step
+            self.mbi_navi.navi = deepcopy(navi)
+            self.mbi_navi.lattice = deepcopy(self.lat_obj)
+            self.mbi_navi.lsc = True
+            navi.add_physics_proc(self.mbi_navi, self.lat_obj.sequence[0], self.lat_obj.sequence[-1])
         for name, obj in self.elements.items():
             if obj.objecttype == "cavity":
                 fieldstr = "wakefield_definition"
@@ -215,7 +246,7 @@ class ocelotLattice(frameworkLattice):
                 fieldstr = None
             if fieldstr is not None:
                 if getattr(obj, fieldstr) is not None:
-                    wake, w_ind = self.physproc_wake(name, getattr(obj, fieldstr))
+                    wake, w_ind = self.physproc_wake(name, getattr(obj, fieldstr), obj.n_cells)
                     navi_processes += [wake]
                     navi_locations_start += [self.lat_obj.sequence[w_ind]]
                     navi_locations_end += [self.lat_obj.sequence[w_ind + 1]]
@@ -223,7 +254,7 @@ class ocelotLattice(frameworkLattice):
             name = w.output_filename.replace(".sdds", "")
             loc = self.lat_obj.sequence[self.names.index(name)]
             subdir = self.global_parameters["master_subdir"]
-            navi_processes += [SaveBeam(filename=f"{subdir}/{name}.npz")]
+            navi_processes += [SaveBeam(filename=f"{subdir}/{name}.ocelot.npz")]
             navi_locations_start += [loc]
             navi_locations_end += [loc]
         navi.add_physics_processes(
@@ -233,7 +264,7 @@ class ocelotLattice(frameworkLattice):
 
     def physproc_lsc(self):
         lsc = LSC()
-        lsc.smooth_param = self.smooth
+        lsc.smooth_param = self.smooth_param
         return lsc
 
     def physproc_sc(self, grids):
@@ -272,12 +303,13 @@ class ocelotLattice(frameworkLattice):
             enlist = [self.lat_obj.sequence[-1]]
         return [csrlist, stlist, enlist]
 
-    def physproc_wake(self, name, loc):
+    def physproc_wake(self, name, loc, ncell):
         if isinstance(loc, field.field):
             loc = loc.write_field_file(code="astra")
         wake = Wake(
-            step=100, w_sampling=self.wake_sampling, filter_order=self.wake_filter
+            step=100, w_sampling=self.wake_sampling, filter_order=self.wake_filter,
         )
+        wake.factor = ncell * self.wake_factor
         wake.wake_table = WakeTable(expand_substitution(self, loc))
         w_ind = self.names.index(name)
         return [wake, w_ind]

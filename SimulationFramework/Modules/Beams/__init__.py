@@ -371,7 +371,7 @@ class beam(munch.Munch):
             sdds.read_SDDS_beam_file(self, filename)
         elif ext.lower() == ".gdf":
             gdf.read_gdf_beam_file(self, filename)
-        elif "ocelot" in pre and ext.lower() == ".npz":
+        elif (ext.lower() == ".npz") and (".ocelot" in filename):
             from . import ocelot
             ocelot.read_ocelot_beam_file(self, filename)
         elif ext.lower() == ".astra":

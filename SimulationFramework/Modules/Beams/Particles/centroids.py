@@ -26,7 +26,7 @@ class centroids(munch.Munch):
         return self.Cz
 
     @property
-    def mean_cxp(self):
+    def mean_cpx(self):
         return self.Cpx
 
     @property

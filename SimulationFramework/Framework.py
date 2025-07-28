@@ -27,6 +27,7 @@ from .FrameworkHelperFunctions import (
 
 try:
     import MasterLattice  # type: ignore
+
     if MasterLattice.__file__ is not None:
         MasterLatticeLocation = os.path.dirname(MasterLattice.__file__) + "/"
     else:
@@ -135,6 +136,12 @@ class Framework(Munch):
                 "settingsFilename": self.settingsFilename,
             }
         )
+
+    def clear(self):
+        self.elementObjects = dict()
+        self.latticeObjects = dict()
+        self.commandObjects = dict()
+        self.groupObjects = dict()
 
     def change_subdirectory(self, *args, **kwargs):
         self.setSubDirectory(*args, **kwargs)
@@ -624,7 +631,7 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print('check_lattice error:', elem.objectname, cend, end, cend - end)
+                print("check_lattice error:", elem.objectname, cend, end, cend - end)
         return noerror
 
     def check_lattice_drifts(self, decimals: int = 4) -> bool:
@@ -644,7 +651,13 @@ class Framework(Munch):
             cend = start + np.dot(clength, _rotation_matrix(theta))
             if not np.round(cend - end, decimals=decimals).any() == 0:
                 noerror = False
-                print('check_lattice_drifts error:', elem.objectname, cend, end, cend - end)
+                print(
+                    "check_lattice_drifts error:",
+                    elem.objectname,
+                    cend,
+                    end,
+                    cend - end,
+                )
         return noerror
 
     def change_Lattice_Code(
@@ -676,7 +689,11 @@ class Framework(Munch):
                 )
 
     def read_Element(
-        self, elementname: str, element: dict, subelement: bool = False, parent: str = None
+        self,
+        elementname: str,
+        element: dict,
+        subelement: bool = False,
+        parent: str = None,
     ) -> None:
         """Reads an element definition and creates the element and any sub-elements"""
         if elementname == "filename":
@@ -685,6 +702,8 @@ class Framework(Munch):
             if subelement:
                 if "subelement" in element:
                     del element["subelement"]
+                if "parent" in element:
+                    del element["parent"]
                 self.add_Element(elementname, subelement=True, parent=parent, **element)
             else:
                 self.add_Element(elementname, **element)
@@ -704,13 +723,14 @@ class Framework(Munch):
         # try:
         if typ is None:
             typ = kwargs["type"]
-        element = getattr(frameworkElements, typ)(
-            objectname=name, objecttype=typ, global_parameters=self.global_parameters, **kwargs
-        )
-        element.update_field_definition()
-        # except Exception as e:
-        #     print('add_Element error:', e)
-        #     print('add_Element error:', typ, name, kwargs)
+        try:
+            element = getattr(frameworkElements, typ)(
+                objectname=name, objecttype=typ, global_parameters=self.global_parameters, **kwargs
+            )
+            element.update_field_definition()
+        except Exception as e:
+            print('add_Element error:', e)
+            print('add_Element error:', typ, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:
@@ -1101,16 +1121,10 @@ class Framework(Munch):
     def save_summary_files(self, twiss: bool = True, beams: bool = True) -> None:
         """Saves HDF5 summary files for the Twiss and/or Beam files"""
         t = rtf.load_directory(self.subdirectory)
-        try:
-            t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
-        except Exception:
-            pass
-        try:
-            rbf.save_HDF5_summary_file(
-                self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
-            )
-        except Exception:
-            pass
+        t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
+        rbf.save_HDF5_summary_file(
+            self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
+        )
 
     def pushRunSettings(self) -> None:
         """Updates the 'Run Settings' in each of the lattices"""

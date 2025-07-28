@@ -1,9 +1,13 @@
 import munch
 
 try:
-    import sdds
+    import ASTeCsdds.sdds as sdds
 except:
-    print("No SDDS available!")
+    try:
+        import sdds
+    except:
+        print("No SDDS available!")
+
 import numpy as np
 import enum
 

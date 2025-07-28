@@ -298,7 +298,7 @@ class frameworkGenerator(Munch):
 
     @property
     def particles(self):
-        return self.number_of_particles if self.number_of_particles is not None else 512
+        return self.number_of_particles if self.number_of_particles is not None else 262144
 
     @particles.setter
     def particles(self, npart):
@@ -430,6 +430,7 @@ class ASTRAGenerator(frameworkGenerator):
         framework_dict = dict(
             [
                 ["q_total", {"value": self.charge * 1e9, "default": 0.25}],
+                ["IPart", {"value": self.number_of_particles, "default": 8096}],
                 ["Lprompt", {"value": False}],
             ]
         )

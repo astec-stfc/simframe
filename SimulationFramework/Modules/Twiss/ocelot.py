@@ -15,85 +15,101 @@ def read_ocelot_twiss_files(self, filename, reset=True):
             self.read_ocelot_twiss_files(f, reset=False)
     elif os.path.isfile(filename):
         lattice_name = os.path.basename(filename).split(".")[0]
-        if "xemit" not in filename.lower():
-            filename = filename.replace("Yemit", "Xemit").replace("Zemit", "Xemit")
         fdat = {}
-        with np.load(filename) as data:
+        print('loading ocelot twiss file', filename)
+        with np.load(filename, allow_pickle=True) as data:
             for key, value in data.items():
-                fdat.update({key: value})
+                try:
+                    data[key]
+                    fdat.update({key: value})
+                except ValueError:
+                    pass
         interpret_ocelot_data(self, lattice_name, fdat)
 
 
 def interpret_ocelot_data(self, lattice_name, fdat):
-    fdat["s"] += self.z[-1]
-    self.append("z", fdat["s"])
-    cp = fdat["E"] * 1e-3
+    self.z.val = np.append(self.z.val, fdat["s"])
+    self.s.val = np.append(self.s.val, fdat["s"])
+    E = fdat["_E"] * 1e9
+    ke = E - self.E0_eV
+    gamma = E / self.E0_eV
+    cp = np.sqrt(E**2 - self.E0_eV**2)
     # self.append('cp', cp)
-    self.append("cp", cp / constants.elementary_charge)
-    self.append("mean_cp", cp / constants.elementary_charge)
+    self.cp.val = np.append(self.cp.val, cp / constants.elementary_charge)
     ke = np.array(
         (np.sqrt(self.E0**2 + cp**2) - self.E0**2) / constants.elementary_charge
     )
-    self.append("kinetic_energy", ke)
+    self.kinetic_energy.val = np.append(self.kinetic_energy.val, ke)
     gamma = 1 + ke / self.E0_eV
-    self.append("gamma", gamma)
-    self.append("mean_gamma", gamma)
-    self.append("p", cp * self.q_over_c)
-    self.append("enx", fdat["emit_xn"])
-    self.append("ex", fdat["emit_x"])
-    self.append("eny", fdat["emit_yn"])
-    self.append("ey", fdat["emit_y"])
-    self.append("enz", np.zeros(len(fdat["s"])))
-    self.append("ez", np.zeros(len(fdat["s"])))
-    self.append("beta_x", fdat["beta_x"])
-    self.append("alpha_x", fdat["alpha_x"])
-    self.append("gamma_x", fdat["gamma_x"])
-    self.append("beta_y", fdat["beta_y"])
-    self.append("alpha_y", fdat["alpha_y"])
-    self.append("gamma_y", fdat["gamma_y"])
-    self.append("beta_z", np.zeros(len(fdat["s"])))
-    self.append("gamma_z", np.zeros(len(fdat["s"])))
-    self.append("alpha_z", np.zeros(len(fdat["s"])))
-    self.append("sigma_x", fdat["xx"])
-    self.append("sigma_y", fdat["yy"])
-    self.append("sigma_xp", fdat["pxpx"])
-    self.append("sigma_yp", fdat["pypy"])
-    self.append("sigma_t", fdat["tautau"])
-    self.append("mean_x", fdat["x"])
-    self.append("mean_y", fdat["y"])
+    self.gamma.val = np.append(self.gamma.val, gamma)
+    self.p.val = np.append(self.p.val, cp * self.q_over_c)
+    self.enx.val = np.append(self.enx.val, fdat["_emit_xn"])
+    self.ex.val = np.append(self.ex.val, fdat["eigemit_1"])
+    self.eny.val = np.append(self.eny.val, fdat["_emit_yn"])
+    self.ey.val = np.append(self.ey.val, fdat["eigemit_2"])
+    self.enz.val = np.append(self.enz.val, np.zeros(len(fdat["s"])))
+    self.ez.val = np.append(self.ez.val, np.zeros(len(fdat["s"])))
+    self.beta_x.val = np.append(self.beta_x.val, fdat["_beta_x"])
+    self.alpha_x.val = np.append(self.alpha_x.val, fdat["_alpha_x"])
+    self.gamma_x.val = np.append(self.gamma_x.val, (1 + fdat["_alpha_x"]**2) / fdat["_beta_x"])
+    self.beta_y.val = np.append(self.beta_y.val, fdat["_beta_y"])
+    self.alpha_y.val = np.append(self.alpha_y.val, fdat["_alpha_y"])
+    self.gamma_y.val = np.append(self.gamma_y.val, (1 + fdat["_alpha_y"]**2) / fdat["_beta_y"])
+    self.beta_z.val = np.append(self.beta_z.val, np.zeros(len(fdat["s"])))
+    self.gamma_z.val = np.append(self.gamma_z.val, np.zeros(len(fdat["s"])))
+    self.alpha_z.val = np.append(self.alpha_z.val, np.zeros(len(fdat["s"])))
+    self.sigma_x.val = np.append(self.sigma_x.val, np.sqrt(fdat["xx"]))
+    self.sigma_y.val = np.append(self.sigma_y.val, np.sqrt(fdat["yy"]))
+    self.sigma_xp.val = np.append(self.sigma_xp.val, np.sqrt(fdat["pxpx"]))
+    self.sigma_yp.val = np.append(self.sigma_yp.val, np.sqrt(fdat["pypy"]))
+    self.sigma_t.val = np.append(self.sigma_t.val, np.sqrt(fdat["tautau"]) / constants.speed_of_light)
+    self.mean_x.val = np.append(self.mean_x.val, fdat["x"])
+    self.mean_y.val = np.append(self.mean_y.val, fdat["y"])
     beta = np.sqrt(1 - (gamma**-2))
-    self.append("t", fdat["s"] / (beta * constants.speed_of_light))
-    self.append("sigma_z", fdat["tautau"] * (beta * constants.speed_of_light))
+    self.t.val = np.append(self.t.val, fdat["s"] / (beta * constants.speed_of_light))
+    self.sigma_z.val = np.append(
+        self.sigma_z.val, np.sqrt(fdat["tautau"]) * beta
+    )
     # self.append('sigma_cp', elegantData['Sdelta'] * cp )
-    self.append("sigma_cp", fdat["pp"] * cp / constants.elementary_charge)
+    self.sigma_cp.val = np.append(
+        self.sigma_cp.val, np.sqrt(fdat["pp"]) * cp / constants.elementary_charge
+    )
     # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
-    self.append("sigma_p", fdat["pp"])
-    self.append("mux", fdat["mux"])
-    self.append("muy", fdat["muy"])
-    self.append("eta_x", fdat["Dx"])
-    self.append("eta_xp", fdat["Dxp"])
-    self.append("eta_y", fdat["Dy"])
-    self.append("eta_yp", fdat["Dyp"])
-    self.append("element_name", np.zeros(len(fdat["s"])))
-    self.append("lattice_name", np.zeros(len(fdat["s"])))
+    self.sigma_p.val = np.append(self.sigma_p.val, np.sqrt(fdat["pp"]))
+    self.mux.val = np.append(self.mux.val, fdat["mux"])
+    self.muy.val = np.append(self.muy.val, fdat["muy"])
+    self.eta_x.val = np.append(self.eta_x.val, fdat["Dx"])
+    self.eta_xp.val = np.append(self.eta_xp.val, fdat["Dxp"])
+    self.eta_y.val = np.append(self.eta_y.val, fdat["Dy"])
+    self.eta_yp.val = np.append(self.eta_yp.val, fdat["Dyp"])
+    self.element_name.val = np.append(self.element_name.val, np.zeros(len(fdat["s"])))
+    self.lattice_name.val = np.append(
+        self.lattice_name.val, np.full(len(fdat["s"]), lattice_name)
+    )
     # ## BEAM parameters
-    self.append("ecnx", fdat["emit_xn"])
-    self.append("ecny", fdat["emit_yn"])
-    self.append("eta_x_beam", fdat["Dx"])
-    self.append("eta_xp_beam", fdat["Dxp"])
-    self.append("eta_y_beam", fdat["Dy"])
-    self.append("eta_yp_beam", fdat["Dyp"])
-    self.append("beta_x_beam", np.sqrt(fdat["emit_x"] / fdat["xx"]))
-    self.append("beta_y_beam", np.sqrt(fdat["emit_y"] / fdat["yy"]))
-    self.append("alpha_x_beam", np.sqrt(fdat["emit_x"] / fdat["pxpx"]))
-    self.append("alpha_y_beam", np.sqrt(fdat["emit_y"] / fdat["pypy"]))
-    self["cp_eV"] = self["cp"]
-    self["sigma_cp_eV"] = self["sigma_cp"]
-    self["cp_eV"] = self["cp"]
-    self["sigma_cp_eV"] = self["sigma_cp"]
-    for k in self.__dict__.keys():
-        try:
-            if len(getattr(self, k)) < len(getattr(self, "z")):
-                self.append(k, np.zeros(len(fdat["s"])))
-        except Exception as e:
-            pass
+    self.ecnx.val = np.append(self.ecnx.val, fdat["_emit_xn"])
+    self.ecny.val = np.append(self.ecny.val, fdat["_emit_yn"])
+    self.eta_x_beam.val = np.append(self.eta_x_beam.val, fdat["Dx"])
+    self.eta_xp_beam.val = np.append(self.eta_xp_beam.val, fdat["Dxp"])
+    self.eta_y_beam.val = np.append(self.eta_y_beam.val, fdat["Dy"])
+    self.eta_yp_beam.val = np.append(self.eta_yp_beam.val, fdat["Dyp"])
+    self.beta_x_beam.val = np.append(
+        self.beta_x_beam.val, fdat["xx"] / fdat["eigemit_1"]
+    )
+    self.beta_y_beam.val = np.append(
+        self.beta_y_beam.val, fdat["yy"] / fdat["eigemit_2"]
+    )
+    self.alpha_x_beam.val = np.append(
+        self.alpha_x_beam.val, -1 * np.sign(fdat["xpx"]) * np.sqrt(fdat["xx"]) * np.sqrt(fdat["pxpx"]) / fdat["eigemit_1"]
+    )
+    self.alpha_y_beam.val = np.append(
+        self.alpha_y_beam.val, -1 * np.sign(fdat["ypy"]) * np.sqrt(fdat["yy"]) * np.sqrt(fdat["pypy"]) / fdat["eigemit_2"]
+    )
+    self.cp_eV = self.cp
+    self.cp_eV = self.cp
+    # for k in self.__dict__.keys():
+    #     try:
+    #         if len(getattr(self, k)) < len(getattr(self, "z")):
+    #             self.append(k, np.zeros(len(fdat["s"])))
+    #     except Exception:
+    #         pass
