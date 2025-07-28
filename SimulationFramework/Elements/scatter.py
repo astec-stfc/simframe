@@ -19,9 +19,7 @@ class scatter(frameworkElement):
         wholestring = ""
         etype = "scatter"
         string = self.objectname + ": " + etype
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"

@@ -31,17 +31,15 @@ class wiggler(frameworkElement):
     def _write_Elegant(self):
         wholestring = ""
         if (
-            ("k" in self and abs(self.k) > 0)
-            or ("peak_field" in self and abs(self.peak_field) > 0)
-            or ("radius" in self and abs(self.radius) > 0)
+            (hasattr(self, "k") and abs(self.k) > 0)
+            or (hasattr(self, "peak_field") and abs(self.peak_field) > 0)
+            or (hasattr(self, "radius") and abs(self.radius) > 0)
         ):
             etype = self._convertType_Elegant(self.objecttype)
         else:
             etype = "drift"
         string = self.objectname + ": " + etype
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"

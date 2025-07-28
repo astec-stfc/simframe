@@ -1,4 +1,4 @@
-fastkde==1.0.19
+fastkde>2
 h5py==3.4.0
 matplotlib==3.4.3
 mpl_axes_aligner==1.3

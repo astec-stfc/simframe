@@ -254,12 +254,8 @@ class dipole(frameworkElement):
         # etype = self._convertType_Elegant(self.objecttype)
         etype = "csrcsbend" if self.csr_enable or self.csr_enable > 0 else "csbend"
         string = self.objectname + ": " + etype
-        k1 = self.k1 if self.k1 is not None else 0
-        for key, value in list(
-            merge_two_dicts(
-                {"k1": k1}, merge_two_dicts(self.objectproperties, self.objectdefaults)
-            ).items()
-        ):
+        setattr(self, "k1", self.k1 if self.k1 is not None else 0)
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"

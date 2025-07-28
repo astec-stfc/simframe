@@ -41,15 +41,15 @@ class screen(frameworkElement):
         # if self.length > 0:
         #     d = drift(self.objectname+'-drift-01', type='drift', **{'length': self.length/2})
         #     wholestring+=d._write_Elegant()
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
+            # print(f'key = {key} ckey = {self._convertKeyword_Elegant(key)} el = {elements_Elegant[etype]}')
             if (
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
                 and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
+
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None

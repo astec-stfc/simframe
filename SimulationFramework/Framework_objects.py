@@ -172,6 +172,7 @@ class frameworkLattice(BaseModel):
     class Config:
         extra = "allow"
         arbitrary_types_allowed = True
+        validate_assignment = True
 
     name: str
     file_block: Dict
@@ -563,18 +564,24 @@ class frameworkLattice(BaseModel):
         csr = 1 if self.csrDrifts is True else 0
         lsc = 1 if self.lscDrifts is True else 0
         drifttype = lscdrift if self.csrDrifts or self.lscDrifts else edrift
+        if drifttype == lscdrift:
+            objtype = "lscdrift"
+        else:
+            objtype = "edrift"
+
 
         for e, d in driftdata:
             if (
-                e[1]["objecttype"] == "screen"
-                or e[1]["objecttype"] == "beam_position_monitor"
-            ) and round(e[1]["length"] / 2, 6) > 0:
+                e[1].objecttype == "screen"
+                or e[1].objecttype == "beam_position_monitor"
+            ) and round(e[1].length / 2, 6) > 0:
                 name = e[0] + "-drift-01"
                 newdrift = drifttype(
-                    name,
+                    objectname=name,
+                    objecttype = objtype,
                     global_parameters=self.global_parameters,
                     **{
-                        "length": round(e[1]["length"] / 2, 6),
+                        "length": round(e[1].length / 2, 6),
                         "csr_enable": csr,
                         "lsc_enable": lsc,
                         "use_stupakov": 1,
@@ -590,10 +597,11 @@ class frameworkLattice(BaseModel):
                 newelements[e[0]] = e[1]
                 name = e[0] + "-drift-02"
                 newdrift = drifttype(
-                    name,
+                    objectname=name,
+                    objecttype=objtype,
                     global_parameters=self.global_parameters,
                     **{
-                        "length": round(e[1]["length"] / 2, 6),
+                        "length": round(e[1].length / 2, 6),
                         "csr_enable": csr,
                         "lsc_enable": lsc,
                         "use_stupakov": 1,
@@ -608,7 +616,7 @@ class frameworkLattice(BaseModel):
                 newelements[name] = newdrift
             else:
                 newelements[e[0]] = e[1]
-            if e[1]["objecttype"] == "dipole":
+            if e[1].objecttype == "dipole":
                 drifttype = (
                     csrdrift
                     if self.csrDrifts
@@ -629,7 +637,8 @@ class frameworkLattice(BaseModel):
                     name = "drift" + str(elementno)
                     middle = [(a + b) / 2.0 for a, b in zip(d[0], d[1])]
                     newdrift = drifttype(
-                        name,
+                        objectname=name,
+                        objecttype=objtype,
                         global_parameters=self.global_parameters,
                         **{
                             "length": round(length, 6),
@@ -723,6 +732,8 @@ class frameworkObject(BaseModel):
     class Config:
         extra = "allow"
         arbitrary_types_allowed = True
+        validate_assignment = True
+
     objectname: str
     objecttype: str
     objectdefaults: Dict = {}
@@ -839,24 +850,26 @@ class frameworkObject(BaseModel):
 
 class frameworkCommand(frameworkObject):
 
-    def __init__(self, objectname=None, objecttype=None, **kwargs):
-        if objectname is None:
-            objectname = objecttype
-        super(frameworkCommand, self).__init__(objectname, objecttype, **kwargs)
-        if objecttype not in commandkeywords:
-            raise NameError("Command '%s' does not exist" % objecttype)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(frameworkCommand, self).__init__(**kwargs)
+        if self.objecttype not in commandkeywords:
+            raise NameError("Command '%s' does not exist" % self.objecttype)
 
     def write_Elegant(self):
         string = "&" + self.objecttype + "\n"
         for key in commandkeywords[self.objecttype]:
             if (
-                key.lower() in self.objectproperties
+                key.lower() in self.objectproperties.allowedkeywords
                 and not key == "objectname"
                 and not key == "objecttype"
-                and not self.objectproperties[key.lower()] is None
+                and hasattr(self, key)
             ):
                 string += (
-                    "\t" + key + " = " + str(self.objectproperties[key.lower()]) + "\n"
+                    "\t" + key + " = " + str(getattr(self, key.lower())) + "\n"
                 )
         string += "&end\n"
         return string
@@ -1136,6 +1149,7 @@ class frameworkElement(frameworkObject):
     conversion_rules_elegant: Dict = {}
     conversion_rules_ocelot: Dict = {}
     starting_offset: List[float] = [0, 0, 0]
+    subelement: bool = False
 
     def __init__(
             self,
@@ -1146,37 +1160,18 @@ class frameworkElement(frameworkObject):
             *args,
             **kwargs,
         )
-
-    @field_validator("conversion_rules_elegant", mode="before")
-    @classmethod
-    def validate_conversion_rules_elegant(cls, value: Dict) -> Dict:  #
-        """Validate the conversion rules for elegant."""
-        if not isinstance(value, dict):
-            raise ValueError("conversion_rules_elegant must be a dictionary.")
-        return value
-
-    @field_validator("conversion_rules_ocelot", mode="before")
-    @classmethod
-    def validate_conversion_rules_ocelot(cls, value: Dict) -> Dict:  #
-        """Validate the conversion rules for ocelot."""
-        if not isinstance(value, dict):
-            raise ValueError("conversion_rules_ocelot must be a dictionary.")
-        return value
-
-    @field_validator("objecttype", mode="before")
-    @classmethod
-    def validate_element_type(cls, value: str) -> str:
-        if value in keyword_conversion_rules_elegant:
-            cls.conversion_rules_elegant = merge_two_dicts(
+        self.conversion_rules_elegant = keyword_conversion_rules_elegant["general"]
+        self.conversion_rules_ocelot = keyword_conversion_rules_ocelot["general"]
+        if self.objecttype in keyword_conversion_rules_elegant:
+            self.conversion_rules_elegant = merge_two_dicts(
+                keyword_conversion_rules_elegant[self.objecttype],
                 keyword_conversion_rules_elegant["general"],
-                keyword_conversion_rules_elegant[value],
             )
-        if value in keyword_conversion_rules_ocelot:
-            cls.conversion_rules_ocelot = merge_two_dicts(
+        if self.objecttype in keyword_conversion_rules_ocelot:
+            self.conversion_rules_ocelot = merge_two_dicts(
+                keyword_conversion_rules_ocelot[self.objecttype],
                 keyword_conversion_rules_ocelot["general"],
-                keyword_conversion_rules_ocelot[value],
             )
-        return value
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
@@ -1222,6 +1217,14 @@ class frameworkElement(frameworkObject):
         return {
             k.replace("object", ""): v for k, v in self.items() if k not in disallowed
         }
+
+    @property
+    def k1(self) -> None:
+        return None
+
+    @property
+    def k2(self) -> None:
+        return None
 
     @property
     def x(self):
@@ -1542,13 +1545,9 @@ class frameworkElement(frameworkObject):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        k1 = self.k1 if self.k1 is not None else 0
-        k2 = self.k2 if self.k2 is not None else 0
-        keydict = merge_two_dicts(
-            {"k1": k1, "k2": k2},
-            merge_two_dicts(self.objectproperties, self.objectdefaults),
-        )
-        for key, value in keydict.items():
+        setattr(self, "k1", self.k1 if self.k1 is not None else 0)
+        setattr(self, "k2", self.k2 if self.k2 is not None else 0)
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"
@@ -1678,24 +1677,30 @@ class getGrids(object):
 
 
 class csrdrift(frameworkElement):
+    lsc_interpolate: int = 1
 
-    def __init__(self, name=None, type="csrdrift", **kwargs):
-        super().__init__(name, type, **kwargs)
-        self.add_default("lsc_interpolate", 1)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(csrdrift, self).__init__(
+            *args,
+            **kwargs,
+        )
 
     def _write_Elegant(self):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"
                 and not key == "commandtype"
                 and self._convertKeyword_Elegant(key) in elements_Elegant[etype]
             ):
+
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
@@ -1717,11 +1722,25 @@ class csrdrift(frameworkElement):
 
 class lscdrift(csrdrift):
 
-    def __init__(self, name=None, type="lscdrift", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs,
+    ):
+        super(lscdrift, self).__init__(
+            *args,
+            **kwargs,
+        )
 
 
 class edrift(csrdrift):
 
-    def __init__(self, name=None, type="edrift", **kwargs):
-        super().__init__(name, type, **kwargs)
+    def __init__(
+            self,
+            *args,
+            **kwargs
+    ):
+        super(edrift, self).__init__(
+            *args,
+            **kwargs,
+        )

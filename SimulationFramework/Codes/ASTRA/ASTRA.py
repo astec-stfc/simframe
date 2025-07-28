@@ -1,5 +1,5 @@
 import os
-from copy import copy
+from copy import deepcopy
 import numpy as np
 import lox
 from lox.worker.thread import ScatterGatherDescriptor
@@ -234,15 +234,21 @@ class astraLattice(frameworkLattice):
                         counter.counter(element.objecttype),
                         auto_phase=self.headers["newrun"].auto_phase,
                     )
-                    if t[0] == "wakefields" and hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
-                        original_properties = {
-                            a: getattr(element, a[0])
-                            for a in element.objectproperties
-                            if a[0] not in ["objectname", "objecttype"]
-                        }
-                        original_properties['field_definition'] = original_properties['wakefield_definition']
-                        wake_element = wakefield(element.objectname+'_wake', type="wakefield", **original_properties)
-                        elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
+                    if t[0] == "wakefields":
+                        if hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
+                            original_properties = deepcopy(element.objectproperties)
+                            original_properties.objectname = f'{element.objectname}_wake'
+                            original_properties.objecttype = "wakefield"
+                            setattr(original_properties, "field_definition", original_properties.wakefield_definition)
+                            wake_element = wakefield(
+                                **{
+                                    k: getattr(original_properties, k) for k in original_properties.model_fields_set
+                                }
+                            )
+                            wake_element.cells = original_properties.get_cells()
+                            elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
+                        else:
+                            elemstr = None
                 else:
                     elemstr = element.write_ASTRA(counter.counter(element.objecttype))
                 if elemstr is not None and not elemstr == "":
@@ -441,6 +447,11 @@ class astra_newrun(astra_header):
     auto_phase: bool = True
     bunch_charge: float | None = None
     toffset: float | None = None
+    track_all: bool = True
+    phase_scan: bool = False
+    check_ref_part: bool = False
+    h_max: float = 0.07
+    h_min: float = 0.07
 
     def __init__(
             self,
@@ -467,6 +478,11 @@ class astra_newrun(astra_header):
             "n_red": {"value": self.sample_interval, "default": 1},
             "auto_phase": {"value": self.auto_phase, "default": True},
             "Toff": {"value": self.toffset, "default": None},
+            "track_all": {"value": self.track_all, "default": True},
+            "phase_scan": {"value": self.phase_scan, "default": False},
+            "check_ref_part": {"value": self.check_ref_part, "default": False},
+            "h_min": {"value": self.h_min, "default": 0.07},
+            "h_max": {"value": self.h_max, "default": 0.07},
         }
         if self.bunch_charge is not None:
             astradict["Qbunch"] = {"value": 1e9 * self.bunch_charge, "default": None}
@@ -500,6 +516,13 @@ class astra_newrun(astra_header):
 
 
 class astra_output(astra_header):
+    lmagnetized: bool = False
+    refs: bool = True
+    emits: bool = True
+    phases: bool = True
+    high_res: bool = True
+    tracks: bool = True
+
     def __init__(
             self,
             screens,
@@ -540,6 +563,12 @@ class astra_output(astra_header):
                 ["zstart", {"value": self.start_element.start[2]}],
                 ["zstop", {"value": self.end_element.end[2]}],
                 ["Lsub_cor", {"value": True}],
+                ["lmagnetized", {"value": self.lmagnetized}],
+                ["refs", {"value": self.refs}],
+                ["emits", {"value": self.emits}],
+                ["phases", {"value": self.phases}],
+                ["high_res", {"value": self.high_res}],
+                ["tracks", {"value": self.tracks}],
             ]
         )
         for i, element in enumerate(self.screens, 1):
@@ -557,13 +586,15 @@ class astra_charge(astra_header):
     space_charge_mode: str = "False"
     space_charge_2D: bool = True
     space_charge_3D: bool = False
-    grid_size: int = 32
     cathode: bool = False
-    min_grid: float | None = None
-    max_scale: float | None = None
-    cell_var: float | None = None
+    min_grid: float = 3.424657e-13
+    max_scale: float = 0.1
+    cell_var: float = 2
     nrad: int | None = None
     nlong_in: int | None = None
+    smooth_x: int = 2
+    smooth_y: int = 2
+    smooth_z: int = 2
 
     def __init__(
             self,
@@ -597,9 +628,12 @@ class astra_charge(astra_header):
         sc_dict = dict(
             [
                 ["Lmirror", {"value": self.cathode, "default": False}],
-                ["cell_var", {"value": self.cell_var, "default": None}],
-                ["min_grid", {"value": self.min_grid, "default": None}],
-                ["max_scale", {"value": self.max_scale, "default": None}],
+                ["cell_var", {"value": self.cell_var, "default": self.cell_var}],
+                ["min_grid", {"value": self.min_grid, "default": self.min_grid}],
+                ["max_scale", {"value": self.max_scale, "default": self.max_scale}],
+                ["smooth_x", {"value": self.smooth_x, "default": self.smooth_x}],
+                ["smooth_y", {"value": self.smooth_y, "default": self.smooth_y}],
+                ["smooth_z", {"value": self.smooth_z, "default": self.smooth_z}],
                 ["LSPCH", {"value": self.space_charge, "default": True}],
                 ["LSPCH3D", {"value": self.space_charge_3D, "default": True}],
             ]
@@ -633,9 +667,9 @@ class astra_charge(astra_header):
 
 class astra_errors(astra_header):
     global_errors: bool = True
-    Log_Error: bool = True
+    log_error: bool = True
     generate_output: bool = True
-    Suppress_output: bool = False
+    suppress_output: bool = False
 
     def __init__(
             self,

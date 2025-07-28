@@ -8,6 +8,7 @@ class solenoid(frameworkElement):
     field_type: str = "1DMagnetoStatic"
     default_array_names: list[str] = ["Z", "Bz"]
     field_definition: str | field | None = None
+    smooth: float = 10.0
 
     def __init__(
             self,

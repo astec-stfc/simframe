@@ -391,6 +391,7 @@ def plotScreenImage(
     labely = f"{key2} ({uy})"
 
     if fastKDE_installed and not use_scipy:
+        kwargs.pop("subtract_means")
         myPDF, axes = fastKDE.pdf(x, y, use_xarray=False, **kwargs)
         v1, v2 = axes
     elif SciPy_installed:

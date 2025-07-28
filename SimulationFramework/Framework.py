@@ -535,6 +535,8 @@ class Framework(Munch):
             "objectname",
             "subelement",
             "beam",
+            "master_lattice_location",
+
         ]
         for e in elements:
             new = self.elementObjects[e]
@@ -549,7 +551,7 @@ class Framework(Munch):
                 latticedict[e] = {
                     k[0].replace("object", ""): convert_numpy_types(getattr(new, k[0]))
                     for k in new
-                    if k not in disallowed
+                    if k[0] not in disallowed
                 }
                 if "sub_elements" in new:
                     latticedict[e].update({"sub_elements": {}})
@@ -564,11 +566,11 @@ class Framework(Munch):
             #     print("##### ERROR IN CHANGE ELEMS: ", e, new)
             #     pass
         if dictionary:
-            return dic
+            return latticedict
         else:
             with open(directory + "/" + filename, "w") as yaml_file:
                 yaml.default_flow_style = True
-                yaml.dump(dic, yaml_file)
+                yaml.dump(latticedict, yaml_file)
 
     def load_changes_file(
         self, filename: str | None = None, apply: bool = True, verbose: bool = False

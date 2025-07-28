@@ -31,6 +31,7 @@ class wakefield(cavity):
     scale_field_hx: float = 1.0
     scale_field_hy: float = 0.0
     scale_field_hz: float = 0.0
+    cells: int | None = 0
 
 
     def __init__(
@@ -61,7 +62,7 @@ class wakefield(cavity):
                             [
                                 "Wk_Type",
                                 {
-                                    "value": self.waketype,
+                                    "value": "\"" + self.waketype + "\"",
                                     "default": "'Taylor_Method_F'",
                                 },
                             ],

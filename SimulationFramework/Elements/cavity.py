@@ -34,6 +34,7 @@ class cavity(frameworkElement):
     interpolate_current_bins: int = 1
     smooth_current_bins: int = 1
     coupling_cell_length: float = 0.0
+    cell_length: float = 0.0
     frequency: float | None = None
     cavity_type: str | None = None
     n_cells: int | float | None = None
@@ -62,14 +63,11 @@ class cavity(frameworkElement):
         cls.n_cells = int(v)
         return int(v)
 
-    @property
-    def cells(self):
+    def get_cells(self) -> int | None:
         if (self.n_cells == 0 or self.n_cells is None) and self.cell_length > 0:
             cells = round((self.length - self.cell_length) / self.cell_length)
             cells = int(cells - (cells % 3))
-        elif (
-            self.n_cells > 0 and (self.cell_length is not None and self.cell_length) > 0
-        ):
+        elif self.n_cells > 0 and hasattr(self, "cell_length"):
             if self.cell_length == self.length:
                 cells = 1
             else:
@@ -94,7 +92,7 @@ class cavity(frameworkElement):
                 [
                     ["C_pos", {"value": field_ref_pos[2] + self.dz, "default": 0}],
                     efield_def,
-                    ["C_numb", {"value": self.n_cells}],
+                    ["C_numb", {"value": self.get_cells()}],
                     ["Nue", {"value": float(self.frequency) / 1e9, "default": 2998.5}],
                     [
                         "MaxE",
@@ -186,9 +184,7 @@ class cavity(frameworkElement):
             )
             self.set_wakefield_column_names(wakefield_file_name)
         string = self.objectname + ": " + etype
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"
@@ -197,47 +193,47 @@ class cavity(frameworkElement):
             ):
                 if hasattr(self, key) and getattr(self, key) is not None:
                     value = getattr(self, key)
-                key = self._convertKeyword_Elegant(key).lower()
-                # rftmez0 uses frequency instead of freq
-                if etype == "rftmez0" and key == "freq":
-                    key = "frequency"
+                    key = self._convertKeyword_Elegant(key).lower()
+                    # rftmez0 uses frequency instead of freq
+                    if etype == "rftmez0" and key == "freq":
+                        key = "frequency"
 
-                if (
-                    self.objecttype == "cavity"
-                    or self.objecttype == "rf_deflecting_cavity"
-                ):
-                    if key == "phase":
-                        if etype == "rftmez0":
-                            # If using rftmez0 or similar
-                            value = (value / 360.0) * (2 * 3.14159)
-                        else:
-                            # In ELEGANT all phases are +90degrees!!
-                            value = 90 - value
+                    if (
+                        self.objecttype == "cavity"
+                        or self.objecttype == "rf_deflecting_cavity"
+                    ):
+                        if key == "phase":
+                            if etype == "rftmez0":
+                                # If using rftmez0 or similar
+                                value = (value / 360.0) * (2 * 3.14159)
+                            else:
+                                # In ELEGANT all phases are +90degrees!!
+                                value = 90 - value
 
-                    # In ELEGANT the voltages need to be compensated
-                    if key == "volt":
-                        value = abs(
-                            (self.cells + 4.1)
-                            * self.cell_length
-                            * (1 / np.sqrt(2))
-                            * value
-                        )
-                    # If using rftmez0 or similar
-                    if key == "ez_peak":
-                        value = abs(1e-3 / (np.sqrt(2)) * value)
+                        # In ELEGANT the voltages need to be compensated
+                        if key == "volt":
+                            value = abs(
+                                (self.get_cells() + 4.1)
+                                * self.cell_length
+                                * (1 / np.sqrt(2))
+                                * value
+                            )
+                        # If using rftmez0 or similar
+                        if key == "ez_peak":
+                            value = abs(1e-3 / (np.sqrt(2)) * value)
 
-                    # In CAVITY NKICK = n_cells
-                    if key == "n_kicks" and self.cells > 0:
-                        value = 3 * self.cells
+                        # In CAVITY NKICK = n_cells
+                        if key == "n_kicks" and self.get_cells() > 0:
+                            value = 3 * self.get_cells()
 
-                    if key == "n_bins" and value > 0:
-                        print(
-                            "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
-                        )
-                    value = 1 if value is True else value
-                    value = 0 if value is False else value
-                # print("elegant cavity", key, value)
-                tmpstring = ", " + key + " = " + str(value)
+                        if key == "n_bins" and value > 0:
+                            print(
+                                "WARNING: Cavity n_bins is not zero - check log file to ensure correct behaviour!"
+                            )
+                        value = 1 if value is True else value
+                        value = 0 if value is False else value
+                    # print("elegant cavity", key, value)
+                    tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
                     string = ""
@@ -272,7 +268,7 @@ class cavity(frameworkElement):
                             value
                             * 1e-9
                             * abs(
-                                (self.cells + 4.1) * self.cell_length * (1 / np.sqrt(2))
+                                (self.get_cells() + 4.1) * self.cell_length * (1 / np.sqrt(2))
                             )
                         )
                 setattr(obj, self._convertKeword_Ocelot(key), value)

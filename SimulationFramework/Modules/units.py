@@ -105,7 +105,7 @@ def nice_array(a):
         x = a[0]
     else:
         a = np.array(a)
-        x = a.ptp()
+        x = np.ptp(a)
 
     fac, prefix = nice_scale_prefix(x)
 
