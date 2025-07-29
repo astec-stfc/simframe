@@ -1,3 +1,8 @@
+"""
+Framework objects for simulation framework
+Various objects and functions to handle simulation lattices, commands, and elements.
+"""
+
 import os
 import subprocess
 from copy import deepcopy
@@ -83,7 +88,10 @@ with open(
     elements_Ocelot = yaml.safe_load(infile)
 
 class runSetup(object):
-    """class defining settings for simulations that include multiple runs"""
+    """
+    Class defining settings for simulations that include multiple runs
+    such as error studies or parameter scans.
+    """
 
     def __init__(self):
         # define the number of runs and the random number seed
@@ -94,8 +102,20 @@ class runSetup(object):
         self.elementErrors = None
         self.elementScan = None
 
-    def setNRuns(self, nruns):
-        """sets the number of simulation runs to a new value"""
+    def setNRuns(self, nruns: int | float) -> None:
+        """
+        Sets the number of simulation runs to a new value.
+
+        Parameters:
+        ----------
+        nruns : int or float
+            The number of runs to set. If a float is passed, it will be converted to an integer.
+
+        Raises:
+        ------
+        TypeError
+            If `nruns` is not an integer or float.
+        """
         # enforce integer argument type
         if isinstance(nruns, (int, float)):
             self.nruns = int(nruns)
@@ -104,15 +124,37 @@ class runSetup(object):
                 "Argument nruns passed to runSetup instance must be an integer"
             )
 
-    def setSeedValue(self, seed):
-        """sets the random number seed to a new value for all lattice objects"""
+    def setSeedValue(self, seed: int | float) -> None:
+        """
+        Sets the random number seed to a new value for all lattice objects
+
+        Parameters
+        ----------
+        seed : int or float
+            The random number seed to set. If a float is passed, it will be converted to an integer.
+
+        Raises
+        ------
+        TypeError
+            If `seed` is not an integer or float.
+        """
         # enforce integer argument type
         if isinstance(seed, (int, float)):
             self.seed = int(seed)
         else:
             raise TypeError("Argument seed passed to runSetup must be an integer")
 
-    def loadElementErrors(self, file):
+    def loadElementErrors(self, file: str | dict) -> None:
+        """
+        Load error definitions from a file or dictionary and assign them to the elementErrors attribute.
+        This method can handle both a YAML file and a dictionary containing error definitions.
+
+        Parameters
+        ----------
+        file: str or dict
+            - str: Path to a YAML file containing error definitions.
+            - dict: A dictionary containing error definitions.
+        """
         # load error definitions from markup file
         if isinstance(file, str) and (".yaml" in file):
             with open(file, "r") as infile:
@@ -131,8 +173,27 @@ class runSetup(object):
         if "seed" in error_setup:
             self.setSeedValue(error_setup["seed"])
 
-    def setElementScan(self, name, item, scanrange, multiplicative=False):
-        """define a parameter scan for a single parameter of a given machine element"""
+    def setElementScan(
+            self,
+            name: str,
+            item: str,
+            scanrange: list | tuple | np.ndarray,
+            multiplicative: bool=False
+    ) -> None:
+        """
+        Define a parameter scan for a single parameter of a given machine element
+
+        Parameters
+        ----------
+        name : str
+            Name of the machine element to be scanned.
+        item : str
+            Name of the item (parameter) to be scanned within the machine element.
+        scanrange : list or tuple or np.ndarray
+            A list or tuple containing two floats, representing the minimum and maximum values of the scan range.
+        multiplicative : bool, optional
+            If True, the scan will be multiplicative; otherwise, it will be additive. Default is False.
+        """
         if not (isinstance(name, str) and isinstance(item, str)):
             raise TypeError(
                 "Machine element name and item (parameter) must be defined as strings"
@@ -164,32 +225,72 @@ class runSetup(object):
 
 
 class frameworkLattice(BaseModel):
+    """
+    Class defining a framework lattice object, which contains all elements and groups
+    of elements in a simulation lattice. It also contains methods to manipulate and
+    retrieve information about the elements and groups, as well as methods to run
+    simulations and process results.
+
+
+    """
     class Config:
         extra = "allow"
         arbitrary_types_allowed = True
         validate_assignment = True
 
     name: str
+    """Name of the lattice, used as a prefix for output files and commands."""
     file_block: Dict
+    """File block containing input and output settings for the lattice."""
     elementObjects: Dict
+    """Dictionary of element objects, where keys are element names and values are element instances."""
     groupObjects: Dict
+    """Dictionary of group objects, where keys are group names and values are group instances."""
     runSettings: runSetup
+    """Run settings for the lattice, including number of runs and random seed."""
     settings: Dict
+    """Settings for the lattice, including global and group-specific settings."""
     executables: exes.Executables
+    """Executable commands for running simulations, defined in the Executables class.
+    See :class:`SimulationFramework.Framework.Codes.Executables.Executables` for more details."""
     global_parameters: Dict
+    """Global parameters for the lattice, including master subdirectory and other configuration settings."""
     allow_negative_drifts: bool = False
+    """If True, allows negative drifts in the lattice."""
     _csr_enable: bool = True
+    """Flag to enable CSR drifts in the lattice."""
     csrDrifts: bool = True
+    """Flag to enable CSR drifts in the lattice."""
     lscDrifts: bool = True
+    """Flag to enable LSC drifts in the lattice."""
     lsc_bins: int = 20
+    """Number of bins for LSC drifts."""
     lsc_high_frequency_cutoff_start: float = -1
+    """Spatial frequency at which smoothing filter begins. If not positive, no frequency filter smoothing is done. 
+    See `Elegant manual`_
+    
+    .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58
+    """
     lsc_high_frequency_cutoff_end: float = -1
+    """Spatial frequency at which smoothing filter is 0. See `Elegant manual`_
+    
+    .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58"""
     lsc_low_frequency_cutoff_start: float = -1
+    """Highest spatial frequency at which low-frequency cutoff filter is zero. See `Elegant manual`_
+    
+    .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58"""
     lsc_low_frequency_cutoff_end: float = -1
+    """Lowest spatial frequency at which low-frequency cutoff filter is 1. See `Elegant manual`_
+    
+    .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58"""
     sample_interval: int = 1
+    """Sample interval for downsampling particles, in units of 2**(3*sample_interval)"""
     globalSettings: Dict = {"charge": None}
+    """Global settings for the lattice, including charge and other parameters."""
     groupSettings: Dict = {}
+    """Group settings for the lattice, including group-specific parameters."""
     allElements: List = []
+    """List of all element names in the lattice."""
 
     def __init__(
             self,
@@ -227,7 +328,14 @@ class frameworkLattice(BaseModel):
     @field_validator("file_block", mode="before")
     @classmethod
     def validate_file_block(cls, value: Dict) -> Dict:
-        """Validate the file_block dictionary to ensure it has the required structure."""
+        """
+        Validate the file_block dictionary to ensure it has the required structure.
+        This method checks if the file_block is a dictionary and contains the necessary keys.
+        Raises:
+        ------
+        ValueError
+            If the file_block is not a dictionary or does not contain the required keys.
+        """
         if not isinstance(value, dict):
             raise ValueError("file_block must be a dictionary.")
         if "groups" in value:
@@ -241,7 +349,16 @@ class frameworkLattice(BaseModel):
     @field_validator("settings", mode="before")
     @classmethod
     def validate_settings(cls, value: Dict) -> Dict:
-        """Validate the settings dictionary to ensure it has the required structure."""
+        """
+        Validate the settings dictionary to ensure it has the required structure.
+        This method checks if the settings is a dictionary and contains the necessary keys.
+
+        Raises:
+        ------
+        ValueError
+            If the settings is not a dictionary or does not contain the required keys.
+
+        """
         if not isinstance(value, dict):
             raise ValueError("settings must be a dictionary.")
         if "global" in value:
@@ -257,13 +374,27 @@ class frameworkLattice(BaseModel):
             # Store extras in __dict__ (allowed by Config.extra = 'allow')
             self.__dict__[name] = value
 
-    def insert_element(self, index, element):
+    def insert_element(self, index: int, element) -> None:
+        """
+        Insert an element at a specific index in the elements dictionary.
+
+        Parameters:
+        ----------
+        index: int
+            The index at which to insert the element.
+        element: :class:`SimulationFramework.Framework_objects.frameworkElement`
+            The element to insert into the elements dictionary.
+
+        """
         for i, _ in enumerate(range(len(self.elements))):
             k, v = self.elements.popitem(False)
             self.elements[element.objectname if i == index else k] = element
 
     @property
     def csr_enable(self):
+        """
+        Property to get or set the CSR enable flag.
+        """
         return self._csr_enable
 
     @csr_enable.setter
@@ -273,6 +404,14 @@ class frameworkLattice(BaseModel):
 
     @property
     def prefix(self):
+        """
+        Property to get or set the prefix for the input file block.
+
+        Returns:
+        -------
+        str
+            The prefix string used in the input file block.
+        """
         if "input" not in self.file_block:
             self.file_block["input"] = {}
         if "prefix" not in self.file_block["input"]:
@@ -285,14 +424,33 @@ class frameworkLattice(BaseModel):
             self.file_block["input"] = {}
         self.file_block["input"]["prefix"] = prefix
 
-    def update_groups(self):
+    def update_groups(self) -> None:
+        """
+        Update the group objects in the lattice with their settings.
+        """
         for g in list(self.groupSettings.keys()):
             if g in self.groupObjects:
                 setattr(self, g, self.groupObjects[g])
                 if self.groupSettings[g] is not None:
                     self.groupObjects[g].update(**self.groupSettings[g])
 
-    def getElement(self, element, param=None):
+    def getElement(self, element: str, param: str=None) -> dict | Any:
+        """
+        Get an element or group object by its name and optionally a specific parameter.
+        This method checks if the element exists in the allElements dictionary or in the groupObjects dictionary.
+        If the element exists, it returns the element object or the specified parameter of the element.
+
+        Parameters:
+        ----------
+        element: str
+        param: str, optional
+            The parameter to retrieve from the element object. If None, returns the entire element object.
+
+        Returns:
+        -------
+        dict | :class:`SimulationFramework.Framework_objects.frameworkElement`
+            The element object or the specified parameter of the element.
+        """
         if element in self.allElements:
             if param is not None:
                 return getattr(self.elementObjects[element], param.lower())
@@ -307,19 +465,63 @@ class frameworkLattice(BaseModel):
             print(("WARNING: Element ", element, " does not exist"))
             return {}
 
-    def getElementType(self, type, param=None) -> list | tuple | zip:
-        if isinstance(type, (list, tuple)):
-            return [self.getElementType(t, param=param) for t in type]
+    def getElementType(
+            self,
+            typ: list | tuple | str,
+            param: list | tuple | str = None,
+    ) -> list | tuple | zip:
+        """
+        Get all elements of a specific type or types from the lattice.
+
+        Parameters
+        ----------
+        typ: list, tuple, or str
+            The type or types of elements to retrieve.
+            If a list or tuple is provided, it retrieves elements of all specified types.
+        param: list, tuple, or str, optional
+            The specific parameter to retrieve from each element.
+
+        Returns:
+        -------
+        list | tuple | zip
+            A list or tuple of elements of the specified type(s), or a zip object if multiple parameters are specified.
+            If `param` is provided, it returns the specified parameter for each element.
+        """
+        if isinstance(typ, (list, tuple)):
+            return [self.getElementType(t, param=param) for t in typ]
         if isinstance(param, (list, tuple)):
-            return zip(*[self.getElementType(type, param=p) for p in param])
+            return zip(*[self.getElementType(typ, param=p) for p in param])
         return [
             self.elements[element] if param is None else self.elements[element][param]
             for element in list(self.elements.keys())
-            if self.elements[element].objecttype.lower() == type.lower()
+            if self.elements[element].objecttype.lower() == typ.lower()
         ]
 
-    def setElementType(self, type, setting, values):
-        elems = self.getElementType(type)
+    def setElementType(
+            self,
+            typ: list | tuple | str,
+            setting: str,
+            values: list | tuple | Any
+    ) -> None:
+        """
+        Set a specific setting for all elements of a specific type or types in the lattice.
+
+        Parameters
+        ----------
+        typ: list, tuple, or str
+            The type or types of elements to set the setting for.
+        setting: str
+            The setting to be updated for the elements. This can be a single setting or a list of settings.
+        values: list, tuple, or Any
+            The values to set for the specified setting.
+
+
+        Raises
+        ------
+        ValueError
+            If the number of elements of the specified type does not match the number of values provided.
+        """
+        elems = self.getElementType(typ)
         if len(elems) == len(values):
             for e, v in zip(elems, values):
                 e[setting] = v
@@ -327,38 +529,102 @@ class frameworkLattice(BaseModel):
             raise ValueError
 
     @property
-    def quadrupoles(self):
+    def quadrupoles(self) -> list:
+        """
+        Property to get all quadrupole elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of quadrupole elements in the lattice.
+        """
         return self.getElementType("quadrupole")
 
     @property
-    def cavities(self):
+    def cavities(self) -> list:
+        """
+        Property to get all cavity elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of cavity elements in the lattice.
+        """
         return self.getElementType("cavity")
 
     @property
-    def solenoids(self):
+    def solenoids(self) -> list:
+        """
+        Property to get all solenoid elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of solenoid elements in the lattice.
+        """
         return self.getElementType("solenoid")
 
     @property
-    def dipoles(self):
+    def dipoles(self) -> list:
+        """
+        Property to get all dipole elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of dipole elements in the lattice.
+        """
         return self.getElementType("dipole")
 
     @property
-    def kickers(self):
+    def kickers(self) -> list:
+        """
+        Property to get all kicker elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of kicker elements in the lattice.
+        """
         return self.getElementType("kicker")
 
     @property
-    def dipoles_and_kickers(self):
+    def dipoles_and_kickers(self) -> list:
+        """
+        Property to get all dipole and kicker elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of dipole and kicker elements in the lattice.
+        """
         return sorted(
             self.getElementType("dipole") + self.getElementType("kicker"),
             key=lambda x: x.position_end[2],
         )
 
     @property
-    def wakefields(self):
+    def wakefields(self) -> list:
+        """
+        Property to get all wakefield elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of wakefield elements in the lattice.
+        """
         return self.getElementType("wakefield")
 
     @property
-    def wakefields_and_cavity_wakefields(self):
+    def wakefields_and_cavity_wakefields(self) -> list:
+        """
+        Property to get all wakefield and cavity wakefield elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of wakefield and cavity wakefield elements in the lattice.
+        """
         cavities = [cav for cav in self.getElementType("cavity") if
                     (isinstance(cav.longitudinal_wakefield, field) or cav.longitudinal_wakefield != '')
                     or
@@ -369,11 +635,27 @@ class frameworkLattice(BaseModel):
         return cavities + wakes
 
     @property
-    def screens(self):
+    def screens(self) -> list:
+        """
+        Property to get all screen elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of screen elements in the lattice.
+        """
         return self.getElementType("screen")
 
     @property
-    def screens_and_bpms(self):
+    def screens_and_bpms(self) -> list:
+        """
+        Property to get all screen and BPM elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of screen and BPM elements in the lattice.
+        """
         return sorted(
             self.getElementType("screen")
             + self.getElementType("beam_position_monitor"),
@@ -382,7 +664,14 @@ class frameworkLattice(BaseModel):
 
     @property
     def screens_and_markers_and_bpms(self) -> list:
-        """Return all Screens and BPMs"""
+        """
+        Property to get all screen and BPM and marker elements in the lattice.
+
+        Returns:
+        -------
+        list
+            A list of screen and BPM and marker elements in the lattice.
+        """
         return sorted(
             self.getElementType("screen")
             + self.getElementType("marker")
