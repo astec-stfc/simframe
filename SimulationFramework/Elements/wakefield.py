@@ -6,45 +6,113 @@ from SimulationFramework.Modules.Fields import field
 
 
 class wakefield(cavity):
-    coupling_cell_length: float = 0.0
-    scale_kick: float = 1.0
-    fringe_field_coefficient: float = None
-    x_offset: float = 0.0
-    y_offset: float = 0.0
-    zcolumn: str = '"z"'
-    wxcolumn: str = '"Wx"'
-    wycolumn: str = '"Wy"'
-    wzcolumn: str = '"Wz"'
-    interpolation_method: int = 2
-    equal_grid: float = 0.66
-    smooth: float = 0.25
-    subbins: int = 10
-    field_definition: str | field | None = None
-    waketype: str = "Taylor_Method_F"
-    field_file_name: str = None
-    inputfile: str = None
-    tcolumn: str = '"t"'
-    wcolumn: str = '"Wz"'
-    scale_field_ex: float = 0.0
-    scale_field_ey: float = 0.0
-    scale_field_ez: float = 1.0
-    scale_field_hx: float = 1.0
-    scale_field_hy: float = 0.0
-    scale_field_hz: float = 0.0
-    cells: int | None = 0
+    """
+    Class defining a wakefield element
+    """
 
+    coupling_cell_length: float = 0.0
+    """Cavity coupling cell length"""
+
+    scale_kick: float = 1.0
+    """Wake kick scaling factor"""
+
+    fringe_field_coefficient: float = None
+    """Fringe field coefficient for cavity"""
+
+    x_offset: float = 0.0
+    """Horizontal offset"""
+
+    y_offset: float = 0.0
+    """Vertical offset"""
+
+    zcolumn: str = '"z"'
+    """String representing the z position in the wake file"""
+
+    wxcolumn: str = '"Wx"'
+    """String representing the horizontal wake in the wake file"""
+
+    wycolumn: str = '"Wy"'
+    """String representing the vertical wake in the wake file"""
+
+    wzcolumn: str = '"Wz"'
+    """String representing the longitudinal wake in the wake file"""
+
+    interpolation_method: int = 2
+    """Interpolation method for ASTRA: 0 = rectangular, 1 = triangular, 2 = Gaussian."""
+
+    equal_grid: float = 0.66
+    """If 1.0 an equidistant grid is set up, if 0.0 a grid with equal charge per grid cell is
+    employed. Values between 1.0 and 0.0 result in intermediate binning based on
+    a linear combination of the two methods."""
+
+    smooth: float = 0.25
+    """Smoothing parameter for Gaussian interpolation."""
+
+    subbins: int = 10
+    """Sub binning parameter."""
+
+    field_definition: str | field | None = None
+    """Wakefield definition"""
+
+    waketype: str = "Taylor_Method_F"
+    """Type of wakefield, see `ASTRA manual`_
+    
+    .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf"""
+
+    inputfile: str = None
+    """Wake file name for setting in ELEGANT."""
+
+    tcolumn: str = '"t"'
+    """Time column name"""
+
+    wcolumn: str = '"Wz"'
+    """Longitudinal wake column name"""
+
+    scale_field_ex: float = 0.0
+    """x-component of the longitudinal direction vector."""
+
+    scale_field_ey: float = 0.0
+    """y-component of the longitudinal direction vector."""
+
+    scale_field_ez: float = 1.0
+    """z-component of the longitudinal direction vector."""
+
+    scale_field_hx: float = 1.0
+    """x-component of the horizontal direction vector."""
+
+    scale_field_hy: float = 0.0
+    """y-component of the horizontal direction vector."""
+
+    scale_field_hz: float = 0.0
+    """z-component of the horizontal direction vector."""
+
+    cells: int | None = 0
+    """Number of cells (if wake originated from a cavity)"""
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(wakefield, self).__init__(
             *args,
             **kwargs,
         )
 
-    def _write_ASTRA(self, startn):
+    def _write_ASTRA(self, startn: int) -> str:
+        """
+        Writes the wakefield element string for ASTRA. Each cell in a cavity gets its own &WAKE element.
+
+        Parameters
+        ----------
+        n: int
+            Wake index
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+        """
         field_ref_pos = self.get_field_reference_position()
         field_file_name = self.generate_field_file_name(
             self.field_definition, code="astra"
@@ -62,7 +130,7 @@ class wakefield(cavity):
                             [
                                 "Wk_Type",
                                 {
-                                    "value": "\"" + self.waketype + "\"",
+                                    "value": '"' + self.waketype + '"',
                                     "default": "'Taylor_Method_F'",
                                 },
                             ],
@@ -107,27 +175,48 @@ class wakefield(cavity):
         return output
 
     def set_column_names(self, file_name: str) -> str:
+        """
+        Set wakefield column names based on the `field_definition`.
+
+        Parameters
+        ----------
+        file_name: str
+            Name of wakefield dile
+
+        Returns
+        -------
+        str
+            Wake type
+        """
         self.tcolumn = '"t"'
         if not isinstance(self.field_definition, field):
             self.update_field_definition()
         if self.field_definition.field_type.lower() == "longitudinalwake":
             etype = "wake"
             self.wcolumn = '"Wz"'
-            self.inputfile = "\"" + file_name + "\""
+            self.inputfile = '"' + file_name + '"'
         elif self.field_definition.field_type.lower() == "transversewake":
             etype = "trwake"
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
-            self.inputfile = "\"" + file_name + "\""
+            self.inputfile = '"' + file_name + '"'
         elif self.field_definition.field_type.lower() == "3dwake":
             etype = "wake3d"
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wzcolumn = '"Wz"'
-            self.inputfile = "\"" + file_name + "\""
+            self.inputfile = '"' + file_name + '"'
         return etype
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the wakefield element string for ELEGANT.
+
+        Returns
+        -------
+        str or None
+            String representation of the element for ELEGANT
+        """
         wakefield_file_name = self.generate_field_file_name(
             self.field_definition, code="elegant"
         )
@@ -172,16 +261,22 @@ class wakefield(cavity):
             self.field_definition, code="gpt"
         )
         self.set_column_names(field_file_name)
-        self.fringe_field_coefficient = self.fringe_field_coefficient if self.fringe_field_coefficient is not None else 3.0/self.cell_length
+        self.fringe_field_coefficient = (
+            self.fringe_field_coefficient
+            if self.fringe_field_coefficient is not None
+            else 3.0 / self.cell_length
+        )
         output = ""
         if self.scale_kick > 0:
             for n in range(self.cells):
-                ccs_label, value_text = ccs.ccs_text([
-                    field_ref_pos[0],
-                    field_ref_pos[1],
-                    field_ref_pos[2]
-                    + self.coupling_cell_length
-                    + n * self.cell_length],
+                ccs_label, value_text = ccs.ccs_text(
+                    [
+                        field_ref_pos[0],
+                        field_ref_pos[1],
+                        field_ref_pos[2]
+                        + self.coupling_cell_length
+                        + n * self.cell_length,
+                    ],
                     self.rotation,
                 )
                 output += (
@@ -196,9 +291,9 @@ class wakefield(cavity):
                     + str(self.cell_length)
                     + ", "
                     + str(self.fringe_field_coefficient)
-                    + ", \""
+                    + ', "'
                     + str(field_file_name)
-                    + "\", "
+                    + '", '
                     + self.zcolumn
                     + ", "
                     + self.wxcolumn

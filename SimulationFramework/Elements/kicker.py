@@ -5,19 +5,24 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class kicker(dipole):
+    """
+    Class defining a kicker magnet.
+    """
+
     horizontal_kick: float = 0.0
+    """Horizontal kick in radians"""
+
     vertical_kick: float = 0.0
+    """Vertical kick in radians"""
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(kicker, self).__init__(
-            *args,
-            **kwargs
-        )
+    Horizontal_PV: str = None
+    """EPICS process variable name for the horizontal corrector"""
 
+    Vertical_PV: str = None
+    """EPICS process variable name for the vertical corrector"""
+
+    def __init__(self, *args, **kwargs):
+        super(kicker, self).__init__(*args, **kwargs)
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally

@@ -1,3 +1,53 @@
+"""
+SimFrame Elements Module
+
+This module defines classes representing specific accelerator lattice elements, all of which inherit from
+:class:`~SimulationFramework.Framework_objects.frameworkElement`. Each element has a function for creating
+strings or python objects representing that element for the codes supported, and is able to convert
+the generic keywords associated with that class to names that are understood by each code.
+
+Classes:
+    - :class:`~SimulationFramework.Elements.dipole.dipole`: Dipole magnet.
+    - :class:`~SimulationFramework.Elements.kicker.kicker`: Kicker magnet.
+    - :class:`~SimulationFramework.Elements.quadrupole.quadrupole`: Quadrupole magnet.
+    - :class:`~SimulationFramework.Elements.sextupole.sextupole`: Sextupole magnet.
+    - :class:`~SimulationFramework.Elements.octupole.octupole`: Octupole magnet.
+    - :class:`~SimulationFramework.Elements.cavity.cavity`: RF cavity.
+    - :class:`~SimulationFramework.Elements.wakefield.wakefield`: Wakefield.
+    - :class:`~SimulationFramework.Elements.rf_deflecting_cavity.rf_deflecting_cavity`: \
+    RF deflecting cavity.
+    - :class:`~SimulationFramework.Elements.solenoid.solenoid`: Solenoid magnet.
+    - :class:`~SimulationFramework.Elements.aperture.aperture`: Aperture.
+    - :class:`~SimulationFramework.Elements.scatter.scatter`: Scatter object.
+    - :class:`~SimulationFramework.Elements.scatter.scatter`: Cleaner object.
+    - :class:`~SimulationFramework.Elements.wall_current_monitor.wall_current_monitor`: \
+    Wall current monitor.
+    - :class:`~SimulationFramework.Elements.integrated_current_transformer.integrated_current_transformer`: \
+    Integrated current transformer.
+    - :class:`~SimulationFramework.Elements.faraday_cup.faraday_cup`: Faraday cup.
+    - :class:`~SimulationFramework.Elements.screen.screen`: Diagnostics screen.
+    - :class:`~SimulationFramework.Elements.monitor.monitor`: Monitor object.
+    - :class:`~SimulationFramework.Elements.faraday_cup.faraday_cup`: Faraday cup.
+    - :class:`~SimulationFramework.Elements.watch_point.watch_point`: Watch point.
+    - :class:`~SimulationFramework.Elements.beam_position_monitor.beam_position_monitor`: Beam position monitor.
+    - :class:`~SimulationFramework.Elements.bunch_length_monitor.bunch_length_monitor`: Bunch length monitor.
+    - :class:`~SimulationFramework.Elements.beam_arrival_monitor.beam_arrival_monitor`: Beam arrival monitor.
+    - :class:`~SimulationFramework.Elements.collimator.collimator`: Collimator.
+    - :class:`~SimulationFramework.Elements.rcollimator.rcollimator`: Rectangular collimator.
+    - :class:`~SimulationFramework.Elements.apcontour.apcontour`: Contour.
+    - :class:`~SimulationFramework.Elements.center.center`: Center object.
+    - :class:`~SimulationFramework.Elements.marker.marker`: Marker object.
+    - :class:`~SimulationFramework.Elements.drift.drift`: Drift.
+    - :class:`~SimulationFramework.Elements.shutter.shutter`: Shutter.
+    - :class:`~SimulationFramework.Elements.valve.valve`: Vacuum valve.
+    - :class:`~SimulationFramework.Elements.bellows.bellows`: Bellows.
+    - :class:`~SimulationFramework.Elements.fel_modulator.fel_modulator`: FEL modulator.
+    - :class:`~SimulationFramework.Elements.wiggler.wiggler`: Wiggler.
+    - :class:`~SimulationFramework.Elements.gpt_ccs.gpt_ccs`: GPT coordinate system.
+    - :class:`~SimulationFramework.Elements.global_error.global_error`: Global error object.
+    - :class:`~SimulationFramework.Elements.charge.charge`: Bunch charge.
+"""
+
 from SimulationFramework.Elements.dipole import dipole  # noqa F401
 from SimulationFramework.Elements.kicker import kicker  # noqa F401
 from SimulationFramework.Elements.quadrupole import quadrupole  # noqa F401
@@ -55,11 +105,11 @@ from SimulationFramework.Framework_objects import (
 )  # noqa F401
 
 disallowed_keywords = [
-                "allowedkeywords",
-                "keyword_conversion_rules_elegant",
-                "keyword_conversion_rules_ocelot",
-                "objectdefaults",
-                "global_parameters",
-                "objectname",
-                "beam",
-            ]
+    "allowedkeywords",
+    "conversion_rules_elegant",
+    "conversion_rules_ocelot",
+    "objectdefaults",
+    "global_parameters",
+    "objectname",
+    "beam",
+]

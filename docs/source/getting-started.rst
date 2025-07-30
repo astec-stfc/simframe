@@ -1,5 +1,9 @@
+.. _getting-started:
+
 Getting started with SimFrame
 =============================
+
+.. _creating-the-lattice-elements:
 
 Creating the Lattice Elements
 -----------------------------

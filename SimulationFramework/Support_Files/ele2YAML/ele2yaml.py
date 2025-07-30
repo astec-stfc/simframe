@@ -1,5 +1,6 @@
 import numpy as np
 import yaml
+
 try:
     from elegant_lattice import (
         ReadElegantLattice,
@@ -74,7 +75,10 @@ base_dir = "C:\\Users\\jkj62\\Documents\\GitHub\\SimFrame_Examples\\CLARA\\Ocelo
 
 if __name__ == "__main__":
     elatt = convert_lattice(
-        lattice_file="arc_40fs_75pc.lte", line="ARC_LATTICE", base_dir=base_dir, floor_file="arc_40fs_75pc.flr"
+        lattice_file="arc_40fs_75pc.lte",
+        line="ARC_LATTICE",
+        base_dir=base_dir,
+        floor_file="arc_40fs_75pc.flr",
     )
     with open("test.yaml", "w") as stream:
         elatt.to_YAML("ARC_LATTICE", stream)

@@ -21,7 +21,7 @@ def nelder_mead(
     sigma=0.5,
     converged=None,
     *args,
-    **kwargs
+    **kwargs,
 ):
     """
     @param f (function): function to optimize, must return a scalar score

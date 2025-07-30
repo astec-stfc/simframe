@@ -3,11 +3,17 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class scatter(frameworkElement):
+    probability: float = None
+    horizontal_scatter: float = None
+    vertical_scatter: float = None
+    horizontal_momentum_scatter: float = None
+    vertical_momentum_scatter: float = None
+    relative_momentum_scatter: float = None
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(scatter, self).__init__(
             *args,

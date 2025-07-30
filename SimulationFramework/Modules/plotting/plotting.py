@@ -33,7 +33,7 @@ def ASTRA_TW_FieldMap(fielddat, start, stop, cells, p):
     stoppos = zpos.index(stop)
     halfcell1 = fielddat[:startpos]
     halfcell2 = fielddat[stoppos:]
-    rfcell = fielddat[startpos: stoppos]
+    rfcell = fielddat[startpos:stoppos]
     n_cells = int(cells / p)
     cell_length = rfcell[-1, 0] - rfcell[0, 0]
     dat = list(halfcell1)
@@ -68,7 +68,13 @@ def fieldmap_data(element):
     data = field.get_field_data(code="astra")
 
     if field.field_type == "1DElectroDynamic" and field.cavity_type == "TravellingWave":
-        dat = ASTRA_TW_FieldMap(np.transpose([field.z.value.val, field.Ez.value.val]), field.start_cell_z, field.end_cell_z, element.cells, field.mode_denominator)
+        dat = ASTRA_TW_FieldMap(
+            np.transpose([field.z.value.val, field.Ez.value.val]),
+            field.start_cell_z,
+            field.end_cell_z,
+            element.cells,
+            field.mode_denominator,
+        )
     else:
         dat = data
     dat[:, 0] += offset

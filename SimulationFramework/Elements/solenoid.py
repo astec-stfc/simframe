@@ -3,28 +3,59 @@ from SimulationFramework.Modules.Fields import field
 
 
 class solenoid(frameworkElement):
+    """
+    Class defining a solenoid element.
+    """
+
     scale_field: bool = True
+    """Scale the field according to `field_scale`"""
+
     field_scale: float = 1.0
+    """Field scaling factor"""
+
     field_type: str = "1DMagnetoStatic"
+    """Solenoid field type"""
+
     default_array_names: list[str] = ["Z", "Bz"]
+    """Default names for the solenoid field file array"""
+
     field_definition: str | field | None = None
+    """Field file definition"""
+
     smooth: float = 10.0
+    """Smoothing parameter"""
+
     array_names: list[str] = None
+    """Names for the solenoid field file array"""
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(solenoid, self).__init__(
-            *args,
-            **kwargs
-        )
+    field_amplitude: float = None
+    """Solenoid peak field amplitude"""
 
-    def _write_ASTRA(self, n, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(solenoid, self).__init__(*args, **kwargs)
+
+    def _write_ASTRA(self, n, **kwargs) -> str:
+        """
+        Writes the solenoid element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Solenoid index
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+        """
         field_ref_pos = self.get_field_reference_position()
-        field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
-        efield_def = ["FILE_BFieLD", {"value": "'" + field_file_name + "'", "default": ""}]
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="astra"
+        )
+        efield_def = [
+            "FILE_BFieLD",
+            {"value": "'" + field_file_name + "'", "default": ""},
+        ]
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -43,7 +74,9 @@ class solenoid(frameworkElement):
 
     def _write_GPT(self, Brho, ccs, *args, **kwargs):
         field_ref_pos = self.get_field_reference_position()
-        field_file_name = self.generate_field_file_name(self.field_definition, code="gpt")
+        field_file_name = self.generate_field_file_name(
+            self.field_definition, code="gpt"
+        )
         ccs_label, value_text = ccs.ccs_text(field_ref_pos, self.rotation)
         if self.field_type.lower() == "1dmagnetostatic":
             self.default_array_names = ["z", "Bz"]

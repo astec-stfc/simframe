@@ -2,11 +2,14 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class global_error(frameworkElement):
+    """
+    Class defining a global error element.
+    """
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(global_error, self).__init__(
             *args,

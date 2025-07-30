@@ -148,7 +148,7 @@ class mad8TrackFile(mad8CommandFile):
         alphax=None,
         alphay=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(mad8TrackFile, self).__init__(lattice, *args, **kwargs)
         self.mad8beamfilename = mad8beamfilename
@@ -213,7 +213,7 @@ class mad8Optimisation(mad8CommandFile):
         terms={},
         settings={},
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(mad8Optimisation, self).__init__(lattice, *args, **kwargs)
         for k, v in list(variables.items()):

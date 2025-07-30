@@ -69,7 +69,7 @@ class multiPlotWidget(QWidget):
         xlabel=None,
         xlabelunits=None,
         setTitles=True,
-        **kwargs
+        **kwargs,
     ):
         super(multiPlotWidget, self).__init__()
         """ multiPlotWidget - main pyQtGraph display widgets """
@@ -103,7 +103,7 @@ class multiPlotWidget(QWidget):
                     "left",
                     text=param["name"],
                     units=param["units"],
-                    **{"font-size": "12pt", "font-family": "Arial"}
+                    **{"font-size": "12pt", "font-family": "Arial"},
                 )
                 p.setLabel("bottom", text=xlabel, units=xlabelunits)
                 if "xlabel" in param and param["xlabel"] is not None:

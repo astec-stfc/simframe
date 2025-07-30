@@ -11,11 +11,8 @@ except:
     from PyQt5.QtGui import *
     from PyQt5.QtWidgets import *
 import pyqtgraph as pg
-import numpy as np
 
 sys.path.append(os.path.abspath(os.path.realpath(__file__) + "/../../../"))
-import SimulationFramework.Modules.beams as raf
-import SimulationFramework.Modules.twiss as rtf
 
 sys.path.append(os.path.realpath(__file__) + "/../../../../")
 

@@ -1,20 +1,52 @@
 from SimulationFramework.Framework_objects import frameworkElement
+from typing import Literal
 
 
 class aperture(frameworkElement):
-    number_of_elements: int = 1
+    """
+    Class defining an aperture or collimator.
+    """
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(aperture, self).__init__(
-            *args,
-            **kwargs
-        )
+    number_of_elements: int = None
+    """Number of aperture elements"""
 
-    def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
+    shape: Literal["elliptical", "planar", "circular", "rectangular", "scraper"] = None
+    """Aperture shape"""
+
+    horizontal_size: float = None
+    """Horizontal size of aperture"""
+
+    vertical_size: float = None
+    """Vertical size of aperture"""
+
+    radius: float = None
+    """Radius of aperture"""
+
+    negative_extent: float = None
+    """Longitudinal start position of an aperture"""
+
+    positive_extent: float = None
+    """Longitudinal end position of an aperture"""
+
+    def __init__(self, *args, **kwargs):
+        super(aperture, self).__init__(*args, **kwargs)
+
+    def _write_GPT(self, Brho: float, ccs: str = "wcs", *args, **kwargs) -> str:
+        """
+        Writes the element string for GPT [currently not in use]
+
+        Parameters
+        ----------
+        Brho: float
+            ?
+        ccs: str
+            GPT coordinate system
+
+        Returns
+        -------
+        str
+            String representation of the element [currently empty]
+        """
         return ""
         # if self.shape == 'elliptical':
         #     output = 'rmax'
@@ -23,13 +55,26 @@ class aperture(frameworkElement):
         # output += '( "wcs", '+self.gpt_coordinates()+', '+str(self.horizontal_size)+', '+str(self.length)+');\n'
         # return output
 
-    def _write_ASTRA_Common(self, dic):
-        if hasattr(self, "negative_extent") and self.negative_extent is not None:
+    def _write_ASTRA_Common(self, dic: dict) -> dict:
+        """
+        Creates the part of the ASTRA element dictionary common to all apertures in ASTRA
+
+        Parameters
+        ----------
+        dic: dict
+            Dictionary containing the parameters for the aperture
+
+        Returns
+        -------
+        dict
+            ASTRA dictionary with parameters and values
+        """
+        if self.negative_extent is not None:
             dic["Ap_Z1"] = {"value": self.negative_extent, "default": 0}
             dic["a_pos"] = {"value": self.start[2]}
         else:
             dic["Ap_Z1"] = {"value": self.start[2] + self.dz, "default": 0}
-        if hasattr(self, "positive_extent") and self.positive_extent is not None:
+        if self.positive_extent is not None:
             dic["Ap_Z2"] = {"value": self.positive_extent, "default": 0}
             dic["a_pos"] = {"value": self.start[2]}
         else:
@@ -56,7 +101,20 @@ class aperture(frameworkElement):
         }
         return dic
 
-    def _write_ASTRA_Circular(self, n):
+    def _write_ASTRA_Circular(self) -> dict:
+        """
+        Creates the part of the ASTRA element dictionary relevant to circular apertures in ASTRA
+
+        Parameters
+        ----------
+        dic: dict
+            Dictionary containing the parameters for the aperture
+
+        Returns
+        -------
+        dict
+            ASTRA dictionary with parameters and values
+        """
         dic = dict()
         dic["File_Aperture"] = {"value": "RAD"}
         if self.radius is not None:
@@ -72,26 +130,59 @@ class aperture(frameworkElement):
         dic["Ap_R"] = {"value": 1e3 * radius}
         return self._write_ASTRA_Common(dic)
 
-    def _write_ASTRA_Planar(self, n, plane, width):
+    def _write_ASTRA_Planar(self, plane, width) -> dict:
+        """
+        Creates the part of the ASTRA element dictionary common to all apertures in ASTRA
+
+        Parameters
+        ----------
+        dic: dict
+            Dictionary containing the parameters for the aperture
+
+        Returns
+        -------
+        dict
+            ASTRA dictionary with parameters and values
+        """
         dic = dict()
         dic["File_Aperture"] = {"value": plane}
         dic["Ap_R"] = {"value": width}
         return self._write_ASTRA_Common(dic)
 
     def _write_ASTRA(self, n: int, **kwargs) -> str:
+        """
+        Writes the aperture element string for ASTRA
+
+        Parameters
+        ----------
+        n: int
+            Element index number
+        **kwargs: dict
+            Keyword args
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+
+        Raises:
+        -------
+        ValueError
+            If `shape` is not in the list of allowed values.
+        """
         self.number_of_elements = 0
-        if self.shape == "elliptical" or self.shape == "circular":
+        if self.shape in ["elliptical", "circular"]:
             self.number_of_elements += 1
-            dic = self._write_ASTRA_Circular(n)
+            dic = self._write_ASTRA_Circular()
             return self._write_ASTRA_dictionary(dic, n)
-        elif self.shape == "planar" or self.shape == "rectangular":
+        elif self.shape in ["planar", "rectangular"]:
             text = ""
             if self.horizontal_size is not None and self.horizontal_size > 0:
-                dic = self._write_ASTRA_Planar(n, "Col_X", 1e3 * self.horizontal_size)
+                dic = self._write_ASTRA_Planar("Col_X", 1e3 * self.horizontal_size)
                 text += self._write_ASTRA_dictionary(dic, n)
                 self.number_of_elements += 1
             if self.vertical_size is not None and self.vertical_size > 0:
-                dic = self._write_ASTRA_Planar(n, "Col_Y", 1e3 * self.vertical_size)
+                dic = self._write_ASTRA_Planar("Col_Y", 1e3 * self.vertical_size)
                 if self.number_of_elements > 0:
                     self.number_of_elements += 1
                     n = n + 1
@@ -101,14 +192,18 @@ class aperture(frameworkElement):
         elif self.shape == "scraper":
             text = ""
             if self.horizontal_size is not None and self.horizontal_size > 0:
-                dic = self._write_ASTRA_Planar(n, "Scr_X", 1e3 * self.horizontal_size)
+                dic = self._write_ASTRA_Planar("Scr_X", 1e3 * self.horizontal_size)
                 text += self._write_ASTRA_dictionary(dic, n)
                 self.number_of_elements += 1
             if self.vertical_size is not None and self.vertical_size > 0:
-                dic = self._write_ASTRA_Planar(n, "Scr_Y", 1e3 * self.vertical_size)
+                dic = self._write_ASTRA_Planar("Scr_Y", 1e3 * self.vertical_size)
                 if self.number_of_elements > 0:
                     self.number_of_elements += 1
                     n = n + 1
                     text += "\n"
                 text += self._write_ASTRA_dictionary(dic, n)
             return text
+        else:
+            raise ValueError(
+                "shape must be in ['elliptical', 'planar', 'circular', 'rectangular', 'scraper']"
+            )

@@ -28,6 +28,10 @@ Navigation
    
    installation
    getting-started
+   Framework_objects
+   Framework_elements
+   SimulationFramework.Codes
+   MasterLattice
 
 
 Indices and tables
@@ -36,9 +40,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-.. Definitions
-.. ===========
-
-.. .. automodule:: SimulationFramework.Framework
-..    :members:

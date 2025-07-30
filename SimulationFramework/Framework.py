@@ -433,8 +433,8 @@ class Framework(Munch):
         """Detect lattice changes from the original loaded lattice and return a dictionary of changes"""
         disallowed = [
             "allowedkeywords",
-            "keyword_conversion_rules_elegant",
-            "keyword_conversion_rules_ocelot",
+            "conversion_rules_elegant",
+            "conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
         ]
@@ -474,9 +474,7 @@ class Framework(Munch):
                     changedict[e] = {
                         k: convert_numpy_types(new[k])
                         for k in new
-                        if k in orig
-                        and not new[k] == orig[k]
-                        and k not in disallowed
+                        if k in orig and not new[k] == orig[k] and k not in disallowed
                     }
                     changedict[e].update(
                         {
@@ -543,7 +541,6 @@ class Framework(Munch):
             "subelement",
             "beam",
             "master_lattice_location",
-
         ]
         for e in elements:
             new = self.elementObjects[e]
@@ -565,7 +562,9 @@ class Framework(Munch):
                     for subelem in new["sub_elements"]:
                         newsub = self.elementObjects[subelem]
                         latticedict[e]["sub_elements"][subelem] = {
-                            k[0].replace("object", ""): convert_numpy_types(getattr(newsub, k[0]))
+                            k[0].replace("object", ""): convert_numpy_types(
+                                getattr(newsub, k[0])
+                            )
                             for k in newsub
                             if k not in disallowed
                         }
@@ -725,12 +724,15 @@ class Framework(Munch):
             typ = kwargs["type"]
         try:
             element = getattr(frameworkElements, typ)(
-                objectname=name, objecttype=typ, global_parameters=self.global_parameters, **kwargs
+                objectname=name,
+                objecttype=typ,
+                global_parameters=self.global_parameters,
+                **kwargs,
             )
             element.update_field_definition()
         except Exception as e:
-            print('add_Element error:', e)
-            print('add_Element error:', typ, name, kwargs)
+            print("add_Element error:", e)
+            print("add_Element error:", typ, name, kwargs)
         self.elementObjects[name] = element
         return element
         # except Exception as e:

@@ -1,24 +1,44 @@
 from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class wiggler(frameworkElement):
-    k: float = 0.0
-    peak_field: float = 0.0
-    radius: float = 0.0
+    """
+    Class defining a wiggler element
+    """
 
+    k: float = 0.0
+    """Wiggler strength parameter"""
+
+    peak_field: float = 0.0
+    """Wiggler peak magnetic field"""
+
+    radius: float = 0.0
+    """Wiggler radius"""
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(wiggler, self).__init__(
             *args,
             **kwargs,
         )
 
-    def _write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n: int, **kwargs) -> str:
+        """
+        Writes the wiggler element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Wiggler index
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+        """
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -28,7 +48,15 @@ class wiggler(frameworkElement):
             n,
         )
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the wiggler element string for ELEGANT.
+
+        Returns
+        -------
+        str
+            String representation of the element for ELEGANT
+        """
         wholestring = ""
         if (
             (hasattr(self, "k") and abs(self.k) > 0)

@@ -384,7 +384,7 @@ class Particles(Munch):
             self["y"] = y
             self["yp"] = yp
 
-            cpz = self.cp / np.sqrt(self.xp ** 2 + self["yp"] ** 2 + 1)
+            cpz = self.cp / np.sqrt(self.xp**2 + self["yp"] ** 2 + 1)
             cpx = self.xp * cpz
             cpy = self["yp"] * cpz
             self["px"] = cpx * self.q_over_c

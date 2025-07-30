@@ -34,7 +34,7 @@ Required Dependencies
 * `matplotlib==3.4.3`
 * `mpl_axes_aligner==1.3`
 * `munch==2.5.0`
-* `numpy==1.21.2`
+* ``numpy==1.21.2``
 * `progressbar2==4.0.0`
 * `pyyaml==6.0`
 * `pyzmq==22.3.0`

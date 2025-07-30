@@ -342,6 +342,7 @@ class beam(munch.Munch):
 
     def read_ocelot_beam_file(self, *args, **kwargs):
         from . import ocelot
+
         ocelot.read_ocelot_beam_file(self, *args, **kwargs)
 
     def write_HDF5_beam_file(self, *args, **kwargs):
@@ -358,6 +359,7 @@ class beam(munch.Munch):
 
     def write_ocelot_beam_file(self, *args, **kwargs):
         from . import ocelot
+
         return ocelot.write_ocelot_beam_file(self, *args, **kwargs)
 
     def write_mad8_beam_file(self, *args, **kwargs):
@@ -373,6 +375,7 @@ class beam(munch.Munch):
             gdf.read_gdf_beam_file(self, filename)
         elif (ext.lower() == ".npz") and (".ocelot" in filename):
             from . import ocelot
+
             ocelot.read_ocelot_beam_file(self, filename)
         elif ext.lower() == ".astra":
             astra.read_astra_beam_file(self, filename)

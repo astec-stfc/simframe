@@ -6,6 +6,11 @@ including RF structures, wakefields and magnets.
 
 Functions are provided to read in existing files, and to write them in the format
 required for specific codes.
+
+Classes:
+    - :class:`~SimulationFramework.Modules.Fields.field`: Generic field definition.
+    - :class:`~SimulationFramework.Modules.Fields.FieldParameter.FieldParameter`: Field parameter with a
+    name and a :class:`~SimulationFramework.Modules.units.UnitValue` associated with it.
 """
 
 import os
@@ -241,7 +246,6 @@ class field(BaseModel):
         If the Z parameter is set and time is not, it calculates time based on Z and speed of light.
 
         Returns:
-        Parameters:
         -----------
         List[float] | None:
             A list of time values if available, otherwise None.

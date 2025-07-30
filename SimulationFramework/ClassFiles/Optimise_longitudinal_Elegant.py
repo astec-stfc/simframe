@@ -159,7 +159,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         best_changes="./nelder_mead_best_changes.yaml",
         subdir="nelder_mead",
         converged=None,
-        **kwargs
+        **kwargs,
     ):
         best = np.array(self.best) if best is None else np.array(best)
         self.subdir = subdir
@@ -178,7 +178,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             max_iter=300,
             no_improv_break=100,
             converged=converged,
-            **kwargs
+            **kwargs,
         )
         print(res)
 
@@ -188,7 +188,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
         best_changes="./simplex_best_changes.yaml",
         subdir="simplex",
         maxiter=300,
-        **kwargs
+        **kwargs,
     ):
         best = self.best if best is None else best
         self.subdir = subdir

@@ -2,17 +2,25 @@ import os
 import numpy as np
 from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant
 from SimulationFramework.Modules import Beams as rbf
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
+from warnings import warn
+from SimulationFramework.Modules.gdf_beam import gdf_beam
 
 
 class screen(frameworkElement):
+    """
+    Class defining a screen element
+    """
+
     beam: rbf.beam | None = None
+    """:class:`~SimulationFramework.Modules.Beams.beam object"""
+
     output_filename: str = ""
+    """Output filename for the screen"""
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(screen, self).__init__(
             *args,
@@ -22,7 +30,20 @@ class screen(frameworkElement):
         if "output_filename" not in kwargs:
             self.output_filename = str(self.objectname) + ".sdds"
 
-    def _write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs) -> str:
+        """
+        Writes the screen element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Screen index
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+        """
         return self._write_ASTRA_dictionary(
             dict(
                 [
@@ -34,7 +55,15 @@ class screen(frameworkElement):
             n,
         )
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the screen element string for ELEGANT.
+
+        Returns
+        -------
+        str
+            String representation of the element for ELEGANT
+        """
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
@@ -69,7 +98,20 @@ class screen(frameworkElement):
         #     wholestring+=d._write_Elegant()
         return wholestring
 
-    def _write_CSRTrack(self, n):
+    def _write_CSRTrack(self, n) -> str:
+        """
+        Writes the screen element string for CSRTrack.
+
+        Parameters
+        ----------
+        n: int
+            Modulator index
+
+        Returns
+        -------
+        str
+            String representation of the element for CSRTrack
+        """
         z = self.middle[2]
         return (
             """quadrupole{\nposition{rho="""
@@ -87,16 +129,35 @@ class screen(frameworkElement):
         relpos, _ = ccs.relative_position(self.middle, self.global_rotation)
         ccs_label, value_text = ccs.ccs_text(self.middle, self.rotation)
         self.gpt_screen_position = relpos[2]
-        output = "screen( " + ccs.name + ', "I", ' + str(relpos[2]) + ",\"OutputCCS\","
+        output = "screen( " + ccs.name + ', "I", ' + str(relpos[2]) + ',"OutputCCS",'
         if output_ccs is not None:
             output += '"' + str(output_ccs) + '"'
         else:
             output += ccs.name
-        output += ", \"GroupName\", \"" + self.objectname + "\""
+        output += ', "GroupName", "' + self.objectname + '"'
         output += ");\n"
         return output
 
-    def find_ASTRA_filename(self, lattice, master_run_no, mult):
+    def find_ASTRA_filename(
+        self, lattice: str, master_run_no: int, mult: int
+    ) -> str | None:
+        """
+        Determine the ASTRA filename for the screen object.
+
+        Parameters
+        ----------
+        lattice: str
+            The name of the lattice
+        master_run_no: int
+            The run number
+        mult: int
+            Multiplication factor for ASTRA-type output
+
+        Returns
+        -------
+        str or None
+            The ASTRA filename for the screen object, or None if the file does not exist.
+        """
         for i in [0, -0.001, 0.001]:
             tempfilename = (
                 lattice
@@ -112,7 +173,21 @@ class screen(frameworkElement):
                 return tempfilename
         return None
 
-    def astra_to_hdf5(self, lattice, cathode=False, mult=100):
+    def astra_to_hdf5(
+        self, lattice: str, cathode: bool = False, mult: int = 100
+    ) -> None:
+        """
+        Convert the ASTRA beam file name to HDF5 format and write the beam file.
+
+        Parameters
+        ----------
+        lattice: str
+            Lattice name
+        cathode: bool
+            True if beam was emitted from a cathode
+        mult: int
+            Multiplication factor for ASTRA-type filenames
+        """
         master_run_no = (
             self.global_parameters["run_no"]
             if "run_no" in self.global_parameters
@@ -120,7 +195,7 @@ class screen(frameworkElement):
         )
         astrabeamfilename = self.find_ASTRA_filename(lattice, master_run_no, mult)
         if astrabeamfilename is None:
-            print(("Screen Error: ", lattice, self.middle[2], self.zstart[2]))
+            warn(f"Screen Error: {lattice}, {self.middle[2]}, {self.zstart[2]}")
         else:
             rbf.astra.read_astra_beam_file(
                 self.beam,
@@ -155,7 +230,15 @@ class screen(frameworkElement):
                     ).strip('"')
                 )
 
-    def sdds_to_hdf5(self, sddsindex=1):
+    def sdds_to_hdf5(self, sddsindex: int = 1) -> None:
+        """
+        Convert the SDDS beam file name to HDF5 format and write the beam file.
+
+        Parameters
+        ----------
+        sddsindex: int
+            Index for SDDS file
+        """
         self.beam.sddsindex = sddsindex
         elegantbeamfilename = self.output_filename.replace(".sdds", ".SDDS").strip('"')
         # print('sdds_to_hdf5')
@@ -186,7 +269,21 @@ class screen(frameworkElement):
                 ).strip('"')
             )
 
-    def gdf_to_hdf5(self, gptbeamfilename, cathode=False, gdfbeam=None):
+    def gdf_to_hdf5(
+        self, gptbeamfilename: str, cathode: bool = False, gdf: gdf_beam | None = None
+    ) -> None:
+        """
+        Convert the GDF beam file to HDF5 format and write the beam file.
+
+        Parameters
+        ----------
+        gptbeamfilename: str
+            Name of GPT beam file
+        cathode: bool
+            True if beam was emitted from a cathode
+        gdf: gdfbeam or None
+            GDF beam object
+        """
         # gptbeamfilename = self.objectname + '.' + str(int(round((self.allElementObjects[self.end].position_end[2])*100))).zfill(4) + '.' + str(master_run_no).zfill(3)
         # try:
         # print('Converting screen', self.objectname,'at', self.gpt_screen_position)
@@ -194,7 +291,7 @@ class screen(frameworkElement):
             self.beam,
             self.global_parameters["master_subdir"] + "/" + gptbeamfilename,
             position=self.objectname,
-            gdfbeam=gdfbeam,
+            gdfbeam=gdf,
         )
         HDF5filename = self.objectname + ".hdf5"
         rbf.hdf5.write_HDF5_beam_file(

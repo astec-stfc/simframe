@@ -10,7 +10,9 @@ def read_ocelot_beam_file(self, filename):
     self["code"] = "OCELOT"
     self._beam["particle_rest_energy_eV"] = self.E0_eV
     parray = load_particle_array(filename)
-    self._beam["particle_mass"] = np.full(len(parray.x()), UnitValue(constants.m_e, "kg"))
+    self._beam["particle_mass"] = np.full(
+        len(parray.x()), UnitValue(constants.m_e, "kg")
+    )
     self._beam["particle_charge"] = parray.q_array
     self._beam["gamma"] = parray.gamma
     self._beam["x"] = parray.x()

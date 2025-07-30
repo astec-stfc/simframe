@@ -16,7 +16,7 @@ def read_ocelot_twiss_files(self, filename, reset=True):
     elif os.path.isfile(filename):
         lattice_name = os.path.basename(filename).split(".")[0]
         fdat = {}
-        print('loading ocelot twiss file', filename)
+        print("loading ocelot twiss file", filename)
         with np.load(filename, allow_pickle=True) as data:
             for key, value in data.items():
                 try:
@@ -51,10 +51,14 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.ez.val = np.append(self.ez.val, np.zeros(len(fdat["s"])))
     self.beta_x.val = np.append(self.beta_x.val, fdat["_beta_x"])
     self.alpha_x.val = np.append(self.alpha_x.val, fdat["_alpha_x"])
-    self.gamma_x.val = np.append(self.gamma_x.val, (1 + fdat["_alpha_x"]**2) / fdat["_beta_x"])
+    self.gamma_x.val = np.append(
+        self.gamma_x.val, (1 + fdat["_alpha_x"] ** 2) / fdat["_beta_x"]
+    )
     self.beta_y.val = np.append(self.beta_y.val, fdat["_beta_y"])
     self.alpha_y.val = np.append(self.alpha_y.val, fdat["_alpha_y"])
-    self.gamma_y.val = np.append(self.gamma_y.val, (1 + fdat["_alpha_y"]**2) / fdat["_beta_y"])
+    self.gamma_y.val = np.append(
+        self.gamma_y.val, (1 + fdat["_alpha_y"] ** 2) / fdat["_beta_y"]
+    )
     self.beta_z.val = np.append(self.beta_z.val, np.zeros(len(fdat["s"])))
     self.gamma_z.val = np.append(self.gamma_z.val, np.zeros(len(fdat["s"])))
     self.alpha_z.val = np.append(self.alpha_z.val, np.zeros(len(fdat["s"])))
@@ -62,14 +66,14 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.sigma_y.val = np.append(self.sigma_y.val, np.sqrt(fdat["yy"]))
     self.sigma_xp.val = np.append(self.sigma_xp.val, np.sqrt(fdat["pxpx"]))
     self.sigma_yp.val = np.append(self.sigma_yp.val, np.sqrt(fdat["pypy"]))
-    self.sigma_t.val = np.append(self.sigma_t.val, np.sqrt(fdat["tautau"]) / constants.speed_of_light)
+    self.sigma_t.val = np.append(
+        self.sigma_t.val, np.sqrt(fdat["tautau"]) / constants.speed_of_light
+    )
     self.mean_x.val = np.append(self.mean_x.val, fdat["x"])
     self.mean_y.val = np.append(self.mean_y.val, fdat["y"])
     beta = np.sqrt(1 - (gamma**-2))
     self.t.val = np.append(self.t.val, fdat["s"] / (beta * constants.speed_of_light))
-    self.sigma_z.val = np.append(
-        self.sigma_z.val, np.sqrt(fdat["tautau"]) * beta
-    )
+    self.sigma_z.val = np.append(self.sigma_z.val, np.sqrt(fdat["tautau"]) * beta)
     # self.append('sigma_cp', elegantData['Sdelta'] * cp )
     self.sigma_cp.val = np.append(
         self.sigma_cp.val, np.sqrt(fdat["pp"]) * cp / constants.elementary_charge
@@ -100,10 +104,20 @@ def interpret_ocelot_data(self, lattice_name, fdat):
         self.beta_y_beam.val, fdat["yy"] / fdat["eigemit_2"]
     )
     self.alpha_x_beam.val = np.append(
-        self.alpha_x_beam.val, -1 * np.sign(fdat["xpx"]) * np.sqrt(fdat["xx"]) * np.sqrt(fdat["pxpx"]) / fdat["eigemit_1"]
+        self.alpha_x_beam.val,
+        -1
+        * np.sign(fdat["xpx"])
+        * np.sqrt(fdat["xx"])
+        * np.sqrt(fdat["pxpx"])
+        / fdat["eigemit_1"],
     )
     self.alpha_y_beam.val = np.append(
-        self.alpha_y_beam.val, -1 * np.sign(fdat["ypy"]) * np.sqrt(fdat["yy"]) * np.sqrt(fdat["pypy"]) / fdat["eigemit_2"]
+        self.alpha_y_beam.val,
+        -1
+        * np.sign(fdat["ypy"])
+        * np.sqrt(fdat["yy"])
+        * np.sqrt(fdat["pypy"])
+        / fdat["eigemit_2"],
     )
     self.cp_eV = self.cp
     self.cp_eV = self.cp

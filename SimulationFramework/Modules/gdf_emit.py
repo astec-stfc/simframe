@@ -10,7 +10,7 @@ class gdf_emit(Munch):
         self._create_emit_dictionary()
 
     def _create_emit_dictionary(self):
-        self.update({b['name']: b['value'] for b in self._raw_gdf['blocks']})
+        self.update({b["name"]: b["value"] for b in self._raw_gdf["blocks"]})
 
     def get_property(self, property):
         if property in self:

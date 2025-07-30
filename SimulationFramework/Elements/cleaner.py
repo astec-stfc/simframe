@@ -3,12 +3,15 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class cleaner(frameworkElement):
+    """
+    Cleans the beam by removing outlier particles.
+    """
 
     def __init__(
-            self,
-            objecttype: str = "scatter",
-            *args,
-            **kwargs,
+        self,
+        objecttype: str = "scatter",
+        *args,
+        **kwargs,
     ):
         super(cleaner, self).__init__(
             objecttype=objecttype,

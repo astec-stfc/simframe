@@ -3,19 +3,32 @@ from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class rf_deflecting_cavity(cavity):
+    """
+    Class defining a transverse deflecting cavity (TDC) element.
+    """
+
     n_kicks: int = 10
+    """Number of TDC kicks"""
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(rf_deflecting_cavity, self).__init__(
             *args,
             **kwargs,
         )
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the TDC element string for ELEGANT.
+
+        Returns
+        -------
+        str or None
+            String representation of the element for ELEGANT
+        """
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype

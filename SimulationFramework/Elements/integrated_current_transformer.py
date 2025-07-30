@@ -2,11 +2,14 @@ from SimulationFramework.Elements.wall_current_monitor import wall_current_monit
 
 
 class integrated_current_transformer(wall_current_monitor):
+    """
+    Class defining an ICT element.
+    """
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(integrated_current_transformer, self).__init__(
             *args,

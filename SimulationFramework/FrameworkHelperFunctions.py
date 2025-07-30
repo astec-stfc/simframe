@@ -226,7 +226,7 @@ def clean_directory(folder):
                 os.unlink(file_path)
             # elif os.path.isdir(file_path): shutil.rmtree(file_path)
         except Exception as e:
-            print('clean_directory error:', e)
+            print("clean_directory error:", e)
 
 
 def list_add(list1, list2):

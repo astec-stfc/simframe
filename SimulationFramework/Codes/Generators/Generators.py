@@ -291,14 +291,16 @@ class frameworkGenerator(Munch):
             self.__init__(
                 self.executables,
                 self.global_parameters,
-                **generator_keywords["defaults"][defaults]
+                **generator_keywords["defaults"][defaults],
             )
         elif isinstance(defaults, dict):
             self.__init__(self.executables, self.global_parameters, **defaults)
 
     @property
     def particles(self):
-        return self.number_of_particles if self.number_of_particles is not None else 262144
+        return (
+            self.number_of_particles if self.number_of_particles is not None else 262144
+        )
 
     @particles.setter
     def particles(self, npart):
@@ -573,7 +575,7 @@ setparticles( "beam", npart, me, qe, Qtot ) ;
         variable: str,
         left_multiplier=1,
         right_multiplier=2,
-        **kwargs
+        **kwargs,
     ):
         return (
             distname

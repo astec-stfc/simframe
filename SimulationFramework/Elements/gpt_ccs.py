@@ -12,7 +12,9 @@ class gpt_ccs(Munch):
         self.x, self.y, self.z = position
         self.psi, self.phi, self.theta = rotation
 
-    def relative_position(self, position, rotation):
+    def relative_position(
+        self, position: np.ndarray | list, rotation: np.ndarray | list
+    ) -> tuple:
         x, y, z = position
         pitch, yaw, roll = rotation
         # psi, phi, theta = rotation

@@ -1,3 +1,32 @@
+"""
+Simframe ASTRA Module
+
+Various objects and functions to handle ASTRA lattices and commands. See `ASTRA manual`_ for more details.
+
+    .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
+
+Classes:
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astraLattice`: The ASTRA lattice object, used for\
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    the lattice suitable for an ASTRA input file.
+
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_header`: Class for defining the &HEADER portion\
+    of the ASTRA input file.
+
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun`: Class for defining the &NEWRUN portion\
+    of the ASTRA input file.
+
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_charge`: Class for defining the &CHARGE portion\
+    of the ASTRA input file.
+
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_output`: Class for defining the &OUTPUT portion\
+    of the ASTRA input file.
+
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_errors`: Class for defining the &ERRORS portion\
+    of the ASTRA input file.
+"""
+
 import os
 from copy import deepcopy
 import numpy as np
@@ -33,25 +62,42 @@ section_header_text_ASTRA = {
 
 
 class astraLattice(frameworkLattice):
+    """
+    Class for defining the ASTRA lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject`s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
+    the lattice suitable for an ASTRA input file.
+    """
 
-    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = ScatterGatherDescriptor
+    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = (
+        ScatterGatherDescriptor
+    )
+    """Function for converting all screen outputs from ASTRA into the SimFrame generic 
+    :class:`~SimulationFramework.Modules.Beams.beam` object and writing files"""
+
     code: str = "astra"
-    allow_negative_drifts: bool = True
-    _bunch_charge: float | None = None
-    _toffset: float | None = None
-    headers: Dict = {}
-    starting_offset: List = [0, 0, 0]
-    starting_rotation: float = 0
+    """String indicating the lattice object type"""
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(astraLattice, self).__init__(
-            *args,
-            **kwargs
-        )
+    allow_negative_drifts: bool = True
+    """Flag to indicate whether negative drifts are allowed"""
+
+    _bunch_charge: float | None = None
+    """Bunch charge"""
+
+    _toffset: float | None = None
+    """Time offset of reference particle"""
+
+    headers: Dict = {}
+    """Headers to be included in the ASTRA lattice file"""
+
+    starting_offset: List = [0, 0, 0]
+    """Initial offset of first element"""
+
+    starting_rotation: float = 0
+    """Initial rotation of first element"""
+
+    def __init__(self, *args, **kwargs):
+        super(astraLattice, self).__init__(*args, **kwargs)
         self.starting_offset = (
             eval(expand_substitution(self, self.file_block["starting_offset"]))
             if "starting_offset" in self.file_block
@@ -81,7 +127,7 @@ class astraLattice(frameworkLattice):
             global_parameters=self.global_parameters,
             **merge_two_dicts(
                 self.file_block["input"], self.globalSettings["ASTRAsettings"]
-            )
+            ),
         )
         # If the initial distribution is derived from a generator file, we should use that
         if (
@@ -119,7 +165,7 @@ class astraLattice(frameworkLattice):
             global_parameters=self.global_parameters,
             **merge_two_dicts(
                 self.file_block["output"], self.globalSettings["ASTRAsettings"]
-            )
+            ),
         )
 
         # Create a "charge" block
@@ -136,7 +182,7 @@ class astraLattice(frameworkLattice):
             **merge_two_dicts(
                 space_charge_dict,
                 self.globalSettings["ASTRAsettings"],
-            )
+            ),
         )
 
         # Create an "error" block
@@ -156,50 +202,134 @@ class astraLattice(frameworkLattice):
                 **merge_two_dicts(
                     self.file_block["global_errors"],
                     self.globalSettings["global_errors"],
-                )
+                ),
             )
         # print 'errors = ', self.file_block, self.headers['global_errors']
 
     @property
-    def space_charge_mode(self):
+    def space_charge_mode(self) -> str:
+        """
+        The space charge type for ASTRA, i.e. "2D", "3D".
+
+        Returns
+        -------
+        str
+            The space charge type for ASTRA
+        """
         return self.headers["charge"].space_charge_mode
 
     @space_charge_mode.setter
-    def space_charge_mode(self, mode):
+    def space_charge_mode(self, mode: str) -> None:
+        """
+        Sets the space charge mode for the &HEADER object
+
+        Parameters
+        ----------
+        mode: str
+            Space charge mode
+        """
         self.headers["charge"].space_charge_mode = mode
 
     @property
-    def sample_interval(self):
+    def sample_interval(self) -> int:
+        """
+        Factor by which to reduce the number of particles in the simulation, i.e. every 10th particle.
+
+        Returns
+        -------
+        int
+            The sampling interval `n_red` in ASTRA
+        """
         return self._sample_interval
 
     @sample_interval.setter
-    def sample_interval(self, interval):
+    def sample_interval(self, interval: int) -> None:
+        """
+        Sets the factor by which to reduce the number of particles in the simulation in the &NEWRUN header,
+        and scales the number of space charge bins in the &CHARGE header accordingly;
+        see :func:`~SimulationFramework.Codes.ASTRA.astra_newrun.framework_dict`,
+        :func:`~SimulationFramework.Codes.ASTRA.astra_charge.grid_size`.
+
+        Parameters
+        ----------
+        interval:
+            Sampling interval
+        """
         # print('Setting new ASTRA sample_interval = ', interval)
         self._sample_interval = interval
         self.headers["newrun"].sample_interval = interval
         self.headers["charge"].sample_interval = interval
 
     @property
-    def bunch_charge(self):
+    def bunch_charge(self) -> float:
+        """
+        Bunch charge in coulombs
+
+        Returns
+        -------
+        float:
+            Bunch charge
+        """
         return self._bunch_charge
 
     @bunch_charge.setter
-    def bunch_charge(self, charge):
+    def bunch_charge(self, charge: float) -> None:
+        """
+        Sets the bunch charge for this object and also in :class:`~SimulationFramework.Codes.ASTRA.astra_newrun`.
+
+        Parameters
+        ----------
+        charge: float
+            Bunch charge in coulombs
+        """
         # print('Setting new ASTRA sample_interval = ', interval)
         self._bunch_charge = charge
         self.headers["newrun"].bunch_charge = charge
 
     @property
-    def toffset(self):
+    def toffset(self) -> float:
+        """
+        Get the time offset for the reference particle.
+
+        Returns
+        -------
+        float
+            The time offset in seconds
+        """
         return self._toffset
 
     @toffset.setter
-    def toffset(self, toffset):
+    def toffset(self, toffset: float) -> None:
+        """
+        Set the time offset for this object and the :class:`~SimulationFramework.Codes.ASTRA.astra_newrun` object.
+
+        Parameters
+        ----------
+        toffset: float
+            The time offset in seconds
+        """
         # print('Setting new ASTRA sample_interval = ', interval)
         self._toffset = toffset
         self.headers["newrun"].toffset = 1e9 * toffset
 
-    def writeElements(self):
+    def writeElements(self) -> str:
+        """
+        Write the lattice elements defined in this object into an ASTRA-compatible format; see
+        :attr:`~SimulationFramework.Framework_objects.frameworkLattice.elementObjects`.
+
+        Elements are grouped together by type and counted using
+        :class:`~SimulationFramework.Framework_objects.frameworkCounter`
+
+        The appropriate headers required for ASTRA are written at the top of the file, see the `write_ASTRA`
+        function in :class:`~SimulationFramework.Codes.ASTRA.astra_newrun`,
+        :class:`~SimulationFramework.Codes.ASTRA.astra_header`,
+        :class:`~SimulationFramework.Codes.ASTRA.astra_errors`.
+
+        Returns
+        -------
+        str
+            The lattice represented as a string compatible with ASTRA
+        """
         fulltext = ""
         # Create objects for the newrun, output and charge blocks
         self.headers["output"].start_element = self.elementObjects[self.start]
@@ -235,18 +365,29 @@ class astraLattice(frameworkLattice):
                         auto_phase=self.headers["newrun"].auto_phase,
                     )
                     if t[0] == "wakefields":
-                        if hasattr(element, 'wakefield_definition') and isinstance(element.wakefield_definition, field):
+                        if hasattr(element, "wakefield_definition") and isinstance(
+                            element.wakefield_definition, field
+                        ):
                             original_properties = deepcopy(element.objectproperties)
-                            original_properties.objectname = f'{element.objectname}_wake'
+                            original_properties.objectname = (
+                                f"{element.objectname}_wake"
+                            )
                             original_properties.objecttype = "wakefield"
-                            setattr(original_properties, "field_definition", original_properties.wakefield_definition)
+                            setattr(
+                                original_properties,
+                                "field_definition",
+                                original_properties.wakefield_definition,
+                            )
                             wake_element = wakefield(
                                 **{
-                                    k: getattr(original_properties, k) for k in original_properties.model_fields_set
+                                    k: getattr(original_properties, k)
+                                    for k in original_properties.model_fields_set
                                 }
                             )
                             wake_element.cells = original_properties.get_cells()
-                            elemstr = wake_element.write_ASTRA(counter.counter("wakefields"))
+                            elemstr = wake_element.write_ASTRA(
+                                counter.counter("wakefields")
+                            )
                         else:
                             elemstr = None
                 else:
@@ -267,13 +408,22 @@ class astraLattice(frameworkLattice):
             fulltext += "\n/\n"
         return fulltext
 
-    def write(self):
-        self.code_file = (
+    def write(self) -> None:
+        """
+        Writes the ASTRA input file from :func:`~SimulationFramework.Codes.ASTRA.astraLattice.writeElements`
+        to <master_subdir>/<self.objectname>.in.
+        """
+        code_file = (
             self.global_parameters["master_subdir"] + "/" + self.objectname + ".in"
         )
-        saveFile(self.code_file, self.writeElements())
+        saveFile(code_file, self.writeElements())
 
-    def preProcess(self):
+    def preProcess(self) -> None:
+        """
+        Convert the beam file from the previous lattice section into ASTRA format and set the number of
+        particles based on the input distribution, see
+        :func:`~SimulationFramework.Codes.ASTRA.astra_newrun.hdf5_to_astra`.
+        """
         super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
@@ -284,10 +434,55 @@ class astraLattice(frameworkLattice):
         self.headers["charge"].npart = len(self.global_parameters["beam"].x)
 
     @lox.thread
-    def screen_threaded_function(self, screen, objectname, cathode, mult):
+    def screen_threaded_function(
+            self,
+            screen: frameworkElement,
+            objectname: str,
+            cathode: bool,
+            mult: int,
+    ) -> None:
+        """
+        Convert output from ASTRA screen to HDF5 format
+
+        Parameters
+        ----------
+        screen: :class:`~SimulationFramework.Elements.screen.screen`
+            Screen object
+        objectname: str
+            Name of screen object
+        cathode: bool
+            True if beam was emitted from a cathode
+        mult: int
+            Multiplication factor for ASTRA-type filenames
+        """
         return screen.astra_to_hdf5(objectname, cathode, mult)
 
-    def find_ASTRA_filename(self, elem, mult, lattice, master_run_no):
+    def find_ASTRA_filename(
+            self,
+            elem: frameworkElement,
+            mult: int,
+            lattice: str,
+            master_run_no: int,
+    ) -> bool:
+        """
+        Determine if an output was created by ASTRA for a given element based on its position and the filename.
+
+        Parameters
+        ----------
+        elem: :class:`~SimulationFramework.Framework_objects.frameworkElement
+            The element to be checked
+        mult: int
+            Multiplication factor for formatting ASTRA-type output
+        lattice: str
+            The lattice name
+        master_run_no: int
+            Master run number for ASTRA-type output (i.e. `<filename>.001`)
+
+        Returns
+        -------
+        bool
+            True if the file was found.
+        """
         # print('find_ASTRA_filename', lattice, elem.middle[2], elem.zstart[2])
         for i in [0, -0.001, 0.001]:
             tempfilename = (
@@ -304,7 +499,15 @@ class astraLattice(frameworkLattice):
                 return True
         return False
 
-    def get_screen_scaling(self):
+    def get_screen_scaling(self) -> int:
+        """
+        Determine the screen scaling factor for screens and BPMs
+
+        Returns
+        -------
+        int
+            The scaling factor depending on the `master_run_no` parameter
+        """
         for e in self.screens_and_bpms:
             if not self.starting_offset == [0, 0, 0]:
                 e.zstart = self.elementObjects[self.start].start
@@ -325,10 +528,14 @@ class astraLattice(frameworkLattice):
                 return mult
         return 100
 
-    def postProcess(self):
+    def postProcess(self) -> None:
+        """
+        Convert the beam file(s) from the ASTRA output into HDF5 format, see
+        :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_to_hdf5`.
+        """
         super().postProcess()
         cathode = (
-            self.headers["newrun"].particle_definition == "initial_distribution"
+            self.headers["newrun"].input_particle_definition == "initial_distribution"
         )
         mult = self.get_screen_scaling()
         for e in self.screens_and_bpms:
@@ -348,8 +555,16 @@ class astraLattice(frameworkLattice):
             self.screen_threaded_function.gather()
         self.astra_to_hdf5(cathode=cathode)
 
-    def astra_to_hdf5(self, cathode=False):
-        # print('ASTRA/astra_to_hdf5', cathode)
+    def astra_to_hdf5(self, cathode: bool=False) -> None:
+        """
+        Convert the ASTRA particle distribution file to HDF5 format and write to `master_subdir`.
+
+        Parameters
+        ----------
+        cathode: bool
+            True if the beam was emitted from a cathode.
+        """
+
         master_run_no = (
             self.global_parameters["run_no"]
             if "run_no" in self.global_parameters
@@ -406,21 +621,37 @@ class astraLattice(frameworkLattice):
 
 
 class astra_header(frameworkElement):
+    """
+    Generic class for generating ASTRA namelists
+    """
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(astra_header, self).__init__(
             *args,
             **kwargs,
         )
 
-    def framework_dict(self):
+    def framework_dict(self) -> Dict:
         return dict()
 
-    def write_ASTRA(self, n):
+    def write_ASTRA(self, n: int) -> str:
+        """
+        Write the text for the ASTRA namelist based on its :attr:`~framework_dict`.
+
+        Parameters
+        ----------
+        n: int
+            Index of the ASTRA element
+
+        Returns
+        -------
+        str
+            ASTRA-compatible string representing the namelist
+        """
         keyword_dict = dict()
         for k in elementkeywords[self.objecttype]["keywords"]:
             if hasattr(self, k.lower()):
@@ -437,30 +668,65 @@ class astra_header(frameworkElement):
 
 
 class astra_newrun(astra_header):
+    """
+    Class for generating the &NEWRUN namelist for ASTRA. See `ASTRA manual`_ for more details.
+    """
+
     sample_interval: int = 1
+    """Downsampling factor (as 2**(3 * sample_interval))"""
+
     run: int = 1
+    """Run number"""
     head: str = "trial"
+    """Run name"""
     lprompt: bool = False
+    """If true a pause statement is included at the end
+    of the run to avoid vanishing of the window in case of an error."""
+
     input_particle_definition: str = ""
+    """Name of input particle definition"""
+
     output_particle_definition: str = ""
+    """Name of output particle definition"""
+
     high_res: bool = True
+    """If true, particle distributions are saved with increased accuracy."""
+
     auto_phase: bool = True
+    """Phase RF cavities automatically"""
+
     bunch_charge: float | None = None
+    """Bunch charge"""
+
     toffset: float | None = None
+    """Time offset of reference particle"""
+
     track_all: bool = True
+    """If false, only the reference particle will be tracked"""
+
     phase_scan: bool = False
+    """If true, the RF phases of the cavities will be scanned between 0 and 360 degree.
+    Results are saved in the PScan file. The tracking between cavities will be done
+    with the user-defined phases."""
+
     check_ref_part: bool = False
+    """If true, the run will be interrupted if the reference particle is lost during the on-
+    and off-axis reference particle tracking."""
+
     h_max: float = 0.07
+    """Maximum time step for the Runge-Kutta integration."""
+
     h_min: float = 0.07
+    """Minimum time step for the Runge-Kutta integration."""
 
     def __init__(
-            self,
-            offset,
-            rotation,
-            objectname="newrun",
-            objecttype="astra_newrun",
-            *args,
-            **kwargs,
+        self,
+        offset,
+        rotation,
+        objectname="newrun",
+        objecttype="astra_newrun",
+        *args,
+        **kwargs,
     ):
         super(astra_header, self).__init__(
             offset=offset,
@@ -471,7 +737,16 @@ class astra_newrun(astra_header):
             **kwargs,
         )
 
-    def framework_dict(self):
+    def framework_dict(self) -> Dict:
+        """
+        Create formatted dictionary for generating ASTRA &NEWRUN namelist, based on the properties
+        of the class.
+
+        Returns
+        -------
+        Dict
+            Formatted dictionary for ASTRA &NEWRUN
+        """
         astradict = {
             "Distribution": {"value": "'" + self.output_particle_definition + "'"},
             "high_res": {"value": self.high_res, "default": True},
@@ -488,7 +763,19 @@ class astra_newrun(astra_header):
             astradict["Qbunch"] = {"value": 1e9 * self.bunch_charge, "default": None}
         return astradict
 
-    def hdf5_to_astra(self, prefix: str = "", initial_twiss: dict = {"horizontal": {}, "vertical": {}}):
+    def hdf5_to_astra(
+        self, prefix: str = "", initial_twiss: Dict = {"horizontal": {}, "vertical": {}}
+    ) -> None:
+        """
+        Convert beam input file to ASTRA format and write to `master_subdir`.
+
+        Parameters
+        ----------
+        prefix: str
+            File location / name
+        initial_twiss: Dict
+            Dictionary containing initial Twiss parameters.
+        """
         HDF5filename = (
             prefix + self.input_particle_definition.replace(".astra", "") + ".hdf5"
         )
@@ -516,22 +803,37 @@ class astra_newrun(astra_header):
 
 
 class astra_output(astra_header):
+    """
+    Class for generating the &OUTPUT namelist for ASTRA. See `ASTRA manual`_ for more details.
+    """
+
     lmagnetized: bool = False
+    """If true, solenoid fields are neglected in the calculation of the beam emittance."""
+
     refs: bool = True
+    """If true, output files according to Table 3 and Table 4 are generated. See `ASTRA manual`_"""
+
     emits: bool = True
+    """If true, output files according to Table 3 and Table 4 are generated. See `ASTRA manual`_"""
+
     phases: bool = True
+    """If true, output files according to Table 3 and Table 4 are generated. See `ASTRA manual`_"""
+
     high_res: bool = True
+    """If true, particle distributions are saved with increased accuracy."""
+
     tracks: bool = True
+    """If true, output files according to Table 3 and Table 4 are generated. See `ASTRA manual`_"""
 
     def __init__(
-            self,
-            screens,
-            offset,
-            rotation,
-            objectname="output",
-            objecttype="astra_output",
-            *args,
-            **kwargs
+        self,
+        screens,
+        offset,
+        rotation,
+        objectname="output",
+        objecttype="astra_output",
+        *args,
+        **kwargs,
     ):
         super(astra_header, self).__init__(
             screens=screens,
@@ -543,7 +845,17 @@ class astra_output(astra_header):
             **kwargs,
         )
 
-    def framework_dict(self):
+    def framework_dict(self) -> Dict:
+        """
+        Create formatted dictionary for generating ASTRA &OUTPUT namelist, based on the properties
+        of the class.
+
+        Returns
+        -------
+        Dict
+            Formatted dictionary for ASTRA &OUTPUT
+
+        """
         self.start_element.starting_offset = self.offset
         self.end_element.starting_offset = self.offset
         self.start_element.starting_rotation = self.rotation
@@ -581,37 +893,74 @@ class astra_output(astra_header):
 
 
 class astra_charge(astra_header):
+    """
+    Class for generating the &CHARGE namelist for ASTRA. See `ASTRA manual`_ for more details.
+    """
+
     npart: int = 2 ** (3 * 5)
+    """Number of particles"""
+
     sample_interval: int = 1
+    """Downsampling interval calculated as 2 ** (3 * sample_interval)"""
+
     space_charge_mode: str = "False"
+    """Space charge mode"""
+
     space_charge_2D: bool = True
+    """Enable 2D space charge calculations"""
+
     space_charge_3D: bool = False
+    """Enable 3D space charge calculations"""
+
     cathode: bool = False
+    """Flag to indicate whether the bunch was emitted from a cathode."""
+
     min_grid: float = 3.424657e-13
+    """Minimum grid length during emission."""
+
     max_scale: float = 0.1
+    """If one of the space charge scaling factors exceeds the limit 1± max_scale a new
+    space charge calculation is initiated."""
+
     cell_var: float = 2
+    """Variation of the cell height in radial direction."""
+
     nrad: int | None = None
+    """Number of grid cells in radial direction up to the bunch radius."""
+
     nlong_in: int | None = None
+    """Maximum number of grid cells in longitudinal direction within the bunch length."""
+
     smooth_x: int = 2
+    """Smoothing parameter for x-direction. Only for 3D FFT algorithm."""
+
     smooth_y: int = 2
+    """Smoothing parameter for y-direction. Only for 3D FFT algorithm."""
+
     smooth_z: int = 2
+    """Smoothing parameter for z-direction. Only for 3D FFT algorithm."""
 
     def __init__(
-            self,
-            objectname="charge",
-            objecttype="astra_charge",
-            *args,
-            **kwargs,
+        self,
+        objectname="charge",
+        objecttype="astra_charge",
+        *args,
+        **kwargs,
     ):
         super(astra_header, self).__init__(
-            objectname=objectname,
-            objecttype=objecttype,
-            *args,
-            **kwargs)
+            objectname=objectname, objecttype=objecttype, *args, **kwargs
+        )
         self.grids = getGrids()
 
     @property
-    def space_charge(self):
+    def space_charge(self) -> bool:
+        """
+        Flag to indicate whether space charge is enabled.
+
+        Returns:
+        bool
+            True if enabled
+        """
         return not (
             self.space_charge_mode == "False"
             or self.space_charge_mode is False
@@ -620,11 +969,28 @@ class astra_charge(astra_header):
         )
 
     @property
-    def grid_size(self):
-        # print('asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart))
-        return self.grids.getGridSizes((self.npart / self.sample_interval))
+    def grid_size(self) -> int:
+        """
+        Get the number of space charge bins, see
+        :func:`~SimulationFramework.Framework_objects.getGrids.getGridSizes`.
 
-    def framework_dict(self):
+        Returns:
+        int
+            The number of space charge bins based on the number of particles
+        """
+        # print('asking for grid sizes n = ', self.npart, ' is ', self.grids.getGridSizes(self.npart))
+        return self.grids.getGridSizes(self.npart / self.sample_interval)
+
+    def framework_dict(self) -> Dict:
+        """
+        Create formatted dictionary for generating ASTRA &CHARGE namelist, based on the properties
+        of the class.
+
+        Returns
+        -------
+        Dict
+            Formatted dictionary for ASTRA &CHARGE
+        """
         sc_dict = dict(
             [
                 ["Lmirror", {"value": self.cathode, "default": False}],
@@ -666,18 +1032,30 @@ class astra_charge(astra_header):
 
 
 class astra_errors(astra_header):
+    """
+    Class for generating the &ERROR namelist for ASTRA. See `ASTRA manual`_ for more details.
+    """
+
     global_errors: bool = True
+    """If false, no errors will be generated."""
+
     log_error: bool = True
+    """If true an additional log file will be generated which contains the actual
+    element and bunch setting"""
+
     generate_output: bool = True
+    """If true an output file will be generated"""
+
     suppress_output: bool = False
+    """If true any generation of output other than the error file is suppressed."""
 
     def __init__(
-            self,
-            element=None,
-            objectname="astra_error",
-            objecttype="global_error",
-            *args,
-            **kwargs,
+        self,
+        element=None,
+        objectname="astra_error",
+        objecttype="global_error",
+        *args,
+        **kwargs,
     ):
         super(astra_errors, self).__init__(
             objectname=objectname,

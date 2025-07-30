@@ -1,61 +1,126 @@
 from SimulationFramework.Framework_objects import (
     frameworkElement,
     elements_Elegant,
-    type_conversion_rules_Ocelot,
 )
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from SimulationFramework.Modules.Fields import field
 import numpy as np
 from pydantic import field_validator
+from typing import Literal
 
 
 class cavity(frameworkElement):
+    """
+    Class defining an RF cavity.
+    """
+
     field_type: str | None = None
+    """Type of field"""
+
     tcolumn: str = '"t"'
+    """Column for time data in field file"""
+
     zcolumn: str = '"z"'
+    """Column for longitudinal position data in field file"""
+
     ezcolumn: str = '"Ez"'
+    """Column for longitudinal electric field data in field file"""
+
     wxcolumn: str = '"Wx"'
+    """Column for horizontal wakefield data in field file"""
+
     wycolumn: str = '"Wy"'
+    """Column for vertical wakefield data in field file"""
+
     wzcolumn: str = '"Wz"'
+    """Column for longitudinal wakefield data in field file"""
+
     wakefile: str | None = None
+    """Name of wake file"""
+
     zwakefile: str | None = None
+    """Name of longitudinal wake file"""
+
     trwakefile: str | None = None
+    """Name of transverse wake file"""
+
     wakefieldcolumstring: str = '"z", "Wx", "Wy", "Wz"'
+    """Full names of wake file columns"""
+
     field_amplitude: float = 0.0
+    """Cavity field amplitude [V]"""
+
     crest: float = 0.0
-    field_reference_position: str = "start"
+    """Crest phase"""
+
+    field_reference_position: Literal["start", "middle", "end"] = "start"
+    """Reference position for field"""
+
     change_p0: int = 1
+    """Flag to indicate whether cavity is changing momentum"""
+
     n_kicks: int = 0
+    """Number of cavity kicks to apply"""
+
     end1_focus: int = 1
+    """Apply entrance focusing"""
+
     end2_focus: int = 1
+    """Apply exit focusing"""
+
     body_focus_model: str = "SRS"
+    """Cavity focusing model"""
+
     lsc_bins: int = 100
+    """Number of longitudinal space charge bins"""
+
     current_bins: int = 0
+    """Number of current bins"""
+
     interpolate_current_bins: int = 1
+    """Flag to indicate whether to interpolate during current histogram"""
+
     smooth_current_bins: int = 1
+    """Flag to indicate whether to smooth the current histogram"""
+
     coupling_cell_length: float = 0.0
+    """Length of cavity coupling cells"""
+
     cell_length: float = 0.0
+    """Length of cavity cell"""
+
     frequency: float | None = None
+    """Cavity frequency"""
+
     cavity_type: str | None = None
-    n_cells: int | float | None = None
+    """Type of cavity"""
+
+    n_cells: int | float = None
+    """Number of cavity cells"""
+
     ez_peak: float | None = None
+    """Peak longitudinal electric field"""
+
     field_definition: str | field | None = None
+    """Name of cavity field or :class:`~SimulationFramework.Modules.Fields.field` object"""
+
     wakefield_definition: str | field | None = None
+    """Name of wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
+
     longitudinal_wakefield: str | field | None = None
+    """Name of longitudinal wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
+
     transverse_wakefield: str | field | None = None
-    Structure_Type: str | None = None
+    """Name of transverse wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
+
+    Structure_Type: Literal["TravellingWave", "StandingWave"] | None = None
+    """Cavity structure type"""
+
     smooth: int | None = None
+    """Smoothing parameter"""
 
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(cavity, self).__init__(
-            *args,
-            **kwargs
-        )
+    def __init__(self, *args, **kwargs):
+        super(cavity, self).__init__(*args, **kwargs)
 
     @field_validator("n_kicks", mode="before")
     @classmethod
@@ -64,10 +129,18 @@ class cavity(frameworkElement):
         return int(v)
 
     def get_cells(self) -> int | None:
+        """
+        Get the number of cavity cells.
+
+        Returns
+        -------
+        int or None
+            The number of cavity cells, or None if not defined.
+        """
         if (self.n_cells == 0 or self.n_cells is None) and self.cell_length > 0:
             cells = round((self.length - self.cell_length) / self.cell_length)
             cells = int(cells - (cells % 3))
-        elif self.n_cells > 0 and hasattr(self, "cell_length"):
+        elif self.n_cells:
             if self.cell_length == self.length:
                 cells = 1
             else:
@@ -76,7 +149,22 @@ class cavity(frameworkElement):
             cells = None
         return cells
 
-    def _write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs) -> str:
+        """
+        Writes the cavity element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Element index number
+        **kwargs: dict
+            Keyword args
+
+        Returns
+        -------
+        str
+            String representation of the element for ASTRA
+        """
         field_ref_pos = self.get_field_reference_position()
         auto_phase = kwargs["auto_phase"] if "auto_phase" in kwargs else True
         crest = self.crest if not auto_phase else 0
@@ -146,24 +234,40 @@ class cavity(frameworkElement):
         )
 
     def set_wakefield_column_names(self, wakefield_file_name: str) -> None:
+        """
+        Set the column names for the wakefield file, based on `wakefield_definition.
+
+        Parameters
+        ----------
+        wakefield_file_name: str
+            Name of the wakefield file
+        """
         self.tcolumn = '"t"'
         if self.wakefield_definition.field_type == "3DWake":
-            self.wakefile = "\"" + wakefield_file_name + "\""
+            self.wakefile = '"' + wakefield_file_name + '"'
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wzcolumn = '"Wz"'
             self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
         elif self.wakefield_definition.field_type == "LongitudinalWake":
             self.wzcolumn = '"Wz"'
-            self.zwakefile = "\"" + wakefield_file_name + "\""
+            self.zwakefile = '"' + wakefield_file_name + '"'
             self.wakefieldcolumstring = '"z", "Wz"'
         elif self.wakefield_definition.field_type == "TransverseWake":
             self.wxcolumn = '"Wx"'
             self.wycolumn = '"Wy"'
             self.wakefieldcolumstring = '"z", "Wx", "Wy", "Wz"'
-            self.trwakefile = "\"" + wakefield_file_name + "\""
+            self.trwakefile = '"' + wakefield_file_name + '"'
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the cavity element string for ELEGANT.
+
+        Returns
+        -------
+        str
+            String representation of the element for ELEGANT
+        """
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         if (
@@ -238,7 +342,7 @@ class cavity(frameworkElement):
                         )
                     value = 1 if value is True else value
                     value = 0 if value is False else value
-                # print("elegant cavity", key, value)
+                    # print("elegant cavity", key, value)
                     tmpstring = ", " + key + " = " + str(value)
                 if len(string + tmpstring) > 76:
                     wholestring += string + ",&\n"
@@ -249,7 +353,18 @@ class cavity(frameworkElement):
         wholestring += string + ";\n"
         return wholestring
 
-    def _write_Ocelot(self):
+    def _write_Ocelot(self) -> tuple[object, object]:
+        """
+        Creates the cavity element for Ocelot.
+
+        Returns
+        -------
+        tuple
+            (Ocelot Cavity object, Ocelot Screen object)
+        """
+        from SimulationFramework.Codes.Ocelot import ocelot_conversion
+
+        type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
         for key, value in self.objectproperties:
             if key not in [
@@ -269,14 +384,16 @@ class cavity(frameworkElement):
                                 value
                                 * 1e-9
                                 * abs(
-                                    (self.get_cells() + 3.8) * self.cell_length * (1 / np.sqrt(2))
+                                    (self.get_cells() + 3.8)
+                                    * self.cell_length
+                                    * (1 / np.sqrt(2))
                                 )
                             )
                         else:
                             value = value * 1e-9
-                setattr(obj, self._convertKeword_Ocelot(key), value)
+                setattr(obj, self._convertKeyword_Ocelot(key), value)
         scr = type_conversion_rules_Ocelot["screen"](eid=f"{self.objectname}_END")
-        return [obj, scr]
+        return (obj, scr)
 
     def _write_GPT(self, Brho, ccs="wcs", *args, **kwargs):
         field_ref_pos = self.get_field_reference_position()
@@ -285,15 +402,11 @@ class cavity(frameworkElement):
         field_file_name = self.generate_field_file_name(
             self.field_definition, code="gpt"
         )
-        self.generate_field_file_name(
-            self.wakefield_definition, code="gpt"
-        )
+        self.generate_field_file_name(self.wakefield_definition, code="gpt")
         """
         map1D_TM("wcs","z",linacposition,"mockup2m.gdf","Z","Ez",ffacl,phil,w);
         wakefield("wcs","z",  6.78904 + 4.06667 / 2, 4.06667, 50, "Sz5um10mm.gdf", "z","","","Wz", "FieldFactorWz", 10 * 122 / 4.06667) ;
         """
-        if self.crest is None:
-            self.crest = 0
         subname = str(relpos[2]).replace(".", "")
         output = ""
         if field_file_name is not None:
@@ -319,10 +432,7 @@ class cavity(frameworkElement):
                     "ffac"
                     + subname
                     + " = 1.007 * "
-                    + str(
-                        (9.0 / (2.0 * np.pi))
-                        * self.field_amplitude
-                    )
+                    + str((9.0 / (2.0 * np.pi)) * self.field_amplitude)
                     + ";\n"
                 )
             else:

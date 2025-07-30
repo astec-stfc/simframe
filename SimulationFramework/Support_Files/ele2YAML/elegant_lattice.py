@@ -6,6 +6,7 @@ from itertools import groupby
 from pydantic import BaseModel, ValidationInfo, field_validator
 from typing import List, Dict
 import numpy as np
+
 try:
     from counter import Counter
     from sdds_classes_APS import SDDS_Floor
@@ -313,7 +314,7 @@ class ElegantLattice(BaseModel):
                     k: convert_numpy_types(v) for k, v in self.floor[name].items()
                 }
             except Exception:
-                raise ValueError(f'Element {name} has no floor information! Exiting...')
+                raise ValueError(f"Element {name} has no floor information! Exiting...")
             properties.update({"start": convert_numpy_types(startpos)})
             properties.update({"global_rotation": convert_numpy_types(startangle)})
             new_elements[name].update(properties)
@@ -408,7 +409,9 @@ class ReadElegantLattice:
 
     @property
     def lattice_names(self):
-        return re.findall(r"(?i)" + elementregex + lineregex, "\n".join(self.latticestrings))
+        return re.findall(
+            r"(?i)" + elementregex + lineregex, "\n".join(self.latticestrings)
+        )
 
     def load_lattice(self, lattice_name: str):
         self.floor = SDDS_Floor(os.path.join(self.base_dir, self.floor_file))
@@ -478,18 +481,13 @@ class ReadElegantLattice:
                         properties = {
                             k.lower(): v for k, v in re.findall(propertiesregex, ls)
                         }
-                        if (
-                            "l" in properties
-                            and abs(float(properties["l"])) > 0
-                        ):
+                        if "l" in properties and abs(float(properties["l"])) > 0:
                             raise ValueError(
                                 f'"{type.lower()}" type is not allowed and length > 0 - aborting!'
                             )
                         else:
                             removed_elements += [name]
-                            print(
-                                f'"{type.lower()}" type is not allowed but ignored'
-                            )
+                            print(f'"{type.lower()}" type is not allowed but ignored')
         self.remove_elements_from_lattices(removed_elements)
         return self.elements
 
@@ -500,9 +498,9 @@ class ReadElegantLattice:
             lattices[lattname] = re.findall(
                 elementregex,
                 [
-                    re.sub(r'(?i)["]*'+lattname + r'["]*' + lineregex, "", latt)
+                    re.sub(r'(?i)["]*' + lattname + r'["]*' + lineregex, "", latt)
                     for latt in self.latticestrings
-                    if re.findall(r'(?i)["]*'+lattname + r'["]*' + lineregex, latt)
+                    if re.findall(r'(?i)["]*' + lattname + r'["]*' + lineregex, latt)
                 ][0],
             )
         for lattname, lattice in lattices.items():
@@ -527,7 +525,7 @@ class ReadElegantLattice:
         yaml_dict = {"elements": {}}
         elements_dict = yaml_dict["elements"]
         for elemname, elem in self.lattices[lattice].elements.items():
-            if 'drif' not in elem.type:
+            if "drif" not in elem.type:
                 elements_dict[elemname] = elem.properties
         if stream is not None:
             yaml.dump(yaml_dict, stream, default_flow_style=False)

@@ -3,7 +3,10 @@ import re
 import yaml
 from copy import copy
 from itertools import groupby
-from pysdds import read as sddsread
+try:
+    from pysdds import read as sddsread
+except ImportError:
+    sddsread = None
 from counter import Counter
 from SimulationFramework.FrameworkHelperFunctions import chop  # type: ignore
 

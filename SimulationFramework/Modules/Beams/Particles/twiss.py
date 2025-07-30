@@ -45,7 +45,7 @@ class twiss(munch.Munch):
     @property
     def normalized_horizontal_emittance(self):
         return self.beam.emittance.normalized_horizontal_emittance
-    
+
     @property
     def normalized_vertical_emittance(self):
         return self.beam.emittance.normalized_vertical_emittance

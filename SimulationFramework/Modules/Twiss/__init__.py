@@ -287,7 +287,11 @@ class twiss(BaseModel):
     @property
     def properties(self):
         keys = twiss.model_fields.keys()
-        return {k: getattr(self, k) for k in keys if isinstance(getattr(self, k), twissParameter)}
+        return {
+            k: getattr(self, k)
+            for k in keys
+            if isinstance(getattr(self, k), twissParameter)
+        }
 
     def set_E0(self, value) -> None:
         """

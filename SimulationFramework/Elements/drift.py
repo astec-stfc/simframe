@@ -2,12 +2,11 @@ from SimulationFramework.Framework_objects import frameworkElement
 
 
 class drift(frameworkElement):
+    """
+    Class defining a drift object [deprecated?].
+    """
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(drift, self).__init__(
             *args,
             **kwargs,

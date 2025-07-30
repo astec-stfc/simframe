@@ -6,12 +6,10 @@ from SimulationFramework.Framework_objects import (
     elements_Elegant,
     _rotation_matrix,
     chop,
-    type_conversion_rules_Ocelot,
 )
 from SimulationFramework.FrameworkHelperFunctions import checkValue
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
-from ocelot.cpbd.elements import Aperture, Marker
 import inspect
+from typing import Literal, Any
 
 
 def add(x, y):
@@ -19,33 +17,78 @@ def add(x, y):
 
 
 class dipole(frameworkElement):
+    """
+    Class defining a dipole magnet.
+    """
     csr_bins: int = 100
-    deltaL: float = 0
-    csr_enable: int = 1
-    isr_enable: bool = True
-    n_kicks: int = 8
-    sr_enable: bool = True
-    integration_order: int = 4
-    nonlinear: int = 1
-    smoothing_half_width: int = 1
-    edge_order: int = 2
-    edge1_effects: int = 1
-    edge2_effects: int = 1
-    angle: float = 0.0
-    width: float = 0.2
-    entrance_edge_angle: float | str = "angle"
-    exit_edge_angle: float | str = "angle"
+    """Number of CSR bins"""
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    deltaL: float = 0
+    """Delta length"""
+
+    csr_enable: int = 1
+    """Flag to indicate whether CSR is enabled"""
+
+    isr_enable: bool = True
+    """Flag to indicate whether ISR is enabled"""
+
+    n_kicks: int = 8
+    """Number of kicks within the dipole"""
+
+    sr_enable: bool = True
+    """Flag to enable SR calculations"""
+
+    integration_order: int = 4
+    """Runge-Kutta integration order"""
+
+    nonlinear: int = 1
+    """Flag to indicate whether to perform nonlinear calculations"""
+
+    smoothing_half_width: int = 1
+    """Half-width for smoothing"""
+
+    edge_order: int = 2
+    """Matrix order for edges"""
+
+    edge1_effects: int = 1
+    """Flag to indicate whether entrance edge effects are included"""
+
+    edge2_effects: int = 1
+    """Flag to indicate whether exit edge effects are included"""
+
+    angle: float = 0.0
+    """Bend angle"""
+
+    width: float = 0.2
+    """Dipole width"""
+
+    entrance_edge_angle: float | str = "angle"
+    """Entrance edge angle"""
+
+    exit_edge_angle: float | str = "angle"
+    """Exit edge angle"""
+
+    plane: Literal["horizontal", "vertical"] = "horizontal"
+    """Bending plane"""
+
+    strength: float = 0.0
+    """Dipole strength"""
+
+    gap: float = 0.0001
+    """Dipole gap"""
+
+    half_gap: float = 0.016
+    """Dipole half gap"""
+
+    edge_field_integral: float = 0.5
+    """Edge field integral for fringes"""
+
+
+    def __init__(self, *args, **kwargs):
         super(dipole, self).__init__(
             *args,
             **kwargs,
         )
-
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
@@ -79,96 +122,142 @@ class dipole(frameworkElement):
     #     return np.array(self.position_start) + self.rotated_position(np.array(vec), offset=self.starting_offset, theta=self.y_rot)
 
     def get_angle(self):
+        """
+        Get the dipole angle
+
+        Returns
+        -------
+        float:
+            Dipole angle [rad]
+        """
         return self.angle
 
     @property
-    def arc_middle(self):
-        sx, sy, sz = self.position_start
+    def arc_middle(self) -> np.ndarray:
+        """
+        Get the middle position of the dipole based on the arc path.
+
+        Returns
+        -------
+        np.ndarray
+            The position [x,y,z] of the middle of the dipole
+        """
         angle = -self.get_angle()
-        len = self.length
-        r = len / angle
+        leng = self.length
+        r = leng / angle
         if abs(angle) > 0:
             cx = r * (np.cos(angle / 2.0) - 1)
             cy = 0
             cz = r * np.sin(angle / 2.0)
-            vec = [cx, cy, cz]
+            vec = (cx, cy, cz)
         else:
-            vec = [0, 0, len / 2.0]
+            vec = (0, 0, leng / 2.0)
         # print (vec)
         return np.array(self.position_start) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def line_middle(self):
-        sx, sy, sz = self.position_start
+    def line_middle(self) -> np.ndarray:
+        """
+        Get the middle position of the dipole based on the dipole geometry.
+
+        Returns
+        -------
+        np.ndarray
+            The position [x,y,z] of the middle of the dipole
+        """
         angle = -self.get_angle()
-        len = self.length
-        r = len / angle
+        leng = self.length
+        r = leng / angle
         if abs(angle) > 0:
             cx = 0.5 * r * (np.cos(angle) - 1)
             cy = 0
             cz = 0.5 * r * np.sin(angle)
-            vec = [cx, cy, cz]
+            vec = (cx, cy, cz)
         else:
-            vec = [0, 0, len / 2.0]
+            vec = (0, 0, leng / 2.0)
         # print (vec)
         return np.array(self.position_start) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def TD_middle(self):
-        sx, sy, sz = self.position_start
+    def TD_middle(self) -> np.ndarray:
         angle = -self.get_angle()
-        len = self.length
-        r = len / angle
+        leng = self.length
+        r = leng / angle
         if abs(angle) > 0:
             cx = 0.25 * r * (2.0 * np.cos(angle / 2.0) + np.cos(angle) - 3)
             cy = 0
             cz = 0.25 * r * (2 * np.sin(angle / 2.0) + np.sin(angle))
-            vec = [cx, cy, cz]
+            vec = (cx, cy, cz)
         else:
-            vec = [0, 0, len / 2.0]
+            vec = (0, 0, leng / 2.0)
         # print (vec)
         return np.array(self.position_start) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def intersection(self):
-        sx, sy, sz = self.position_start
+    def intersection(self) -> np.ndarray:
         angle = -self.get_angle()
         len = self.length
         if abs(angle) > 0:
             cx = 0
             cy = 0
             cz = len * np.tan(0.5 * angle) / angle
-            vec = [cx, cy, cz]
+            vec = (cx, cy, cz)
         else:
-            vec = [0, 0, len / 2.0]
+            vec = (0, 0, len / 2.0)
         return np.array(self.position_start) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def position_start(self):
+    def position_start(self) -> np.ndarray:
+        """
+        Get the start position of the dipole
+
+        Returns
+        -------
+        np.ndarray
+            The position [x,y,z] of the start of the dipole
+        """
         middle = self.centre
         angle = -self.get_angle()
-        len = self.length
+        leng = self.length
         if abs(angle) > 0:
             cx = 0
             cy = 0
-            cz = -len * np.tan(0.5 * angle) / angle
-            vec = [cx, cy, cz]
+            cz = -leng * np.tan(0.5 * angle) / angle
+            vec = (cx, cy, cz)
         else:
-            vec = [0, 0, -len / 2.0]
+            vec = (0, 0, -leng / 2.0)
         return np.array(middle) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def position_end(self):
+    def position_end(self) -> np.ndarray:
+        """
+        Get the end position of the dipole
+
+        Returns
+        -------
+        np.ndarray
+            The position [x,y,z] of the end of the dipole
+        """
         start = self.position_start
         angle = -self.get_angle()
         if abs(angle) > 1e-9:
@@ -179,22 +268,36 @@ class dipole(frameworkElement):
         else:
             vec = [0, 0, self.length]
         return np.array(start) + self.rotated_position(
-            np.array(vec), offset=self.starting_offset, theta=self.y_rot
+            vec,
+            offset=self.starting_offset,
+            theta=self.y_rot,
         )
 
     @property
-    def astra_end(self):
+    def astra_end(self) -> np.ndarray:
+        """
+        Get the end position of the dipole for ASTRA
+
+        Returns
+        -------
+        np.ndarray
+            The position [x,y,z] of the end of the dipole
+        """
         angle = -self.get_angle()
         if abs(angle) > 1e-9:
             ex = -1 * (self.length * (np.cos(angle) - 1)) / angle
             ey = 0
             ez = (self.length * (np.sin(angle))) / angle
             return np.array(self.position_start) + self.rotated_position(
-                np.array([ex, ey, ez]), offset=self.starting_offset, theta=0
+                (ex, ey, ez),
+                offset=self.starting_offset,
+                theta=0,
             )
         else:
             return np.array(self.position_start) + self.rotated_position(
-                np.array([0, 0, self.length]), offset=self.starting_offset, theta=0
+                (0, 0, self.length),
+                offset=self.starting_offset,
+                theta=0,
             )
 
     def __neg__(self):
@@ -220,7 +323,23 @@ class dipole(frameworkElement):
         newself.objectname = "-" + newself.objectname
         return newself
 
-    def check_value(self, estr, default=0):
+    def check_value(self, estr: str, default: Any = 0) -> Any:
+        """
+        Check that the parameter provided is valid for the dipole.
+        See :func:`~SimulationFramework.FrameworkHelperFunctions.checkValue`.
+
+        Parameters
+        ----------
+        estr: str
+            Element parameter
+        default: Any
+            Default value for the parameter
+
+        Returns
+        -------
+        Any
+            Value or default value for element
+        """
         if estr in self.objectproperties:
             if isinstance(self.objectproperties[estr], str):
                 return checkValue(self, self.objectproperties[estr], default)
@@ -234,7 +353,15 @@ class dipole(frameworkElement):
         return self.length * np.tan(0.5 * self.get_angle()) / self.get_angle()
 
     @property
-    def rho(self):
+    def rho(self) -> float:
+        """
+        Get the dipole bend radius -- l / theta.
+
+        Returns
+        -------
+        float
+            The dipole bend radius
+        """
         return (
             self.length / self.get_angle()
             if self.length is not None and abs(self.get_angle()) > 1e-9
@@ -242,14 +369,38 @@ class dipole(frameworkElement):
         )
 
     @property
-    def e1(self):
+    def e1(self) -> float:
+        """
+        Get the dipole entrance edge angle.
+
+        Returns
+        -------
+        float
+            The dipole entrance edge angle.
+        """
         return self.check_value("entrance_edge_angle")
 
     @property
     def e2(self):
+        """
+        Get the dipole exit edge angle.
+
+        Returns
+        -------
+        float
+            The dipole exit edge angle.
+        """
         return self.check_value("exit_edge_angle")
 
-    def _write_Elegant(self):
+    def _write_Elegant(self) -> str:
+        """
+        Writes the dipole element string for ELEGANT.
+
+        Returns
+        -------
+        str
+            String representation of the element for ELEGANT
+        """
         wholestring = ""
         # etype = self._convertType_Elegant(self.objecttype)
         etype = "csrcsbend" if self.csr_enable or self.csr_enable > 0 else "csbend"
@@ -290,7 +441,19 @@ class dipole(frameworkElement):
         wholestring += string + ";\n"
         return wholestring
 
-    def _write_Ocelot(self):
+    def _write_Ocelot(self) -> object:
+        """
+        Creates the dipole element for Ocelot.
+
+        Returns
+        -------
+        object
+            Ocelot Bend object
+        """
+        from SimulationFramework.Codes.Ocelot import ocelot_conversion
+        from ocelot.cpbd.elements import Aperture, Marker
+
+        type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         valdict = {"eid": self.objectname}
         for key, value in self.objectproperties:
@@ -299,7 +462,7 @@ class dipole(frameworkElement):
                 in [Aperture, Marker]
             ):
                 if "edge_angle" in key:
-                    key = self._convertKeword_Ocelot(key)
+                    key = self._convertKeyword_Ocelot(key)
                     value = (
                         getattr(self, key)
                         if hasattr(self, key) and getattr(self, key) is not None
@@ -311,7 +474,7 @@ class dipole(frameworkElement):
                         if hasattr(self, key) and getattr(self, key) is not None
                         else value
                     )
-                    key = self._convertKeword_Ocelot(key)
+                    key = self._convertKeyword_Ocelot(key)
                 value = 1 if value is True else value
                 value = 0 if value is False else value
                 if (
@@ -325,7 +488,15 @@ class dipole(frameworkElement):
         return obj
 
     @property
-    def corners(self):
+    def corners(self) -> list[np.ndarray]:
+        """
+        Get the corner positions of the dipole for ASTRA.
+
+        Returns
+        -------
+        np.ndarray
+            Dipole corner positions
+        """
         corners = [0, 0, 0, 0]
         if hasattr(self, "global_rotation") and self.global_rotation is not None:
             rotation = (
@@ -378,7 +549,20 @@ class dipole(frameworkElement):
         # corners = [self.rotated_position(x, offset=self.starting_offset, theta=rotation) for x in corners]
         return corners
 
-    def _write_CSRTrack(self, n):
+    def _write_CSRTrack(self, n) -> str:
+        """
+        Writes the dipole element string for CSRTrack.
+
+        Parameters
+        ----------
+        n: int
+            Marker index
+
+        Returns
+        -------
+        str
+            String representation of the element for CSRTrack
+        """
         z1 = self.position_start[2]
         z2 = self.position_end[2]
         return (
@@ -399,7 +583,20 @@ class dipole(frameworkElement):
             + """b}\n}\n"""
         )
 
-    def _write_ASTRA(self, n, **kwargs):
+    def _write_ASTRA(self, n, **kwargs) -> str | None:
+        """
+        Writes the dipole element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Dipole index
+
+        Returns
+        -------
+        str or None
+            String representation of the element for ASTRA, or None if dipole strength is zero
+        """
         if abs(checkValue(self, "strength", default=0)) > 0 or abs(self.rho) > 0:
             corners = self.corners
             if self.plane is None:
@@ -444,7 +641,24 @@ class dipole(frameworkElement):
         else:
             return None
 
-    def gpt_coordinates(self, position, rotation):
+    def gpt_coordinates(
+        self, position: np.ndarray | list, rotation: np.ndarray | list
+    ) -> str:
+        """
+        Get the string representation of the dipole coordinates for GPT
+
+        Parameters
+        ----------
+        position: np.ndarray or list
+            Dipole position
+        rotation: np.ndarray or list
+            Dipole rotation
+
+        Returns
+        -------
+        str
+            String representation of the dipole coordinates for GPT
+        """
         angle = -1 * self.get_angle()
         x, y, z = chop(position, 1e-6)
         psi, phi, theta = rotation

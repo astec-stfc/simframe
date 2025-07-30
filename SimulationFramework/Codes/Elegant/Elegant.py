@@ -25,7 +25,9 @@ from typing import Dict
 
 class elegantLattice(frameworkLattice):
 
-    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = ScatterGatherDescriptor
+    screen_threaded_function: ClassVar[ScatterGatherDescriptor] = (
+        ScatterGatherDescriptor
+    )
     code: str = "elegant"
     allow_negative_drifts: bool = False
     particle_definition: str | None = None
@@ -46,7 +48,7 @@ class elegantLattice(frameworkLattice):
             objectname="START",
             objecttype="charge",
             global_parameters=self.global_parameters,
-            **{"total": 250e-12}
+            **{"total": 250e-12},
         )
 
     def endScreen(self, **kwargs):
@@ -56,13 +58,15 @@ class elegantLattice(frameworkLattice):
             centre=self.endObject.centre,
             global_rotation=self.endObject.global_rotation,
             global_parameters=self.global_parameters,
-            **kwargs
+            **kwargs,
         )
 
     def writeElements(self):
         self.final_screen = None
         if self.endObject not in self.screens_and_markers_and_bpms:
-            self.final_screen = self.endScreen(output_filename=self.endObject.objectname + ".sdds")
+            self.final_screen = self.endScreen(
+                output_filename=self.endObject.objectname + ".sdds"
+            )
         elements = self.createDrifts()
         fulltext = ""
         fulltext += self.q.write_Elegant()
@@ -70,7 +74,9 @@ class elegantLattice(frameworkLattice):
             # print(element.write_Elegant())
             if not element.subelement:
                 fulltext += element.write_Elegant()
-        fulltext += self.final_screen.write_Elegant() if self.final_screen is not None else ""
+        fulltext += (
+            self.final_screen.write_Elegant() if self.final_screen is not None else ""
+        )
         fulltext += self.objectname + ": Line=(START, "
         for e, element in list(elements.items()):
             if not element.subelement:
@@ -78,7 +84,9 @@ class elegantLattice(frameworkLattice):
                     fulltext += "&\n"
                 fulltext += e + ", "
         fulltext = (
-            fulltext[:-2] + ", END )\n" if self.final_screen is not None else fulltext[:-2] + ")\n"
+            fulltext[:-2] + ", END )\n"
+            if self.final_screen is not None
+            else fulltext[:-2] + ")\n"
         )
         return fulltext
 
@@ -293,7 +301,7 @@ class elegantLattice(frameworkLattice):
                                 name=e,
                                 item=item,
                                 allow_missing_elements=1,
-                                **elementErrors[e][item]
+                                **elementErrors[e][item],
                             )
                         )
             elif elementScan is not None:
@@ -365,8 +373,12 @@ class elegantLattice(frameworkLattice):
             self.global_parameters["beam"],
             os.path.abspath(filepath),
         )
-        self.global_parameters["beam"].beam.rematchXPlane(**self.initial_twiss["horizontal"])
-        self.global_parameters["beam"].beam.rematchYPlane(**self.initial_twiss["vertical"])
+        self.global_parameters["beam"].beam.rematchXPlane(
+            **self.initial_twiss["horizontal"]
+        )
+        self.global_parameters["beam"].beam.rematchYPlane(
+            **self.initial_twiss["vertical"]
+        )
         if self.trackBeam:
             self.hdf5_to_sdds(prefix)
         self.createCommandFiles()
@@ -384,9 +396,13 @@ class elegantLattice(frameworkLattice):
         if self.trackBeam:
             for i, s in enumerate(self.screens_and_markers_and_bpms):
                 self.screen_threaded_function.scatter(s, i)
-            if self.final_screen is not None and not self.final_screen.output_filename.lower() in [
-                s.output_filename.lower() for s in self.screens_and_markers_and_bpms
-            ]:
+            if (
+                self.final_screen is not None
+                and not self.final_screen.output_filename.lower()
+                in [
+                    s.output_filename.lower() for s in self.screens_and_markers_and_bpms
+                ]
+            ):
                 self.screen_threaded_function.scatter(
                     self.final_screen, len(self.screens_and_markers_and_bpms)
                 )
@@ -400,14 +416,14 @@ class elegantLattice(frameworkLattice):
                 objectname="START",
                 objecttype="charge",
                 global_parameters=self.global_parameters,
-                **{"total": abs(self.bunch_charge)}
+                **{"total": abs(self.bunch_charge)},
             )
         else:
             self.q = charge(
                 objectname="START",
                 objecttype="charge",
                 global_parameters=self.global_parameters,
-                **{"total": abs(self.global_parameters["beam"].Q)}
+                **{"total": abs(self.global_parameters["beam"].Q)},
             )
         sddsbeamfilename = self.objectname + ".sdds"
         if write:
@@ -507,22 +523,15 @@ class elegantLattice(frameworkLattice):
 class elegantCommandFile(frameworkCommand):
     lattice: frameworkLattice | str = None
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
-        super(elegantCommandFile, self).__init__(
-            *args,
-            **kwargs
-        )
+    def __init__(self, *args, **kwargs):
+        super(elegantCommandFile, self).__init__(*args, **kwargs)
 
 
 class elegant_global_settings_command(elegantCommandFile):
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(elegant_global_settings_command, self).__init__(
             objectname="global_settings",
@@ -536,7 +545,7 @@ class elegant_global_settings_command(elegantCommandFile):
             mpi_io_read_buffer_size=16777216,
             mpi_io_write_buffer_size=16777216,
             usleep_mpi_io_kludge=0,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -549,19 +558,9 @@ class elegant_run_setup_command(elegantCommandFile):
     centroid: str = "%s.cen"
     sigma: str = "%s.sig"
 
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
-        super(
-            elegant_run_setup_command,
-            self
-        ).__init__(
-            objectname="run_setup",
-            objecttype="run_setup",
-            *args,
-            **kwargs
+    def __init__(self, *args, **kwargs):
+        super(elegant_run_setup_command, self).__init__(
+            objectname="run_setup", objecttype="run_setup", *args, **kwargs
         )
         self.lattice_filename = self.lattice.objectname + ".lte"
         for k in self.model_fields_set:
@@ -584,15 +583,9 @@ class elegant_error_elements_command(elegantCommandFile):
     error_log: str = "%s.erl"
 
     # build commands for randomised errors on specified elements
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegant_error_elements_command, self).__init__(
-            objectname="error_control",
-            objecttype="error_control",
-            **kwargs
+            objectname="error_control", objecttype="error_control", **kwargs
         )
         self.add_properties(
             objecttype="error_control",
@@ -606,37 +599,24 @@ class elegant_scan_elements_command(elegantCommandFile):
     nruns: int = 1
     index_number: int = 0
     lattice: frameworkLattice = None
+
     # build command for a systematic parameter scan
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegant_scan_elements_command, self).__init__(
-            objectname="vary_element",
-            objecttype="vary_element",
-            *args,
-            **kwargs
+            objectname="vary_element", objecttype="vary_element", *args, **kwargs
         )
         self.add_properties(
             objecttype="vary_element",
             index_number=self.index_number,
-            **self.elementScan
+            **self.elementScan,
         )
 
 
 class elegant_run_control_command(elegantCommandFile):
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegant_run_control_command, self).__init__(
-            objectname="run_control",
-            objecttype="run_control",
-            *args,
-            **kwargs
+            objectname="run_control", objecttype="run_control", *args, **kwargs
         )
         self.add_properties(**kwargs)
 
@@ -651,21 +631,29 @@ class elegant_twiss_output_command(elegantCommandFile):
     etaxp: float | None = None
 
     # build command for a systematic parameter scan
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegant_twiss_output_command, self).__init__(
             objectname="twiss_output",
             objecttype="twiss_output",
             *args,
             **kwargs,
         )
-        self.betax = self.betax if self.betax is not None else self.beam.twiss.beta_x_corrected
-        self.betay = self.betay if self.betay is not None else self.beam.twiss.beta_y_corrected
-        self.alphax = self.alphax if self.alphax is not None else self.beam.twiss.alpha_x_corrected
-        self.alphay = self.alphay if self.alphay is not None else self.beam.twiss.alpha_y_corrected
+        self.betax = (
+            self.betax if self.betax is not None else self.beam.twiss.beta_x_corrected
+        )
+        self.betay = (
+            self.betay if self.betay is not None else self.beam.twiss.beta_y_corrected
+        )
+        self.alphax = (
+            self.alphax
+            if self.alphax is not None
+            else self.beam.twiss.alpha_x_corrected
+        )
+        self.alphay = (
+            self.alphay
+            if self.alphay is not None
+            else self.beam.twiss.alpha_y_corrected
+        )
         self.etax = self.etax if self.etax is not None else self.beam.twiss.eta_x
         self.etaxp = self.etaxp if self.etaxp is not None else self.beam.twiss.eta_xp
 
@@ -681,15 +669,15 @@ class elegant_twiss_output_command(elegantCommandFile):
             alpha_y=self.alphay,
             eta_x=self.etax,
             etap_x=self.etaxp,
-            **kwargs
+            **kwargs,
         )
 
 
 class elegant_floor_coordinates_command(elegantCommandFile):
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(elegant_floor_coordinates_command, self).__init__(
             objectname="floor_coordinates",
@@ -703,7 +691,7 @@ class elegant_floor_coordinates_command(elegantCommandFile):
             Z0=self.lattice.startObject.position_start[2],
             theta0=0,
             magnet_centers=0,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -713,9 +701,9 @@ class elegant_matrix_output_command(elegantCommandFile):
     SDDS_output: str = "%s.mat"
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(elegant_matrix_output_command, self).__init__(
             objectname="matrix_output",
@@ -734,11 +722,7 @@ class elegant_matrix_output_command(elegantCommandFile):
 class elegant_sdds_beam_command(elegantCommandFile):
     elegantbeamfilename: str = ""
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegant_sdds_beam_command, self).__init__(
             objectname="sdds_beam",
             objecttype="sdds_beam",
@@ -752,9 +736,9 @@ class elegant_track_command(elegantCommandFile):
     trackBeam: bool = True
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(elegant_track_command, self).__init__(
             objectname="track",
@@ -772,11 +756,7 @@ class elegantOptimisation(elegantCommandFile):
     terms: Dict = {}
     settings: Dict = {}
 
-    def __init__(
-        self,
-        *args,
-        **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(elegantOptimisation, self).__init__(
             *args,
             **kwargs,

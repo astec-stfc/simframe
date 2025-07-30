@@ -1,18 +1,40 @@
 from SimulationFramework.Framework_objects import frameworkElement
+from typing import List
 
 
 class quadrupole(frameworkElement):
+    """
+    Class defining a quadrupole magnet
+    """
+
     k1l: float = 0.0
+    """Quadrupole strength"""
+
     n_kicks: int = 4
+    """Number of kicks for tracking through the quad"""
+
     field_reference_position: str = "middle"
+    """Reference position for quadrupole field file"""
+
     fringe_field_coefficient: float = 0.0
+    """Quad fringe field coefficient"""
+
     strength_errors: list = [0]
+    """Quadrupole strength errors"""
+
     gradient: float = 0.0
+    """Magnetic field gradient"""
+
+    scale_field: bool = False
+    """Flag indicating whether to scale the field from the field file"""
+
+    multipoles: List[float] = [0]
+    """Multipole elements in the quad"""
 
     def __init__(
-            self,
-            *args,
-            **kwargs,
+        self,
+        *args,
+        **kwargs,
     ):
         super(quadrupole, self).__init__(
             *args,
@@ -21,22 +43,66 @@ class quadrupole(frameworkElement):
 
     @property
     def k1(self) -> float:
-        """Return the quadrupole K1 value in m^-2"""
+        """
+        Quadrupole K1 value in m^-2
+
+        Returns:
+        --------
+        float
+            Quadrupole K1
+        """
         return float(self.k1l) / float(self.length) if self.length > 0 else 0
 
     @k1.setter
-    def k1(self, k1):
+    def k1(self, k1: float) -> None:
+        """
+        Set the quadrupole K1
+
+        Parameters:
+        ----------
+        k1: float
+            Quadrupole K1
+        """
         self.k1l = float(self.length) * float(k1)
 
     @property
-    def dk1(self):
+    def dk1(self) -> float:
+        """
+        Quadrupole strength error
+
+        Returns
+        -------
+        float
+            Quadrupole strength error
+        """
         return self.strength_errors[0]
 
     @dk1.setter
-    def dk1(self, dk1):
+    def dk1(self, dk1: float) -> None:
+        """
+        Set the quadrupole strength error
+
+        Parameters
+        ----------
+        dk1: float
+            Quadrupole strength error
+        """
         self.strength_errors[0] = dk1
 
-    def _write_ASTRA(self, n: int) -> str:
+    def _write_ASTRA(self, n: int) -> str | None:
+        """
+        Writes the quadrupole element string for ASTRA.
+
+        Parameters
+        ----------
+        n: int
+            Dipole index
+
+        Returns
+        -------
+        str or None
+            String representation of the element for ASTRA, or None if quadrupole strength is zero
+        """
         field_ref_pos = self.get_field_reference_position()
         astradict = dict(
             [
@@ -84,11 +150,16 @@ class quadrupole(frameworkElement):
             ]
         )
         if self.field_definition:
-            field_file_name = self.generate_field_file_name(self.field_definition, code="astra")
+            field_file_name = self.generate_field_file_name(
+                self.field_definition, code="astra"
+            )
             astradict.update(
                 dict(
                     [
-                        ["Q_type", {"value": "'" + field_file_name + "'", "default": None}],
+                        [
+                            "Q_type",
+                            {"value": "'" + field_file_name + "'", "default": None},
+                        ],
                         ["q_grad", {"value": self.gradient, "default": None}],
                     ]
                 )
@@ -121,7 +192,7 @@ class quadrupole(frameworkElement):
             + ", "
             + str(self.length)
             + ", "
-            + str((-Brho * self.k1) if abs(self.gradient) > 0 else -1 * self.gradient)
+            + str((-Brho * self.k1) if abs(self.gradient) == 0 else -1 * self.gradient)
             + (
                 ", " + str(self.fringe_field_coefficient)
                 if self.fringe_field_coefficient > 0
