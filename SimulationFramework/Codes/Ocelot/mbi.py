@@ -100,22 +100,29 @@ class MBI(PhysProc):
     """
     Microbunching Gain (MBI) calculation physics process
 
-    Attributes:
-        self.lattice = MagneticLattice - lattice used during tracking
-        self.step = 1 [in Navigator.unit_step] - step of the MBI calculation
-        self.lamb_range = [1e-6, 50e-6, 10] - Initial wavelength modulation range (metres) [min, max, num_steps]
-        self.slices = 0 - Number of time-slices across which to calculate beam slice properties (zero takes only the central slice)
-        self.lsc = True - Include LSC impedance
-        self.csr = True - Include CSR impedance
 
-    Description:
-        The beam bunching factor is calculated sequentially along the beamline, following `Tsai et al`_.
-        [All equations referenced herein refer to this paper.]
-        At each simulation step, the bunch slice properties and lattice transfer map up to that point are extracted.
-        The bunching factor in the absence of collective effects -- b0 -- is also calculated.
-        Based on these parameters, the microbunching integral kernel at each previous step is evaluated and multiplied with b0
-        The bunching factor at a given location z is then the sum of all previous bunching factors
-        These bunching factors [bf, pf] are then made attributes of the `~ocelot.cpbd.beam.ParticleArray` object.
+    The beam bunching factor is calculated sequentially along the beamline, following `Tsai et al`_.
+    [All equations referenced herein refer to this paper.]
+    At each simulation step, the bunch slice properties and lattice transfer map up to that point are extracted.
+    The bunching factor in the absence of collective effects -- b0 -- is also calculated.
+    Based on these parameters, the microbunching integral kernel at each previous step is evaluated
+    and multiplied with b0.
+    The bunching factor at a given location z is then the sum of all previous bunching factors.
+    These bunching factors [bf, pf] are then made attributes of the `~ocelot.cpbd.beam.ParticleArray` object.
+
+    Attributes:
+        lattice: MagneticLattice
+         Lattice used during tracking
+        step: int [in Navigator.unit_step]
+            step of the MBI calculation
+        lamb_range: tuple
+            Initial wavelength modulation range (metres) [min, max, num_steps]
+        slices: int
+        Number of time-slices across which to calculate beam slice properties (zero takes only the central slice)
+        lsc: bool
+            Include LSC impedance
+        csr: bool
+            Include CSR impedance
 
     .. _Tsai et al: https://journals.aps.org/prab/abstract/10.1103/PhysRevAccelBeams.23.124401
     """
@@ -186,8 +193,11 @@ class MBI(PhysProc):
         Calculate beam slice parameters
 
         :param p_array: Particle array object
-        :param slices: if true, calculate beam properties along the full slice; if false, calculate slice properties of the central slice
-        :return: dictionary containing relevant slice parameters obtained from `~ocelot.cpbd.beam.global_slice_analysis`
+        :param slices: if true, calculate beam properties along the full slice; if false,
+        calculate slice properties of the central slice
+        :return: dictionary containing relevant slice parameters obtained from `Ocelot global slice analysis`_
+
+        .. _Ocelot global slice analysis: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/beam.py
         """
         slice_params = global_slice_analysis(p_array)
         if not slices:
@@ -284,8 +294,10 @@ class MBI(PhysProc):
         :param lamb_range: range of initial modulation wavelengths [m]
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
         :return: bunching factors in z and p
+
+        .. _Ocelot element: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/elements/element.py
         """
         cur_init = slice_params[0]["I"]
         for i, l in enumerate(lamb_range):
@@ -343,7 +355,7 @@ class MBI(PhysProc):
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
         :param slices: number of slices over which to calculate beam slice properties and bunching factors
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
         :return: bunching factors in z and p
         """
         for h in range(slices):
@@ -521,7 +533,7 @@ class MBI(PhysProc):
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
         :param i1: index from which to calculate
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
 
         :return: K0, K1, K2
         """
@@ -551,7 +563,7 @@ class MBI(PhysProc):
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
         :param i1: index from which to calculate
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
 
         :return: K0
         """
@@ -576,7 +588,7 @@ class MBI(PhysProc):
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
         :param i1: index from which to calculate
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
 
         :return: K1
         """
@@ -603,7 +615,7 @@ class MBI(PhysProc):
         :param slice_params: list of dicts containing beam slice properties
         :param optics_map: list of first-order transfer matrices
         :param i1: index from which to calculate
-        :param elem: `~ocelot.cpbd.elements.element.Element` at the current position
+        :param elem: `Ocelot element`_ at the current position
 
         :return: K2
         """
@@ -652,7 +664,7 @@ class MBI(PhysProc):
         CSR impedance (Eq. (51))
 
         :param lamb: initial modulation wavelength
-        :param elem: `~ocelot.cpbd.elements.element.Element` object
+        :param elem: `Ocelot element`_ object
 
         :return: CSR impedance
         """

@@ -10,6 +10,9 @@ Classes:
     - :class:`~SimulationFramework.Framework_objects.frameworkObject`: Base class for generic objects in SimFrame,\
     including lattice elements and simulation code commands.
 
+    - :class:`~SimulationFramework.Framework_objects.frameworkElement`: Base class for generic\
+     lattice elements in SimFrame, including lattice elements and simulation code commands.
+
     - :class:`~SimulationFramework.Framework_objects.csrdrift`: Drift element including CSR effects.
 
     - :class:`~SimulationFramework.Framework_objects.lscdrift`: Drift element including LSC effects.

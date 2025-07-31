@@ -1,3 +1,27 @@
+"""
+Simframe Framework Module
+
+The main class for handling the tracking of a particle distribution through a lattice.
+
+Settings files can be loaded in, consisting of one or more :ref:`MasterLattice` YAML files. This creates
+:class:`~SimulationFramework.Framework_objects.frameworkLattice` objects, each of which contains
+:class:`~SimulationFramework.Framework_objects.frameworkElement` objects.
+
+These objects can be modified directly through the :class:`~SimulationFramework.Framework.Framework` class.
+
+Based on the tracking code(s) provided to the framework, the particle distribution is tracked through the lattice
+sequentially, and output beam distributions are generated and converted to the standard SimFrame HDF5 format.
+
+Summary files containing Twiss parameters, and a summary of the beam files, are generated after tracking.
+
+Classes:
+    - :class:`~SimulationFramework.Framework.Framework`: Top-level class for loading and modifying lattice\
+    settings and tracking through them
+
+    - :class:`~SimulationFramework.Framework.frameworkDirectory`: Class to load a tracking run from a directory \
+    and reading the Beam and Twiss files and making them available.
+"""
+
 import os
 import sys
 import yaml
@@ -15,7 +39,7 @@ from .Codes.Generators.Generators import (
     GPTGenerator,
     generator_keywords,
 )
-from .Framework_objects import runSetup
+from .Framework_objects import runSetup, frameworkElement
 from . import Framework_lattices as frameworkLattices
 from . import Framework_elements as frameworkElements
 from .Framework_Settings import FrameworkSettings
@@ -137,18 +161,35 @@ class Framework(Munch):
             }
         )
 
-    def clear(self):
+    def clear(self) -> None:
+        """
+        Clear out :attr:`~elementObjects`, :attr:`~latticeObjects`, :attr:`~commandObjects`, :attr:`~groupObjects`
+        """
         self.elementObjects = dict()
         self.latticeObjects = dict()
         self.commandObjects = dict()
         self.groupObjects = dict()
 
-    def change_subdirectory(self, *args, **kwargs):
+    def change_subdirectory(self, *args, **kwargs) -> None:
+        """
+        Change the subdirectory and `master_subdir` in :attr:`~global_parameters` to which lattice and
+        beam files will be written.
+        """
         self.setSubDirectory(*args, **kwargs)
 
-    def setSubDirectory(self, dir: str) -> None:
-        """Set subdirectory for tracking"""
-        self.subdirectory = os.path.abspath(dir)
+    def setSubDirectory(self, direc: str) -> None:
+        """
+        Change the subdirectory and `master_subdir` in :attr:`~global_parameters` to which lattice and
+        beam files will be written.
+
+        If :attr:`~clean`, then all existing files in the directory are removed.
+
+        Parameters
+        ----------
+        direc: str
+            Directory to which files will be written. If directory does not exist, create it.
+        """
+        self.subdirectory = os.path.abspath(direc)
         self.global_parameters["master_subdir"] = self.subdirectory
         if not os.path.exists(self.subdirectory):
             os.makedirs(self.subdirectory, exist_ok=True)
@@ -159,7 +200,16 @@ class Framework(Munch):
             self.overwrite = True
 
     def setMasterLatticeLocation(self, master_lattice: str | None = None) -> None:
-        """Set the location of the MasterLattice package"""
+        """
+        Set the location of the :ref:`MasterLattice` package.
+
+        This then also sets the `master_lattice_location` in :attr:`~global_parameters`.
+
+        Parameters
+        ----------
+        master_lattice: str
+            The full path to the MasterLattice folder
+        """
         global MasterLatticeLocation
         if master_lattice is None:
             if MasterLatticeLocation is not None:
@@ -239,7 +289,16 @@ class Framework(Munch):
         MasterLatticeLocation = self.global_parameters["master_lattice_location"]
 
     def setSimCodesLocation(self, simcodes: str | None = None) -> None:
-        """Set the location of the SimCodes package"""
+        """
+        Set the location of the :ref:`SimCodes` package.
+
+        This then also sets the `simcodes_location` in :attr:`~global_parameters`.
+
+        Parameters
+        ----------
+        simcodes: str
+            The full path to the SimCodes folder
+        """
         global SimCodesLocation
         if simcodes is None:
             if SimCodesLocation is not None:
@@ -315,12 +374,21 @@ class Framework(Munch):
             )
         SimCodesLocation = self.global_parameters["simcodes_location"]
 
-    def load_Elements_File(self, input: str | list | tuple) -> None:
-        """Load a file with element definitions"""
-        if isinstance(input, (list, tuple)):
-            filename = input
+    def load_Elements_File(self, inp: str | list | tuple | dict) -> None:
+        """
+        Load a YAML file or list of YAML files with element definitions.
+        The `elements` entry in this file(s) are then parsed and read into :attr:`~elementObjects`
+        in order to build up the :class:`~SimulationFramework.Framework_objects.frameworkLattice` object.
+
+        Parameters
+        ----------
+        inp: str or list or tuple or dict
+            Input file or dict containing the lattice `elements`
+        """
+        if isinstance(inp, (list, tuple)):
+            filename = inp
         else:
-            filename = [input]
+            filename = [inp]
         for f in filename:
             if os.path.isfile(f):
                 with open(f, "r") as stream:
@@ -337,9 +405,21 @@ class Framework(Munch):
                 self.read_Element(name, elem)
 
     def loadSettings(
-        self, filename: str | None = None, settings: FrameworkSettings | None = None
+            self,
+            filename: str | None = None,
+            settings: FrameworkSettings | None = None,
     ) -> None:
-        """Load Lattice Settings from file or dictionary"""
+        """
+        Load Lattice Settings from file or dictionary. These settings contain the lattice lines and
+        their respective settings, YAML files and global parameters.
+
+        Parameters
+        ----------
+        filename: str or None
+            Name of .def file containing lattice definitions
+        settings: FrameworkSettings or None
+            Settings for the lattice
+        """
         if isinstance(filename, str):
             self.settingsFilename = filename
             self.settings = FrameworkSettings()
@@ -396,7 +476,18 @@ class Framework(Munch):
         directory: str = ".",
         elements: dict | None = None,
     ) -> None:
-        """Save Lattice Settings to a file"""
+        """
+        Save Lattice Settings to a file.
+
+        Parameters
+        ----------
+        filename: str or None
+            Filename to which the settings will be saved; defaults to `settings.def`
+        directory: str
+            Directory to which the settings will be saved
+        elements: dict or None
+            Dictionary of :class:`~SimulationFramework.Framework_objects.frameworkElement` objects to save
+        """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
@@ -412,7 +503,18 @@ class Framework(Munch):
             yaml.safe_dump(settings, yaml_file, sort_keys=False)
 
     def read_Lattice(self, name: str, lattice: dict) -> None:
-        """Create an instance of a <code>Lattice class"""
+        """
+        Create an instance of a <code>Lattice class;
+        see :class:`~SimulationFramework.Framework_objects.frameworkLattice` and its child classes.
+        This instance is then added to the :attr:`~latticeObjects` dictionary.
+
+        Parameters
+        ----------
+        name: str
+            The name of the lattice line
+        lattice: dict
+            Dictionary containing settings for the lattice line
+        """
         code = lattice["code"] if "code" in lattice else "astra"
         self.latticeObjects[name] = getattr(
             frameworkLattices, code.lower() + "Lattice"
@@ -428,9 +530,25 @@ class Framework(Munch):
         )
 
     def detect_changes(
-        self, elementtype: str | None = None, elements: list | None = None
+            self,
+            elementtype: str | None = None,
+            elements: list | None = None,
     ) -> dict:
-        """Detect lattice changes from the original loaded lattice and return a dictionary of changes"""
+        """
+        Detect lattice changes from the original loaded lattice and return a dictionary of changes.
+
+        Parameters
+        ----------
+        elementtype: str or None
+            Element type to check; check all if None
+        elements: list or None
+            Elements to check; check all if None
+
+        Returns
+        -------
+        dict
+            Dictionary containing changes in the lattice, with element names and changed parameters
+        """
         disallowed = [
             "allowedkeywords",
             "conversion_rules_elegant",
@@ -493,15 +611,33 @@ class Framework(Munch):
     def save_changes_file(
         self,
         filename: str | None = None,
-        type: str | None = None,
+        typ: str | None = None,
         elements: dict | None = None,
         dictionary: bool = False,
     ) -> dict | None:
-        """Save a file, or returns a dictionary, of detected changes in the lattice from the loaded version"""
+        """
+        Save a file, or returns a dictionary, of detected changes in the lattice from the loaded version.
+
+        Parameters
+        ----------
+        filename: str or None
+            Name of file containing changes; defaults to `changes.yaml`
+        typ: str or None
+            Element types to check; if `None`, check all
+        elements: dict or None
+            Dictionary containing elements and parameters to check; if `None`, check all
+        dictionary: bool
+            Flag to return changes as dictionary; if False, save a YAML file
+
+        Returns
+        -------
+        dict or None
+            If `dictionary`, return a dict; otherwise, save a file and return `None`
+        """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
             filename = pre + "_changes.yaml"
-        changedict = self.detect_changes(elementtype=type, elements=elements)
+        changedict = self.detect_changes(elementtype=typ, elements=elements)
         if dictionary:
             return changedict
         else:
@@ -516,7 +652,25 @@ class Framework(Munch):
         directory: str = ".",
         dictionary: bool = False,
     ) -> dict | None:
-        """Save to a file, or returns a dictionary, of a lattice"""
+        """
+        Save lattice to a file, or return a dictionary containing the lattice elements
+
+        Parameters
+        ----------
+        lattice: str or None
+            Name of lattice file; if `None`, sets to the name of the lattice
+        filename: str or None
+            Name of the file to be saved; if `None`, sets to the name of the lattice + '_lattice.yaml'
+        directory: str
+            Directory to which the file will be saved
+        dictionary: bool
+            Flag to save lattice as dictionary; if False, save a YAML file
+
+        Returns
+        -------
+        dict or None
+            If `dictionary`, return a dict; otherwise, save a file and return `None`
+        """
         if filename is None:
             pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
         else:
@@ -579,10 +733,30 @@ class Framework(Munch):
                 yaml.dump(latticedict, yaml_file)
 
     def load_changes_file(
-        self, filename: str | None = None, apply: bool = True, verbose: bool = False
-    ) -> dict:
-        """Loads a saved changes file and applies the settings to the current lattice.
+            self,
+            filename: str | tuple | list | None = None,
+            apply: bool = True,
+            verbose: bool = False,
+    ) -> dict | list:
+        """
+        Loads a saved changes file and applies the settings to the current lattice.
         Returns a list of changes.
+        See :func:`~apply_changes`.
+
+        Parameters
+        ----------
+        filename: str or list or tuple or None
+            Changes filename to save; if `None`, base it on the settings filename
+        apply: bool
+            Flag to apply the changes
+        verbose: bool
+            Flag to print the changes applied
+
+        Returns
+        -------
+        dict or list
+            If `filename` is a `list` or `tuple`, call this function again
+            If `filename` is `None` or a `str`, return the dictionary of changes.
         """
         if isinstance(filename, (tuple, list)):
             return [self.load_changes_file(c) for c in filename]
@@ -597,7 +771,17 @@ class Framework(Munch):
             return changes
 
     def apply_changes(self, changes: dict, verbose: bool = False) -> None:
-        """Applies a dictionary of changes to the current lattice"""
+        """
+        Applies a dictionary of changes to the current lattice.
+
+        Parameters
+        ----------
+        changes: dict
+            Dictionary of changes to elements, keyed by element name and containing parameters and values
+            to change
+        verbose: bool
+            Flag to indicate which elements are being modified
+        """
         for e, d in list(changes.items()):
             # print 'found change element = ', e
             if e in self.elementObjects:
@@ -614,7 +798,19 @@ class Framework(Munch):
                         print("modifying ", e, "[", k, "]", " = ", v)
 
     def check_lattice(self, decimals: int = 4) -> bool:
-        """Checks that there are no positioning errors in the lattice and returns True/False"""
+        """
+        Checks that there are no positioning errors in the lattice.
+
+        Parameters
+        ----------
+        decimals: int
+            Number of decimals to check errors
+
+        Returns
+        -------
+        bool
+            True if errors are detected
+        """
         noerror = True
         for elem in self.elementObjects.values():
             start = elem.position_start
@@ -634,7 +830,19 @@ class Framework(Munch):
         return noerror
 
     def check_lattice_drifts(self, decimals: int = 4) -> bool:
-        """Checks that there are no positioning errors in the lattice and returns True/False"""
+        """
+        Checks that there are no positioning errors in the lattice.
+
+        Parameters
+        ----------
+        decimals: int
+            Number of decimals to check errors
+
+        Returns
+        -------
+        bool
+            True if errors are detected
+        """
         noerror = True
         for elem in self.elementObjects.values():
             start = elem.position_start
@@ -660,9 +868,23 @@ class Framework(Munch):
         return noerror
 
     def change_Lattice_Code(
-        self, latticename: str, code: str, exclude: str | list | tuple | None = None
+            self,
+            latticename: str,
+            code: str,
+            exclude: str | list | tuple | None = None,
     ) -> None:
-        """Changes the tracking code for a given lattice"""
+        """
+        Changes the tracking code for a given lattice.
+
+        Parameters
+        ----------
+        latticename: str
+            Name of the lattice line defined in the :attr:`~latticeObjects`
+        code: str
+            Simulation code to use for `latticename`; can be `All`
+        exclude:
+            Exclude certain lines from this function
+        """
         if latticename == "All":
             [self.change_Lattice_Code(lo, code, exclude) for lo in self.latticeObjects]
         elif isinstance(latticename, (tuple, list)):
@@ -688,13 +910,27 @@ class Framework(Munch):
                 )
 
     def read_Element(
-        self,
-        elementname: str,
-        element: dict,
-        subelement: bool = False,
-        parent: str = None,
+            self,
+            elementname: str,
+            element: dict,
+            subelement: bool = False,
+            parent: str = None,
     ) -> None:
-        """Reads an element definition and creates the element and any sub-elements"""
+        """
+        Reads an element definition and creates the element and any sub-elements
+
+        Parameters
+        ----------
+        elementname: str
+            Name of element
+        element: dict
+            Dictionary containins the elements
+        subelement: bool
+            Flag to indicate whether this element is a sub-element of another,
+            i.e. a solenoid around an RF cavity
+        parent: str
+            Name of the parent element if this element is a subelement
+        """
         if elementname == "filename":
             self.load_Elements_File(element)
         else:
@@ -711,9 +947,33 @@ class Framework(Munch):
                     self.read_Element(name, elem, subelement=True, parent=elementname)
 
     def add_Element(
-        self, name: str | None = None, typ: str | None = None, **kwargs
-    ) -> dict:
-        """Instantiates and adds the element definition to the list of all elements"""
+            self,
+            name: str | None = None,
+            typ: str | None = None,
+            **kwargs,
+    ) -> frameworkElement:
+        """
+        Instantiates and adds the element definition to :attr:`~elementObjects`
+
+        Parameters
+        ----------
+        name: str
+            Name of the element to add
+        typ: str
+            Type of element; see :ref:`framework-elements`
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Framework_objects.frameworkElement`
+            The newly created element
+
+        Raises
+        ------
+        NameError
+            If the element does not have a `name`
+        Exception
+            In case of errors when generating the element
+        """
         if name is None:
             if "name" not in kwargs:
                 raise NameError("Element does not have a name")
@@ -739,9 +999,30 @@ class Framework(Munch):
         #     raise NameError('Element \'%s\' does not exist' % type)
 
     def replace_Element(
-        self, name: str | None = None, type: str | None = None, **kwargs
-    ) -> dict:
-        """Replaces and element type with a new type and updates the definitions"""
+            self, name: str | None = None,
+            typ: str | None = None,
+            **kwargs
+    ) -> frameworkElement:
+        """
+        Replaces an element type with a new type and updates the definitions
+
+        Parameters
+        ----------
+        name: str
+            Name of the element to replace
+        typ: str
+            Type of element; see :ref:`framework-elements`
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Framework_objects.frameworkElement`
+            The replaced element
+
+        Raises
+        ------
+        NameError
+            If the element does not have a `name`
+        """
         if name is None:
             if "name" not in kwargs:
                 raise NameError("Element does not have a name")
@@ -754,15 +1035,34 @@ class Framework(Munch):
             if a != "objectname" and a != "objecttype"
         }
         new_properties = merge_two_dicts(kwargs, original_properties)
-        element = getattr(frameworkElements, type)(name, type, **new_properties)
+        element = getattr(frameworkElements, typ)(name, typ, **new_properties)
         # print element
         self.elementObjects[name] = element
         return element
         # except Exception as e:
         #     raise NameError('Element \'%s\' does not exist' % type)
 
-    def getElement(self, element: str, param: str | None = None) -> dict | Any:
-        """Returns the element object or a parameter of that element"""
+    def getElement(
+            self,
+            element: str,
+            param: str | None = None,
+    ) -> dict | Any | frameworkElement:
+        """
+        Returns the element object or a parameter of that element
+
+        Parameters
+        ----------
+        element: str
+            Name of element to get
+        param: str or None
+            Parameter to retrieve; if `None`, return the entire element
+
+        Returns
+        -------
+        dict or Any or :class:`~SimulationFramework.Framework_objects.frameworkElement
+            Get the `param` associated with `element`, or the entire element, or an empty dictionary if
+            the element does not exist in the entire lattice
+        """
         if self.__getitem__(element) is not None:
             if param is not None:
                 param = param.lower()
@@ -773,12 +1073,31 @@ class Framework(Munch):
             print(("WARNING: Element ", element, " does not exist"))
             return {}
 
-    def getElementType(self, type: str, param: str | None = None) -> dict | Any:
-        """Gets all elements of the specified type, or the parameter of each of those elements"""
-        if isinstance(type, (list, tuple)):
-            return [self.getElementType(t, param=param) for t in type]
+    def getElementType(
+            self,
+            typ: str | list | tuple,
+            param: str | None = None,
+    ) -> dict | list | Any:
+        """
+        Gets all elements of the specified type, or the parameter of each of those elements
+
+        Parameters
+        ----------
+        typ: list or str or tuple
+            Type or list of types to get
+        param: str or None
+            Parameters to retrieve; if `None`, get the entire object
+
+        Returns
+        -------
+        dict or list or Any
+            Get `param` for all elements, or all elements, or recall this function recursively if
+            `param` is a list or tuple
+        """
+        if isinstance(typ, (list, tuple)):
+            return [self.getElementType(t, param=param) for t in typ]
         if isinstance(param, (list, tuple)):
-            return zip(*[self.getElementType(type, param=p) for p in param])
+            return zip(*[self.getElementType(typ, param=p) for p in param])
             # return [item for sublist in all_elements for item in sublist]
         return [
             (
@@ -787,12 +1106,33 @@ class Framework(Munch):
                 else self.elementObjects[element][param]
             )
             for element in list(self.elementObjects.keys())
-            if self.elementObjects[element].objecttype.lower() == type.lower()
+            if self.elementObjects[element].objecttype.lower() == typ.lower()
         ]
 
-    def setElementType(self, type: str, setting: str, values: Any) -> None:
-        """Modifies the specified parameter of each element of a given type"""
-        elems = self.getElementType(type)
+    def setElementType(
+            self,
+            typ: str,
+            setting: str,
+            values: Any,
+    ) -> None:
+        """
+        Modifies the specified parameter of each element of a given type
+
+        Parameters
+        ----------
+        typ: str
+            All elements of a given type to set
+        setting: str
+            Parameter in those elements to set
+        values: Any
+            Values to set on those elements
+
+        Raises
+        ------
+        ValueError
+            If there is a mismatch between the length of `values` and the number of elements of that type
+        """
+        elems = self.getElementType(typ)
         if len(elems) == len(values):
             for e, v in zip(elems, values):
                 e[setting] = v
@@ -800,9 +1140,23 @@ class Framework(Munch):
             raise ValueError
 
     def modifyElement(
-        self, elementName: str, parameter: str | list | dict, value: Any = None
+            self,
+            elementName: str,
+            parameter: str | list | dict,
+            value: Any = None,
     ) -> None:
-        """Modifies an element parameter"""
+        """
+        Modifies an element parameter
+
+        Parameters
+        ----------
+        elementName: str
+            Name of element to modify
+        parameter: list or str or dict
+            Parameter to modify
+        value:
+            Value to set on that element
+        """
         if isinstance(parameter, dict) and value is None:
             for p, v in parameter.items():
                 self.modifyElement(elementName, p, v)
@@ -815,24 +1169,67 @@ class Framework(Munch):
             setattr(self.elementObjects[elementName], parameter, value)
 
     def modifyElements(
-        self, elementNames: str | list, parameter: str | list | dict, value: Any = None
+            self, elementNames: str | list,
+            parameter: str | list | dict,
+            value: Any = None,
     ) -> None:
-        """Modifies an element parameter for a list of elements"""
+        """
+        Modifies parameters for multiple elements
+
+        Parameters
+        ----------
+        elementNames: str or list
+            Name(s) of element to modify
+        parameter: list or str or dict
+            Parameter to modify
+        value:
+            Value to set on those elements
+        """
         if isinstance(elementNames, str) and elementNames.lower() == "all":
             elementNames = self.elementObjects.keys()
         for elem in elementNames:
             self.modifyElement(elem, parameter, value)
 
-    def modifyElementType(self, elementType: str, parameter: str, value: Any) -> None:
-        """Modifies an element for a list of elements of a given type"""
+    def modifyElementType(
+            self,
+            elementType: str,
+            parameter: str,
+            value: Any,
+    ) -> None:
+        """
+        Modifies an element or a list of elements of a given type
+
+        Parameters
+        ----------
+        elementType: str
+            Type of element to modify
+        parameter: str
+            Parameter of that element type to modify
+        value: Any
+            Value to set on that element(s)
+        """
         elems = self.getElementType(elementType)
         for elementName in [e["name"] for e in elems]:
             self.modifyElement(elementName, parameter, value)
 
     def modifyLattice(
-        self, latticeName: str, parameter: str | list | dict, value: Any = None
+            self,
+            latticeName: str,
+            parameter: str | list | dict,
+            value: Any = None,
     ) -> None:
-        """Modify a lattice definition"""
+        """
+        Modify a lattice definition,
+
+        Parameters
+        ----------
+        latticeName: str
+            Name of lattice to modify
+        parameter: str or list or dict
+            Parameter(s) to update with their values
+        value: Any
+            Value to update
+        """
         if isinstance(parameter, dict) and value is None:
             for p, v in parameter.items():
                 self.modifyLattice(latticeName, p, v)
@@ -843,16 +1240,44 @@ class Framework(Munch):
             setattr(self.latticeObjects[latticeName], parameter, value)
 
     def modifyLattices(
-        self, latticeNames: str | list, parameter: str | list | dict, value: Any = None
+            self,
+            latticeNames: str | list,
+            parameter: str | list | dict,
+            value: Any = None,
     ) -> None:
-        """Modify a lattice definition for a list of lattices"""
+        """
+        Modify a lattice definition for a list of lattices
+
+        Parameters
+        ----------
+        latticeNames: str or list
+            Name of lattice(s) to modify
+        parameter: str or list or dict
+            Parameter(s) to update with their values
+        value: Any
+            Value to update
+        """
         if isinstance(latticeNames, str) and latticeNames.lower() == "all":
             latticeNames = self.latticeObjects.keys()
         for latt in latticeNames:
             self.modifyLattice(latt, parameter, value)
 
-    def add_Generator(self, default: str | None = None, **kwargs) -> None:
-        """Add a file generator based on a keyword dictionary"""
+    def add_Generator(
+            self,
+            default: str | None = None,
+            **kwargs,
+    ) -> None:
+        """
+        Add a file generator based on a keyword dictionary.
+        Sets :attr:`~generator` to the :class:`~SimulationFramework.Codes.Generators.Generators.frameworkGenerator`.
+
+        Also sets the "generator" in :attr:`~latticeObjects` to this generator.
+
+        Parameters
+        ----------
+        default: str or None
+            Name of generator code
+        """
         if "code" in kwargs:
             if kwargs["code"].lower() == "gpt":
                 code = GPTGenerator
@@ -870,8 +1295,18 @@ class Framework(Munch):
             self.generator = code(self.executables, self.global_parameters, **kwargs)
         self.latticeObjects["generator"] = self.generator
 
-    def change_generator(self, generator: str) -> None:
-        """Changes the generator from one type to another"""
+    def change_generator(
+            self,
+            generator: str,
+    ) -> None:
+        """
+        Changes the generator from one type to another.
+
+        Parameters
+        ----------
+        generator: str
+            The generator code to which the generator object should be changed.
+        """
         old_kwargs = self.generator.kwargs
         if generator.lower() == "gpt":
             generator = GPTGenerator(
@@ -909,13 +1344,42 @@ class Framework(Munch):
             yaml.default_flow_style = True
             yaml.dump(output, yaml_file)
 
-    def set_lattice_prefix(self, lattice: str, prefix: str) -> None:
-        """Sets the 'prefix' parameter for a lattice, which determines where it looks for its starting beam distribution"""
+    def set_lattice_prefix(
+            self,
+            lattice: str,
+            prefix: str,
+    ) -> None:
+        """
+        Sets the 'prefix' parameter for a lattice in :attr:`~latticeObjects`,
+        which determines where it looks for its starting beam distribution.
+
+
+        Parameters
+        ----------
+        lattice: str
+            Name of lattice
+        prefix: str
+            Lattice prefix
+        """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].prefix = prefix
 
-    def set_lattice_sample_interval(self, lattice: str, interval: int) -> None:
-        """Sets the 'sample_interval' parameter for a lattice, which determines the sampling of the distribution"""
+    def set_lattice_sample_interval(
+            self,
+            lattice: str,
+            interval: int,
+    ) -> None:
+        """
+        Sets the 'sample_interval' parameter for a lattice, which determines the sampling of the distribution.
+        See :attr:`~SimulationFramework.Framework_objects.frameworkLattice.sample_interval`.
+
+        Parameters
+        ----------
+        lattice: str
+            Name of lattice
+        interval: int
+            Sampling interval in units of 2 ** (3 * interval)
+        """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].sample_interval = interval
 
@@ -934,30 +1398,74 @@ class Framework(Munch):
 
     @property
     def elements(self) -> list:
-        """Returns a list of all element objects"""
+        """
+        Returns a list of all element names from :attr:`~elementObjects`
+
+        Returns
+        -------
+        list
+            List of element names
+        """
         return list(self.elementObjects.keys())
 
     @property
     def groups(self) -> list:
-        """Returns a list of all group objects"""
+        """
+        Returns a list of all group names from :attr:`~groupObjects`
+
+        Returns
+        -------
+        list
+            List of group names
+        """
         return list(self.groupObjects.keys())
 
     @property
     def lines(self) -> list:
-        """Returns a list of all lattice objects"""
+        """
+        Returns a list of all lattice names
+
+        Returns
+        -------
+        list
+            List of lattice names
+        """
         return list(self.latticeObjects.keys())
 
     @property
     def lattices(self) -> list:
+        """
+        Returns a list of all lattice names
+
+        Returns
+        -------
+        list
+            List of lattice names
+        """
         return self.lines
 
     @property
     def commands(self) -> list:
-        """Returns a list of all command objects"""
+        """
+        Returns a list of all command object names
+
+        Returns
+        -------
+        list
+            List of command object names
+        """
         return list(self.commandObjects.keys())
 
     def getSValues(self) -> list:
-        """returns a list of S values for the current machine"""
+        """
+        Returns a list of S values for the current lattice from :attr:`~latticeObjects`;
+        see :func:`~SimulationFramework.Framework_objects.frameworkLattice.getSValues`.
+
+        Returns
+        -------
+        list
+            S values for all elements
+        """
         s0 = 0
         allS = []
         for lo in self.latticeObjects.values():
@@ -970,7 +1478,15 @@ class Framework(Munch):
         return allS
 
     def getSValuesElements(self) -> list:
-        """Returns a list of (name, element, s) tuples for the current machine"""
+        """
+        Returns a list of (name, element, s) tuples for the current machine from :attr:`~latticeObjects`;
+        see :func:`~SimulationFramework.Framework_objects.frameworkLattice.getSNamesElems`.
+
+        Returns
+        -------
+        list
+            Element names, element object and its S position
+        """
         s0 = 0
         allS = []
         for lo in self.latticeObjects:
@@ -983,7 +1499,15 @@ class Framework(Munch):
         return allS
 
     def getZValuesElements(self) -> list:
-        """Returns a list of (name, element, Z) tuples for the current machine"""
+        """
+        Returns a list of (name, element, z) tuples for the current machine from :attr:`~latticeObjects`;
+        see :func:`~SimulationFramework.Framework_objects.frameworkLattice.getZNamesElems`.
+
+        Returns
+        -------
+        list
+            Element names, element object and its Z position
+        """
         allZ = []
         for lo in self.latticeObjects:
             if not lo == "generator":
@@ -1002,10 +1526,45 @@ class Framework(Munch):
         track: bool = True,
         postprocess: bool = True,
         save_summary: bool = True,
-        frameworkDirectory: bool = False,
+        frameworkDirec: bool = False,
         check_lattice: bool = True,
-    ) -> None:
-        """Tracks the current machine, or a subset based on the 'files' list"""
+    ) -> None | Any:
+        """
+        Tracks the current machine, or a subset based on the 'files' list.
+        The lattice is checked (:func:`~check_lattice`) and saved (:func:`~save_lattice`), the settings file
+        is saved (:func:`~save_settings`), and then each line in the lattice is tracked with
+        the code specified.
+
+        Parameters
+        ----------
+        files: list or None
+            List of files (lattice names) to track; if `None`, track all
+        startfile: str or None
+            Initial lattice name for tracking; if `None`, track all
+        endfile: str or None
+            Final lattice name for tracking; if `None`, track all
+        preprocess: bool
+            Call :func:`~SimulationFramework.Framework_objects.frameworkLattice.preProcess` before
+            tracking each line
+        write: bool
+            Write each lattice file
+        track: bool
+            Track each lattice
+        postprocess: bool
+            Call :func:`~SimulationFramework.Framework_objects.frameworkLattice.postProcess` after
+            tracking each line
+        save_summary: bool
+            Save beam and Twiss summary files
+        frameworkDirec: bool
+            If True, return a :class:`~SimulationFramework.Framework.frameworkDirectory` object
+        check_lattice: bool
+            Call :func:`~check_lattice` before tracking
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Framework.frameworkDirectory` or None
+            Framework directory object if `frameworkDirec` is True
+        """
         if check_lattice:
             if not self.check_lattice():
                 raise Exception("Lattice Error - check definitions")
@@ -1086,7 +1645,7 @@ class Framework(Munch):
         if save_summary:
             self.save_summary_files()
         self.tracking = False
-        if frameworkDirectory:
+        if frameworkDirec:
             return frameworkDirectory(
                 directory=self.subdirectory,
                 twiss=True,
@@ -1100,7 +1659,20 @@ class Framework(Munch):
         startfile: str | None = None,
         endfile: str | None = None,
     ) -> None:
-        """Post-processes the tracking files and converts them to HDF5"""
+        """
+        Post-processes the tracking files and converts them to HDF5.
+        See :func:`~SimulationFramework.Framework_objects.frameworkLattice.postProcess` and the same function
+        in the child classes for specific codes.
+
+        Parameters
+        ----------
+        files: list or None
+            List of lattice names; if `None`, process all
+        startfile: str or None
+            Starting lattice object; if `None`, process from the start
+        endfile: str or None
+            End lattice object; if `None`, process to the end
+        """
         if files is None:
             files = (
                 ["generator"] + self.lines
@@ -1121,37 +1693,95 @@ class Framework(Munch):
                 self.latticeObjects[latt].postProcess()
 
     def save_summary_files(self, twiss: bool = True, beams: bool = True) -> None:
-        """Saves HDF5 summary files for the Twiss and/or Beam files"""
-        t = rtf.load_directory(self.subdirectory)
-        t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
-        rbf.save_HDF5_summary_file(
-            self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
-        )
+        """
+        Saves HDF5 summary files for the Twiss and/or Beam files using
+        :func:`~SimulationFramework.Modules.Twiss.load_directory` and
+        :func:`~SimulationFramework.Modules.Beams.save_HDF5_summary_file`
+
+        Parameters
+        ----------
+        twiss: bool
+            If True, save `Twiss_Summary.hdf5` in :attr:`~subdirectory`
+        beams: bool
+            If True, save `Beam_Summary.hdf5` in :attr:`~subdirectory`
+        """
+        if twiss:
+            t = rtf.load_directory(self.subdirectory)
+            t.save_HDF5_twiss_file(self.subdirectory + "/" + "Twiss_Summary.hdf5")
+        if beams:
+            rbf.save_HDF5_summary_file(
+                self.subdirectory, self.subdirectory + "/" + "Beam_Summary.hdf5"
+            )
 
     def pushRunSettings(self) -> None:
-        """Updates the 'Run Settings' in each of the lattices"""
+        """
+        Updates the 'Run Settings' in each of the lattices
+        """
         for ln, latticeObject in self.latticeObjects.items():
             if isinstance(latticeObject, tuple(latticeClasses)):
                 latticeObject.updateRunSettings(self.runSetup)
 
     def setNRuns(self, nruns: int) -> None:
-        """sets the number of simulation runs to a new value for all lattice objects"""
+        """
+        Sets the number of simulation runs to a new value for all lattice objects.
+        See :func:`~SimulationFramework.Framework.runSetup.setNRuns`.
+
+        Parameters
+        ----------
+        nruns: int
+            Number of runs to set up
+        """
         self.runSetup.setNRuns(nruns)
         self.pushRunSettings()
 
     def setSeedValue(self, seed: int) -> None:
-        """sets the random number seed to a new value for all lattice objects"""
+        """
+        Sets the random number seed to a new value for all lattice objects
+
+        See :func:`~SimulationFramework.Framework.runSetup.setSeedValue`.
+
+        Parameters
+        ----------
+        seed: int
+            Random number seed
+        """
         self.runSetup.setSeedValue(seed)
         self.pushRunSettings()
 
     def loadElementErrors(self, file: str) -> None:
+        """
+        Load element errors file; see :func:`~SimulationFramework.Framework.runSetup.loadElementErrors`
+
+        Parameters
+        ----------
+        file: str
+            Errors file
+        """
         self.runSetup.loadElementErrors(file)
         self.pushRunSettings()
 
     def setElementScan(
-        self, name: str, item: str, scanrange: list, multiplicative: bool = False
+            self,
+            name: str,
+            item: str,
+            scanrange: list,
+            multiplicative: bool = False,
     ) -> None:
-        """define a parameter scan for a single parameter of a given machine element"""
+        """
+        Define a parameter scan for a single parameter of a given machine element.
+        See :class:`~SimulationFramework.Framework.runSetup.setElementScan`
+
+        Parameters
+        ----------
+        name: str
+            Name of element to scan
+        item: str
+            Parameter of that element to scan
+        scanrange: list
+            List of values to set
+        multiplicative: bool
+            Flag to indicate whether settings are multiplicative or additive with respect to the original value
+        """
         self.runSetup.setElementScan(
             name=name, item=item, scanrange=scanrange, multiplicative=multiplicative
         )
@@ -1164,7 +1794,19 @@ class Framework(Munch):
     def offsetElements(
         self, x: int | float = 0, y: int | float = 0, z: int | float = 0
     ) -> None:
-        """Moves all elements by the set amount in (x, y, z) space"""
+        """
+        Moves all elements by the set amount in (x, y, z) space.
+        Updates :attr:`~elementObjects`.
+
+        Parameters
+        ----------
+        x: int | float
+            x offset
+        y: int | float
+            y offset
+        z: int | float
+            z offset
+        """
         offset = [x, y, z]
         for latt in self.lines:
             if (

@@ -546,7 +546,7 @@ class elegantLattice(frameworkLattice):
             **self.initial_twiss["vertical"]
         )
         if self.trackBeam:
-            self.hdf5_to_sdds(prefix)
+            self.hdf5_to_sdds()
         self.createCommandFiles()
 
     @lox.thread
