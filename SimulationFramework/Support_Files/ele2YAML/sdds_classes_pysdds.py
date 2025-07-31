@@ -3,6 +3,7 @@ import re
 import yaml
 from copy import copy
 from itertools import groupby
+
 try:
     from pysdds import read as sddsread
 except ImportError:

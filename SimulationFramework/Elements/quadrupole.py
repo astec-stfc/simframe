@@ -46,7 +46,7 @@ class quadrupole(frameworkElement):
         """
         Quadrupole K1 value in m^-2
 
-        Returns:
+        Returns
         --------
         float
             Quadrupole K1
@@ -58,7 +58,7 @@ class quadrupole(frameworkElement):
         """
         Set the quadrupole K1
 
-        Parameters:
+        Parameters
         ----------
         k1: float
             Quadrupole K1

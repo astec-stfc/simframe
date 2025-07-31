@@ -1,3 +1,16 @@
+"""
+Simframe Ocelot Module
+
+Various objects and functions to handle OCELOT lattices and commands. See `Ocelot github`_ for more details.
+
+    .. _Ocelot github: https://github.com/ocelot-collab/ocelot
+
+Classes:
+    - :class:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice`: The Ocelot lattice object, used for\
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into an Ocelot lattice object,
+    and for tracking through it.
+"""
 from ...Framework_objects import frameworkLattice, getGrids
 from ...Framework_elements import screen
 from ...FrameworkHelperFunctions import expand_substitution
@@ -32,27 +45,87 @@ from typing import Dict, List
 
 
 class ocelotLattice(frameworkLattice):
+    """
+    Class for defining the OCELOT lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject`s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into an Ocelot lattice object,
+    and for tracking through it.
+    """
 
     code: str = "ocelot"
+    """String indicating the lattice object type"""
+
     trackBeam: bool = True
+    """Flag to indicate whether to track the beam"""
+
     lat_obj: MagneticLattice = None
+    """Lattice object as an Ocelot `MagneticLattice`_
+    
+    .. _MagneticLattice: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/magnetic_lattice.py
+    """
+
     pin: ParticleArray = None
+    """Initial particle distribution as an Ocelot `ParticleArray`_
+    
+    .. _ParticleArray: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/beam.py"""
+
     pout: ParticleArray = None
+    """Final particle distribution as an Ocelot `ParticleArray`_"""
+
     tws: List = None
+    """List containing Ocelot `Twiss`_ objects
+    
+    .. _Twiss: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/beam.py
+    """
+
     names: List = None
+    """Names of elements in the lattice"""
+
     grids: getGrids = None
+    """Class for calculating the required number of space charge grids"""
+
     oceglobal: Dict = {}
+    """Global settings for Ocelot, read in from `ocelotLattice.settings["global"]["OCELOTsettings"]` and
+    `ocelot_defaults.yaml`"""
+
     unit_step: float = 0.01
+    """Step for Ocelot `PhysProc`_ objects
+    
+    .. _PhysProc: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/physics_proc.py
+    """
+
     smooth: float = 0.01
+    """Smoothing parameter"""
+
     lsc: bool = True
+    """Flag to enable LSC calculations"""
+
     random_mesh: bool = True
+    """Random meshing for space charge calculations"""
+
     nbin_csr: int = 10
+    """Number of longitudinal bins for CSR calculations"""
+
     mbin_csr: int = 5
+    """Number of macroparticle bins for CSR calculations"""
+
     sigmamin_csr: float = 1e-5
+    """Minimum size for CSR calculations"""
+
     wake_sampling: int = 1000
+    """Number of samples for wake calculations"""
+
     wake_filter: int = 10
+    """Filter parameter for wake calculations"""
+
     particle_definition: str = None
+    """Initial particle distribution as a string"""
+
     final_screen: screen | None = None
+    """Final screen object"""
+
+    mbi_navi: MBI | None = None
+    """Physics process for calculating microbunching gain"""
 
     def __init__(self, *args, **kwargs):
         super(ocelotLattice, self).__init__(*args, **kwargs)
@@ -82,7 +155,14 @@ class ocelotLattice(frameworkLattice):
             self.particle_definition = self.elementObjects[self.start].objectname
         self.grids = getGrids()
 
-    def endScreen(self, **kwargs):
+    def endScreen(self, **kwargs) -> screen:
+        """
+        Create a final screen object for dumping the particle output after tracking.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Elements.screen.screen`
+        """
         return screen(
             objectname=self.endObject.objectname,
             objecttype="screen",
@@ -94,7 +174,12 @@ class ocelotLattice(frameworkLattice):
             **kwargs,
         )
 
-    def writeElements(self):
+    def writeElements(self) -> None:
+        """
+        Create Ocelot objects for all the elements in the lattice and set the
+        :attr:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice.lat_obj` and
+        :attr:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice.names`.
+        """
         self.final_screen = None
         if not self.endObject in self.screens_and_bpms:
             self.final_screen = self.endScreen(
@@ -112,13 +197,20 @@ class ocelotLattice(frameworkLattice):
         self.lat_obj = MagneticLattice(mag_lat, method=method)
         self.names = [str(x) for x in array([lat.id for lat in self.lat_obj.sequence])]
 
-    def write(self):
+    def write(self) -> None:
+        """
+        Create the lattice object via :func:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice.writeElements`
+        and save it as a python file to `master_subdir`.
+        """
         self.writeElements()
         self.lat_obj.save_as_py_file(
             f'{self.global_parameters["master_subdir"]}/{self.objectname}.py'
         )
 
-    def preProcess(self):
+    def preProcess(self) -> None:
+        """
+        Get the initial particle distribution defined in `file_block['input']['prefix']` if it exists.
+        """
         super().preProcess()
         prefix = (
             self.file_block["input"]["prefix"]
@@ -128,7 +220,18 @@ class ocelotLattice(frameworkLattice):
         prefix = prefix if self.trackBeam else prefix + self.particle_definition
         self.hdf5_to_npz(prefix)
 
-    def hdf5_to_npz(self, prefix="", write=True):
+    def hdf5_to_npz(self, prefix: str="", write: bool=True) -> None:
+        """
+        Convert the initial HDF5 particle distribution to Ocelot format and set
+        :attr:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice.pin` accordingly.
+
+        Parameters
+        ----------
+        prefix: str
+            Prefix for particle file
+        write: bool
+            Flag to indicate whether to save the file
+        """
         HDF5filename = prefix + self.particle_definition + ".hdf5"
         if os.path.isfile(expand_substitution(self, HDF5filename)):
             filepath = expand_substitution(self, HDF5filename)
@@ -147,8 +250,10 @@ class ocelotLattice(frameworkLattice):
             self.global_parameters["beam"], ocebeamfilename, write=write
         )
 
-    def run(self):
-        """Run the code with input 'filename'"""
+    def run(self) -> None:
+        """
+        Run the code, and set :attr:`~tws` and :attr:`~pout`
+        """
         navi = self.navi_setup()
         pin = deepcopy(self.pin)
         if self.sample_interval > 1:
@@ -157,7 +262,10 @@ class ocelotLattice(frameworkLattice):
             self.lat_obj, pin, navi=navi, calc_tws=True, twiss_disp_correction=True
         )
 
-    def postProcess(self):
+    def postProcess(self) -> None:
+        """
+        Convert the outputs from Ocelot to HDF5 format and save them to `master_subdir`.
+        """
         super().postProcess()
         bfname = f'{self.global_parameters["master_subdir"]}/{self.endObject.objectname}.ocelot.npz'
         save_particle_array(bfname, self.pout)
@@ -192,7 +300,17 @@ class ocelotLattice(frameworkLattice):
                 self.mbi_navi.bf,
             )
 
-    def navi_setup(self):
+    def navi_setup(self) -> Navigator:
+        """
+        Set up the physics processes for Ocelot (i.e. space charge, CSR, wakes etc).
+
+        Returns
+        -------
+        Navigator
+            An `Ocelot Navigator`_ object
+
+        .. _Ocelot Navigator: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/navi.py
+        """
         navi_processes = []
         navi_locations_start = []
         navi_locations_end = []
@@ -227,7 +345,6 @@ class ocelotLattice(frameworkLattice):
                 navi_locations_start += [start[i]]
                 navi_locations_end += [end[i]]
         if self.mbi["set_mbi"]:
-            print(self.mbi)
             self.mbi_navi = MBI(
                 lattice=self.lat_obj,
                 lamb_range=list(
@@ -275,18 +392,54 @@ class ocelotLattice(frameworkLattice):
         )
         return navi
 
-    def physproc_lsc(self):
+    def physproc_lsc(self) -> LSC:
+        """
+        Get an `Ocelot LSC`_ physics process
+
+        Returns
+        -------
+        LSC
+            The Ocelot LSC PhysProc
+
+        .. _Ocelot LSC: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
+        """
         lsc = LSC()
         lsc.smooth_param = self.smooth_param
         return lsc
 
-    def physproc_sc(self, grids):
+    def physproc_sc(self, grids: List[int]) -> SpaceCharge:
+        """
+        Get an `Ocelot SpaceCharge` physics process
+
+        Parameters
+        ----------
+        grids: List[int]
+            The space charge grid number in x,y,z
+
+        Returns
+        -------
+        SpaceCharge
+            The Ocelot SpaceCharge PhysProc
+
+        .. _Ocelot SpaceCharge: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
+        """
         sc = SpaceCharge(step=1)
         sc.nmesh_xyz = grids
         sc.random_mesh = self.random_mesh
         return sc
 
-    def physproc_csr(self):
+    def physproc_csr(self) -> tuple:
+        """
+        Get `Ocelot CSR`_ physics processes based on the start and end positions provided in `file_block`.
+        If these are not provided, just include CSR for the entire lattice.
+
+        Returns
+        -------
+        tuple
+            A list of CSR PhysProcs, and their start and end positions
+
+        .. _Ocelot CSR: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/csr.py
+        """
         csrlist = []
         stlist = []
         enlist = []
@@ -316,7 +469,31 @@ class ocelotLattice(frameworkLattice):
             enlist = [self.lat_obj.sequence[-1]]
         return [csrlist, stlist, enlist]
 
-    def physproc_wake(self, name, loc, ncell):
+    def physproc_wake(
+            self,
+            name: str,
+            loc: field | str,
+            ncell: int,
+    ) -> tuple:
+        """
+        Get an `Ocelot Wake`_ physics process based on the wakefield provided.
+
+        Parameters
+        ----------
+        name: str
+            Name of lattice object associated with the wake
+        loc: :class:`~SimulationFramework.Modules.Fields.field` or str
+            If `field`, then write the field file to ASTRA format
+        ncell: int
+            Number of cells, which provides a multiplication factor for the wake
+
+        Returns
+        -------
+        tuple
+            A Wake PhysProc, and its index in the lattice
+
+        .. _Ocelot Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
+        """
         if isinstance(loc, field.field):
             loc = loc.write_field_file(code="astra")
         wake = Wake(

@@ -6,8 +6,8 @@ class FieldParameter(BaseModel):
     """
     FieldParameter class to represent a field parameter with a name and an optional value.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     name (str):
         The name of the field parameter.
     value (UnitValue | None):

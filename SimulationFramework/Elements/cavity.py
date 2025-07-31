@@ -118,7 +118,6 @@ class cavity(frameworkElement):
     smooth: int | None = None
     """Smoothing parameter"""
 
-
     def __init__(self, *args, **kwargs):
         super(cavity, self).__init__(*args, **kwargs)
 

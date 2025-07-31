@@ -16,13 +16,13 @@ def write_gdf_field_file(self) -> str:
 
     A warning is raised if the field type is not supported (perhaps elevate to a `NotImplementedError`?
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object
 
-    Returns:
-    -----------
+    Returns
+    -------
     str:
         The name of the GDF field file.
     """
@@ -123,13 +123,13 @@ def union(blocks: List) -> List:
     """
     Update the field data into a format compatible for easyGDF
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     blocks: List[Dict]
         The field parameters, keyed by name
 
-    Returns:
-    -----------
+    Returns
+    -------
     List:
         A list of easyGDF-compatible dictionaries
     """
@@ -154,8 +154,8 @@ def read_gdf_field_file(
     """
     Read a GDF field file and convert it into a :class:`SimulationFramework.Modules.Fields.field` object
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object to be updated.
     filename: str
@@ -167,12 +167,12 @@ def read_gdf_field_file(
     frequency: float, optional
         The frequency of the RF cavity.
 
-    Returns:
-    -----------
+    Returns
+    -------
     None
 
-    Raises:
-    -----------
+    Raises
+    ------
     ValueError:
         if the cavity `field_type` contains the string `Electro` and `cavity_type` is not provided
     ValueError:

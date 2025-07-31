@@ -20,6 +20,7 @@ class dipole(frameworkElement):
     """
     Class defining a dipole magnet.
     """
+
     csr_bins: int = 100
     """Number of CSR bins"""
 
@@ -82,7 +83,6 @@ class dipole(frameworkElement):
 
     edge_field_integral: float = 0.5
     """Edge field integral for fringes"""
-
 
     def __init__(self, *args, **kwargs):
         super(dipole, self).__init__(

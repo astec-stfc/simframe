@@ -22,20 +22,20 @@ def read_HDF5_field_file(self, filename: str) -> str:
     """
     Read an HDF5 field file and convert it into a :class:`SimulationFramework.Modules.Fields.field` object
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object.
     filename: str
         The path to the HDF5 field file
 
-    Returns:
-    -----------
+    Returns
+    -------
     str:
         The name of the HDF5 file
 
-    Raises:
-    -----------
+    Raises
+    ------
     KeyError:
         if the `cavity_type` attribute is not in :attr:`~SimulationFramework.Modules.Fields.allowed_cavities
     KeyError:
@@ -111,13 +111,13 @@ def write_HDF5_field_file(self):
     All of the attributes of the class are read, and if they are defined and in the correct format,
     they are written to the file.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object to be saved.
 
-    Returns:
-    -----------
+    Returns
+    -------
     str:
         The name of the HDF5 file
     """

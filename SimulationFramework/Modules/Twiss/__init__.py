@@ -63,12 +63,16 @@ class twissParameter(BaseModel):
 
     name: str
     """The name of the twiss parameter, e.g., 'z', 'beta_x', etc."""
+
     unit: str
     """The unit of the twiss parameter, e.g., 'm', 's', 'eV', etc."""
+
     val: List = []
     """The value of the twiss parameter, stored as a list."""
+
     label: str = Field(default=None, validate_default=True)
     """A label for the twiss parameter, used for plotting or display purposes."""
+
     dtype: str = "f"
     """The data type of the twiss parameter, default is 'f' (float)."""
 
@@ -87,26 +91,37 @@ class initialTwiss(BaseModel):
 
     alpha_x: float
     """The alpha parameter in the x-direction."""
+
     beta_x: float
     """The beta parameter in the x-direction."""
+
     alpha_y: float
     """The alpha parameter in the y-direction."""
+
     beta_y: float
     """The beta parameter in the y-direction."""
+
     ex: float
     """The horizontal emittance."""
+
     ey: float
     """The vertical emittance."""
+
     enx: float
     """The normalized horizontal emittance."""
+
     eny: float
     """The normalized vertical emittance."""
+
     eta_x: float
     """The horizontal dispersion."""
+
     eta_xp: float
     """The horizontal dispersion derivative."""
+
     eta_y: float
     """The vertical dispersion."""
+
     eta_yp: float
     """The vertical dispersion derivative."""
 
@@ -129,126 +144,185 @@ class twiss(BaseModel):
 
     z: twissParameter = twissParameter(name="z", unit="m")
     """The longitudinal position of the beam in the simulation."""
+
     s: twissParameter = twissParameter(name="s", unit="m")
     """The longitudinal position of the beam in the simulation."""
+
     t: twissParameter = twissParameter(name="t", unit="s")
     """The time coordinate of the beam in the simulation."""
+
     kinetic_energy: twissParameter = twissParameter(name="kinetic_energy", unit="eV")
     """The kinetic energy of the beam."""
+
     gamma: twissParameter = twissParameter(name="gamma", unit="")
     """The Lorentz factor of the beam, defined as E/mc^2."""
+
     cp: twissParameter = twissParameter(name="cp", unit="eV/c")
     """The momentum of the beam in eV/c."""
+
     cp_eV: twissParameter = twissParameter(name="cp_eV", unit="eV/c")
     """The momentum of the beam in eV/c, specifically for energy calculations."""
+
     p: twissParameter = twissParameter(name="p", unit="kg*m/s")
     """The momentum of the beam in kg*m/s, calculated as cp * q_over_c."""
+
     enx: twissParameter = twissParameter(name="enx", unit="m-radians")
     """The normalized horizontal emittance of the beam."""
+
     ex: twissParameter = twissParameter(name="ex", unit="m-radians")
     """The horizontal emittance of the beam."""
+
     eny: twissParameter = twissParameter(name="eny", unit="m-radians")
     """The normalized vertical emittance of the beam."""
+
     ey: twissParameter = twissParameter(name="ey", unit="m-radians")
     """The vertical emittance of the beam."""
+
     enz: twissParameter = twissParameter(name="enz", unit="eV*s")
     """The normalized longitudinal emittance of the beam, typically in eV*s."""
+
     ez: twissParameter = twissParameter(name="ez", unit="eV*s")
     """The longitudinal emittance of the beam, typically in eV*s."""
+
     beta_x: twissParameter = twissParameter(name="beta_x", unit="m")
     """The beta function in the x-direction."""
+
     gamma_x: twissParameter = twissParameter(name="gamma_x", unit="")
     """The twiss gamma function in the x-direction."""
+
     alpha_x: twissParameter = twissParameter(name="alpha_x", unit="")
     """The alpha function in the x-direction."""
+
     beta_y: twissParameter = twissParameter(name="beta_y", unit="m")
     """The beta function in the y-direction."""
+
     gamma_y: twissParameter = twissParameter(name="gamma_y", unit="")
     """The twiss gamma function in the y-direction."""
+
     alpha_y: twissParameter = twissParameter(name="alpha_y", unit="")
     """The alpha function in the y-direction."""
+
     beta_z: twissParameter = twissParameter(name="beta_z", unit="m")
     """The beta function in the z-direction."""
+
     gamma_z: twissParameter = twissParameter(name="gamma_z", unit="")
     """The twiss gamma function in the z-direction."""
+
     alpha_z: twissParameter = twissParameter(name="alpha_z", unit="")
     """The alpha function in the z-direction."""
+
     sigma_x: twissParameter = twissParameter(name="sigma_x", unit="m")
     """The standard deviation of the beam in the x-direction."""
+
     sigma_xp: twissParameter = twissParameter(name="sigma_xp", unit="rad")
     """The standard deviation of the beam in the xp-direction."""
+
     sigma_y: twissParameter = twissParameter(name="sigma_y", unit="m")
     """The standard deviation of the beam in the y-direction."""
+
     sigma_yp: twissParameter = twissParameter(name="sigma_yp", unit="rad")
     """The standard deviation of the beam in the yp-direction."""
+
     sigma_z: twissParameter = twissParameter(name="sigma_z", unit="m")
     """The standard deviation of the beam in the z-direction."""
+
     sigma_t: twissParameter = twissParameter(name="sigma_t", unit="s")
     """The standard deviation of the beam in time."""
+
     sigma_p: twissParameter = twissParameter(name="sigma_p", unit="kg * m/s")
     """The standard deviation of the beam momentum in kg*m/s."""
+
     sigma_cp: twissParameter = twissParameter(name="sigma_cp", unit="eV/c")
     """The standard deviation of the beam momentum in eV/c."""
+
     mean_x: twissParameter = twissParameter(name="mean_x", unit="m")
     """The mean position of the beam in the x-direction."""
+
     mean_y: twissParameter = twissParameter(name="mean_y", unit="m")
     """The mean position of the beam in the y-direction."""
+
     mux: twissParameter = twissParameter(name="mux", unit="2 pi")
     """The horizontal phase advance of the beam, in units of 2 pi."""
+
     muy: twissParameter = twissParameter(name="muy", unit="2 pi")
     """The vertical phase advance of the beam, in units of 2 pi."""
+
     eta_x: twissParameter = twissParameter(name="eta_x", unit="m")
     """The horizontal dispersion of the beam."""
+
     eta_xp: twissParameter = twissParameter(name="eta_xp", unit="rad")
     """The horizontal dispersion derivative of the beam."""
+
     eta_y: twissParameter = twissParameter(name="eta_y", unit="m")
     """The vertical dispersion of the beam."""
+
     eta_yp: twissParameter = twissParameter(name="eta_yp", unit="rad")
     """The vertical dispersion derivative of the beam."""
+
     element_name: twissParameter = twissParameter(
         name="element_name", unit="", dtype="U"
     )
     """The name of the element in the simulation."""
+
     lattice_name: twissParameter = twissParameter(
         name="lattice_name", unit="", dtype="U"
     )
     """The name of the lattice in the simulation."""
+
     ecnx: twissParameter = twissParameter(name="ecnx", unit="m-mrad")
     """The normalized horizontal emittance of the beam, in m-mrad."""
+
     ecny: twissParameter = twissParameter(name="ecny", unit="m-mrad")
     """The normalized vertical emittance of the beam, in m-mrad."""
+
     eta_x_beam: twissParameter = twissParameter(name="eta_x_beam", unit="m")
     """The horizontal dispersion of the beam, specifically for beam parameters."""
+
     eta_xp_beam: twissParameter = twissParameter(name="eta_xp_beam", unit="radians")
     """The horizontal dispersion derivative of the beam, specifically for beam parameters."""
+
     eta_y_beam: twissParameter = twissParameter(name="eta_y_beam", unit="m")
     """The vertical dispersion of the beam, specifically for beam parameters."""
+
     eta_yp_beam: twissParameter = twissParameter(name="eta_yp_beam", unit="radians")
     """The vertical dispersion derivative of the beam, specifically for beam parameters."""
+
     beta_x_beam: twissParameter = twissParameter(name="beta_x_beam", unit="m")
     """The beta function in the x-direction, specifically for beam parameters."""
+
     beta_y_beam: twissParameter = twissParameter(name="beta_y_beam", unit="m")
     """The beta function in the y-direction, specifically for beam parameters."""
+
     alpha_x_beam: twissParameter = twissParameter(name="alpha_x_beam", unit="")
     """The alpha function in the x-direction, specifically for beam parameters."""
+
     alpha_y_beam: twissParameter = twissParameter(name="alpha_y_beam", unit="")
     """The alpha function in the y-direction, specifically for beam parameters."""
+
     rest_mass: float | None = None
     """The rest mass of the particle, in kg. If None, it will be set to the electron rest mass."""
+
     codes: Dict = codes
     """A dictionary of functions to read twiss data from different simulation codes."""
+
     code_signatures: Dict = code_signatures
     """A list of code signatures to identify twiss files from different simulation codes."""
+
     sddsindex: int = 0
     """An index for SDDS files, used to track the current file being processed."""
+
     q_over_c: float = constants.e / constants.speed_of_light
     """The charge over the speed of light, used for momentum calculations."""
+
     E0: float = constants.m_e * constants.speed_of_light**2
     """The rest energy of the particle, in Joules. Default is the electron rest mass energy."""
+
     E0_eV: float = E0 / constants.elementary_charge
     """The rest energy of the particle, in eV. Default is the electron rest mass energy in eV."""
+
     elegantTwiss: Dict = {}
     """A dictionary to store ELEGANT twiss data."""
+
     elegantData: Dict = {}
     """A dictionary to store ELEGANT data."""
 
@@ -297,8 +371,8 @@ class twiss(BaseModel):
         """
         Set the rest energy of the particle.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         value: float
             The rest energy in Joules to set for the particle.
         Returns:
@@ -354,8 +428,8 @@ class twiss(BaseModel):
         """
         Get the value of a twiss parameter by its key.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         key: str
             The key of the twiss parameter to retrieve, e.g., 'z', 'beta_x', etc.
 
@@ -370,15 +444,15 @@ class twiss(BaseModel):
         """
         Find the index of the nearest value in a sorted array.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         array: List
             A sorted array to search within.
         value: float
             The value to find the nearest index for in the array.
 
-        Returns:
-        -----------
+        Returns
+        -------
         int:
             The index of the nearest value in the array.
             If the value is exactly equal to an element, it returns that index.
@@ -398,15 +472,15 @@ class twiss(BaseModel):
         """
         Find the nearest value in a sorted array to a given value.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         array: List
             A sorted array to search within.
         value: float
             The value to find the nearest element for in the array.
 
-        Returns:
-        -----------
+        Returns
+        -------
         float:
             The value in the array
         """
@@ -425,11 +499,6 @@ class twiss(BaseModel):
         This method initializes all twiss parameters to their default values
         and clears the elegantTwiss dictionary.
         This is useful for starting fresh with a new set of twiss parameters or when reloading data.
-
-        Returns:
-        -----------
-            None
-
         """
         self.sddsindex = 0
         for name in self.model_fields:
@@ -448,16 +517,12 @@ class twiss(BaseModel):
         which should be one of the twiss parameters (e.g., 'z', 'beta_x', etc.).
         If the key is not found, it raises an AttributeError.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         key: str
             The key by which to sort all the Twiss parameters
         reverse: bool, optional
             Reverse the Twiss parameter arrays
-
-        Returns:
-        -----------
-        None
         """
         flat = np.array(getattr(self, key).val).flatten()
         index = flat.argsort()
@@ -477,16 +542,12 @@ class twiss(BaseModel):
         """
         Append data to a specified twiss parameter array.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         array: str
             Name of existing Twiss parameter array
         data: List | np.ndarray
             Data to append
-
-        Returns:
-        -----------
-        None
         """
         newval = UnitValue(
             np.concatenate([getattr(self, array), data]),
@@ -498,13 +559,13 @@ class twiss(BaseModel):
         """
         Determine the function associated with a specific simulation code name.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         name: str
             The name of the code which produced the Twiss file
 
-        Returns:
-        -----------
+        Returns
+        -------
         callable | None:
             The function associated with the specified simulation code name, or None if not found.
         """
@@ -516,13 +577,13 @@ class twiss(BaseModel):
         """
         Determine the simulation code based on the filename.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         filename: str
             Based on the filename, determine the code which produced it.
 
-        Returns:
-        -----------
+        Returns
+        -------
         callable | None:
             The function associated with the simulation code if found, otherwise None.
         """
@@ -536,13 +597,16 @@ class twiss(BaseModel):
         """
         Interpolate a value at a given z position based on the twiss parameters.
 
-        Args:
-            z: float or None, optional
-            value: str, optional
-            index: str, optional
+        Parameters
+        ----------
+        z: float or None, optional
+        value: str, optional
+        index: str, optional
 
-        Returns:
-            float: The interpolated value at the specified z position.
+        Returns
+        -------
+        float:
+            The interpolated value at the specified z position.
             If z is None, it returns the interpolated value for the entire range.
             If z is greater than the maximum value in the index, it returns a large number (10^6).
             Otherwise, it returns the interpolated value at the specified z position.
@@ -559,19 +623,19 @@ class twiss(BaseModel):
         """
         Extract values from a specified twiss parameter array between two z positions.
 
-        Parameters:
-        -----------
-        array: str
+        Parameters
+        ----------
+        name: str
             Name of Twiss parameter
         start: float
             Initial z position
         end: float
             Final z position
 
-        Returns:
-        -----------
+        Returns
+        -------
         np.ndarray:
-        An array of values from the specified twiss parameter array between the start and end z positions.
+            An array of values from the specified twiss parameter array between the start and end z positions.
         """
         startidx = self.find_nearest_idx(getattr(self, "z"), start)
         endidx = self.find_nearest_idx(getattr(self, "z"), end) + 1
@@ -581,8 +645,8 @@ class twiss(BaseModel):
         """
         Get the value of a twiss parameter at a specific z position.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         param: str
             The name of the Twiss parameter
         z: float
@@ -590,8 +654,8 @@ class twiss(BaseModel):
         tol: float, optional
             The z-position tolerance
 
-        Returns:
-        -----------
+        Returns
+        -------
         float:
             The value of the specified twiss parameter at the given z position.
             If z is exactly in the list of z positions, it returns the corresponding value.
@@ -614,15 +678,15 @@ class twiss(BaseModel):
         """
         Get the value of a twiss parameter at a specific element name.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         param: str
             The Twiss parameter of interest
         element_name: str
             The element name
 
-        Returns:
-        -----------
+        Returns
+        -------
         float | None:
             The value of the specified twiss parameter at the given element name.
             If the element name is found, it returns the corresponding value; otherwise, it returns None.
@@ -636,13 +700,13 @@ class twiss(BaseModel):
         """
         Get a dictionary of twiss parameters at a specific index.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         idx: int
             The index in the Twiss parameter list
 
-        Returns:
-        -----------
+        Returns
+        -------
         Dict[str, float]:
             A dictionary containing the twiss parameters at the specified index.
             The keys are the parameter names, and the values are the corresponding values at that index.
@@ -661,15 +725,15 @@ class twiss(BaseModel):
         """
         Get the twiss parameters at a specific element name.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         element_name: str
             The name of the element
         before:
             Get the parameters before the specified element
 
-        Returns:
-        -----------
+        Returns
+        -------
         Dict[str, float] | None:
             A dictionary of twiss parameters at the specified element name.
             If the element name is found, it returns the corresponding twiss parameters;
@@ -687,15 +751,15 @@ class twiss(BaseModel):
         """
         Get the twiss parameters at a specific z position.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         z: float
             The z-position of interest
         tol: float, optional
             Tolerance on the z-position
 
-        Returns:
-        -----------
+        Returns
+        -------
         Dict[str, float]:
             A dictionary of twiss parameters at the specified z position.
             If z is exactly in the list of z positions, it returns the corresponding twiss parameters.
@@ -727,15 +791,15 @@ class twiss(BaseModel):
         """
         Calculate the covariance between two twiss parameters.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u: array-like
             First Twiss parameter set
         up: array-like
             Second Twiss parameter set
 
-        Returns:
-        -----------
+        Returns
+        -------
         float:
             The covariance between the two twiss parameters.
             The covariance is calculated as the mean of the product of the deviations from their means.
@@ -749,15 +813,15 @@ class twiss(BaseModel):
         """
         Read an SDDS file and extract the twiss parameters.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         filename: str
             SDDS filename
         ascii: bool, optional
             Convert to ascii
 
-        Returns:
-        -----------
+        Returns
+        -------
         Dict[str, float]:
             A dictionary containing the twiss parameters extracted from the SDDS file.
             The dictionary is stored in the `elegantTwiss` attribute of the twiss object.
@@ -784,8 +848,8 @@ class twiss(BaseModel):
         """
         Load twiss files from a specified directory based on the provided types and preglob pattern.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         directory: str
             The directory to load
         types: Dict[str, str]
@@ -797,8 +861,8 @@ class twiss(BaseModel):
         sortkey: str, optional
             Sort Twiss data by the key provided
 
-        Returns:
-        -----------
+        Returns
+        -------
         twiss:
             The twiss object with the loaded twiss parameters.
             The method reads twiss files from the specified directory, processes them based on the types,

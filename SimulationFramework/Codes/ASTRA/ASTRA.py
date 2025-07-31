@@ -41,7 +41,7 @@ from ...Framework_objects import (
     getGrids,
     elementkeywords,
 )
-from ...Framework_elements import global_error, wakefield
+from ...Framework_elements import global_error, wakefield, screen
 from ...FrameworkHelperFunctions import expand_substitution, saveFile
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules import Beams as rbf
@@ -247,8 +247,8 @@ class astraLattice(frameworkLattice):
         """
         Sets the factor by which to reduce the number of particles in the simulation in the &NEWRUN header,
         and scales the number of space charge bins in the &CHARGE header accordingly;
-        see :func:`~SimulationFramework.Codes.ASTRA.astra_newrun.framework_dict`,
-        :func:`~SimulationFramework.Codes.ASTRA.astra_charge.grid_size`.
+        see :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun.framework_dict`,
+        :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_charge.grid_size`.
 
         Parameters
         ----------
@@ -275,7 +275,7 @@ class astraLattice(frameworkLattice):
     @bunch_charge.setter
     def bunch_charge(self, charge: float) -> None:
         """
-        Sets the bunch charge for this object and also in :class:`~SimulationFramework.Codes.ASTRA.astra_newrun`.
+        Sets the bunch charge for this object and also in :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun`.
 
         Parameters
         ----------
@@ -301,7 +301,7 @@ class astraLattice(frameworkLattice):
     @toffset.setter
     def toffset(self, toffset: float) -> None:
         """
-        Set the time offset for this object and the :class:`~SimulationFramework.Codes.ASTRA.astra_newrun` object.
+        Set the time offset for this object and the :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun` object.
 
         Parameters
         ----------
@@ -321,9 +321,9 @@ class astraLattice(frameworkLattice):
         :class:`~SimulationFramework.Framework_objects.frameworkCounter`
 
         The appropriate headers required for ASTRA are written at the top of the file, see the `write_ASTRA`
-        function in :class:`~SimulationFramework.Codes.ASTRA.astra_newrun`,
-        :class:`~SimulationFramework.Codes.ASTRA.astra_header`,
-        :class:`~SimulationFramework.Codes.ASTRA.astra_errors`.
+        function in :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun`,
+        :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_header`,
+        :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_errors`.
 
         Returns
         -------
@@ -410,7 +410,7 @@ class astraLattice(frameworkLattice):
 
     def write(self) -> None:
         """
-        Writes the ASTRA input file from :func:`~SimulationFramework.Codes.ASTRA.astraLattice.writeElements`
+        Writes the ASTRA input file from :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astraLattice.writeElements`
         to <master_subdir>/<self.objectname>.in.
         """
         code_file = (
@@ -422,7 +422,7 @@ class astraLattice(frameworkLattice):
         """
         Convert the beam file from the previous lattice section into ASTRA format and set the number of
         particles based on the input distribution, see
-        :func:`~SimulationFramework.Codes.ASTRA.astra_newrun.hdf5_to_astra`.
+        :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun.hdf5_to_astra`.
         """
         super().preProcess()
         prefix = (
@@ -435,18 +435,18 @@ class astraLattice(frameworkLattice):
 
     @lox.thread
     def screen_threaded_function(
-            self,
-            screen: frameworkElement,
-            objectname: str,
-            cathode: bool,
-            mult: int,
+        self,
+        scr: screen,
+        objectname: str,
+        cathode: bool,
+        mult: int,
     ) -> None:
         """
         Convert output from ASTRA screen to HDF5 format
 
         Parameters
         ----------
-        screen: :class:`~SimulationFramework.Elements.screen.screen`
+        scr: :class:`~SimulationFramework.Elements.screen.screen`
             Screen object
         objectname: str
             Name of screen object
@@ -455,14 +455,14 @@ class astraLattice(frameworkLattice):
         mult: int
             Multiplication factor for ASTRA-type filenames
         """
-        return screen.astra_to_hdf5(objectname, cathode, mult)
+        return scr.astra_to_hdf5(objectname, cathode, mult)
 
     def find_ASTRA_filename(
-            self,
-            elem: frameworkElement,
-            mult: int,
-            lattice: str,
-            master_run_no: int,
+        self,
+        elem: frameworkElement,
+        mult: int,
+        lattice: str,
+        master_run_no: int,
     ) -> bool:
         """
         Determine if an output was created by ASTRA for a given element based on its position and the filename.
@@ -555,7 +555,7 @@ class astraLattice(frameworkLattice):
             self.screen_threaded_function.gather()
         self.astra_to_hdf5(cathode=cathode)
 
-    def astra_to_hdf5(self, cathode: bool=False) -> None:
+    def astra_to_hdf5(self, cathode: bool = False) -> None:
         """
         Convert the ASTRA particle distribution file to HDF5 format and write to `master_subdir`.
 

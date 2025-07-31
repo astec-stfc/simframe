@@ -18,13 +18,13 @@ def generate_astra_field_data(self) -> np.ndarray:
 
     .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object
 
-    Returns:
-    -----------
+    Returns
+    -------
     np.ndarray:
         The formatted field data.
     """
@@ -118,13 +118,13 @@ def write_astra_field_file(self) -> str:
     The absolute location of the file to be written is generated using
     :func:`~SimulationFramework.Modules.Fields.field._output_filename`, which is parsed from the Master Lattice.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object
 
-    Returns:
-    -----------
+    Returns
+    -------
     str:
         The converted filename
     """
@@ -153,8 +153,8 @@ def read_astra_field_file(
 
     .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object to be updated.
     filename: str
@@ -166,12 +166,12 @@ def read_astra_field_file(
     frequency: float, optional
         The frequency of the RF cavity.
 
-    Returns:
-    -----------
+    Returns
+    -------
     None
 
-    Raises:
-    -----------
+    Raises
+    ------
     ValueError:
         if the cavity `field_type` contains the string `Electro` and `cavity_type` is not provided
     ValueError:

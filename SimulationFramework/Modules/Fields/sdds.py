@@ -17,8 +17,8 @@ def write_SDDS_field_file(self, sddsindex: int = 0, ascii: bool = False) -> str:
 
     A warning is raised if the field type is not supported (perhaps elevate to a `NotImplementedError`?
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object
     sddsindex: int
@@ -26,8 +26,8 @@ def write_SDDS_field_file(self, sddsindex: int = 0, ascii: bool = False) -> str:
     ascii: bool, optional
         Convert to ascii?
 
-    Returns:
-    -----------
+    Returns
+    -------
     str:
         The name of the SDDS field file.
     """
@@ -96,8 +96,8 @@ def read_SDDS_field_file(self, filename: str, field_type: str):
     Read an SDDS field file and convert it into a :class:`SimulationFramework.Modules.Fields.field` object.
     Only works for wakefield files.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object to be updated.
     filename: str
@@ -105,12 +105,12 @@ def read_SDDS_field_file(self, filename: str, field_type: str):
     field_type: str
         The name of the field, see :attr:`~SimulationFramework.Modules.Fields.allowed_fields`
 
-    Returns:
-    -----------
+    Returns
+    -------
     None
 
-    Raises:
-    -----------
+    Raises
+    ------
     NotImplementedError:
         if a given `field_type` is not implemented
     """

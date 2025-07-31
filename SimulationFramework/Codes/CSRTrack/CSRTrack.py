@@ -25,6 +25,7 @@ Classes:
 
     - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_monitor`: Class for defining monitors.
 """
+
 import os
 import yaml
 from ...Framework_objects import (
@@ -65,7 +66,7 @@ class csrtrackLattice(frameworkLattice):
         super(csrtrackLattice, self).__init__(*args, **kwargs)
         self.set_particles_filename()
 
-    def endScreen(self, **kwargs) -> frameworkElement:
+    def endScreen(self, **kwargs) -> screen:
         """
         Create a final screen object for dumping the particle output after tracking.
 
@@ -281,6 +282,7 @@ class csrtrack_forces(csrtrack_element):
     """
     Class for CSRTrack forces.
     """
+
     def __init__(self, **kwargs):
         super(csrtrack_forces, self).__init__("forces", "csrtrack_forces", **kwargs)
         self.header = "forces"
@@ -356,7 +358,7 @@ class csrtrack_particles(csrtrack_element):
         )
         self.header = "particles"
 
-    def hdf5_to_astra(self, prefix: str="") -> None:
+    def hdf5_to_astra(self, prefix: str = "") -> None:
         """
         Convert HDF5 particle distribution to ASTRA format, suitable for inputting to CSRTrack.
 

@@ -11,8 +11,6 @@ import SimulationFramework.Modules.Beams as rbf  # noqa E402
 import SimulationFramework.Modules.Twiss as rtf  # noqa E402
 
 
-
-
 def sub_element_test(startfile="generator", endfile="S02", scaling=3, sampling=1):
     framework = fw.Framework("subelement_test", clean=False, verbose=True)
     framework.loadSettings("Lattices/clara400_v13.def")
@@ -22,11 +20,13 @@ def sub_element_test(startfile="generator", endfile="S02", scaling=3, sampling=1
     framework.generator.load_defaults("clara_400_2ps_Gaussian")
     print("###########   Performing sub_element_test   ###########")
     for name, elem in framework.elementObjects.items():
-        if hasattr(elem, 'subelement') and elem.subelement:
-            print(name, ':', elem)
+        if hasattr(elem, "subelement") and elem.subelement:
+            print(name, ":", elem)
+
 
 sub_element_test()
 exit()
+
 
 def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
     # Define a new framework instance, in directory 'example_ASTRA'.
@@ -86,8 +86,8 @@ def astra_csrtrack_track():
 
 def set_crests(framework, crests):
     for cavity, crestdict in crests.items():
-        if crestdict['crested']:
-            framework[cavity].crest = crestdict['phase']
+        if crestdict["crested"]:
+            framework[cavity].crest = crestdict["phase"]
         # print(cavity, "after", framework[cavity].crest)
 
 
@@ -156,7 +156,7 @@ def gpt_crest_L02(phase, crests, amp=None):
     framework = fw.Framework("example_GPT", clean=False, verbose=False)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.change_Lattice_Code("All", "GPT", exclude=[])
-    [setattr(framework[latt], 'space_charge_mode', None) for latt in framework.lattices]
+    [setattr(framework[latt], "space_charge_mode", None) for latt in framework.lattices]
     set_crests(framework, crests)
     if amp is not None:
         framework["CLA-L02-LIN-CAV-01"].field_amplitude = amp
@@ -176,7 +176,7 @@ def gpt_crest_L03(phase, crests, amp=None):
     framework = fw.Framework("example_GPT", clean=False, verbose=False)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.change_Lattice_Code("All", "GPT", exclude=[])
-    [setattr(framework[latt], 'space_charge_mode', None) for latt in framework.lattices]
+    [setattr(framework[latt], "space_charge_mode", None) for latt in framework.lattices]
     set_crests(framework, crests)
     if amp is not None:
         framework["CLA-L03-LIN-CAV-01"].field_amplitude = amp
@@ -196,7 +196,7 @@ def gpt_crest_L4H(phase, crests, amp=None):
     framework = fw.Framework("example_GPT", clean=False, verbose=False)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.change_Lattice_Code("All", "GPT", exclude=[])
-    [setattr(framework[latt], 'space_charge_mode', None) for latt in framework.lattices]
+    [setattr(framework[latt], "space_charge_mode", None) for latt in framework.lattices]
     set_crests(framework, crests)
     if amp is not None:
         framework["CLA-L4H-LIN-CAV-01"].field_amplitude = amp
@@ -216,7 +216,7 @@ def gpt_crest_L04(phase, crests, amp=10e6):
     framework = fw.Framework("example_GPT", clean=False, verbose=False)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.change_Lattice_Code("All", "GPT", exclude=[])
-    [setattr(framework[latt], 'space_charge_mode', None) for latt in framework.lattices]
+    [setattr(framework[latt], "space_charge_mode", None) for latt in framework.lattices]
     set_crests(framework, crests)
     if amp is not None:
         framework["CLA-L04-LIN-CAV-01"].field_amplitude = amp
@@ -289,23 +289,41 @@ cavity_substitutions = {
 
 RFcrests = {
     "CLA-HRG1-GUN-CAV-01": {
-        'phase': 55.89917705, 'method': gpt_crest_Gun, 'crested': True, 'amplitude': 50e6
+        "phase": 55.89917705,
+        "method": gpt_crest_Gun,
+        "crested": True,
+        "amplitude": 50e6,
     },
     "CLA-L01-LIN-CAV-01": {
-        'phase': 244.32580792776665  , 'method': gpt_crest_L01, 'crested': True, 'amplitude': 5e6
+        "phase": 244.32580792776665,
+        "method": gpt_crest_L01,
+        "crested": True,
+        "amplitude": 5e6,
     },
     "CLA-L02-LIN-CAV-01": {
-        'phase': 94.23276465116447, 'method': gpt_crest_L02, 'crested': True, 'amplitude': 10e6
+        "phase": 94.23276465116447,
+        "method": gpt_crest_L02,
+        "crested": True,
+        "amplitude": 10e6,
     },
     "CLA-L03-LIN-CAV-01": {
-        'phase': 121.57361517000028, 'method': gpt_crest_L03, 'crested': True, 'amplitude': 20e6
+        "phase": 121.57361517000028,
+        "method": gpt_crest_L03,
+        "crested": True,
+        "amplitude": 20e6,
     },
     "CLA-L4H-LIN-CAV-01": {
-        'phase': 163.29534223881961, 'method': gpt_crest_L4H, 'crested': True, 'amplitude': 25e6
+        "phase": 163.29534223881961,
+        "method": gpt_crest_L4H,
+        "crested": True,
+        "amplitude": 25e6,
     },
     "CLA-L04-LIN-CAV-01": {
-        'phase': 180, 'method': gpt_crest_L04, 'crested': False, 'amplitude': 25e6
-    }
+        "phase": 180,
+        "method": gpt_crest_L04,
+        "crested": False,
+        "amplitude": 25e6,
+    },
 }
 
 

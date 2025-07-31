@@ -1,3 +1,54 @@
+"""
+Simframe GPT Module
+
+Various objects and functions to handle GPT lattices and commands.
+
+Classes:
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gptLattice`: The GPT lattice object, used for\
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    the lattice suitable for GPT input and lattice files.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_element`: Base class for defining\
+    commands in a GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setfile`: Class for defining the\
+    input files for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_charge`: Class for defining the\
+    bunch charge for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setreduce`: Class for reducing the\
+    number of particles for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_accuracy`: Class for setting the\
+    accuracy for GPT tracking.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_spacecharge`: Class for defining the\
+    space charge setup for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_tout`: Class for defining the\
+    number of steps for particle distribution output for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_csr1d`: Class for defining the\
+    CSR calculations for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_writefloorplan`: Class for setting up the\
+    writing of the lattice floor plan for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_Zminmax`: Class for defining the\
+    minimum and maximum z-positions for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_forwardscatter`: Class for defining\
+    scattering parameters for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_scatterplate`: Class for defining a\
+    scattering object for the GPT input file.
+
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_dtmaxt`: Class for defining the\
+    step size(s) for the GPT input file.
+"""
+
 import os
 from copy import deepcopy
 import subprocess
@@ -14,25 +65,52 @@ from ...Modules import Beams as rbf
 from ...Modules.merge_two_dicts import merge_two_dicts
 from ...Modules.Fields import field
 from ...Modules.units import UnitValue
-from typing import Dict
+from typing import Dict, Literal
 
 gpt_defaults = {}
 
 
 class gptLattice(frameworkLattice):
+    """
+    Class for defining the GPT lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject`s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
+    the lattice suitable for a GPT input file.
+    """
 
     code: str = "gpt"
+    """String indicating the lattice object type"""
+
     allow_negative_drifts: bool = True
+    """Flag to indicate whether negative drifts are allowed"""
+
     bunch_charge: float | None = None
+    """Bunch charge"""
+
     headers: Dict = {}
+    """Headers to be included in the GPT lattice file"""
+
     ignore_start_screen: screen | None = None
+    """Flag to indicate whether to ignore the first screen in the lattice"""
+
     screen_step_size: float = 0.1
+    """Step size for screen output"""
+
     time_step_size: str = "0.1/c"
+    """Step size for tracking"""
+
     override_meanBz: float | int | None = None
+    """Set the average particle longitudinal velocity manually"""
+
     override_tout: float | int | None = None
+    """Set the time step output manually"""
+
     accuracy: int = 6
-    code_file: str = ""
+    """Tracking accuracy"""
+
     endScreenObject: screen | None = None
+    """Final screen object for dumping particle distributions"""
+
     Brho: UnitValue | None = None
 
     def __init__(self, *args, **kwargs):
@@ -60,7 +138,18 @@ class gptLattice(frameworkLattice):
         )
 
     @property
-    def space_charge_mode(self):
+    def space_charge_mode(self) -> str | None:
+        """
+        Get the space charge mode based on
+        :attr:`~SimulationFramework.Framework_objects.frameworkLattice.globalSettings` or
+        :attr:`~SimulationFramework.Framework_objects.frameworkLattice.file_block`.
+
+        Returns
+        -------
+        str
+            Space charge mode as string, or None if not provided.
+
+        """
         if (
             "charge" in self.file_block
             and "space_charge_mode" in self.file_block["charge"]
@@ -75,12 +164,30 @@ class gptLattice(frameworkLattice):
             return None
 
     @space_charge_mode.setter
-    def space_charge_mode(self, mode):
+    def space_charge_mode(self, mode: Literal["2d", "3d", "2D", "3D"]) -> None:
+        """
+        Set the space charge mode manually ["2D", "3D"].
+
+        Parameters
+        ----------
+        mode: Literal["2d", "3d", "2D", "3D"]
+            The space charge calculation mode
+        """
         if "charge" not in self.file_block:
             self.file_block["charge"] = {}
         self.file_block["charge"]["space_charge_mode"] = mode
 
-    def endScreen(self, **kwargs):
+    def endScreen(self, **kwargs) -> screen:
+        """
+        Make the final position in the lattice a
+        :class:`~SimulationFramework.Elements.screen.screen` object.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Elements.screen.screen`
+            The final screen in the lattice
+
+        """
         return screen(
             objectname=self.endObject.objectname,
             objecttype="screen",
@@ -92,7 +199,19 @@ class gptLattice(frameworkLattice):
             **kwargs,
         )
 
-    def writeElements(self):
+    def writeElements(self) -> str:
+        """
+        Write the lattice elements defined in this object into a GPT-compatible format; see
+        :attr:`~SimulationFramework.Framework_objects.frameworkLattice.elementObjects`.
+
+        The appropriate headers required for GPT are written at the top of the file, see the `write_GPT`
+        function in :class:`~SimulationFramework.Codes.GPT.gpt_element`.
+
+        Returns
+        -------
+        str
+            The lattice represented as a string compatible with GPT
+        """
         ccs = gpt_ccs("wcs", [0, 0, 0], [0, 0, 0])
         fulltext = ""
         self.headers["accuracy"] = gpt_accuracy(self.accuracy)
@@ -240,14 +359,23 @@ class gptLattice(frameworkLattice):
             fulltext += zminmax.write_GPT()
         return fulltext
 
-    def write(self):
-        self.code_file = (
+    def write(self) -> str:
+        """
+        Writes the GPT input file from :func:`~SimulationFramework.Codes.GPT.gptLattice.writeElements`
+        to <master_subdir>/<self.objectname>.in.
+        """
+        code_file = (
             self.global_parameters["master_subdir"] + "/" + self.objectname + ".in"
         )
-        saveFile(self.code_file, self.writeElements())
+        saveFile(code_file, self.writeElements())
         return self.writeElements()
 
-    def preProcess(self):
+    def preProcess(self) -> None:
+        """
+        Convert the beam file from the previous lattice section into GPT format and set the number of
+        particles based on the input distribution, see
+        :func:`~SimulationFramework.Codes.GPT.GPT.gptLattice.hdf5_to_astra`.
+        """
         super().preProcess()
         self.headers["setfile"].particle_definition = self.objectname + ".gdf"
         prefix = (
@@ -257,8 +385,16 @@ class gptLattice(frameworkLattice):
         )
         self.hdf5_to_gdf(prefix)
 
-    def run(self):
-        """Run the code with input 'filename'"""
+    def run(self) -> None:
+        """
+        Run the code with input 'filename'
+
+        `GPTLICENSE` must be provided in
+        :attr:`~SimulationFramework.Framework_objects.frameworkLattice.global_parameters`.
+
+        Average properties of the distribution are also calculated and written
+        to an `<>emit.gdf` file in `master_subdir`.
+        """
         main_command = (
             self.executables[self.code]
             + ["-o", self.objectname + "_out.gdf"]
@@ -390,7 +526,11 @@ class gptLattice(frameworkLattice):
                 post_command_traj, stdout=f, cwd=self.global_parameters["master_subdir"]
             )
 
-    def postProcess(self):
+    def postProcess(self) -> None:
+        """
+        Convert the beam file(s) from the GPT output into HDF5 format, see
+        :func:`~SimulationFramework.Elements.screen.screen.gdf_to_hdf5`.
+        """
         super().postProcess()
         cathode = self.particle_definition == "laser"
         gdfbeam = rbf.gdf.read_gdf_beam_file_object(
@@ -412,7 +552,22 @@ class gptLattice(frameworkLattice):
                 self.objectname + "_out.gdf", cathode=cathode
             )
 
-    def hdf5_to_gdf(self, prefix=""):
+    def hdf5_to_gdf(self, prefix: str="") -> None:
+        """
+        Convert the HDF5 beam distribution to GDF format.
+
+        Certain properties of this class, including
+        :attr:`~SimulationFramework.Codes.GPT.GPT.gptLattice.sample_interval`,
+        :attr:`~SimulationFramework.Codes.GPT.GPT.gptLattice.override_meanBz`,
+        :attr:`~SimulationFramework.Codes.GPT.GPT.gptLattice.override_tout` are also
+        used to update
+        :attr:`~SimulationFramework.Codes.GPT.GPT.gptLattice.headers`.
+
+        Parameters
+        ----------
+        prefix: str
+            HDF5 file prefix
+        """
         HDF5filename = prefix + self.particle_definition + ".hdf5"
         if os.path.isfile(expand_substitution(self, HDF5filename)):
             filepath = expand_substitution(self, HDF5filename)
@@ -470,15 +625,30 @@ class gptLattice(frameworkLattice):
 
 
 class gpt_element(frameworkElement):
+    """
+    Generic class for generating headers for GPT.
+    """
 
     def __init__(
         self,
         *args,
         **kwargs,
     ):
-        super(gpt_element, self).__init__(*args, **kwargs)
+        super(gpt_element, self).__init__(
+            *args,
+            **kwargs,
+        )
 
-    def write_GPT(self, *args, **kwargs):
+    def write_GPT(self, *args, **kwargs) -> str:
+        """
+        Write the text for the GPT namelist based on its
+        :attr:`~objectdefaults`, :attr:`~objectname`.
+
+        Returns
+        -------
+        str
+            GPT-compatible string representing the namelist
+        """
         return self._write_GPT(*args, **kwargs)
 
     def _write_GPT(self, *args, **kwargs):
@@ -495,6 +665,9 @@ class gpt_element(frameworkElement):
 
 
 class gpt_setfile(gpt_element):
+    """
+    Class for setting filenames in GPT via `setfile`.
+    """
 
     def __init__(
         self,
@@ -510,8 +683,15 @@ class gpt_setfile(gpt_element):
 
 
 class gpt_charge(gpt_element):
+    """
+    Class for generating the `settotalcharge` namelist for GPT.
+    """
+
     set: str = '"beam"'
+    """Name of beam for `settotalcharge`"""
+
     charge: float = 0.0
+    """Bunch charge"""
 
     def __init__(
         self,
@@ -530,8 +710,16 @@ class gpt_charge(gpt_element):
 
 
 class gpt_setreduce(gpt_element):
+    """
+    Class for reducing the number of particles via `setreduce`.
+
+    """
+
     set: str = '"beam"'
+    """Name of the beam for `setreduce`"""
+
     setreduce: int = 1
+    """Factor by which to reduce the number of particles"""
 
     def __init__(self, **kwargs):
         super(gpt_setreduce, self).__init__(
@@ -546,6 +734,9 @@ class gpt_setreduce(gpt_element):
 
 
 class gpt_accuracy(gpt_element):
+    """
+    Class for setting the accuracy of tracking via `accuracy` in GPT.
+    """
 
     def __init__(
         self,
@@ -569,10 +760,21 @@ class gpt_accuracy(gpt_element):
 
 
 class gpt_spacecharge(gpt_element):
+    """
+    Class for preparing space charge calculations in GPT via `spacecharge`.
+    """
+
     grids: getGrids = None
+    """Class for calculating the required number of space charge grids"""
+
     ngrids: int | None = None
+    """Number of space charge grids"""
+
     space_charge_mode: str | None = None
+    """Space charge mode ['2D', '3D']"""
+
     cathode: bool = False
+    """Flag indicating whether the bunch was emitted from a cathode"""
 
     def __init__(
         self,
@@ -611,10 +813,21 @@ class gpt_spacecharge(gpt_element):
 
 
 class gpt_tout(gpt_element):
+    """
+    Class for setting up the beam dump rate via `tout`.
+    """
+
     startpos: float = 0.0
+    """Starting position"""
+
     endpos: float = 0.0
+    """End position"""
+
     starttime: float | None = None
+    """Start time for dumping"""
+
     step: str = "0.1/c"
+    """Dump step as a string [distance / c]"""
 
     def __init__(
         self,
@@ -641,6 +854,9 @@ class gpt_tout(gpt_element):
 
 
 class gpt_csr1d(gpt_element):
+    """
+    Class for preparing CSR calculations via `csr1d`.
+    """
 
     def __init__(
         self,
@@ -660,7 +876,12 @@ class gpt_csr1d(gpt_element):
 
 
 class gpt_writefloorplan(gpt_element):
+    """
+    Class for writing the lattice floor plan via `writefloorplan`.
+    """
+
     filename: str = ""
+    """Floor plan filename"""
 
     def __init__(
         self,
@@ -680,9 +901,18 @@ class gpt_writefloorplan(gpt_element):
 
 
 class gpt_Zminmax(gpt_element):
+    """
+    Class for setting the boundaries in z for discarding particles via `Zminmax`
+    """
+
     zmin: float = 0.0
+    """Minimum longitudinal position"""
+
     zmax: float = 0.0
+    """Maximum longitudinal position"""
+
     ECS: str = '"wcs", "I"'
+    """Element coordinate system as a string"""
 
     def __init__(
         self,
@@ -711,10 +941,21 @@ class gpt_Zminmax(gpt_element):
 
 
 class gpt_forwardscatter(gpt_element):
+    """
+    Class for scattering particles via `forwardscatter`.
+    """
+
     zmin: float = 0.0
+    """Minimum longitudinal position"""
+
     zmax: float = 0.0
+    """Maximum longitudinal position"""
+
     ECS: str = '"wcs", "I"'
+    """Element coordinate system"""
+
     probability: float = 0.0
+    """Scattering probability"""
 
     def __init__(
         self,
@@ -743,16 +984,34 @@ class gpt_forwardscatter(gpt_element):
 
 
 class gpt_scatterplate(gpt_element):
-    zmin: float = 0.0
-    zmax: float = 0.0
-    ECS: str = '"wcs", "I"'
-    a: float = 0.0
-    b: float = 0.0
-    model: str = "cathode"
+    """
+    Class for scattering particles off a plate via `scatterplate`.
+    """
 
-    def __init__(self, **kwargs):
+    zmin: float = 0.0
+    """Minimum longitudinal position"""
+
+    zmax: float = 0.0
+    """Maximum longitudinal position"""
+
+    ECS: str = '"wcs", "I"'
+    """Element coordinate system"""
+
+    a: float = 0.0
+    """Plate length in x-direction"""
+
+    b: float = 0.0
+    """Plate length in y-direction"""
+
+    model: str = "cathode"
+    """Scattering model to be used ['cathode', 'remove']"""
+
+    def __init__(self, *args, **kwargs):
         super(gpt_scatterplate, self).__init__(
-            objectname="scatterplate", objecttype="gpt_scatterplate", *args, **kwargs
+            objectname="scatterplate",
+            objecttype="gpt_scatterplate",
+            *args,
+            **kwargs,
         )
 
     def _write_GPT(self, *args, **kwargs):
@@ -772,9 +1031,18 @@ class gpt_scatterplate(gpt_element):
 
 
 class gpt_dtmaxt(gpt_element):
+    """
+    Class for setting up minimum, maximmum temporal step sizes for tracking via `dtmaxt`.
+    """
+
     tend: float = 0.0
+    """Final time value"""
+
     tstart: float = 0.0
+    """Initial time value"""
+
     dtmax: float = 0.0
+    """Maximum temporal step size"""
 
     def __init__(
         self,

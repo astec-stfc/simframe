@@ -70,7 +70,6 @@ extensions = [
 ]
 
 
-
 # set sphinx options
 source_suffix = ".rst"  # use reStructedText files for sphinx pages
 master_doc = "index"  # name for the root document

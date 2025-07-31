@@ -29,8 +29,8 @@ def write_opal_field_file(
 
     .. _OPAL manual: https://amas.web.psi.ch/opal/Documentation/master/OPAL_Manual.html
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object
     frequency: float | None
@@ -42,14 +42,14 @@ def write_opal_field_file(
     orientation: str | None
         Orientation of the field (for 2D)
 
-    Returns:
-    -----------
+    Returns
+    -------
     str | None:
         The name of the field file.
         Will return None if required parameters for certain fields are not provided.
 
-    Raises:
-    -----------
+    Raises
+    ------
     Warning:
         if too many or not enough fourier components are provided; will default to 1/100
     Warning:
@@ -145,8 +145,8 @@ def read_opal_field_file(
     """
     Read an OPAL field file and convert it into a :class:`SimulationFramework.Modules.Fields.field` object
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     self: :class:`~SimulationFramework.Modules.Fields.field`
         The field object to be updated.
     filename: str
@@ -158,12 +158,12 @@ def read_opal_field_file(
     frequency: float, optional
         The frequency of the RF cavity.
 
-    Returns:
-    -----------
+    Returns
+    -------
     None
 
-    Raises:
-    -----------
+    Raises
+    ------
     ValueError:
         if the cavity `field_type` contains the string `Electro` and `cavity_type` is not provided
     ValueError:

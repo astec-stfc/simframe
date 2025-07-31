@@ -92,76 +92,110 @@ class field(BaseModel):
 
     x: FieldParameter = None
     """X position or coordinate of the field."""
+
     y: FieldParameter = None
     """Y position or coordinate of the field."""
+
     z: FieldParameter = None
     """Z position or coordinate of the field."""
+
     r: FieldParameter = None
     """Radial position or coordinate of the field."""
+
     t: FieldParameter = None
     """Time parameter of the field."""
+
     Ex: FieldParameter = None
     """Electric field component in the X direction."""
+
     Ey: FieldParameter = None
     """Electric field component in the Y direction."""
+
     Ez: FieldParameter = None
     """Electric field component in the Z direction."""
+
     Er: FieldParameter = None
     """Radial electric field component."""
+
     Bx: FieldParameter = None
     """Magnetic field component in the X direction."""
+
     By: FieldParameter = None
     """Magnetic field component in the Y direction."""
+
     Bz: FieldParameter = None
     """Magnetic field component in the Z direction."""
+
     Br: FieldParameter = None
     """Radial magnetic field component."""
+
     Wx: FieldParameter = None
     """Wakefield component in the X direction."""
+
     Wy: FieldParameter = None
     """Wakefield component in the Y direction."""
+
     Wz: FieldParameter = None
     """Wakefield component in the Z direction."""
+
     Wr: FieldParameter = None
     """Radial wakefield component."""
+
     G: FieldParameter = None
     """Magnetic gradient."""
+
     filename: str | None = None
     """Filename of the field file."""
+
     field_type: fieldtype | None = None
     """Type of the field, e.g., '1DElectroStatic', '1DMagnetoStatic', etc."""
+
     origin_code: str | None = None
     """Code that generated the field, e.g., 'ASTRA', 'SDDS', etc."""
+
     norm: float = 1.0
     """Normalization factor for the field."""
+
     read: bool = False
     """Flag indicating whether the field file has been read."""
+
     length: int | None = None
     """Length of the field, if applicable."""
+
     frequency: float | None = None
     """Frequency of the field, if applicable."""
+
     radius: float | None = (
         None  # MAGIC NUMBER FOR SOLENOID RADIUS, DEFAULTS TO 10cm in write_opal_field_file
     )
     """Radius of the field, if applicable, defaults TO 10cm in write_opal_field_file."""
+
     fourier: int = 100
     """Number of Fourier modes for the field, default is 100."""
+
     cavity_type: cavitytype | None = None
     """Type of the cavity, e.g., 'StandingWave', 'TravellingWave'."""
+
     start_cell_z: float | None = None
     """Starting position of the cell in the Z direction, required for TravellingWave cavities."""
+
     end_cell_z: float | None = None
     """Ending position of the cell in the Z direction, required for TravellingWave cavities."""
+
     mode_numerator: float | None = None
     """Numerator for the mode of the TravellingWave cavity. 
     For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
+
     mode_denominator: float | None = None
     """Denominator for the mode of the TravellingWave cavity. 
     For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator"""
+
     orientation: str | None = None
     """Orientation of the field, e.g., 'horizontal', 'vertical', etc."""
+
     n_cells: int | float | None = None
     """Number of cells in the field, if applicable."""
+
     # For TW linacs in ASTRA, the mode is 2π mode_numerator / mode_denominator
 
     def __init__(
@@ -230,8 +264,8 @@ class field(BaseModel):
         Returns the Z values of the field.
         If the time parameter is set and Z is not, it calculates Z based on the time and speed of light.
 
-        Returns:
-        -----------
+        Returns
+        -------
         List[float] | None:
             A list of Z values if available, otherwise None.
         """
@@ -245,8 +279,8 @@ class field(BaseModel):
         Returns the time values of the field.
         If the Z parameter is set and time is not, it calculates time based on Z and speed of light.
 
-        Returns:
-        -----------
+        Returns
+        -------
         List[float] | None:
             A list of time values if available, otherwise None.
         """
@@ -265,8 +299,8 @@ class field(BaseModel):
         Read a field file and populate the field parameters based on the file type.
         This method supports various file formats including HDF5, ASTRA, SDDS, GDF, and OPAL.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         filename: str:
             The path to the field file to be read.
         field_type: fieldtype | None:
@@ -276,8 +310,8 @@ class field(BaseModel):
         frequency: float | None:
             The frequency of the field, if applicable.
 
-        Returns:
-        -----------
+        Returns
+        -------
         None:
             The method modifies the field object in place, populating its parameters based on the file content.
         """
@@ -326,15 +360,15 @@ class field(BaseModel):
         otherwise, it defaults to the directory of the current field file.
         The base filename is derived from the current field file's name, and the extension is appended to it.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         extension: str:
             The file extension to be used for the output file. Default is ".hdf5".
         location: str | None:
             Optional; if provided, it specifies the directory where the output file will be saved.
 
-        Returns:
-        -----------
+        Returns
+        -------
         str:
             The relative path to the output file, constructed from the
             specified location or the current field file's directory.
@@ -356,14 +390,14 @@ class field(BaseModel):
         This method supports generating field data for ASTRA and Ocelot.
         If the field file has not been read in, it raises a warning and returns None.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         code: str:
             The code for which the field data is to be generated.
             Supported codes include 'astra' and 'ocelot'.
 
-        Returns:
-        -----------
+        Returns
+        -------
         np.ndarray | None:
             The generated field data in the format required by the specified code,
             or None if the field file has not been read.
@@ -398,16 +432,16 @@ class field(BaseModel):
         If a location is provided, it uses that as the base directory;
         otherwise, it defaults to the directory of the current field file.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         code: str:
             The code for which the field data is to be written.
             Supported codes include 'astra', 'sdds', 'opal', and 'gdf'.
         location: str | None:
             Optional; if provided, it specifies the directory where the output file will be saved.
 
-        Returns:
-        -----------
+        Returns
+        -------
         str | None:
             The path to the written field file, or None if the field file has not been read.
         """
