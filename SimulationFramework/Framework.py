@@ -26,7 +26,7 @@ import os
 import sys
 import yaml
 import inspect
-from typing import Any
+from typing import Any, Dict
 from pprint import pprint
 import numpy as np
 from .Modules.merge_two_dicts import merge_two_dicts
@@ -38,6 +38,7 @@ from .Codes.Generators.Generators import (
     ASTRAGenerator,
     GPTGenerator,
     generator_keywords,
+    frameworkGenerator,
 )
 from .Framework_objects import runSetup, frameworkElement
 from . import Framework_lattices as frameworkLattices
@@ -48,6 +49,11 @@ from .FrameworkHelperFunctions import (
     clean_directory,
     convert_numpy_types,
 )
+from pydantic import (
+    BaseModel,
+    field_validator,
+)
+from warnings import warn
 
 try:
     import MasterLattice  # type: ignore
@@ -97,46 +103,131 @@ latticeClasses = [
 ]
 
 
-class Framework(Munch):
+class Framework(BaseModel):
+    """
+    The main class for handling the tracking of a particle distribution through a lattice.
+
+    Settings files can be loaded in, consisting of one or more :ref:`MasterLattice` YAML files. This creates
+    :class:`~SimulationFramework.Framework_objects.frameworkLattice` objects, each of which contains
+    :class:`~SimulationFramework.Framework_objects.frameworkElement` objects.
+
+    These objects can be modified directly through the :class:`~SimulationFramework.Framework.Framework` class.
+
+    Based on the tracking code(s) provided to the framework, the particle distribution is tracked through the lattice
+    sequentially, and output beam distributions are generated and converted to the standard SimFrame HDF5 format.
+
+    Summary files containing Twiss parameters, and a summary of the beam files, are generated after tracking.
+    """
+
+    class Config:
+        extra = "allow"
+        arbitrary_types_allowed = True
+        validate_assignment = True
+
+    directory: str = "test"
+    """The directory into which simulation files will be placed"""
+
+    master_lattice: str | None = None
+    """Location of the master lattice files. If the package is installed, 
+    this will be configured automatically"""
+
+    simcodes: str | None = None
+    """Location of the simulation codes directory. If the package is installed, 
+    this will be configured autonatically"""
+
+    overwrite: bool | None = None
+    """Flag to indicate whether existing files are to be overwritten
+    #TODO deprecated?"""
+
+    runname: str = "CLARA_240"
+    """Name of the run for this setup
+    #TODO deprecated?"""
+
+    clean: bool = False
+    """Flag to indicate whether all files in the existing directory are to be removed"""
+
+    verbose: bool = True
+    """Flag to indicate whether status updates should be printed during tracking"""
+
+    sddsindex: int = 0
+    """Index for SDDS files"""
+
+    delete_output_files: bool = False
+    """Flag to indicate whether output files are to be deleted after tracking"""
+
+    global_parameters: Dict = {}
+    """Dictionary containing global parameters accessible to all classes"""
+
+    elementObjects: Dict = {}
+    """Dictionary containing all :class:`~SimulationFramework.Framework_objects.frameworkElement` objects"""
+
+    latticeObjects: Dict = {}
+    """Dictionary containing all :class:`~SimulationFramework.Framework_objects.frameworkLattice` objects"""
+
+    commandObjects: Dict = {}
+    """Dictionary containing all :class:`~SimulationFramework.Framework_objects.frameworkCommand` objects"""
+
+    groupObjects: Dict = {}
+    """Dictionary containing all :class:`~SimulationFramework.Framework_objects.frameworkGroup` objects"""
+
+    fileSettings: Dict = {}
+    """Dictionary containing all file settings"""
+
+    globalSettings: Dict = {}
+    """Dictionary containing all global settings"""
+
+    generatorSettings: Dict = {}
+    """Dictionary containing all generator settings"""
+
+    original_elementObjects: Dict = {}
+    """Dictionary containing all :class:`~SimulationFramework.Framework_objects.frameworkElement` objects
+    before changes are made"""
+
+    progress: int | float = 0
+    """Current progress of tracking"""
+
+    tracking: bool = False
+    """Flag to indicate whether the Framework is tracking"""
+
+    basedirectory: str = ""
+    """Current working directory"""
+
+    filedirectory: str = ""
+    """Directory for files"""
+
+    subdirectory: str | None = None
+    """Directory into which files are to be placed"""
+
+    generator: frameworkGenerator | None = None
+    """The :class:`~SimulationFramework.Codes.Generators.Generators.frameworkGenerator` object"""
+
+    settings: FrameworkSettings | None = None
+    """Settings for the lattice"""
+
+    settingsFilename: str | None = None
+    """Filename containing lattice settings"""
+
 
     def __init__(
         self,
-        directory: str = "test",
-        master_lattice: str | None = None,
-        simcodes: str | None = None,
-        overwrite: bool | None = None,
-        runname: str = "CLARA_240",
-        clean: bool = False,
-        verbose: bool = True,
-        sddsindex: int = 0,
-        delete_output_files: bool = False,
+        *args,
+        **kwargs,
     ):
-        super(Framework, self).__init__()
+        super(Framework, self).__init__(
+            *args,
+            **kwargs,
+        )
         gptlicense = os.environ["GPTLICENSE"] if "GPTLICENSE" in os.environ else ""
         astra_use_wsl = os.environ["WSL_ASTRA"] if "WSL_ASTRA" in os.environ else 1
         self.global_parameters = {
-            "beam": rbf.beam(sddsindex=sddsindex),
+            "beam": rbf.beam(sddsindex=self.sddsindex),
             "GPTLICENSE": gptlicense,
-            "delete_tracking_files": delete_output_files,
+            "delete_tracking_files": self.delete_output_files,
             "astra_use_wsl": astra_use_wsl,
         }
-        self.verbose = verbose
-        self.subdir = directory
-        self.clean = clean
-        self.elementObjects = dict()
-        self.latticeObjects = dict()
-        self.commandObjects = dict()
-        self.groupObjects = dict()
-        self.progress = 0
-        self.tracking = False
-        self.basedirectory = os.getcwd()
-        self.filedirectory = os.path.dirname(os.path.abspath(__file__))
-        self.overwrite = overwrite
-        self.runname = runname
-        if self.subdir is not None:
-            self.setSubDirectory(self.subdir)
-        self.setMasterLatticeLocation(master_lattice)
-        self.setSimCodesLocation(simcodes)
+        self.setSubDirectory(self.directory)
+        self.setMasterLatticeLocation(self.master_lattice)
+        self.setSimCodesLocation(self.simcodes)
 
         self.executables = exes.Executables(self.global_parameters)
         self.defineASTRACommand = self.executables.define_astra_command
@@ -149,6 +240,20 @@ class Framework(Munch):
 
         # object encoding settings for simulations with multiple runs
         self.runSetup = runSetup()
+
+    @field_validator("basedirectory", mode="before")
+    @classmethod
+    def validate_base_directory(cls, value: str) -> str:
+        if len(value) > 0 and os.path.isdir(value):
+            return value
+        return os.getcwd()
+
+    @field_validator("filedirectory", mode="before")
+    @classmethod
+    def validate_file_directory(cls, value: str) -> str:
+        if len(value) > 0 and os.path.isdir(value):
+            return value
+        return os.path.dirname(os.path.abspath(__file__))
 
     def __repr__(self) -> repr:
         return repr(
@@ -467,8 +572,8 @@ class Framework(Munch):
 
         self.original_elementObjects = {}
         for e in self.elementObjects:
-            self.original_elementObjects[e] = unmunchify(self.elementObjects[e])
-        self.original_elementObjects["generator"] = unmunchify(self["generator"])
+            self.original_elementObjects[e] = self.elementObjects[e]
+        self.original_elementObjects["generator"] = self.generator
 
     def save_settings(
         self,
@@ -572,7 +677,7 @@ class Framework(Munch):
                 new = None
                 e, k = ek[:2]
                 if e in self.elementObjects:
-                    new = unmunchify(self.elementObjects[e])
+                    new = self.elementObjects[e]
                 elif e in self.groupObjects:
                     new = self.groupObjects[e]
                 if new is not None:
@@ -581,13 +686,14 @@ class Framework(Munch):
                     changedict[e][k] = convert_numpy_types(new[k])
         else:
             for e in changeelements:
+                element = None
                 if e in self.elementObjects:
-                    unmunched_element = unmunchify(self.elementObjects[e])
+                    element = self.elementObjects[e]
                 elif e == "generator":
-                    unmunched_element = unmunchify(self["generator"])
-                if not self.original_elementObjects[e] == unmunched_element:
+                    element = self.generator
+                if not self.original_elementObjects[e] == element:
                     orig = self.original_elementObjects[e]
-                    new = unmunched_element
+                    new = element
                     # try:
                     changedict[e] = {
                         k: convert_numpy_types(new[k])
@@ -951,7 +1057,7 @@ class Framework(Munch):
             name: str | None = None,
             typ: str | None = None,
             **kwargs,
-    ) -> frameworkElement:
+    ) -> frameworkElement | None:
         """
         Instantiates and adds the element definition to :attr:`~elementObjects`
 
@@ -990,11 +1096,12 @@ class Framework(Munch):
                 **kwargs,
             )
             element.update_field_definition()
-        except Exception as e:
-            print("add_Element error:", e)
+            self.elementObjects[name] = element
+            return element
+        except Exception as ex:
+            print("add_Element error:", ex)
             print("add_Element error:", typ, name, kwargs)
-        self.elementObjects[name] = element
-        return element
+        return
         # except Exception as e:
         #     raise NameError('Element \'%s\' does not exist' % type)
 
@@ -1363,6 +1470,8 @@ class Framework(Munch):
         """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].prefix = prefix
+        else:
+            warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
 
     def set_lattice_sample_interval(
             self,
@@ -1382,17 +1491,19 @@ class Framework(Munch):
         """
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].sample_interval = interval
+        else:
+            warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
 
     def __getitem__(self, key: str) -> Any:
-        if key in super(Framework, self).__getitem__("elementObjects"):
+        if key in self.elementObjects:
             return self.elementObjects.get(key)
-        elif key in super(Framework, self).__getitem__("latticeObjects"):
+        elif key in self.latticeObjects:
             return self.latticeObjects.get(key)
-        elif key in super(Framework, self).__getitem__("groupObjects"):
+        elif key in self.groupObjects:
             return self.groupObjects.get(key)
         else:
             try:
-                return super(Framework, self).__getitem__(key)
+                return getattr(self, key)
             except Exception:
                 return None
 
@@ -1528,7 +1639,7 @@ class Framework(Munch):
         save_summary: bool = True,
         frameworkDirec: bool = False,
         check_lattice: bool = True,
-    ) -> None | Any:
+    ) -> Any | None:
         """
         Tracks the current machine, or a subset based on the 'files' list.
         The lattice is checked (:func:`~check_lattice`) and saved (:func:`~save_lattice`), the settings file
@@ -1825,61 +1936,91 @@ class Framework(Munch):
 
 
 class frameworkDirectory(Munch):
-    """Class to load a tracking run from a directory and read the Beam and Twiss files and make them available"""
+    """
+    Class to load a tracking run from a directory and read the Beam and Twiss files and make them available
+    """
+
+    directory: str | None = None
+    """Directory from which to load beam and Twiss files"""
+
+    twiss: bool | rtf.twiss = True
+    """Flag to indicate whether to load Twiss files"""
+
+    beams: bool | rbf.beamGroup = False
+    """Flag to indicate whether to load beam files"""
+
+    verbose: bool = False
+    """Flag to print status updates"""
+
+    settings: str = "settings.def"
+    """Framework settings filename"""
+
+    changes: str = "changes.yaml"
+    """Lattice changes filename"""
+
+    rest_mass: float | None = None
+    """Particle rest mass"""
+
+    framework: Framework | None = None
+    """:class:`~SimulationFramework.Framework.Framework` instance"""
 
     def __init__(
         self,
-        directory: str | None = None,
-        twiss: bool = True,
-        beams: bool = False,
-        verbose: bool = False,
-        settings: str = "settings.def",
-        changes: str = "changes.yaml",
-        rest_mass: float | None = None,
-        framework: Framework | None = None,
+        *args,
         **kwargs,
     ) -> None:
-        super(frameworkDirectory, self).__init__()
-        if framework is None:
-            directory = "." if directory is None else os.path.abspath(directory)
+        super(frameworkDirectory, self).__init__(
+            *args,
+            **kwargs,
+        )
+        if not isinstance(self.framework, Framework):
+            directory = "." if self.directory is None else os.path.abspath(self.directory)
             self.framework = Framework(
-                directory, clean=False, verbose=verbose, **kwargs
+                self.directory, clean=False, verbose=self.verbose, **kwargs
             )
-            self.framework.loadSettings(directory + "/" + settings)
+            self.framework.loadSettings(directory + "/" + self.settings)
         else:
-            self.framework = framework
-            if directory is None:
+            self.framework = self.framework
+            if self.directory is None:
                 directory = os.path.abspath(self.framework.subdirectory)
+            else:
+                directory = self.directory
 
-        if os.path.exists(directory + "/" + changes):
-            self.framework.load_changes_file(directory + "/" + changes)
-        if beams:
+        if os.path.exists(directory + "/" + self.changes):
+            self.framework.load_changes_file(directory + "/" + self.changes)
+        if self.beams:
             self.beams = rbf.load_HDF5_summary_file(
                 os.path.join(directory, "Beam_Summary.hdf5")
             )
             if len(self.beams) < 1:
                 print("No Summary File! Globbing...")
                 self.beams = rbf.load_directory(directory)
-            if rest_mass is None:
+            if self.rest_mass is None:
                 if len(self.beams.param("particle_rest_energy")) > 0:
                     rest_mass = self.beams.param("particle_rest_energy")[0][0]
                 else:
                     rest_mass = constants.m_e
+            else:
+                rest_mass = self.rest_mass
             self.twiss = rtf.twiss(rest_mass=rest_mass)
         else:
             self.beams = None
             self.twiss = rtf.twiss()
-        if twiss:
+        if self.twiss:
             self.twiss.load_directory(directory)
 
     if use_matplotlib:
 
         def plot(self, *args, **kwargs):
-            """Return a plot object"""
+            """
+            Return a plot object; see :func:`~SimulationFramework.Modules.plotting.plotting.plot`.
+            """
             return groupplot.plot(self, *args, **kwargs)
 
         def general_plot(self, *args, **kwargs):
-            """Return a general_plot object"""
+            """
+            Return a general_plot object; see :func:`~SimulationFramework.Modules.plotting.plotting.general_plot`.
+            """
             return groupplot.general_plot(self, *args, **kwargs)
 
     def __repr__(self):
@@ -1888,44 +2029,106 @@ class frameworkDirectory(Munch):
         )
 
     def save_summary_files(self, twiss: bool = True, beams: bool = True):
-        """Save summary files in framework directory"""
+        """
+        Save summary files in framework directory;
+        see :func:`~SimulationFramework.Framework.Framework.save_summary_files`.
+
+        Parameters
+        ----------
+        twiss: bool
+            If True, save `Twiss_Summary.hdf5` in :attr:`~directory`
+        beams: bool
+            If True, save `Beam_Summary.hdf5` in :attr:`~directory`
+        """
         self.framework.save_summary_files(twiss=twiss, beams=beams)
 
-    def getScreen(self, screen: str) -> dict:
-        """Get a beam object for the given screen"""
-        if self.beams:
+    def getScreen(self, screen: str) -> rbf.beam | None:
+        """
+        Get a beam object for the given screen;
+        see :func:`~SimulationFramework.Modules.Beams.beamGroup.getScreen`
+
+        Parameters
+        ----------
+        screen: str
+            Name of screen
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.beam`
+            The beam object from `screen`
+
+        Raises
+        ------
+        ValueError
+            If `beams` is not a :class:`~SimulationFramework.Modules.Beams.beamGroup` object
+        """
+        if isinstance(self.beams, rbf.beamGroup):
             return self.beams.getScreen(screen)
+        else:
+            raise ValueError("Beam files have not been read in")
 
-    def getScreenNames(self) -> list:
-        """Get all screen names in the beam object"""
-        if self.beams:
+    def getScreenNames(self) -> dict:
+        """
+        Get beam objects from all screens
+
+        Returns
+        -------
+        Dict
+            The :class:`~SimulationFramework.Modules.Beams.beam` objects from the screen keyed by name
+
+        Raises
+        ------
+        ValueError
+            If `beams` is not a :class:`~SimulationFramework.Modules.Beams.beamGroup` object
+        """
+        if isinstance(self.beams, rbf.beamGroup):
             return self.beams.getScreens()
-        return []
+        else:
+            raise ValueError("Beam files have not been read in")
 
-    def element(self, element: str, field: str | None = None) -> dict:
-        """Get an element definition from the framework object"""
+    def element(self, element: str, field: str | None = None) -> Any | frameworkElement:
+        """
+        Get an element definition from the framework object.
+
+        Parameters
+        ----------
+        element: str
+            Element to retrieve
+        field: str | None
+            Field of that element to retrieve
+
+        Returns
+        -------
+        Any or frameworkElement
+            Get the `field` of `element`, or the entire
+            :class:`~SimulationFramework.Framework_objects.frameworkElement` if not `field`
+        """
         elem = self.framework.getElement(element)
         if field:
-            return elem[field]
+            try:
+                return getattr(elem, field)
+            except AttributeError:
+                warn(f"{elem} does not have field {field}; returning entire element")
+                return elem
         else:
             disallowed = [
                 "allowedkeywords",
-                "keyword_conversion_rules_elegant",
-                "keyword_conversion_rules_ocelot",
+                "conversion_rules_elegant",
+                "conversion_rules_ocelot",
                 "objectdefaults",
                 "global_parameters",
                 "objectname",
                 "subelement",
                 "beam",
             ]
-            return pprint(
+            pprint(
                 {
                     k.replace("object", ""): v
                     for k, v in elem.items()
                     if k not in disallowed
                 }
             )
-        return elem
+            return elem
 
 
 def load_directory(

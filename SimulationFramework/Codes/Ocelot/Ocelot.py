@@ -307,9 +307,9 @@ class ocelotLattice(frameworkLattice):
         Returns
         -------
         Navigator
-            An `Ocelot Navigator`_ object
+            An Ocelot `Navigator`_ object
 
-        .. _Ocelot Navigator: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/navi.py
+        .. _Navigator: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/navi.py
         """
         navi_processes = []
         navi_locations_start = []
@@ -394,14 +394,14 @@ class ocelotLattice(frameworkLattice):
 
     def physproc_lsc(self) -> LSC:
         """
-        Get an `Ocelot LSC`_ physics process
+        Get an Ocelot `LSC`_ physics process
 
         Returns
         -------
         LSC
             The Ocelot LSC PhysProc
 
-        .. _Ocelot LSC: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
+        .. LSC: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
         """
         lsc = LSC()
         lsc.smooth_param = self.smooth_param
@@ -409,7 +409,7 @@ class ocelotLattice(frameworkLattice):
 
     def physproc_sc(self, grids: List[int]) -> SpaceCharge:
         """
-        Get an `Ocelot SpaceCharge` physics process
+        Get an Ocelot `SpaceCharge`_ physics process
 
         Parameters
         ----------
@@ -421,7 +421,7 @@ class ocelotLattice(frameworkLattice):
         SpaceCharge
             The Ocelot SpaceCharge PhysProc
 
-        .. _Ocelot SpaceCharge: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
+        .. _SpaceCharge: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
         """
         sc = SpaceCharge(step=1)
         sc.nmesh_xyz = grids
@@ -430,7 +430,7 @@ class ocelotLattice(frameworkLattice):
 
     def physproc_csr(self) -> tuple:
         """
-        Get `Ocelot CSR`_ physics processes based on the start and end positions provided in `file_block`.
+        Get Ocelot `CSR`_ physics processes based on the start and end positions provided in `file_block`.
         If these are not provided, just include CSR for the entire lattice.
 
         Returns
@@ -438,7 +438,7 @@ class ocelotLattice(frameworkLattice):
         tuple
             A list of CSR PhysProcs, and their start and end positions
 
-        .. _Ocelot CSR: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/csr.py
+        .. _CSR: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/csr.py
         """
         csrlist = []
         stlist = []
@@ -476,7 +476,7 @@ class ocelotLattice(frameworkLattice):
             ncell: int,
     ) -> tuple:
         """
-        Get an `Ocelot Wake`_ physics process based on the wakefield provided.
+        Get an Ocelot `Wake`_ physics process based on the wakefield provided.
 
         Parameters
         ----------
@@ -492,7 +492,7 @@ class ocelotLattice(frameworkLattice):
         tuple
             A Wake PhysProc, and its index in the lattice
 
-        .. _Ocelot Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
+        .. _Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
         """
         if isinstance(loc, field.field):
             loc = loc.write_field_file(code="astra")
