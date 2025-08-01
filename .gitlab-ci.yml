@@ -1,0 +1,27 @@
+stages:
+  - docs
+
+sphinx-job:
+  image: python:3.12
+  stage: docs
+  only:
+    - pydantify-test
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_PRIVATE_KEY"
+    - ssh-add "$SSH_PRIVATE_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - python -m pip install -r requirements.txt
+    - python -m pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints autodoc-pydantic sphinx-automodapi sphinx-substitution-extensions
+
+    - cd docs/
+    - sphinx-build -b html source build
+    - scp -r -o "UserKnownHostsFile=$KNOWN_HOSTS" -i"$SSH_PRIVATE_KEY" build/* simframe@projects.astec.ac.uk:/var/www/html/simframe
+  artifacts:
+    paths:
+      - docs/build
+    expire_in: 1 week
+
