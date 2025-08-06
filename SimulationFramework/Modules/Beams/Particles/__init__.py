@@ -1,7 +1,6 @@
 import warnings
 from math import copysign
 import numpy as np
-from munch import Munch
 from ... import constants
 from .emittance import emittance as emittanceobject
 from .twiss import twiss as twissobject
@@ -15,38 +14,60 @@ try:
 except ImportError:
     pass
 from ...units import UnitValue, unit_multiply
+from pydantic import BaseModel
+from typing import Dict
 
+class Particles(BaseModel):
 
-class Particles(Munch):
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
 
-    properties = {
-        "x": "m",
-        "y": "m",
-        "z": "m",
-        "t": "s",
-        "px": "kg*m/s",
-        "py": "kg*m/s",
-        "pz": "kg*m/s",
-        "p": "kg*m/s",
-        "particle_mass": "kg",
-        "particle_rest_energy": "J",
-        "particle_rest_energy_eV": "eV/c",
-        "particle_charge": "C",
-    }
+    # properties = {
+    #     "x": "m",
+    #     "y": "m",
+    #     "z": "m",
+    #     "t": "s",
+    #     "px": "kg*m/s",
+    #     "py": "kg*m/s",
+    #     "pz": "kg*m/s",
+    #     "p": "kg*m/s",
+    #     "particle_mass": "kg",
+    #     "particle_rest_energy": "J",
+    #     "particle_rest_energy_eV": "eV/c",
+    #     "particle_charge": "C",
+    # }
 
     # particle_mass = UnitValue(constants.m_e, "kg")
     # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
     # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
-    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
-    speed_of_light = UnitValue(constants.speed_of_light, "m/s")
+    q_over_c: UnitValue = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
+    mass: UnitValue | list | np.ndarray = None
+    particle_rest_energy: UnitValue | list | np.ndarray = None
+    particle_rest_energy_eV: UnitValue | list | np.ndarray = None
+    particle_charge: UnitValue | list | np.ndarray = None
+    charge: UnitValue | list | np.ndarray = None
+    clock: UnitValue | list | np.ndarray = None
+    t: UnitValue | list | np.ndarray = None
+    total_charge: UnitValue | float = None
+    x: UnitValue | list | np.ndarray = None
+    y: UnitValue | list | np.ndarray = None
+    z: UnitValue | list | np.ndarray = None
+    px: UnitValue | list | np.ndarray = None
+    py: UnitValue | list | np.ndarray = None
+    pz: UnitValue | list | np.ndarray = None
+    status: UnitValue | list | np.ndarray = None
+    nmacro: int = None
+    theta: UnitValue | float = None
 
-    mass_index = {
+    mass_index: Dict = {
         1: constants.m_e,  # electron
         2: constants.m_e,  # positron
         3: constants.m_p,  # proton
         4: constants.m_p,  # hydrogen ion
     }
-    charge_sign_index = {1: -1, 2: 1, 3: 1, 4: 1}
+    charge_sign_index: Dict = {1: -1, 2: 1, 3: 1, 4: 1}
 
     def sign(self, x):
         return copysign(1, x)
@@ -80,17 +101,17 @@ class Particles(Munch):
 
     """ ********************  Statistical Parameters  ************************* """
 
-    def __init__(self):
-        super(Particles, self).__init__(self)
-
-    def __getitem__(self, key):
-        if isinstance(super(Particles, self).__getitem__(key), (list, tuple)):
-            return np.array(super(Particles, self).__getitem__(key))
-        else:
-            try:
-                return super(Particles, self).__getitem__(key)
-            except KeyError:
-                raise AttributeError(key)
+    def __init__(self, *args, **kwargs):
+        super(Particles, self).__init__(*args, **kwargs)
+    #
+    # def __getitem__(self, key):
+    #     if isinstance(super(Particles, self).__getitem__(key), (list, tuple)):
+    #         return np.array(super(Particles, self).__getitem__(key))
+    #     else:
+    #         try:
+    #             return super(Particles, self).__getitem__(key)
+    #         except KeyError:
+    #             raise AttributeError(key)
 
     @property
     def slice(self):
@@ -154,7 +175,7 @@ class Particles(Munch):
     def apply_mask(self, mask):
         prebeam = self.fullbeam
         cutbeam = prebeam[mask, :]
-        self["x"], self["y"], self["z"], self["px"], self["py"], self["pz"] = cutbeam.T
+        self.x, self.y, self.z, self.px, self.py, self.pz = cutbeam.T
 
     @property
     def fullbeam(self):
@@ -164,40 +185,12 @@ class Particles(Munch):
     def particle_index(self):
         return [
             self.get_particle_index(m, q)
-            for m, q in zip(self["particle_mass"], self["particle_charge"])
+            for m, q in zip(self.particle_mass, self.particle_charge)
         ]
 
     @property
     def chargesign(self):
-        return [self.sign(q) for q in self["charge"]]
-
-    @property
-    def x(self):
-        return UnitValue(self["x"], "m")
-
-    @property
-    def y(self):
-        return UnitValue(self["y"], "m")
-
-    @property
-    def z(self):
-        return UnitValue(self["z"], "m")
-
-    @property
-    def px(self):
-        return UnitValue(self["px"], "kg*m/s")
-
-    @property
-    def py(self):
-        return UnitValue(self["py"], "kg*m/s")
-
-    @property
-    def pz(self):
-        return UnitValue(self["pz"], "kg*m/s")
-
-    @property
-    def t(self):
-        return UnitValue(self["t"], "s")
+        return [self.sign(q) for q in self.charge]
 
     @property
     def xc(self):
@@ -217,15 +210,15 @@ class Particles(Munch):
 
     @property
     def cpx(self):
-        return UnitValue(self["px"] / self.q_over_c, "eV/c")
+        return UnitValue(self.px / self.q_over_c, "eV/c")
 
     @property
     def cpy(self):
-        return UnitValue(self["py"] / self.q_over_c, "eV/c")
+        return UnitValue(self.py / self.q_over_c, "eV/c")
 
     @property
     def cpz(self):
-        return UnitValue(self["pz"] / self.q_over_c, "eV/c")
+        return UnitValue(self.pz / self.q_over_c, "eV/c")
 
     @property
     def deltap(self):
@@ -289,25 +282,12 @@ class Particles(Munch):
 
     @property
     def Q(self):
-        return UnitValue(self["total_charge"], "C")
+        return UnitValue(self.total_charge, "C")
 
-    @property
-    def total_charge(self):
-        return UnitValue(self["total_charge"], "C")
-
-    @total_charge.setter
-    def total_charge(self, q):
-        self["total_charge"] = q
-        particle_q = q / (len(self["charge"]))
-        self["charge"] = np.full(len(self["charge"]), particle_q)
-
-    @property
-    def charge(self):
-        return UnitValue(self["charge"], "C")
-
-    @property
-    def nmacro(self):
-        return UnitValue(self["nmacro"], "")
+    def set_total_charge(self, q):
+        self.total_charge = q
+        particle_q = q / (len(self.charge))
+        self.charge = np.full(len(self.charge), particle_q)
 
     # @property
     # def sigma_z(self):
@@ -368,28 +348,28 @@ class Particles(Munch):
     def rematchXPlane(self, beta=False, alpha=False, nEmit=False):
         if not (beta is False and alpha is False):
             x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
-            self["x"] = x
-            self["xp"] = xp
+            self.x = x
+            self.xp = xp
 
-            cpz = self.cp / np.sqrt(self["xp"] ** 2 + self.yp**2 + 1)
-            cpx = self["xp"] * cpz
+            cpz = self.cp / np.sqrt(self.xp ** 2 + self.yp**2 + 1)
+            cpx = self.xp * cpz
             cpy = self.yp * cpz
-            self["px"] = cpx * self.q_over_c
-            self["py"] = cpy * self.q_over_c
-            self["pz"] = cpz * self.q_over_c
+            self.px = cpx * self.q_over_c
+            self.py = cpy * self.q_over_c
+            self.pz = cpz * self.q_over_c
 
     def rematchYPlane(self, beta=False, alpha=False, nEmit=False):
         if not (beta is False and alpha is False):
             y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
-            self["y"] = y
-            self["yp"] = yp
+            self.y = y
+            self.yp = yp
 
-            cpz = self.cp / np.sqrt(self.xp**2 + self["yp"] ** 2 + 1)
+            cpz = self.cp / np.sqrt(self.xp**2 + self.yp ** 2 + 1)
             cpx = self.xp * cpz
-            cpy = self["yp"] * cpz
-            self["px"] = cpx * self.q_over_c
-            self["py"] = cpy * self.q_over_c
-            self["pz"] = cpz * self.q_over_c
+            cpy = self.yp * cpz
+            self.px = cpx * self.q_over_c
+            self.py = cpy * self.q_over_c
+            self.pz = cpz * self.q_over_c
 
     def performTransformationPeakISlice(
         self, xslice, xpslice, x, xp, beta=False, alpha=False, nEmit=False
@@ -432,15 +412,15 @@ class Particles(Munch):
         x, xp = self.performTransformationPeakISlice(
             xslice, xpslice, self.x, self.xp, beta, alpha, nEmit
         )
-        self["x"] = x
-        self["xp"] = xp
+        self.x = x
+        self.xp = xp
 
-        cpz = self.cp / np.sqrt(self["xp"] ** 2 + self.yp**2 + 1)
-        cpx = self["xp"] * cpz
+        cpz = self.cp / np.sqrt(self.xp ** 2 + self.yp**2 + 1)
+        cpx = self.xp * cpz
         cpy = self.yp * cpz
-        self["px"] = cpx * self.q_over_c
-        self["py"] = cpy * self.q_over_c
-        self["pz"] = cpz * self.q_over_c
+        self.px = cpx * self.q_over_c
+        self.py = cpy * self.q_over_c
+        self.pz = cpz * self.q_over_c
 
     def rematchYPlanePeakISlice(self, beta=False, alpha=False, nEmit=False):
         peakIPosition = self.slice_max_peak_current_slice
@@ -449,12 +429,12 @@ class Particles(Munch):
         y, yp = self.performTransformationPeakISlice(
             yslice, ypslice, self.y, self.yp, beta, alpha, nEmit
         )
-        self["y"] = y
-        self["yp"] = yp
+        self.y = y
+        self.yp = yp
 
-        cpz = self.cp / np.sqrt(self.xp**2 + self["yp"] ** 2 + 1)
+        cpz = self.cp / np.sqrt(self.xp**2 + self.yp ** 2 + 1)
         cpx = self.xp * cpz
-        cpy = self["yp"] * cpz
-        self["px"] = cpx * self.q_over_c
-        self["py"] = cpy * self.q_over_c
-        self["pz"] = cpz * self.q_over_c
+        cpy = self.yp * cpz
+        self.px = cpx * self.q_over_c
+        self.py = cpy * self.q_over_c
+        self.pz = cpz * self.q_over_c

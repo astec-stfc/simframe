@@ -793,8 +793,8 @@ class Framework(BaseModel):
             filename = pre + "_" + lattice + "_lattice.yaml"
         disallowed = [
             "allowedkeywords",
-            "keyword_conversion_rules_elegant",
-            "keyword_conversion_rules_ocelot",
+            "conversion_rules_elegant",
+            "conversion_rules_ocelot",
             "objectdefaults",
             "global_parameters",
             "objectname",
@@ -815,7 +815,7 @@ class Framework(BaseModel):
                 latticedict[e] = {
                     k[0].replace("object", ""): convert_numpy_types(getattr(new, k[0]))
                     for k in new
-                    if k[0] not in disallowed
+                    if k[0] not in disallowed and getattr(new, k[0]) is not None
                 }
                 if "sub_elements" in new:
                     latticedict[e].update({"sub_elements": {}})
@@ -836,7 +836,7 @@ class Framework(BaseModel):
         else:
             with open(directory + "/" + filename, "w") as yaml_file:
                 yaml.default_flow_style = True
-                yaml.dump(latticedict, yaml_file)
+                yaml.dump(dic, yaml_file)
 
     def load_changes_file(
             self,

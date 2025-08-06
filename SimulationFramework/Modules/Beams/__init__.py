@@ -1,5 +1,6 @@
 import os
 import munch
+from pydantic import BaseModel
 import numpy as np
 import re
 import copy
@@ -194,13 +195,23 @@ class stats(object):
         # return np.sqrt(self._beam.covariance(var, var))
 
 
-class beam(munch.Munch):
+class beam(BaseModel):
 
     # particle_mass = UnitValue(constants.m_e, "kg")
     # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
     # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
-    q_over_c = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
-    speed_of_light = UnitValue(constants.speed_of_light, "m/s")
+    q_over_c: UnitValue = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
+    filename: str = None
+    sddsindex: int = 0
+    code: str = None
+    reference_particle: np.ndarray = None
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+
+    def __init__(self, beam, *args, **kwargs):
+        super(centroids, self).__init__(*args, **kwargs)
 
     @property
     def E0_eV(self):
@@ -214,16 +225,16 @@ class beam(munch.Munch):
             E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
             return E0_eV
 
-    def __init__(self, filename=None, sddsindex=0):
+    def __init__(self, *args, **kwargs):
+        super(beam, self).__init__(*args, **kwargs)
         self._beam = Particles()
         self._parameters = parameters
         # self.sigma = stats(self, lambda var:  np.sqrt(self._beam.covariance(var, var)))
         # self.mean = stats(self, np.mean)
-        self.sddsindex = sddsindex
-        self.filename = ""
+        # self.sddsindex = sddsindex
         self.code = None
-        if filename is not None:
-            self.read_beam_file(filename)
+        if self.filename is not None:
+            self.read_beam_file(self.filename)
 
     @property
     def beam(self):

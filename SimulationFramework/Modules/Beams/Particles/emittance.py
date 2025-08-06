@@ -1,5 +1,4 @@
 import numpy as np
-from ...units import UnitValue
 
 
 class emittance:

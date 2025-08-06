@@ -1,8 +1,6 @@
-import sys
 import numpy as np
 import scipy.spatial
 from numpy import linalg
-from random import random
 
 
 def getMinVolEllipse(P=None, tolerance=0.01):

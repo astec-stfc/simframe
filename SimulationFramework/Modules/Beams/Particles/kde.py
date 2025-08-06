@@ -4,8 +4,6 @@ try:
     from scipy.stats import gaussian_kde
 except ImportError:
     pass
-from copy import deepcopy
-from SimulationFramework.Modules import constants
 
 
 class kde:
@@ -28,7 +26,7 @@ class kde:
         return gaussian_kde(beam, bw_method=bandwidth, **kwargs)
 
     def resample(self, npart, bandwidth=0.2, **kwargs):
-        beam = [self.beam[a] for a in ["x", "y", "z", "px", "py", "pz"]]
+        beam = [getattr(self.beam, a) for a in ["x", "y", "z", "px", "py", "pz"]]
         prebeam, means, stds = self.get_vals_6d(beam)
         values = np.vstack(prebeam)
         kernel = self._kde_function(values, bandwidth, **kwargs)

@@ -1,10 +1,15 @@
-import munch
+from pydantic import BaseModel
 import numpy as np
 
 
-class twiss(munch.Munch):
+class twiss(BaseModel):
 
-    def __init__(self, beam):
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+
+    def __init__(self, beam, *args, **kwargs):
+        super(twiss, self).__init__(*args, **kwargs)
         self.beam = beam
 
     def __repr__(self):

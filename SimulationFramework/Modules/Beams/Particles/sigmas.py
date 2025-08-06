@@ -1,12 +1,16 @@
 import munch
 import numpy as np
-from ... import constants
-from ...units import UnitValue
+from pydantic import BaseModel
 
 
-class sigmas(munch.Munch):
+class sigmas(BaseModel):
 
-    def __init__(self, beam):
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+
+    def __init__(self, beam, *args, **kwargs):
+        super(sigmas, self).__init__(*args, **kwargs)
         self.beam = beam
 
     @property

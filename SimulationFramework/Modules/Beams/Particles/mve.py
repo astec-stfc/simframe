@@ -4,6 +4,7 @@ from SimulationFramework.Modules.Beams.Particles.minimumVolumeEllipse import (
 import numpy as np
 from scipy.stats import gaussian_kde
 from functools import partial
+from scipy.spatial import ConvexHull
 
 
 class MVE:
@@ -55,17 +56,17 @@ class MVE:
     @property
     def volume(self):
         return self.volume6D(
-            self.x,
-            self.y,
-            self.z - np.mean(self.z),
-            self.cpx / self.cpz,
-            self.cpy / self.cpz,
-            ((self.cpz / np.mean(self.cp)) - 1),
+            self.beam.x,
+            self.beam.y,
+            self.beam.z - np.mean(self.beam.z),
+            self.beam.cpx / self.beam.cpz,
+            self.beam.cpy / self.beam.cpz,
+            ((self.beam.cpz / np.mean(self.beam.cp)) - 1),
         )
 
     @property
     def density(self):
-        return len(self.x) / self.volume
+        return len(self.beam.x) / self.volume
 
     def volume6D(self, x, y, t, xp, yp, cp):
         if len(x) < 10:
@@ -85,30 +86,30 @@ class MVE:
 
     @property
     def normalized_mve_horizontal_emittance(self):
-        return self.mve_emittance(self.x, self.xp, self.cp)
+        return self.mve_emittance(self.beam.x, self.beam.xp, self.beam.cp)
 
     @property
     def normalized_mve_vertical_emittance(self):
-        return self.mve_emittance(self.y, self.yp, self.cp)
+        return self.mve_emittance(self.beam.y, self.beam.yp, self.beam.cp)
 
     @property
     def horizontal_mve_emittance(self):
-        return self.mve_emittance(self.x, self.xp)
+        return self.mve_emittance(self.beam.x, self.beam.xp)
 
     @property
     def vertical_mve_emittance(self):
-        return self.mve_emittance(self.y, self.yp)
+        return self.mve_emittance(self.beam.y, self.beam.yp)
 
     @property
     def slice_6D_Volume(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
             self.bin_time()
-        xbins = self.slice_data(self.x)
-        ybins = self.slice_data(self.y)
-        zbins = self.slice_data(self.z - np.mean(self.z))
-        pxbins = self.slice_data(self.cpx / self.cpz)
-        pybins = self.slice_data(self.cpy / self.cpz)
-        pzbins = self.slice_data(((self.cpz / np.mean(self.cp)) - 1))
+        xbins = self.slice_data(self.beam.x)
+        ybins = self.slice_data(self.beam.y)
+        zbins = self.slice_data(self.beam.z - np.mean(self.beam.z))
+        pxbins = self.slice_data(self.beam.cpx / self.beam.cpz)
+        pybins = self.slice_data(self.beam.cpy / self.beam.cpz)
+        pzbins = self.slice_data(((self.beam.cpz / np.mean(self.beam.cp)) - 1))
         emitbins = list(zip(xbins, ybins, zbins, pxbins, pybins, pzbins))
         self.sliceProperties["6D_Volume"] = np.array(
             [self.volume6D(*a) for a in emitbins]
@@ -118,7 +119,7 @@ class MVE:
     def slice_density(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
             self.bin_time()
-        xbins = self.slice_data(self.x)
+        xbins = self.slice_data(self.beam.x)
         volume = self.slice_6D_Volume
         self.sliceProperties["Density"] = np.array(
             [len(x) / v for x, v in zip(xbins, volume)]
@@ -142,7 +143,7 @@ class MVE:
     def slice_normalized_mve_horizontal_emittance(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
             self.bin_time()
-        emitbins = self.emitbins(self.x, self.xp)
+        emitbins = self.emitbins(self.beam.x, self.beam.xp)
         self.sliceProperties["Normalized_mve_Horizontal_Emittance"] = np.array(
             [
                 self.mve_emittance(xbin, xpbin, cpbin) if len(cpbin) > 0 else 0
@@ -155,7 +156,7 @@ class MVE:
     def slice_normalized_mve_vertical_emittance(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
             self.bin_time()
-        emitbins = self.emitbins(self.y, self.yp)
+        emitbins = self.emitbins(self.beam.y, self.beam.yp)
         self.sliceProperties["Normalized_mve_Vertical_Emittance"] = np.array(
             [
                 self.mve_emittance(ybin, ypbin, cpbin) if len(cpbin) > 0 else 0
