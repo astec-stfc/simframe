@@ -206,35 +206,37 @@ class beam(BaseModel):
     sddsindex: int = 0
     code: str = None
     reference_particle: np.ndarray = None
+    longitudiunal_reference: np.ndarray | str = None
+    starting_position: list = [0, 0, 0]
+    theta: float = 0
+    offset: list = [0, 0, 0]
     class Config:
         arbitrary_types_allowed = True
         extra = "allow"
 
-    def __init__(self, beam, *args, **kwargs):
-        super(centroids, self).__init__(*args, **kwargs)
-
-    @property
-    def E0_eV(self):
-        if hasattr(self, "particle_rest_energy_eV"):
-            return self.particle_rest_energy_eV
-        elif hasattr(self, "particle_rest_energy"):
-            return self._beam["particle_rest_energy"] / constants.elementary_charge
-        else:
-            particle_mass = UnitValue(constants.m_e, "kg")
-            E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
-            E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
-            return E0_eV
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, filename=None, *args, **kwargs):
         super(beam, self).__init__(*args, **kwargs)
         self._beam = Particles()
         self._parameters = parameters
         # self.sigma = stats(self, lambda var:  np.sqrt(self._beam.covariance(var, var)))
         # self.mean = stats(self, np.mean)
+        self.filename = filename
         # self.sddsindex = sddsindex
         self.code = None
         if self.filename is not None:
             self.read_beam_file(self.filename)
+
+    @property
+    def E0_eV(self):
+        if hasattr(self, "particle_rest_energy_eV"):
+            return self.particle_rest_energy_eV
+        elif self._beam.particle_rest_energy is not None:
+            return np.mean(self._beam.particle_rest_energy) / constants.elementary_charge
+        else:
+            particle_mass = UnitValue(constants.m_e, "kg")
+            E0 = UnitValue(particle_mass * constants.speed_of_light ** 2, "J")
+            E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
+            return E0_eV
 
     @property
     def beam(self):

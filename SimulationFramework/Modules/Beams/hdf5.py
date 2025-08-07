@@ -26,43 +26,42 @@ def rotate_beamXZ(self, theta, preOffset=[0, 0, 0], postOffset=[0, 0, 0]):
         beam, rotation_matrix
     ).transpose()
 
-    if "reference_particle" in self._beam:
+    if isinstance(self._beam.reference_particle, np.ndarray):
         beam = np.array(
             [
-                self._beam["reference_particle"][0],
-                self._beam["reference_particle"][1],
-                self._beam["reference_particle"][2],
+                self._beam.reference_particle[0],
+                self._beam.reference_particle[1],
+                self._beam.reference_particle[2],
             ]
         )
         (
-            self._beam["reference_particle"][0],
-            self._beam["reference_particle"][1],
-            self._beam["reference_particle"][2],
+            self._beam.reference_particle[0],
+            self._beam.reference_particle[1],
+            self._beam.reference_particle[2],
         ) = (
             np.dot([beam - preOffset], rotation_matrix)[0] - postOffset
         )
         # print 'rotated ref part = ', np.dot([beam-preOffset], rotation_matrix)[0]
         beam = np.array(
             [
-                self._beam["reference_particle"][3],
-                self._beam["reference_particle"][4],
-                self._beam["reference_particle"][5],
+                self._beam.reference_particle[3],
+                self._beam.reference_particle[4],
+                self._beam.reference_particle[5],
             ]
         )
         (
-            self._beam["reference_particle"][3],
-            self._beam["reference_particle"][4],
-            self._beam["reference_particle"][5],
+            self._beam.reference_particle[3],
+            self._beam.reference_particle[4],
+            self._beam.reference_particle[5],
         ) = np.dot([beam], rotation_matrix)[0]
 
-    self["rotation"] = theta
-    self._beam["offset"] = preOffset
+    self.rotation = theta
+    self._beam.offset = preOffset
 
 
 def unrotate_beamXZ(self):
-    offset = self._beam["offset"] if "offset" in self._beam else np.array([0, 0, 0])
-    if "rotation" in self._beam or abs(self["rotation"]) > 0:
-        self.rotate_beamXZ(-1 * self["rotation"], -1 * offset)
+    if abs(self.rotation) > 0:
+        self.rotate_beamXZ(-1 * self.rotation, -1 * self._beam.offset)
 
 
 def write_HDF5_beam_file(
@@ -86,8 +85,8 @@ def write_HDF5_beam_file(
         zoffset = zoffset[2]
     with h5py.File(filename, "w", rdcc_nbytes=1024**3) as f:
         inputgrp = f.create_group("Parameters")
-        if "total_charge" not in self._beam or self._beam["total_charge"] == 0:
-            self._beam["total_charge"] = np.sum(self._beam["charge"])
+        if self._beam.total_charge == 0:
+            self._beam.total_charge = np.sum(self._beam.charge)
         if sourcefilename is not None:
             inputgrp["Source"] = sourcefilename
         if pos is not None:
@@ -98,25 +97,25 @@ def write_HDF5_beam_file(
             inputgrp["Rotation"] = rotation
         else:
             inputgrp["Rotation"] = 0
-        inputgrp["total_charge"] = self._beam["total_charge"]
+        inputgrp["total_charge"] = self._beam.total_charge
         inputgrp["npart"] = len(self.x)
         inputgrp["centered"] = centered
-        inputgrp["code"] = self["code"]
+        inputgrp["code"] = self.code
         inputgrp["particle_mass"] = mass
         inputgrp["toffset"] = toffset
         beamgrp = f.create_group("beam")
         if "reference_particle" in self._beam:
-            beamgrp["reference_particle"] = self._beam["reference_particle"]
+            beamgrp["reference_particle"] = self._beam.reference_particle
         if "status" in self._beam:
-            beamgrp["status"] = self._beam["status"]
+            beamgrp["status"] = self._beam.status
         beamgrp["longitudinal_reference"] = longitudinal_reference
         beamgrp["cathode"] = cathode
-        if len(self._beam["charge"]) == len(self.x):
-            chargevector = self._beam["charge"]
+        if len(self._beam.charge) == len(self.x):
+            chargevector = self._beam.charge
         else:
             chargevector = np.full(len(self.x), self.charge / len(self.x))
         if len(self._beam.particle_index) == len(self.x):
-            massvector = self._beam["particle_mass"]
+            massvector = self._beam.particle_mass
         else:
             massvector = np.full(len(self.x), constants.electron_mass)
         array = np.array(
@@ -217,7 +216,7 @@ def read_HDF5_beam_file(self, filename, local=False):
         self._beam.px = UnitValue(cpx * self.q_over_c, "kg*m/s")
         self._beam.py = UnitValue(cpy * self.q_over_c, "kg*m/s")
         self._beam.pz = UnitValue(cpz * self.q_over_c, "kg*m/s")
-        self._beam.clock = UnitValue(np.full(len(self.x), 0), "s")
+        self._beam.clock = UnitValue(np.full(len(x), 0), "s")
         self._beam.t = UnitValue(t, "s")
         self._beam.set_total_charge(np.sum(self._beam.charge))
         if h5file.get("beam/status") is not None:
@@ -228,9 +227,9 @@ def read_HDF5_beam_file(self, filename, local=False):
         # print('hdf5 read cathode', np.array(h5file.get('beam/cathode')))
         startposition = np.array(h5file.get("/Parameters/Starting_Position"))
         startposition = startposition if startposition is not None else [0, 0, 0]
-        self["starting_position"] = startposition
+        self.starting_position = startposition
         theta = np.array(h5file.get("/Parameters/Rotation"))
         theta = theta if theta is not None else 0
-        self["rotation"] = theta
+        self.rotation = theta
         if local is True:
-            rotate_beamXZ(self["rotation"], preOffset=self["starting_position"])
+            rotate_beamXZ(self.rotation, preOffset=self.starting_position)

@@ -1976,7 +1976,8 @@ class frameworkDirectory(Munch):
         if not isinstance(self.framework, Framework):
             directory = "." if self.directory is None else os.path.abspath(self.directory)
             self.framework = Framework(
-                self.directory, clean=False, verbose=self.verbose, **kwargs
+                directory=self.directory,
+                **kwargs,
             )
             self.framework.loadSettings(directory + "/" + self.settings)
         else:
@@ -2136,6 +2137,6 @@ def load_directory(
 ) -> frameworkDirectory:
     """Load a directory from a SimFrame tracking run and return a frameworkDirectory object"""
     fw = frameworkDirectory(
-        directory=directory, twiss=twiss, beams=beams, verbose=True, **kwargs
+        directory=directory, twiss=twiss, beams=beams, **kwargs
     )
     return fw
