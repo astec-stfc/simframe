@@ -21,49 +21,49 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
         else:
             self._beam[k] = v
     self.filename = fileName
-    self._beam["particle_mass"] = np.full(len(self._beam["x"]), constants.m_e)
+    self._beam.particle_mass = np.full(len(self._beam.x), constants.m_e)
     # print('SDDS', self._beam["particle_mass"])
-    self._beam["particle_rest_energy"] = (
-        self._beam["particle_mass"] * constants.speed_of_light**2
+    self._beam.particle_rest_energy = (
+        self._beam.particle_mass * constants.speed_of_light**2
     )
     # print('SDDS', self._beam["particle_rest_energy"])
-    self._beam["particle_rest_energy_eV"] = (
-        self._beam["particle_rest_energy"] / constants.elementary_charge
+    self._beam.particle_rest_energy_eV = (
+        self._beam.particle_rest_energy / constants.elementary_charge
     )
     # print('SDDS', self._beam["particle_rest_energy_eV"])
-    self._beam["particle_charge"] = np.full(
-        len(self._beam["x"]), constants.elementary_charge
+    self._beam.particle_charge = np.full(
+        len(self._beam.x), constants.elementary_charge
     )
     # print('SDDS', self._beam["particle_charge"])
 
-    self["code"] = "SDDS"
-    cp = (self._beam["p"]) * self.particle_rest_energy_eV
-    cpz = cp / np.sqrt(self._beam["xp"] ** 2 + self._beam["yp"] ** 2 + 1)
-    cpx = self._beam["xp"] * cpz
-    cpy = self._beam["yp"] * cpz
-    self._beam["px"] = cpx * self.q_over_c
-    self._beam["py"] = cpy * self.q_over_c
-    self._beam["pz"] = cpz * self.q_over_c
+    self.code = "SDDS"
+    cp = (self._beam.p) * self.particle_rest_energy_eV
+    cpz = cp / np.sqrt(self._beam.xp ** 2 + self._beam.yp ** 2 + 1)
+    cpx = self._beam.xp * cpz
+    cpy = self._beam.yp * cpz
+    self._beam.px = cpx * self.q_over_c
+    self._beam.py = cpy * self.q_over_c
+    self._beam.pz = cpz * self.q_over_c
     # self._beam['t'] = self._beam['t']
-    self._beam["z"] = (-1 * self._beam.Bz * constants.speed_of_light) * (
+    self._beam.z = (-1 * self._beam.Bz * constants.speed_of_light) * (
         self._beam.t - np.mean(self._beam.t)
     )  # np.full(len(self.t), 0)
     if "Charge" in elegantData and len(elegantData["Charge"]) > 0:
-        self._beam["total_charge"] = elegantData["Charge"][0]
-        self._beam["charge"] = np.full(
-            len(self._beam["z"]), self._beam["total_charge"] / len(self._beam["x"])
+        self._beam.total_charge = elegantData["Charge"][0]
+        self._beam.charge = np.full(
+            len(self._beam.z), self._beam.total_charge / len(self._beam.x)
         )
     elif charge is None:
-        self._beam["total_charge"] = 0
-        self._beam["charge"] = np.full(
-            len(self._beam["z"]), self._beam["total_charge"] / len(self._beam["x"])
+        self._beam.total_charge = 0
+        self._beam.charge = np.full(
+            len(self._beam.z), self._beam.total_charge / len(self._beam.x)
         )
     else:
-        self._beam["total_charge"] = charge
-        self._beam["charge"] = np.full(
-            len(self._beam["z"]), self._beam["total_charge"] / len(self._beam["x"])
+        self._beam.total_charge = charge
+        self._beam.charge = np.full(
+            len(self._beam.z), self._beam.total_charge / len(self._beam.x)
         )
-    self._beam["nmacro"] = np.full(len(self._beam["z"]), 1)
+    self._beam.nmacro = np.full(len(self._beam["z"]), 1)
     # self._beam['charge'] = []
 
 
@@ -101,7 +101,7 @@ def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0, 0, 0]):
     Punits = ["m$be$nc", "C", ""]
     parameterData = [
         np.mean(self.BetaGamma),
-        abs(self._beam["total_charge"]),
+        abs(self._beam.total_charge),
         len(self.x),
     ]
     x.add_parameters(Pnames, parameterData, Ptypes, Punits, Psymbols)
@@ -110,4 +110,4 @@ def write_SDDS_file(self, filename, ascii=False, xyzoffset=[0, 0, 0]):
 
 
 def set_beam_charge(self, charge):
-    self._beam["total_charge"] = charge
+    self._beam.total_charge = charge

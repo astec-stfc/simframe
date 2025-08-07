@@ -168,43 +168,43 @@ def read_gdf_beam_file(
         raise Exception("GDF File does not have Bx or GBx!")
 
     if hasattr(gdfbeamdata, "z") and longitudinal_reference == "z":
-        self._beam["z"] = gdfbeamdata.z
-        self._beam["t"] = np.full(len(self.z), 0)
+        self._beam.z = gdfbeamdata.z
+        self._beam.t = np.full(len(self.z), 0)
     elif hasattr(gdfbeamdata, "t") and longitudinal_reference == "t":
-        self._beam["t"] = gdfbeamdata.t
-        self._beam["z"] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (
+        self._beam.t = gdfbeamdata.t
+        self._beam.z = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (
             gdfbeamdata.t - np.mean(gdfbeamdata.t)
         ) + gdfbeamdata.z
     else:
-        if hasattr(gdfbeamdata, "z") and self["longitudinal_reference"] == "z":
-            self._beam["z"] = gdfbeamdata.z
-            self._beam["t"] = gdfbeamdata.z / (
+        if hasattr(gdfbeamdata, "z") and self.longitudinal_reference == "z":
+            self._beam.z = gdfbeamdata.z
+            self._beam.t = gdfbeamdata.z / (
                 -1 * gdfbeamdata.Bz * constants.speed_of_light
             )
-            self._beam["t"][self._beam["t"] == np.inf] = 0
+            self._beam.t[self._beam.t == np.inf] = 0
         elif hasattr(gdfbeamdata, "t"):
-            self._beam["t"] = gdfbeamdata.t
-            self._beam["z"] = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (
+            self._beam.t = gdfbeamdata.t
+            self._beam.z = (-1 * gdfbeamdata.Bz * constants.speed_of_light) * (
                 gdfbeamdata.t - np.mean(gdfbeamdata.t)
             ) + gdfbeamdata.z
 
     if hasattr(gdfbeamdata, "q") and hasattr(gdfbeamdata, "nmacro"):
-        self._beam["charge"] = gdfbeamdata.q * gdfbeamdata.nmacro
-        self._beam["total_charge"] = np.sum(self._beam["charge"])
-        self._beam["nmacro"] = gdfbeamdata.nmacro
+        self._beam.charge = gdfbeamdata.q * gdfbeamdata.nmacro
+        self._beam.total_charge = np.sum(self._beam.charge)
+        self._beam.nmacro = gdfbeamdata.nmacro
     elif hasattr(gdfbeamdata, "q"):
-        self._beam["charge"] = gdfbeamdata.q
-        self._beam["total_charge"] = np.sum(self._beam["charge"])
-        self._beam["nmacro"] = self._beam["charge"] / constants.elementary_charge
+        self._beam.charge = gdfbeamdata.q
+        self._beam.total_charge = np.sum(self._beam.charge)
+        self._beam.nmacro = self._beam.charge / constants.elementary_charge
     else:
         if charge is None:
-            self._beam["total_charge"] = 0
-            self._beam["charge"] = np.full(len(self.z), 0)
+            self._beam.total_charge = 0
+            self._beam.charge = np.full(len(self.z), 0)
         else:
-            self._beam["total_charge"] = charge
+            self._beam.total_charge = charge
 
     if hasattr(gdfbeamdata, "nmacro"):
-        self._beam["nmacro"] = gdfbeamdata.nmacro
+        self._beam.nmacro = gdfbeamdata.nmacro
     else:
-        self._beam["nmacro"] = np.full(len(self.z), 1)
+        self._beam.nmacro = np.full(len(self.z), 1)
     return gdfbeam

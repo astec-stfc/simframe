@@ -40,7 +40,7 @@ except ImportError:
 
 # I can't think of a clever way of doing this, so...
 def get_properties(obj):
-    return [f for f in dir(obj) if type(getattr(obj, f)) is property]
+    return [f for f in dir(obj) if type(getattr(obj, f)) is property and f != "__fields_set__"]
 
 
 parameters = {
@@ -297,8 +297,8 @@ class beam(BaseModel):
                 return getattr(super().__getattr__(p), key)
         if hasattr(np, key):
             return stats(self, getattr(np, key))
-        if hasattr(super().__getitem__("_beam"), key):
-            return getattr(super().__getitem__("_beam"), key)
+        if hasattr(self._beam, key):
+            return getattr(self._beam, key)
         else:
             try:
                 return super(beam, self).__getitem__(key)
