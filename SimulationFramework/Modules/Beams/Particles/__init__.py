@@ -44,6 +44,7 @@ class Particles(BaseModel):
     q_over_c: UnitValue = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
     speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
     mass: UnitValue | list | np.ndarray = None
+    particle_mass: UnitValue | list | np.ndarray = None
     particle_rest_energy: UnitValue | list | np.ndarray = None
     particle_rest_energy_eV: UnitValue | list | np.ndarray = None
     particle_charge: UnitValue | list | np.ndarray = None
@@ -58,8 +59,10 @@ class Particles(BaseModel):
     py: UnitValue | list | np.ndarray = None
     pz: UnitValue | list | np.ndarray = None
     status: UnitValue | list | np.ndarray = None
-    nmacro: int | UnitValue = None
+    nmacro: int | np.ndarray | UnitValue = None
     theta: UnitValue | float = None
+    reference_particle: list | np.ndarray = None
+    toffset: float | UnitValue = None
 
     mass_index: Dict = {
         1: constants.m_e,  # electron
@@ -113,43 +116,43 @@ class Particles(BaseModel):
     #         except KeyError:
     #             raise AttributeError(key)
 
-    # def model_dump(self, *args, **kwargs):
-    #     # Only include computed fields
-    #     computed_keys = {
-    #         f for f in self.__pydantic_decorators__.computed_fields.keys()
-    #     }
-    #     full_dump = super().model_dump(*args, **kwargs)
-    #     return {k: v for k, v in full_dump.items() if k in computed_keys}# or k in self.model_fields_set}
+    def model_dump(self, *args, **kwargs):
+        # Only include computed fields
+        computed_keys = {
+            f for f in self.__pydantic_decorators__.computed_fields.keys()
+        }
+        full_dump = super().model_dump(*args, **kwargs)
+        mod_dump = {k: v for k, v in full_dump.items() if k in computed_keys}
+        for col in ["x", "y", "z", "cpx", "cpy", "cpz"]:
+            mod_dump.update({col: getattr(self, col)})
+        for obj in ["emittance", "twiss", "sigmas", "centroids"]:
+            mod_dump.update({obj: getattr(self, obj).model_dump()})
+        return mod_dump
 
-    # @computed_field
     @property
     def slice(self) -> sliceobject:
         if not hasattr(self, "_slice"):
             self._slice = sliceobject(self)
         return self._slice
 
-    @computed_field
     @property
     def emittance(self) -> emittanceobject:
         if not hasattr(self, "_emittance"):
             self._emittance = emittanceobject(self)
         return self._emittance
 
-    @computed_field
     @property
     def twiss(self) -> twissobject:
         if not hasattr(self, "_twiss"):
             self._twiss = twissobject(self)
         return self._twiss
 
-    @computed_field
     @property
     def sigmas(self) -> sigmasobject:
         if not hasattr(self, "_sigmas"):
             self._sigmas = sigmasobject(self)
         return self._sigmas
 
-    @computed_field
     @property
     def centroids(self) -> centroidsobject:
         if not hasattr(self, "_mean"):
@@ -297,7 +300,7 @@ class Particles(BaseModel):
     def Bz(self):
         return UnitValue(self.cpz / self.energy, "")
 
-    # @computed_field
+    @computed_field
     @property
     def Q(self) -> UnitValue:
         return UnitValue(self.total_charge, "C")

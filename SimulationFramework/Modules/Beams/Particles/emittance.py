@@ -13,8 +13,8 @@ class emittance(BaseModel):
         super(emittance, self).__init__(*args, **kwargs)
         self.beam = beam
 
-    def __repr__(self):
-        return repr({p: self.emittance(p) for p in ("x", "y")})
+    # def __repr__(self):
+    #     return repr({p: self.emittance(p) for p in ("x", "y")})
 
     def model_dump(self, *args, **kwargs):
         # Only include computed fields

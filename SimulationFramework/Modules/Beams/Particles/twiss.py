@@ -14,8 +14,8 @@ class twiss(BaseModel):
         super(twiss, self).__init__(*args, **kwargs)
         self.beam = beam
 
-    def __repr__(self):
-        return repr(self.normal)
+    # def __repr__(self):
+    #     return repr(self.normal)
 
     def __setattr__(self, name, value):
         if name == "my_field":

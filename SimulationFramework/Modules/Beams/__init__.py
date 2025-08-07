@@ -206,10 +206,10 @@ class beam(BaseModel):
     sddsindex: int = 0
     code: str = None
     reference_particle: np.ndarray = None
-    longitudiunal_reference: np.ndarray | str = None
-    starting_position: list = [0, 0, 0]
+    longitudinal_reference: np.ndarray | str = None
+    starting_position: list | np.ndarray = [0, 0, 0]
     theta: float = 0
-    offset: list = [0, 0, 0]
+    offset: list | np.ndarray = [0, 0, 0]
     class Config:
         arbitrary_types_allowed = True
         extra = "allow"
@@ -225,6 +225,12 @@ class beam(BaseModel):
         self.code = None
         if self.filename is not None:
             self.read_beam_file(self.filename)
+
+    def model_dump(self, *args, **kwargs):
+        # Only include computed fields
+        full_dump = super().model_dump(*args, **kwargs)
+        full_dump.update({"Particles": self._beam.model_dump()})
+        return full_dump
 
     @property
     def E0_eV(self):
@@ -432,7 +438,7 @@ class beam(BaseModel):
         newbeam.charge = np.full(len(newbeam.x), single_charge)
         newbeam.nmacro = np.full(len(newbeam.x), 1)
         newbeam.code = "KDE"
-        newbeam["longitudinal_reference"] = "z"
+        newbeam.longitudinal_reference = "z"
 
         return newbeam
 

@@ -13,17 +13,17 @@ def write_gdf_beam_file(
     charge=None,
     mass=None,
 ):
-    q = self._beam["particle_charge"]
-    m = self._beam["particle_mass"]
+    q = self._beam.particle_charge
+    m = self._beam.particle_mass
 
-    if "nmacro" in self._beam and len(self._beam["nmacro"]) == len(self.x):
-        nmacro = abs(self._beam["nmacro"])
-    elif len(self._beam["charge"]) == len(self.x):
-        nmacro = abs(self._beam["charge"] / q)
+    if self._beam.nmacro and len(self._beam.nmacro) == len(self.x):
+        nmacro = abs(self._beam.nmacro)
+    elif len(self._beam.charge) == len(self.x):
+        nmacro = abs(self._beam.charge / q)
     else:
         nmacro = np.full(
             len(self.x),
-            abs(self._beam["total_charge"] / constants.elementary_charge / len(self.x)),
+            abs(self._beam.total_charge / constants.elementary_charge / len(self.x)),
         )
     x = (
         self.x
@@ -60,9 +60,9 @@ def write_gdf_beam_file(
 
 
 def read_gdf_beam_file_object(self, file):
-    if isinstance(file, (str)):
+    if isinstance(file, str):
         gdfbeam = gdf_beam(file)
-    elif isinstance(file, (gdf_beam)):
+    elif isinstance(file, gdf_beam):
         gdfbeam = file
     else:
         raise Exception("file is not str or gdf_beam object!")
@@ -91,75 +91,77 @@ def read_gdf_beam_file(
         return None
 
     if position is not None:  # and (time is not None or block is not None):
-        self["longitudinal_reference"] = "t"
+        self.longitudinal_reference = "t"
         gdfbeamdata = gdfbeam.get_position(position)
         if gdfbeamdata is not None:
             time = None
         else:
             raise ValueError(f"GDF DID NOT find position {position}")
     elif position is None and time is not None:
-        self["longitudinal_reference"] = "z"
+        self.longitudinal_reference = "z"
         gdfbeamdata = gdfbeam.get_time(time)
         time = None
     elif position is None and time is None:
         gdfbeamdata = gdfbeam.positions[0]
-    self.filename = file
-    self["code"] = "GPT"
-    if hasattr(gdfbeamdata, "m"):
-        self._beam["particle_mass"] = gdfbeamdata.m
     else:
-        self._beam["particle_mass"] = np.full(
+        raise ValueError("Could not load gdfbeamdata; position or time not known!")
+    self.filename = file
+    self.code = "GPT"
+    if hasattr(gdfbeamdata, "m"):
+        self._beam.particle_mass = gdfbeamdata.m
+    else:
+        self._beam.particle_mass = np.full(
             len(gdfbeamdata.x), constants.electron_mass
         )
-    self._beam["particle_rest_energy"] = [
-        m * constants.speed_of_light**2 for m in self._beam["particle_mass"]
+    self._beam.particle_rest_energy = [
+        m * constants.speed_of_light**2 for m in self._beam.particle_mass
     ]
-    self._beam["particle_rest_energy_eV"] = [
-        E0 / constants.elementary_charge for E0 in self._beam["particle_rest_energy"]
+    self._beam.particle_rest_energy_eV = [
+        E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
     ]
-    self._beam["particle_charge"] = [self._beam.sign(q) for q in gdfbeamdata.q]
+    self._beam.particle_charge = [self._beam.sign(q) for q in gdfbeamdata.q]
 
     self._beam["x"] = gdfbeamdata.x
     self._beam["y"] = gdfbeamdata.y
 
     if hasattr(gdfbeamdata, "G"):
-        self._beam["gamma"] = gdfbeamdata.G
+        self._beam.gamma = gdfbeamdata.G
     if hasattr(gdfbeamdata, "Bx"):
         if not hasattr(gdfbeamdata, "G"):
             beta = np.sqrt(gdfbeamdata.Bx**2 + gdfbeamdata.By**2 + gdfbeamdata.Bz**2)
-            self._beam["gamma"] = 1.0 / np.sqrt(1 - beta**2)
-        self._beam["px"] = (
-            self._beam["gamma"]
+            self._beam.gamma = 1.0 / np.sqrt(1 - beta**2)
+        self._beam.px = (
+            self._beam.gamma
             * gdfbeamdata.Bx
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
-        self._beam["py"] = (
-            self._beam["gamma"]
+        self._beam.py = (
+            self._beam.gamma
             * gdfbeamdata.By
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
-        self._beam["pz"] = (
-            self._beam["gamma"]
+        self._beam.pz = (
+            self._beam.gamma
             * gdfbeamdata.Bz
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
     elif hasattr(gdfbeamdata, "GBx"):
-        self._beam["px"] = (
+        self._beam.px = (
             gdfbeamdata.GBx
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
-        self._beam["py"] = (
+        self._beam.py = (
             gdfbeamdata.GBy
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
-        self._beam["pz"] = (
+        self._beam.pz = (
             gdfbeamdata.GBz
-            * self._beam["particle_rest_energy"]
+            * self._beam.particle_rest_energy
             / constants.speed_of_light
         )
     else:

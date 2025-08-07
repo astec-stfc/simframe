@@ -17,12 +17,12 @@ def rotate_beamXZ(self, theta, preOffset=[0, 0, 0], postOffset=[0, 0, 0]):
         ]
     )
     beam = np.array([self.x, self.y, self.z]).transpose()
-    self._beam["x"], self._beam["y"], self._beam["z"] = (
+    self._beam.x, self._beam.y, self._beam.z = (
         np.dot(beam - preOffset, rotation_matrix) - postOffset
     ).transpose()
 
     beam = np.array([self.px, self.py, self.pz]).transpose()
-    self._beam["px"], self._beam["py"], self._beam["pz"] = np.dot(
+    self._beam.px, self._beam.py, self._beam.pz = np.dot(
         beam, rotation_matrix
     ).transpose()
 
@@ -222,7 +222,7 @@ def read_HDF5_beam_file(self, filename, local=False):
         if h5file.get("beam/status") is not None:
             self._beam.status = UnitValue(np.array(h5file.get("beam/status")), "")
         elif np.array(h5file.get("beam/cathode")) is True:
-            self._beam.status = UnitValue(np.full(len(self._beam["t"]), -1), "")
+            self._beam.status = UnitValue(np.full(len(self._beam.t), -1), "")
         self._beam.nmacro = UnitValue(nmacro, "")
         # print('hdf5 read cathode', np.array(h5file.get('beam/cathode')))
         startposition = np.array(h5file.get("/Parameters/Starting_Position"))
