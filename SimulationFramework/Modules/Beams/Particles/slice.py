@@ -1,15 +1,39 @@
 import numpy as np
+
 from ...units import UnitValue
+from pydantic import BaseModel, computed_field
+from typing import Dict
 
 
-class slice:
+class slice(BaseModel):
+    _slicelength: int = 0
+    _slices: int = 0
+    time_binned: Dict = {"beam": None, "slices": None, "slice_length": None}
+    _hist: np.ndarray = None
+    _cp_Bins: UnitValue = None
+    _cp_binned: np.ndarray = None
+    _tfbins: list = None
+    _cpbins: UnitValue = None
+    _tbins: UnitValue = None
+    _t_Bins: UnitValue = None
+    _t_binned: np.ndarray = None
 
-    def __init__(self, beam):
+    class Config:
+        arbitrary_types_allowed = True
+        extra = "allow"
+
+    def __init__(self, beam, *args, **kwargs):
+        super(slice, self).__init__(*args, **kwargs)
         self.beam = beam
-        self._slicelength = 0
-        self._slices = 0
-        self.time_binned = {"beam": None, "slices": None, "slice_length": None}
         # self.bin_time()
+
+    # def model_dump(self, *args, **kwargs):
+    #     # Only include computed fields
+    #     computed_keys = {
+    #         f for f in self.__pydantic_decorators__.computed_fields.keys()
+    #     }
+    #     full_dump = super().model_dump(*args, **kwargs)
+    #     return {k: v for k, v in full_dump.items() if k in computed_keys}
 
     # def __repr__(self):
     #     return repr({p: self.emittance(p) for p in ('x', 'y')})
@@ -30,8 +54,9 @@ class slice:
             "slice_length": self._slicelength,
         }
 
+    @computed_field
     @property
-    def slice_length(self):
+    def slice_length(self) -> UnitValue:
         return UnitValue(self._slicelength, "s")
 
     @slice_length.setter
@@ -39,8 +64,9 @@ class slice:
         self._slicelength = slicelength
         self.bin_time()
 
+    @computed_field
     @property
-    def slices(self):
+    def slices(self) -> int:
         return self._slices
 
     @slices.setter
@@ -61,7 +87,7 @@ class slice:
 
     def bin_time(self):
         if not self.have_we_already_been_binned():
-            if hasattr(self.beam, "t") and len(self.beam.t) > 0:
+            if len(self.beam.t) > 0:
                 if not self.slice_length > 0:
                     # print('no slicelength', self.slice_length)
                     self._slice_length = 0
@@ -118,47 +144,56 @@ class slice:
         self._cp_binned = np.digitize(self.beam.cp, self._cp_Bins)
         self._tfbins = [np.array([self._cp_binned == i]) for i in range(1, len(binst))]
         self._cpbins = UnitValue(
-            [self.beam.cp[tuple(cpbin)] for cpbin in self._tfbins], units="eV/c"
-        )
+                    [np.array(self.beam.cp)[tuple(cpbin)] for cpbin in self._tfbins],
+                    units="s",
+                    dtype=np.ndarray,
+                )
         self._tbins = UnitValue(
-            [self.beam.t[tuple(cpbin)] for cpbin in self._tfbins], units="s"
-        )
+                    [np.array(self.beam.t)[tuple(tbin)] for tbin in self._tfbins],
+                    units="s",
+                    dtype=np.ndarray,
+                )
 
+    @computed_field
     @property
-    def slice_bins(self):
+    def slice_bins(self) -> UnitValue:
         if not hasattr(self, "slice"):
             self.bin_time()
         bins = self._t_Bins
         return (bins[:-1] + bins[1:]) / 2
 
+    @computed_field
     @property
-    def slice_cpbins(self):
+    def slice_cpbins(self) -> UnitValue:
         if not hasattr(self, "slice"):
             self.bin_momentum()
-        bins = self.sliceProperties["cp_Bins"]
+        bins = self._cp_Bins
         return (bins[:-1] + bins[1:]) / 2
 
+    @computed_field
     @property
-    def slice_momentum(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+    def slice_momentum(self) -> UnitValue:
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
             [cpbin.mean() if len(cpbin) > 0 else 0 for cpbin in self._cpbins],
             units="eV/c",
         )
 
+    @computed_field
     @property
-    def slice_momentum_spread(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+    def slice_momentum_spread(self) -> UnitValue:
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
             [cpbin.std() if len(cpbin) > 0 else 0 for cpbin in self._cpbins],
             units="eV/c",
         )
 
+    @computed_field
     @property
-    def slice_relative_momentum_spread(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+    def slice_relative_momentum_spread(self) -> UnitValue:
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
             [
@@ -169,6 +204,8 @@ class slice:
         )
 
     def slice_data(self, data):
+        if self._tbins is None:
+            self.bin_time()
         return UnitValue(
             [data[tuple(tbin)] for tbin in self._tfbins], units=data.units, dtype=object
         )
@@ -178,20 +215,24 @@ class slice:
         ybins = self.slice_data(y)
         return np.array([xbins, ybins, self._cpbins]).T
 
+    @computed_field
     @property
-    def ex(self):
+    def ex(self) -> UnitValue:
         return self.slice_ex
 
+    @computed_field
     @property
-    def ey(self):
+    def ey(self) -> UnitValue:
         return self.slice_ey
 
+    @computed_field
     @property
-    def enx(self):
+    def enx(self) -> UnitValue:
         return self.slice_enx
 
+    @computed_field
     @property
-    def eny(self):
+    def eny(self) -> UnitValue:
         return self.slice_eny
 
     # @property
@@ -206,34 +247,39 @@ class slice:
     # @property
     # def ecny(self):
     #     return self.normalised_vertical_emittance_corrected
-
+    @computed_field
     @property
-    def slice_ex(self):
+    def slice_ex(self) -> UnitValue:
         return self.slice_horizontal_emittance
 
+    @computed_field
     @property
-    def slice_ey(self):
+    def slice_ey(self) -> UnitValue:
         return self.slice_vertical_emittance
 
+    @computed_field
     @property
-    def slice_enx(self):
+    def slice_enx(self) -> UnitValue:
         return self.slice_normalized_horizontal_emittance
 
+    @computed_field
     @property
-    def slice_eny(self):
+    def slice_eny(self) -> UnitValue:
         return self.slice_normalized_vertical_emittance
 
+    @computed_field
     @property
-    def slice_t(self):
+    def slice_t(self) -> np.ndarray:
         return np.array(self.slice_bins)
 
+    @computed_field
     @property
-    def slice_z(self):
+    def slice_z(self) -> np.ndarray:
         return np.array(self.slice_bins)
 
     @property
     def slice_horizontal_emittance(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
         return UnitValue(
@@ -246,7 +292,7 @@ class slice:
 
     @property
     def slice_vertical_emittance(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
         return UnitValue(
@@ -259,7 +305,7 @@ class slice:
 
     @property
     def slice_normalized_horizontal_emittance(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
         return UnitValue(
@@ -276,7 +322,7 @@ class slice:
 
     @property
     def slice_normalized_vertical_emittance(self):
-        if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
+        if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
         return UnitValue(
@@ -291,47 +337,56 @@ class slice:
             units="m-rad",
         )
 
+    @computed_field
     @property
-    def slice_current(self):
-        if not hasattr(self, "_hist"):
+    def slice_current(self) -> UnitValue:
+        if self._hist is None:
             self.bin_time()
         absQ = np.abs(self.beam.Q) / len(self.beam.t)
         f = lambda bin: absQ * (len(bin) / np.ptp(bin, axis=0)) if len(bin) > 1 else 0
         # f = lambda bin: len(bin) if len(bin) > 1 else 0
         return UnitValue([f(bin) for bin in self._tbins], units="A")
 
+    @computed_field
     @property
-    def peak_current(self):
+    def peak_current(self) -> UnitValue:
         peakI = self.slice_current
         return UnitValue(max(abs(peakI)), units="A")
 
+    @computed_field
     @property
-    def slice_max_peak_current_slice(self):
+    def slice_max_peak_current_slice(self) -> UnitValue:
         peakI = self.slice_current
         return UnitValue(list(abs(peakI)).index(max(abs(peakI))), units="A")
 
+    @computed_field
     @property
-    def beta_x(self):
+    def beta_x(self) -> UnitValue:
         return self.slice_beta_x
 
+    @computed_field
     @property
-    def alpha_x(self):
+    def alpha_x(self) -> UnitValue:
         return self.slice_alpha_x
 
+    @computed_field
     @property
-    def gamma_x(self):
+    def gamma_x(self) -> UnitValue:
         return self.slice_gamma_x
 
+    @computed_field
     @property
-    def beta_y(self):
+    def beta_y(self) -> UnitValue:
         return self.slice_beta_y
 
+    @computed_field
     @property
-    def alpha_y(self):
+    def alpha_y(self) -> UnitValue:
         return self.slice_alpha_y
 
+    @computed_field
     @property
-    def gamma_y(self):
+    def gamma_y(self) -> UnitValue:
         return self.slice_gamma_y
 
     @property
@@ -417,8 +472,9 @@ class slice:
             slice_density,
         )
 
+    @computed_field
     @property
-    def chirp(self):
+    def chirp(self) -> UnitValue:
         self.bin_time()
         slice_current_centroid_indices = []
         slice_momentum_centroid = []

@@ -3,6 +3,7 @@ import re
 from shutil import copyfile
 import numpy as np
 from .Modules.Fields import field
+from pydantic import BaseModel
 
 
 def readFile(fname):
@@ -287,3 +288,11 @@ def convert_numpy_types(v):
         return convert_numpy_types(v.model_dump())
     else:
         return v
+
+def pydantic_basemodel_dump_computed_fields(self, *args, **kwargs):
+    # Only include computed fields
+    computed_keys = {
+        f for f in self.__pydantic_decorators__.computed_fields.keys()
+    }
+    full_dump = BaseModel().model_dump(*args, **kwargs)
+    return {k: v for k, v in full_dump.items() if k in computed_keys}

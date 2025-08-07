@@ -12,6 +12,14 @@ class centroids(BaseModel):
         super(centroids, self).__init__(*args, **kwargs)
         self.beam = beam
 
+    def model_dump(self, *args, **kwargs):
+        # Only include computed fields
+        computed_keys = {
+            f for f in self.__pydantic_decorators__.computed_fields.keys()
+        }
+        full_dump = super().model_dump(*args, **kwargs)
+        return {k: v for k, v in full_dump.items() if k in computed_keys}
+
     @computed_field
     @property
     def mean_x(self) -> UnitValue:

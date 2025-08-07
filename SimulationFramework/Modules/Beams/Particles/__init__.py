@@ -14,7 +14,7 @@ try:
 except ImportError:
     pass
 from ...units import UnitValue, unit_multiply
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 from typing import Dict
 
 class Particles(BaseModel):
@@ -58,7 +58,7 @@ class Particles(BaseModel):
     py: UnitValue | list | np.ndarray = None
     pz: UnitValue | list | np.ndarray = None
     status: UnitValue | list | np.ndarray = None
-    nmacro: int = None
+    nmacro: int | UnitValue = None
     theta: UnitValue | float = None
 
     mass_index: Dict = {
@@ -113,32 +113,45 @@ class Particles(BaseModel):
     #         except KeyError:
     #             raise AttributeError(key)
 
+    # def model_dump(self, *args, **kwargs):
+    #     # Only include computed fields
+    #     computed_keys = {
+    #         f for f in self.__pydantic_decorators__.computed_fields.keys()
+    #     }
+    #     full_dump = super().model_dump(*args, **kwargs)
+    #     return {k: v for k, v in full_dump.items() if k in computed_keys}# or k in self.model_fields_set}
+
+    # @computed_field
     @property
-    def slice(self):
+    def slice(self) -> sliceobject:
         if not hasattr(self, "_slice"):
             self._slice = sliceobject(self)
         return self._slice
 
+    @computed_field
     @property
-    def emittance(self):
+    def emittance(self) -> emittanceobject:
         if not hasattr(self, "_emittance"):
             self._emittance = emittanceobject(self)
         return self._emittance
 
+    @computed_field
     @property
-    def twiss(self):
+    def twiss(self) -> twissobject:
         if not hasattr(self, "_twiss"):
             self._twiss = twissobject(self)
         return self._twiss
 
+    @computed_field
     @property
-    def sigmas(self):
+    def sigmas(self) -> sigmasobject:
         if not hasattr(self, "_sigmas"):
             self._sigmas = sigmasobject(self)
         return self._sigmas
 
+    @computed_field
     @property
-    def centroids(self):
+    def centroids(self) -> centroidsobject:
         if not hasattr(self, "_mean"):
             self._mean = centroidsobject(self)
         return self._mean
@@ -245,6 +258,10 @@ class Particles(BaseModel):
         return UnitValue(np.mean(self.pz) / constants.elementary_charge, "T*m")
 
     @property
+    def E0_eV(self) -> UnitValue:
+        return self.particle_rest_energy_eV
+
+    @property
     def gamma(self):
         return UnitValue(np.sqrt(1 + (self.cp / self.particle_rest_energy_eV) ** 2), "")
 
@@ -280,8 +297,9 @@ class Particles(BaseModel):
     def Bz(self):
         return UnitValue(self.cpz / self.energy, "")
 
+    # @computed_field
     @property
-    def Q(self):
+    def Q(self) -> UnitValue:
         return UnitValue(self.total_charge, "C")
 
     def set_total_charge(self, q):
