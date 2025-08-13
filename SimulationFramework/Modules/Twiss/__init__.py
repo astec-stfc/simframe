@@ -2,6 +2,9 @@
 Simframe Twiss Module
 
 Twiss module for reading and manipulating twiss parameters from various simulation codes.
+
+Classes:
+  - :class:`~SimulationFramework.Modules.Twiss.twiss`: Twiss object class
 """
 
 import os
@@ -812,6 +815,7 @@ class twiss(BaseModel):
     def read_sdds_file(self, filename: str, ascii: bool = False) -> Dict[str, float]:
         """
         Read an SDDS file and extract the twiss parameters.
+        #TODO deprecated????
 
         Parameters
         ----------
@@ -904,7 +908,29 @@ def load_directory(
     preglob="*",
     verbose=False,
     sortkey="z",
-):
+) -> twiss:
+    """
+    Load in all Twiss output files from a directory and create a
+    :class:`~SimulationFramework.Modules.Twiss.twiss` object.
+
+    Parameters
+    ----------
+    directory: str
+        Directory from which to load the files
+    types: Dict
+        Codes and their file extensions
+    preglob: str
+        String for file pattern matching
+    verbose: bool
+        If true, print progress
+    sortkey: str
+        Key by which to sort Twiss parameters
+
+    Returns
+    -------
+    :class:`~SimulationFramework.Modules.Twiss.twiss`
+        A new `twiss` object.
+    """
     t = twiss()
     if verbose:
         print("Directory:", directory)

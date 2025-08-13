@@ -31,6 +31,7 @@ Navigation
    Framework_objects
    Framework_elements
    SimulationFramework.Codes
+   SimulationFramework.Modules
    MasterLattice
 
 

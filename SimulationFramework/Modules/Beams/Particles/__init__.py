@@ -1,3 +1,16 @@
+"""
+Simframe Particles Module
+
+This module defines the class and utilities for storing a particle distribution.
+
+Each beam consists of particles represented in 6-dimensional phase space (x, cpx, y, cpy, z, cpz),
+and appropriate transformations of these coordinates are also accessible as properties.
+
+Functions are also available for rematching the beam based on Twiss parameters.
+
+Classes:
+    - :class:`~SimulationFramework.Modules.Particles.Particles`: Container for a particle distribution.
+"""
 import warnings
 from math import copysign
 import numpy as np
@@ -15,9 +28,12 @@ except ImportError:
     pass
 from ...units import UnitValue, unit_multiply
 from pydantic import BaseModel, computed_field
-from typing import Dict
+from typing import Dict, Any
 
 class Particles(BaseModel):
+    """
+    Class describing particles in 6D phase space.
+    """
 
     class Config:
         arbitrary_types_allowed = True
@@ -42,27 +58,72 @@ class Particles(BaseModel):
     # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
     # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
     q_over_c: UnitValue = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    """Elementary charge divided by speed of light"""
+
     speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
+    """Speed of light"""
+
     mass: UnitValue | list | np.ndarray = None
+    """Mass of particles [kg] -- can be all the same, or variable
+    #TODO deprecated?"""
+
     particle_mass: UnitValue | list | np.ndarray = None
+    """Mass of particles [kg] -- can be all the same, or variable"""
+
     particle_rest_energy: UnitValue | list | np.ndarray = None
+    """Rest mass energy of the particle in kg"""
+
     particle_rest_energy_eV: UnitValue | list | np.ndarray = None
+    """Rest mass energy of the particle in eV"""
+
     particle_charge: UnitValue | list | np.ndarray = None
+    """Charge of the particle [C] -- can be all the same, or variable
+    #TODO deprecated?"""
+
     charge: UnitValue | list | np.ndarray = None
+    """Charge of the particle [C] -- can be all the same, or variable"""
+
     clock: UnitValue | list | np.ndarray = None
+    """Time unit of particles (ASTRA-type)"""
+
     t: UnitValue | list | np.ndarray = None
+    """Time coordinates of particles [s]"""
+
     total_charge: UnitValue | float = None
+    """Total charge of particle bunch [C]"""
+
     x: UnitValue | list | np.ndarray = None
+    """Horizontal coordinates of particles [m]"""
+
     y: UnitValue | list | np.ndarray = None
+    """Vertical coordinates of particles [m]"""
+
     z: UnitValue | list | np.ndarray = None
+    """Longitudinal coordinates of particles [m]"""
+
     px: UnitValue | list | np.ndarray = None
+    """Horizontal momentum of particles [kg*m/s]"""
+
     py: UnitValue | list | np.ndarray = None
+    """Vertical momentum of particles [kg*m/s]"""
+
     pz: UnitValue | list | np.ndarray = None
+    """Longitudinal momentum of particles [kg*m/s]"""
+
     status: UnitValue | list | np.ndarray = None
+    """Status of particles for OpenPMD-type distributions"""
+
     nmacro: int | np.ndarray | UnitValue = None
+    """Number of macroparticles in this object"""
+
     theta: UnitValue | float = None
+    """Horizontal rotation of particle distribution with respect to the nominal axis [rad]"""
+
     reference_particle: list | np.ndarray = None
+    """Reference particle for ASTRA-type distributions"""
+
     toffset: float | UnitValue = None
+    """Temporal offset [s]"""
 
     mass_index: Dict = {
         1: constants.m_e,  # electron
@@ -70,12 +131,30 @@ class Particles(BaseModel):
         3: constants.m_p,  # proton
         4: constants.m_p,  # hydrogen ion
     }
+    """Dictionary representing the index and mass of supported particles"""
+
     charge_sign_index: Dict = {1: -1, 2: 1, 3: 1, 4: 1}
+    """Dictionary representing the index and charge of supported particles"""
 
     def sign(self, x):
         return copysign(1, x)
 
-    def get_particle_index(self, m, q):
+    def get_particle_index(self, m: float, q: int) -> int:
+        """
+        Get the index of a particle from mass and charge index.
+
+        Parameters
+        ----------
+        m: float
+            Mass of particle
+        q: int
+            Charge of particle
+
+        Returns
+        -------
+        int
+            Particle index (see :attr:`~mass_index` and :attr:`~charge_sign_index`.
+        """
         if m == constants.m_e:
             if self.sign(q) > 0:
                 # print('found positron')
@@ -116,7 +195,7 @@ class Particles(BaseModel):
     #         except KeyError:
     #             raise AttributeError(key)
 
-    def model_dump(self, *args, **kwargs):
+    def model_dump(self, *args, **kwargs) -> Dict:
         # Only include computed fields
         computed_keys = {
             f for f in self.__pydantic_decorators__.computed_fields.keys()
@@ -131,47 +210,122 @@ class Particles(BaseModel):
 
     @property
     def slice(self) -> sliceobject:
+        """
+        Get the slice properties from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.slices.slices`
+            The slice properties
+        """
         if not hasattr(self, "_slice"):
             self._slice = sliceobject(self)
         return self._slice
 
     @property
     def emittance(self) -> emittanceobject:
+        """
+        Get the emittance calculations from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.emittance.emittance`
+            Beam emittance
+        """
         if not hasattr(self, "_emittance"):
             self._emittance = emittanceobject(self)
         return self._emittance
 
     @property
     def twiss(self) -> twissobject:
+        """
+        Get the Twiss parameters from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.twiss.twiss`
+            Twiss parameters
+        """
         if not hasattr(self, "_twiss"):
             self._twiss = twissobject(self)
         return self._twiss
 
     @property
     def sigmas(self) -> sigmasobject:
+        """
+        Get the beam sigmas from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.sigmas.sigmas`
+            Beam sigmas
+        """
         if not hasattr(self, "_sigmas"):
             self._sigmas = sigmasobject(self)
         return self._sigmas
 
     @property
     def centroids(self) -> centroidsobject:
+        """
+        Get the centroids from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.centroids.centroids`
+            Beam centroids
+        """
         if not hasattr(self, "_mean"):
             self._mean = centroidsobject(self)
         return self._mean
 
     @property
-    def kde(self):
+    def kde(self) -> kdeobject:
+        """
+        Get the kernel density estimator from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.kde.kde`
+            KDE
+        """
         if not hasattr(self, "_kde"):
             self._kde = kdeobject(self)
         return self._kde
 
     @property
-    def mve(self):
+    def mve(self) -> Any:
+        """
+        Get the minimum volume ellipse from the distribution.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.Beams.Particles.mve.MVE`
+            The MVE
+        """
         if not hasattr(self, "_mve"):
             self._mve = MVEobject(self)
         return self._mve
 
-    def covariance(self, u, up):
+    def covariance(
+            self,
+            u: np.ndarray | UnitValue,
+            up: np.ndarray | UnitValue
+    ) -> UnitValue | int:
+        """
+        Get the covariance from two arrays
+
+        Parameters
+        ----------
+        u: np.ndarray or :class:`~SimulationFramework.Modules.units.UnitValue`
+            First column
+        up: np.ndarray or :class:`~SimulationFramework.Modules.units.UnitValue`
+            Second column
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue` or int
+            Covariance (returns zero if arrays are not of same length)
+        """
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             ans = 0
@@ -180,132 +334,399 @@ class Particles(BaseModel):
                     np.cov([u, up])[0, 1],
                     unit_multiply(u.units, up.units, divide=False),
                 )
+            else:
+                warnings.warn("Arrays are not of the same length")
             return ans
 
-    def eta_correlation(self, u):
+    def eta_correlation(self, u) -> UnitValue | int:
+        """
+        Get the covariance between an array and the beam momentum
+        :attr:`~p`
+
+        Parameters
+        ----------
+        u: np.ndarray or :class:`~SimulationFramework.Modules.units.UnitValue`
+            Column to correlate with `p`
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue` or int
+            Covariance
+        """
         return self.covariance(u, self.p) / self.covariance(self.p, self.p)
 
-    def eta_corrected(self, u):
+    def eta_corrected(self, u) -> UnitValue:
+        """
+        Correct a column with respect to the beam momentum, subtracting
+        :func:`~eta_correlation` from u multiplied with :attr:`~p`
+
+        Parameters
+        ----------
+        u: np.ndarray or :class:`~SimulationFramework.Modules.units.UnitValue`
+            Column to correct with respect to `p`
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue` or int
+            Corrected column
+        """
         return u - self.eta_correlation(u) * self.p
 
-    def apply_mask(self, mask):
+    def apply_mask(self, mask: Any) -> None:
+        """
+        Cut the beam with respect to a mask, removing some particles
+
+        Parameters
+        ----------
+        mask: int | np.ndarray | list
+            Mask to apply
+        """
         prebeam = self.fullbeam
         cutbeam = prebeam[mask, :]
         self.x, self.y, self.z, self.px, self.py, self.pz = cutbeam.T
 
     @property
-    def fullbeam(self):
+    def fullbeam(self) -> np.ndarray:
+        """
+        Get the full beam as a transpose of all six columns.
+
+        Returns
+        -------
+        np.ndarray
+            The beam object as [x,y,z,px,py,pz]
+        """
         return np.array([self.x, self.y, self.z, self.px, self.py, self.pz]).T
 
     @property
-    def particle_index(self):
+    def particle_index(self) -> list:
+        """
+        Get the particle index from the mass and charge of all particles.
+
+        Returns
+        -------
+        list
+            The particle index for all :attr:`~particle_mass` and :attr:`~charge`.
+
+        """
         return [
             self.get_particle_index(m, q)
-            for m, q in zip(self.particle_mass, self.particle_charge)
+            for m, q in zip(self.particle_mass, self.charge)
         ]
 
     @property
-    def chargesign(self):
+    def chargesign(self) -> list:
+        """
+        Get the sign of charge all particles
+
+        Returns
+        -------
+        list
+            The charge signs of all particles
+
+        """
         return [self.sign(q) for q in self.charge]
 
     @property
-    def xc(self):
+    def xc(self) -> UnitValue:
+        """
+        Get the horizontal distribution corrected with respect to dispersion
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The corrected horizontal distribution
+        """
         return UnitValue(self.eta_corrected(self.x), "m")
 
     @property
-    def xpc(self):
+    def xpc(self) -> UnitValue:
+        """
+        Get the horizontal angle corrected with respect to dispersion
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The corrected horizontal angle
+        """
         return UnitValue(self.eta_corrected(self.xp), "")
 
     @property
-    def yc(self):
+    def yc(self) -> UnitValue:
+        """
+        Get the vertical distribution corrected with respect to dispersion
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The corrected vertical distribution
+        """
         return UnitValue(self.eta_corrected(self.y), "m")
 
     @property
-    def ypc(self):
+    def ypc(self) -> UnitValue:
+        """
+        Get the vertical angle corrected with respect to dispersion
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The corrected vertical angle
+        """
         return UnitValue(self.eta_corrected(self.yp), "")
 
     @property
-    def cpx(self):
+    def cpx(self) -> UnitValue:
+        """
+        Get the horizontal momentum in eV/c
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The horizontal momentum
+        """
         return UnitValue(self.px / self.q_over_c, "eV/c")
 
     @property
-    def cpy(self):
+    def cpy(self) -> UnitValue:
+        """
+        Get the vertical momentum in eV/c
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The vertical momentum
+        """
         return UnitValue(self.py / self.q_over_c, "eV/c")
 
     @property
-    def cpz(self):
+    def cpz(self) -> UnitValue:
+        """
+        Get the longitudinal momentum in eV/c
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The longitudinal momentum
+        """
         return UnitValue(self.pz / self.q_over_c, "eV/c")
 
     @property
-    def deltap(self):
+    def deltap(self) -> UnitValue:
+        """
+        Get the fractional beam momentum
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The fractional momentum
+        """
         return (self.cp - np.mean(self.cp)) / np.mean(self.cp)
 
     @property
-    def xp(self):
+    def xp(self) -> UnitValue:
+        """
+        Get the horizontal momentum angle in rad
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The horizontal angle
+        """
         return UnitValue(np.arctan(self.px / self.pz), "rad")
 
     @property
-    def yp(self):
+    def yp(self) -> UnitValue:
+        """
+        Get the vertical momentum angle in rad
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The vertical angle
+        """
         return UnitValue(np.arctan(self.py / self.pz), "rad")
 
     @property
-    def p(self):
+    def p(self) -> UnitValue:
+        """
+        Get the total beam momentum in kg*m/s
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The beam momentum
+        """
         return UnitValue(self.cp * self.q_over_c, "kg*m/s")
 
     @property
-    def cp(self):
+    def cp(self) -> UnitValue:
+        """
+        Get the total beam momentum in eV/C
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The beam momentum
+        """
         return UnitValue(np.sqrt(self.cpx**2 + self.cpy**2 + self.cpz**2), "eV/c")
 
     @property
-    def Brho(self):
+    def Brho(self) -> UnitValue:
+        """
+        Get the magnetic rigidity in the longitudinal direction
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Magnetic rigidity
+        """
         return UnitValue(np.mean(self.pz) / constants.elementary_charge, "T*m")
 
     @property
     def E0_eV(self) -> UnitValue:
+        """
+        Get the particle rest energy in eV;
+        see :attr:`~particle_rest_energy_eV`
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Particle rest energy
+        """
         return self.particle_rest_energy_eV
 
     @property
-    def gamma(self):
+    def gamma(self) -> UnitValue:
+        """
+        Get the relativistic Lorentz factor of the beam distribution
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Lorentz factor
+        """
         return UnitValue(np.sqrt(1 + (self.cp / self.particle_rest_energy_eV) ** 2), "")
 
     @property
-    def BetaGamma(self):
+    def BetaGamma(self) -> UnitValue:
+        """
+        Get the beam momentum as beta*gamma
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Beam momentum
+        """
         return UnitValue(self.cp / self.particle_rest_energy_eV, "")
 
     @property
-    def energy(self):
+    def energy(self) -> UnitValue:
+        """
+        Get the energy of the particles in eV
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The beam energy
+        """
         return UnitValue(self.gamma * self.particle_rest_energy_eV, "eV")
 
     @property
-    def Ex(self):
+    def Ex(self) -> UnitValue:
+        """
+        Get the horizontal beam energy in eV
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The horizontal beam energy
+        """
         return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpx**2), "eV")
 
     @property
-    def Ey(self):
+    def Ey(self) -> UnitValue:
+        """
+        Get the longitudinal beam energy in eV
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The longitudinal beam energy
+        """
         return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpy**2), "eV")
 
     @property
-    def Ez(self):
+    def Ez(self) -> UnitValue:
+        """
+        Get the longitudinal beam energy in eV
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The longitudinal beam energy
+        """
         return UnitValue(np.sqrt(self.particle_rest_energy_eV**2 + self.cpz**2), "eV")
 
     @property
-    def Bx(self):
+    def Bx(self) -> UnitValue:
+        """
+        Get the horizontal relativistic beta
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The horizontal relativistic beta
+        """
         return UnitValue(self.cpx / self.energy, "")
 
     @property
-    def By(self):
+    def By(self) -> UnitValue:
+        """
+        Get the vertical relativistic beta
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The vertical relativistic beta
+        """
         return UnitValue(self.cpy / self.energy, "")
 
     @property
-    def Bz(self):
+    def Bz(self) -> UnitValue:
+        """
+        Get the longitudinal relativistic beta
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The longitudinal relativistic beta
+        """
         return UnitValue(self.cpz / self.energy, "")
 
     @computed_field
     @property
     def Q(self) -> UnitValue:
+        """
+        Get the total charge of the bunch in C
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            The total charge
+        """
         return UnitValue(self.total_charge, "C")
 
-    def set_total_charge(self, q):
+    def set_total_charge(self, q: float) -> None:
+        """
+        Set the total charge of the bunch in C.
+
+        This will also update the `charge` of the individual particles.
+
+        Parameters
+        ----------
+        q: float
+            The total charge
+        """
         self.total_charge = q
         particle_q = q / (len(self.charge))
         self.charge = np.full(len(self.charge), particle_q)
@@ -315,7 +736,15 @@ class Particles(BaseModel):
     #     return self.rms(self.Bz*constants.speed_of_light*(self['t'] - np.mean(self['t'])))
 
     @property
-    def kinetic_energy(self):
+    def kinetic_energy(self) -> UnitValue:
+        """
+        Get the kinetic energy of the particles in J
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Kinetic energy of particles
+        """
         return UnitValue(
             np.array(
                 (
@@ -327,13 +756,62 @@ class Particles(BaseModel):
         )
 
     @property
-    def mean_energy(self):
+    def mean_energy(self) -> UnitValue:
+        """
+        Get the mean energy of the particles in J (the mean of :attr:`~kinetic_energy`)
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Mean energy of particles
+        """
         return UnitValue(np.mean(self.kinetic_energy), "J")
 
-    def computeCorrelations(self, x, y):
+    def computeCorrelations(
+            self,
+            x: UnitValue | np.ndarray,
+            y: UnitValue | np.ndarray
+    ) -> tuple:
+        """
+        Get the covariances `(cov(x,x), cov(x,y), cov(y,y))`,
+        see :func:`~covariance`
+
+        Returns
+        -------
+        tuple
+            Covariances between the arrays provided
+        """
         return self.covariance(x, x), self.covariance(x, y), self.covariance(y, y)
 
-    def performTransformation(self, x, xp, beta=False, alpha=False, nEmit=False):
+    def performTransformation(
+            self,
+            x: UnitValue | np.ndarray,
+            xp: UnitValue | np.ndarray,
+            beta: bool | float | UnitValue=False,
+            alpha: bool | float | UnitValue=False,
+            nEmit: bool | float | UnitValue=False,
+    ) -> tuple:
+        """
+        Transform the arrays provided with respect to the Twiss and emittance functions given.
+
+        Parameters
+        ----------
+        x: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The first array
+        xp: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The second array
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, use :func:`~computeCorrelations`
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, use :func:`~computeCorrelations`
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays; if `False`, use :func:`~computeCorrelations`
+
+        Returns
+        -------
+        tuple
+            The transformed arrays
+        """
         p = self.cp
         pAve = np.mean(p)
         gamma = np.mean(self.gamma)
@@ -366,35 +844,105 @@ class Particles(BaseModel):
             xp[i] = R21 * x0 + R22 * xp0
         return x, xp
 
-    def rematchXPlane(self, beta=False, alpha=False, nEmit=False):
+    def rematchXPlane(
+            self,
+            beta: UnitValue | float | bool=False,
+            alpha: UnitValue | float | bool=False,
+            nEmit: UnitValue | float | bool=False,
+    ) -> None:
+        """
+        Rematch :attr:`~x` and :attr:`~xp` with respect to the Twiss and emittance functions given.
+
+        Parameters
+        ----------
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, raise a warning
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, raise a warning
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays.
+        """
         if not (beta is False and alpha is False):
             x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
             self.x = x
-            self.xp = xp
+            # self.xp = xp
 
-            cpz = self.cp / np.sqrt(self.xp ** 2 + self.yp**2 + 1)
-            cpx = self.xp * cpz
+            cpz = self.cp / np.sqrt(xp ** 2 + self.yp**2 + 1)
+            cpx = xp * cpz
             cpy = self.yp * cpz
             self.px = cpx * self.q_over_c
             self.py = cpy * self.q_over_c
             self.pz = cpz * self.q_over_c
+        else:
+            warnings.warn("Both beta and alpha must be provided to rematch")
 
-    def rematchYPlane(self, beta=False, alpha=False, nEmit=False):
+    def rematchYPlane(self,
+            beta: UnitValue | float | bool=False,
+            alpha: UnitValue | float | bool=False,
+            nEmit: UnitValue | float | bool=False,
+    ) -> None:
+        """
+        Rematch :attr:`~y` and :attr:`~yp` with respect to the Twiss and emittance functions given.
+
+        Parameters
+        ----------
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, raise a warning
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, raise a warning
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays.
+        """
         if not (beta is False and alpha is False):
             y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
             self.y = y
-            self.yp = yp
+            # self.yp = yp
 
-            cpz = self.cp / np.sqrt(self.xp**2 + self.yp ** 2 + 1)
+            cpz = self.cp / np.sqrt(self.xp**2 + yp ** 2 + 1)
             cpx = self.xp * cpz
-            cpy = self.yp * cpz
+            cpy = yp * cpz
             self.px = cpx * self.q_over_c
             self.py = cpy * self.q_over_c
             self.pz = cpz * self.q_over_c
+        else:
+            warnings.warn("Both beta and alpha must be provided to rematch")
 
     def performTransformationPeakISlice(
-        self, xslice, xpslice, x, xp, beta=False, alpha=False, nEmit=False
-    ):
+            self,
+            xslice: UnitValue | np.ndarray,
+            xpslice: UnitValue | np.ndarray,
+            x: UnitValue | np.ndarray,
+            xp: UnitValue | np.ndarray,
+            beta: UnitValue | float | bool=False,
+            alpha: UnitValue | float | bool=False,
+            nEmit: UnitValue | float | bool=False,
+    ) -> tuple:
+        """
+        Transform the arrays provided with respect to the Twiss and emittance functions given,
+        or match the arrays with respect to their values at a given slice.
+
+        Parameters
+        ----------
+        xslice: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The first array at a given slice
+        xpslice: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The second array at a given slice
+        x: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The first array
+        xp: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            The second array
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, use :func:`~computeCorrelations`
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, use :func:`~computeCorrelations`
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays; if `False`, use :func:`~computeCorrelations`
+
+        Returns
+        -------
+        tuple
+            The transformed arrays
+        """
         p = self.cp
         pAve = np.mean(p)
         p = [a / pAve - 1 for a in p]
@@ -426,7 +974,25 @@ class Particles(BaseModel):
             xp[i] = R21 * x0 + R22 * xp0
         return x, xp
 
-    def rematchXPlanePeakISlice(self, beta=False, alpha=False, nEmit=False):
+    def rematchXPlanePeakISlice(
+            self,
+            beta=False,
+            alpha=False,
+            nEmit=False,
+    ) -> None:
+        """
+        Rematch :attr:`~x` and :attr:`~xp` with respect to the Twiss and emittance functions given,
+        or their values at the peak current slice; see :func:`~performTransformationPeakISlice`.
+
+        Parameters
+        ----------
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, raise a warning
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, raise a warning
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays.
+        """
         peakIPosition = self.slice_max_peak_current_slice
         xslice = self.slice_data(self.x)[peakIPosition]
         xpslice = self.slice_data(self.xp)[peakIPosition]
@@ -434,16 +1000,34 @@ class Particles(BaseModel):
             xslice, xpslice, self.x, self.xp, beta, alpha, nEmit
         )
         self.x = x
-        self.xp = xp
+        # self.xp = xp
 
-        cpz = self.cp / np.sqrt(self.xp ** 2 + self.yp**2 + 1)
-        cpx = self.xp * cpz
+        cpz = self.cp / np.sqrt(xp ** 2 + self.yp**2 + 1)
+        cpx = xp * cpz
         cpy = self.yp * cpz
         self.px = cpx * self.q_over_c
         self.py = cpy * self.q_over_c
         self.pz = cpz * self.q_over_c
 
-    def rematchYPlanePeakISlice(self, beta=False, alpha=False, nEmit=False):
+    def rematchYPlanePeakISlice(
+            self,
+            beta=False,
+            alpha=False,
+            nEmit=False,
+    ) -> None:
+        """
+        Rematch :attr:`~y` and :attr:`~yp` with respect to the Twiss and emittance functions given,
+        or their values at the peak current slice; see :func:`~performTransformationPeakISlice`.
+
+        Parameters
+        ----------
+        beta: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The beta function to transform the arrays; if `False`, raise a warning
+        alpha: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The alpha function to transform the arrays; if `False`, raise a warning
+        nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
+            The emittance to transform the arrays.
+        """
         peakIPosition = self.slice_max_peak_current_slice
         yslice = self.slice_data(self.y)[peakIPosition]
         ypslice = self.slice_data(self.yp)[peakIPosition]
@@ -451,11 +1035,11 @@ class Particles(BaseModel):
             yslice, ypslice, self.y, self.yp, beta, alpha, nEmit
         )
         self.y = y
-        self.yp = yp
+        # self.yp = yp
 
-        cpz = self.cp / np.sqrt(self.xp**2 + self.yp ** 2 + 1)
+        cpz = self.cp / np.sqrt(self.xp**2 + yp ** 2 + 1)
         cpx = self.xp * cpz
-        cpy = self.yp * cpz
+        cpy = yp * cpz
         self.px = cpx * self.q_over_c
         self.py = cpy * self.q_over_c
         self.pz = cpz * self.q_over_c

@@ -1,22 +1,56 @@
+"""
+Simframe Slice Module
+
+This module calculates the slice properties of a particle distribution.
+
+Classes:
+    - :class:`~SimulationFramework.Modules.Particles.slice.slice`: Slice calculations.
+"""
 import numpy as np
 
 from ...units import UnitValue
+from ... import constants
 from pydantic import BaseModel, computed_field
 from typing import Dict
 
 
 class slice(BaseModel):
-    _slicelength: int = 0
+    """
+    Class for calculating slice properties of a particle distribution.
+    """
+
+    _slicelength: int | float = 0
+    """Temporal length of slices"""
+
     _slices: int = 0
+    """Number of slices"""
+
     time_binned: Dict = {"beam": None, "slices": None, "slice_length": None}
+    """Dictionary representing whether the beam has been binned"""
+
     _hist: np.ndarray = None
+    """Temporal histogram"""
+
     _cp_Bins: UnitValue = None
+    """Momentum histogram"""
+
     _cp_binned: np.ndarray = None
+    """Binned momenta"""
+
     _tfbins: list = None
+    """Temporal bins"""
+
     _cpbins: UnitValue = None
+    """Momentum bins"""
+
     _tbins: UnitValue = None
+    """Time bins"""
+
     _t_Bins: UnitValue = None
+    """Time bins (deprecated???)"""
+
     _t_binned: np.ndarray = None
+    """Indices of temporal bins"""
 
     class Config:
         arbitrary_types_allowed = True
@@ -38,7 +72,17 @@ class slice(BaseModel):
     # def __repr__(self):
     #     return repr({p: self.emittance(p) for p in ('x', 'y')})
 
-    def have_we_already_been_binned(self):
+    def have_we_already_been_binned(self) -> bool:
+        """
+        Check if time and momentum have already been binned by checking the values in
+        :attr:`~time_binned`
+
+        Returns
+        -------
+        bool
+            True if beam has already been binned
+
+        """
         if (
             self.time_binned["beam"] == self.beam
             and self.time_binned["slices"] == self._slices
@@ -47,7 +91,10 @@ class slice(BaseModel):
             return True
         return False
 
-    def update_binned_parameters(self):
+    def update_binned_parameters(self) -> None:
+        """
+        Update the binned parameters in :attr:`~time_binned`.
+        """
         self.time_binned = {
             "beam": self.beam,
             "slices": self._slices,
@@ -57,23 +104,64 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_length(self) -> UnitValue:
+        """
+        Get the slice length in seconds
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue
+            :attr:`~_slicelength
+        """
         return UnitValue(self._slicelength, "s")
 
     @slice_length.setter
-    def slice_length(self, slicelength):
+    def slice_length(self, slicelength: UnitValue | float) -> None:
+        """
+        Set the slice length in seconds; sets :attr:`~_slicelength` and calls :func:`~bin_time`.
+
+        Parameters
+        ----------
+        slicelength: :class:`~SimulationFramework.Modules.units.UnitValue` or float
+            Slice length to set.
+        """
         self._slicelength = slicelength
         self.bin_time()
 
     @computed_field
     @property
     def slices(self) -> int:
+        """
+        Get the number of slices
+
+        Returns
+        -------
+        int
+            Number of slices
+        """
         return self._slices
 
     @slices.setter
-    def slices(self, slices):
+    def slices(self, slices: int):
+        """
+        Set the number of slices; calls :func:`~set_slices`
+
+        Parameters
+        ----------
+        slices: int
+            Number of slices
+        """
         self.set_slices(slices)
 
-    def set_slices(self, slices):
+    def set_slices(self, slices: int) -> None:
+        """
+        Set the slices in the bunch based on the range of time values and the number of slices provided;
+        calls :func:`~bin_time`.
+
+        Parameters
+        ----------
+        slices: int
+            Number of slices
+        """
         twidth = np.ptp(self.beam.t, axis=0)
         # print('twidth = ', twidth)
         if twidth == 0:
@@ -85,7 +173,12 @@ class slice(BaseModel):
         self._slicelength = twidth / slices
         self.bin_time()
 
-    def bin_time(self):
+    def bin_time(self) -> None:
+        """
+        Bin the temporal distribution depending on :attr:`~slice_length`. The temporal histogram is calculated
+        and various internal parameters relating to the temporal slices in the bunch are set.
+        The :attr:`~time_binned` dictionary is then updated.
+        """
         if not self.have_we_already_been_binned():
             if len(self.beam.t) > 0:
                 if not self.slice_length > 0:
@@ -125,19 +218,28 @@ class slice(BaseModel):
                 )
                 self.update_binned_parameters()
 
-    def bin_momentum(self, width=10**6):
+    def bin_momentum(self, width: float=10**6) -> None:
+        """
+        Bin the momentum distribution depending on the `width` provided. The histogram is calculated
+        and various internal parameters relating to the temporal and momentum slices in the bunch are set.
+
+        Parameters
+        ----------
+        width: float
+            Width of momentum distribution
+        """
         pwidth = max(self.beam.cp) - min(self.beam.cp)
         if width is None:
-            self.slice_length_cp = pwidth / self.slices
+            slice_length_cp = pwidth / self.slices
         else:
-            self.slice_length_cp = width
-        nbins = max([1, int(np.ceil(pwidth / self.slice_length_cp))]) + 2
+            slice_length_cp = width
+        nbins = max([1, int(np.ceil(pwidth / slice_length_cp))]) + 2
         self._hist, binst = np.histogram(
             self.beam.cp,
             bins=nbins,
             range=(
-                min(self.beam.cp) - self.slice_length_cp,
-                max(self.beam.cp) + self.slice_length_cp,
+                min(self.beam.cp) - slice_length_cp,
+                max(self.beam.cp) + slice_length_cp,
             ),
         )
         self._cp_Bins = binst
@@ -157,6 +259,14 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_bins(self) -> UnitValue:
+        """
+        Get the slice temporal bins
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice temporal bins
+        """
         if not hasattr(self, "slice"):
             self.bin_time()
         bins = self._t_Bins
@@ -165,6 +275,14 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_cpbins(self) -> UnitValue:
+        """
+        Get the slice momentum bins
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice momentum bins
+        """
         if not hasattr(self, "slice"):
             self.bin_momentum()
         bins = self._cp_Bins
@@ -173,6 +291,14 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_momentum(self) -> UnitValue:
+        """
+        Get the slice momentum.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice momentum
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
@@ -183,6 +309,14 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_momentum_spread(self) -> UnitValue:
+        """
+        Get the slice momentum spread (eV/c).
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice momentum spread
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
@@ -193,6 +327,14 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_relative_momentum_spread(self) -> UnitValue:
+        """
+        Get the slice momentum spread (relative)
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice momentum spread
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         return UnitValue(
@@ -203,14 +345,42 @@ class slice(BaseModel):
             units="",
         )
 
-    def slice_data(self, data):
+    def slice_data(self, data: UnitValue | np.ndarray) -> UnitValue:
+        """
+        Get the temporal slice data for a given axis
+
+        Parameters
+        ----------
+        data: UnitValue | np.ndarray
+            Array for which to calculate the slice data
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice data
+        """
         if self._tbins is None:
             self.bin_time()
         return UnitValue(
             [data[tuple(tbin)] for tbin in self._tfbins], units=data.units, dtype=object
         )
 
-    def emitbins(self, x, y):
+    def emitbins(self, x: UnitValue | np.ndarray, y: UnitValue | np.ndarray) -> np.ndarray:
+        """
+        Calculate the slice data for two arrays and transpose these with the slice momenta
+
+        Parameters
+        ----------
+        x: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            First array
+        y: :class:`~SimulationFramework.Modules.units.UnitValue` or np.ndarray
+            Second array
+
+        Returns
+        -------
+        np.ndarray
+            Transpose of binned arrays with slice momenta
+        """
         xbins = self.slice_data(x)
         ybins = self.slice_data(y)
         return np.array([xbins, ybins, self._cpbins]).T
@@ -218,21 +388,49 @@ class slice(BaseModel):
     @computed_field
     @property
     def ex(self) -> UnitValue:
+        """
+        Get the slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice horizontal emittance
+        """
         return self.slice_ex
 
     @computed_field
     @property
     def ey(self) -> UnitValue:
+        """
+        Get the slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice vertical emittance
+        """
         return self.slice_ey
 
     @computed_field
     @property
     def enx(self) -> UnitValue:
+        """
+        Get the normalised slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice horizontal emittance
+        """
         return self.slice_enx
 
     @computed_field
     @property
     def eny(self) -> UnitValue:
+        """
+        Get the slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice vertical emittance
+        """
         return self.slice_eny
 
     # @property
@@ -250,35 +448,86 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_ex(self) -> UnitValue:
+        """
+        Get the slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice horizontal emittance
+        """
         return self.slice_horizontal_emittance
 
     @computed_field
     @property
     def slice_ey(self) -> UnitValue:
+        """
+        Get the slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice vertical emittance
+        """
         return self.slice_vertical_emittance
 
     @computed_field
     @property
     def slice_enx(self) -> UnitValue:
+        """
+        Get the normalised slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice horizontal emittance
+        """
         return self.slice_normalized_horizontal_emittance
 
     @computed_field
     @property
     def slice_eny(self) -> UnitValue:
+        """
+        Get the slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice vertical emittance
+        """
         return self.slice_normalized_vertical_emittance
 
     @computed_field
     @property
     def slice_t(self) -> np.ndarray:
+        """
+        Get the slice temporal bins
+
+        Returns
+        -------
+        np.ndarray
+            Slice temporal bins
+        """
         return np.array(self.slice_bins)
 
     @computed_field
     @property
     def slice_z(self) -> np.ndarray:
+        """
+        Get the slice longitudinal bins
+
+        Returns
+        -------
+        np.ndarray
+            Slice longitudinal bins
+        """
         return np.array(self.slice_bins)
 
     @property
-    def slice_horizontal_emittance(self):
+    def slice_horizontal_emittance(self) -> UnitValue:
+        """
+        Get the slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice horizontal emittance
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
@@ -291,7 +540,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_vertical_emittance(self):
+    def slice_vertical_emittance(self) -> UnitValue:
+        """
+        Get the slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice vertical emittance
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
@@ -304,7 +560,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_normalized_horizontal_emittance(self):
+    def slice_normalized_horizontal_emittance(self) -> UnitValue:
+        """
+        Get the normalised slice horizontal emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice horizontal emittance
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.x, self.beam.xp)
@@ -321,7 +584,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_normalized_vertical_emittance(self):
+    def slice_normalized_vertical_emittance(self) -> UnitValue:
+        """
+        Get the normalised slice vertical emittance.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Normalised slice vertical emittance
+        """
         if self._tbins is None or self._cpbins is None:
             self.bin_time()
         emitbins = self.emitbins(self.beam.y, self.beam.yp)
@@ -340,6 +610,13 @@ class slice(BaseModel):
     @computed_field
     @property
     def slice_current(self) -> UnitValue:
+        """
+        Get the slice current based on the bunch charge and temporal binning.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice current
+        """
         if self._hist is None:
             self.bin_time()
         absQ = np.abs(self.beam.Q) / len(self.beam.t)
@@ -350,47 +627,110 @@ class slice(BaseModel):
     @computed_field
     @property
     def peak_current(self) -> UnitValue:
+        """
+        Get the peak current (i.e. max of :attr:`~slice_current`)
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Peak current
+        """
         peakI = self.slice_current
         return UnitValue(max(abs(peakI)), units="A")
 
     @computed_field
     @property
     def slice_max_peak_current_slice(self) -> UnitValue:
+        """
+        Get the index of the peak current slice from :attr:`~slice_current`.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Peak current slice
+        """
         peakI = self.slice_current
         return UnitValue(list(abs(peakI)).index(max(abs(peakI))), units="A")
 
     @computed_field
     @property
     def beta_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal beta.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice beta
+        """
         return self.slice_beta_x
 
     @computed_field
     @property
     def alpha_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal alpha.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice alpha
+        """
         return self.slice_alpha_x
 
     @computed_field
     @property
     def gamma_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal gamma.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice gamma
+        """
         return self.slice_gamma_x
 
     @computed_field
     @property
     def beta_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical beta.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice beta
+        """
         return self.slice_beta_y
 
     @computed_field
     @property
     def alpha_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical alpha.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice alpha
+        """
         return self.slice_alpha_y
 
     @computed_field
     @property
     def gamma_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical gamma.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice gamma
+        """
         return self.slice_gamma_y
 
     @property
-    def slice_beta_x(self):
+    def slice_beta_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal beta.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice beta
+        """
         xbins = self.slice_data(self.beam.x)
         exbins = self.slice_horizontal_emittance
         emitbins = list(zip(xbins, exbins))
@@ -400,7 +740,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_alpha_x(self):
+    def slice_alpha_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal alpha.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice alpha
+        """
         xbins = self.slice_data(self.beam.x)
         xpbins = self.slice_data(self.beam.xp)
         exbins = self.slice_horizontal_emittance
@@ -414,7 +761,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_gamma_x(self):
+    def slice_gamma_x(self) -> UnitValue:
+        """
+        Get the slice Twiss horizontal gamma.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice gamma
+        """
         xpbins = self.slice_data(self.beam.xp)
         exbins = self.slice_horizontal_emittance
         emitbins = list(zip(xpbins, exbins))
@@ -424,7 +778,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_beta_y(self):
+    def slice_beta_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical beta.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice beta
+        """
         ybins = self.slice_data(self.beam.y)
         eybins = self.slice_vertical_emittance
         emitbins = list(zip(ybins, eybins))
@@ -434,7 +795,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_alpha_y(self):
+    def slice_alpha_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical alpha.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice alpha
+        """
         ybins = self.slice_data(self.beam.y)
         ypbins = self.slice_data(self.beam.yp)
         eybins = self.slice_vertical_emittance
@@ -448,7 +816,14 @@ class slice(BaseModel):
         )
 
     @property
-    def slice_gamma_y(self):
+    def slice_gamma_y(self) -> UnitValue:
+        """
+        Get the slice Twiss vertical gamma.
+
+        Returns
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Slice gamma
+        """
         ypbins = self.slice_data(self.beam.yp)
         eybins = self.slice_vertical_emittance
         emitbins = list(zip(ypbins, eybins))
@@ -457,8 +832,28 @@ class slice(BaseModel):
             units="rad/m",
         )
 
-    def sliceAnalysis(self, density=False):
-        self.slice = {}
+    def sliceAnalysis(self, density: bool=False) -> tuple:
+        """
+        Get various slice properties of the bunch.
+
+        Parameters
+        ----------
+        density: bool
+            If `True`, calculate the slice density from
+            :class:`~SimulationFramework.Modules.Beams.Particles.mve.MVE`
+
+        Returns
+        -------
+        tuple
+            The following slice parameters are returned:
+            - :attr:`slice_current` at :attr:`~slice_max_peak_current_slice`
+            - standard deviation of `slice_current`
+            - :attr:`~slice_relative_momentum_spread` at :attr:`~slice_max_peak_current_slice`
+            - :attr:`~slice_normalized_horizontal_emittance` at :attr:`~slice_max_peak_current_slice`
+            - :attr:`~slice_normalized_vertical_emittance` at :attr:`~slice_max_peak_current_slice`
+            - :attr:`~slice_momentum` at :attr:`~slice_max_peak_current_slice`
+            - `slice_density` if `density` is `True`
+        """
         self.bin_time()
         peakIPosition = self.slice_max_peak_current_slice
         slice_density = self.mve.slice_density[peakIPosition] if density else 0
@@ -475,6 +870,15 @@ class slice(BaseModel):
     @computed_field
     @property
     def chirp(self) -> UnitValue:
+        """
+        Get the longitudinal momentum chirp based on
+        :attr:`~slice_current` and :attr:`~slice_momentum` in eV/s
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Longitudinal momentum chirp
+        """
         self.bin_time()
         slice_current_centroid_indices = []
         slice_momentum_centroid = []

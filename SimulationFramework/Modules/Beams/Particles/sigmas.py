@@ -1,10 +1,20 @@
-import munch
+"""
+Simframe Sigmas Module
+
+This module calculates the sigmas of a particle distribution.
+
+Classes:
+    - :class:`~SimulationFramework.Modules.Particles.sigmas.sigmas`: Sigma calculations.
+"""
 import numpy as np
 from pydantic import BaseModel, computed_field
 from ...units import UnitValue
 
 
 class sigmas(BaseModel):
+    """
+    Class for calculating sigmas of a particle distribution.
+    """
 
     class Config:
         arbitrary_types_allowed = True
@@ -25,67 +35,171 @@ class sigmas(BaseModel):
     @computed_field
     @property
     def sigma_x(self) -> UnitValue:
+        """
+        Horizontal beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-x
+        """
         return self.Sx
 
     @computed_field
     @property
     def sigma_y(self) -> UnitValue:
+        """
+        Vertical beam sigma <y^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-y
+        """
         return self.Sy
 
     @computed_field
     @property
     def sigma_t(self) -> UnitValue:
+        """
+        Temporal beam sigma <t^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-t
+        """
         return self.St
 
     @computed_field
     @property
     def sigma_z(self) -> UnitValue:
+        """
+        Longitudinal beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-z
+        """
         return self.Sz
 
     @computed_field
     @property
     def sigma_cp(self) -> UnitValue:
+        """
+        Beam momentum spread.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Momentum spread
+        """
         return self.momentum_spread
 
     @computed_field
     @property
     def sigma_cp_eV(self) -> UnitValue:
+        """
+        Beam momentum spread.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Momentum spread
+        """
         return self.momentum_spread
 
     @computed_field
     @property
     def Sx(self) -> UnitValue:
+        """
+        Horizontal beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-x
+        """
         return np.sqrt(self.beam.covariance(self.beam.x, self.beam.x))
 
     @computed_field
     @property
     def Sy(self) -> UnitValue:
+        """
+        Vertical beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-y
+        """
         return np.sqrt(self.beam.covariance(self.beam.y, self.beam.y))
 
     @computed_field
     @property
     def Sz(self) -> UnitValue:
+        """
+        Longitudinal beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-z
+        """
         return np.sqrt(self.beam.covariance(self.beam.z, self.beam.z))
 
     @computed_field
     @property
     def St(self) -> UnitValue:
+        """
+        Temporal beam sigma <x^2>.
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-t
+        """
         return np.sqrt(self.beam.covariance(self.beam.t, self.beam.t))
 
     @computed_field
     @property
     def momentum_spread(self) -> UnitValue:
+        """
+        Beam momentum spread
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-x
+        """
         return np.std(self.beam.cp)
         # return self.beam.cp.std()/np.mean(self.beam.cp)
 
     @computed_field
     @property
     def linear_chirp_t_pz(self) -> UnitValue:
+        """
+        Linear chirp of the beam as std(t) / (max(pz) - min(pz))
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Linear chirp t/pz
+        """
         return -1 * np.std(self.beam.t) / (max(self.beam.pz) - min(self.beam.pz))
 
     @computed_field
     @property
     def linear_chirp_z(self) -> UnitValue:
+        """
+        Linear chirp of the beam as v_z * t / momentum_spread
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Linear chirp in z
+        """
         return (
             -1
             * np.std(self.beam.Bz * self.beam.speed_of_light * self.beam.t)
