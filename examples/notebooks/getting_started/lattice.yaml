@@ -1,0 +1,6029 @@
+elements:
+  CLA-HRG1-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0
+    - 0
+    - 0
+    datum:
+    - 0
+    - 0
+    - 0
+  CLA-HRG1-GUN-CAV-01:
+    type: cavity
+    length: 0.32
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/HRRG_1D_RF.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 120000000.0
+    crest: 145.789
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 100
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0
+    cell_length: 0.0
+    frequency: 2998500000.0
+    n_cells: 1.5
+    Structure_Type: StandingWave
+    phase: 9
+    sub_elements:
+      EBT-HRG1-MAG-SOL-01:
+        centre:
+        - 0.0
+        - 0.0
+        - 0.16241
+        datum:
+        - 0.0
+        - 0.0
+        - 0.32
+        field_amplitude: 0.345
+        field_definition: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.hdf5
+        field_reference_position: start
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.32
+        type: solenoid
+    lsc_cutoff_high:
+    - 0
+    - 0
+    datum:
+    - 0.0
+    - 0.0
+    - 0.32
+    structure_type: StandingWave
+    centre:
+    - 0.0
+    - 0.0
+    - 0.16
+  EBT-HRG1-MAG-SOL-01:
+    type: solenoid
+    length: 0.32
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/HRRG_combined_sols_100mm_onaxis.hdf5
+    scale_field: true
+    field_scale: 1.0
+    field_type: 1DMagnetoStatic
+    default_array_names:
+    - Z
+    - Bz
+    smooth: 10.0
+    field_amplitude: 0.345
+    field_reference_position: start
+    parent: CLA-HRG1-GUN-CAV-01
+    centre:
+    - 0.0
+    - 0.0
+    - 0.16241
+    datum:
+    - 0.0
+    - 0.0
+    - 0.32
+  CLA-S01-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 0.32
+    datum:
+    - 0.0
+    - 0.0
+    - 0.32
+  CLA-S01-MAG-HVCOR-01:
+    type: kicker
+    length: 0.03
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S01-MAG-HCOR-01
+    Vertical_PV: CLA-S01-MAG-VCOR-01
+    horizontal_pv: CLA-S01-MAG-HCOR-01
+    vertical_pv: CLA-S01-MAG-VCOR-01
+    centre:
+    - 0.0
+    - 0.0
+    - 0.335
+    datum:
+    - 0.0
+    - 0.0
+    - 0.35
+  CLA-S01-DIA-WCM-01:
+    type: wall_current_monitor
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 0.7011
+    datum:
+    - 0.0
+    - 0.0
+    - 0.7261
+    PV: CLA-S01-DIA-WCM-01
+  CLA-S01-MAG-HVCOR-02:
+    type: kicker
+    length: 0.075
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S01-MAG-HCOR-02
+    Vertical_PV: CLA-S01-MAG-VCOR-02
+    horizontal_pv: CLA-S01-MAG-HCOR-02
+    vertical_pv: CLA-S01-MAG-VCOR-02
+    centre:
+    - 0.0
+    - 0.0
+    - 0.81361
+    datum:
+    - 0.0
+    - 0.0
+    - 0.82861
+  CLA-S01-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.08589
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S01-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 0.894055
+    datum:
+    - 0.0
+    - 0.0
+    - 0.937
+    PV: CLA-S01-DIA-BPM-01
+  CLA-S01-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S01-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 0.9803
+    datum:
+    - 0.0
+    - 0.0
+    - 0.9803
+    camera_PV: CLA-S01-DIA-CAM-01
+  CLA-L01-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 1.0577
+    datum:
+    - 0.0
+    - 0.0
+    - 1.0577
+  CLA-L01-LIN-CAV-01:
+    type: cavity
+    length: 2.03333
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/TWS_S-DL.hdf5
+    wakefield_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SzSx5um10mm.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 21000000.0
+    crest: 269.90983
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 20
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0495
+    cell_length: 0.0333333333333333
+    frequency: 2998500000.0
+    n_cells: 61
+    Structure_Type: TravellingWave
+    phase: 16
+    shunt_impedance: 1.30693e8
+    sub_elements:
+      CLA-L01-MAG-SOL-01:
+        centre:
+        - 0.0
+        - 0.0
+        - 1.95
+        datum:
+        - 0.0
+        - 0.0
+        - 2.2
+        field_amplitude: 0.05
+        field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.hdf5
+        field_reference_position: start
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.5
+        type: solenoid
+      CLA-L01-MAG-SOL-02:
+        centre:
+        - 0.0
+        - 0.0
+        - 2.95
+        datum:
+        - 0.0
+        - 0.0
+        - 3.2
+        field_amplitude: -0.05
+        field_definition: $master_lattice_location$Data_Files/SwissFEL_linac_sols.hdf5
+        field_reference_position: start
+        global_rotation:
+        - 0
+        - 0
+        - 0
+        length: 0.5
+        type: solenoid
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    datum:
+    - 0.0
+    - 0.0
+    - 3.2269
+    design_gamma: 10
+    design_power: 25e6
+    centre:
+    - 0.0
+    - 0.0
+    - 2.210235
+    structure_type: TravellingWave
+    attenuation_constant: 0.42
+    PV: CLA-L01-LIN-CAV-01
+  CLA-L01-MAG-SOL-01:
+    type: solenoid
+    length: 0.5
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SwissFEL_linac_sols.hdf5
+    scale_field: true
+    field_scale: 1.0
+    field_type: 1DMagnetoStatic
+    default_array_names:
+    - Z
+    - Bz
+    smooth: 10.0
+    field_amplitude: 0.05
+    field_reference_position: start
+    parent: CLA-L01-LIN-CAV-01
+    centre:
+    - 0.0
+    - 0.0
+    - 1.95
+    datum:
+    - 0.0
+    - 0.0
+    - 2.2
+  CLA-L01-MAG-SOL-02:
+    type: solenoid
+    length: 0.5
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SwissFEL_linac_sols.hdf5
+    scale_field: true
+    field_scale: 1.0
+    field_type: 1DMagnetoStatic
+    default_array_names:
+    - Z
+    - Bz
+    smooth: 10.0
+    field_amplitude: -0.05
+    field_reference_position: start
+    parent: CLA-L01-LIN-CAV-01
+    centre:
+    - 0.0
+    - 0.0
+    - 2.95
+    datum:
+    - 0.0
+    - 0.0
+    - 3.2
+  CLA-S02-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 3.29693
+    datum:
+    - 0.0
+    - 0.0
+    - 3.29693
+  CLA-S02-MAG-HVCOR-01:
+    type: kicker
+    length: 0.076607
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S02-MAG-HCOR-01
+    Vertical_PV: CLA-S02-MAG-VCOR-01
+    horizontal_pv: CLA-S02-MAG-HCOR-01
+    vertical_pv: CLA-S02-MAG-VCOR-01
+    centre:
+    - 0.0
+    - 0.0
+    - 3.335237
+    datum:
+    - 0.0
+    - 0.0
+    - 3.37354
+    field_integral_coefficients_horizontal:
+    - 0.299132052459495
+    - 0.00869167241506522
+    field_integral_coefficients_vertical:
+    - 0.299132052459495
+    - 0.00869167241506522
+  CLA-S02-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.1007
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.028366000000000002
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 3.52715
+    datum:
+    - 0.0
+    - 0.0
+    - 3.5775
+    PV: CLA-S02-MAG-QUAD-01
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S02-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.0425
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S02-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 3.59875
+    datum:
+    - 0.0
+    - 0.0
+    - 3.62
+    PV: CLA-S02-DIA-BPM-01
+  CLA-S02-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.1007
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0385686
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 3.92715
+    datum:
+    - 0.0
+    - 0.0
+    - 3.9775
+    PV: CLA-S02-MAG-QUAD-02
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S02-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S02-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 4.0891
+    datum:
+    - 0.0
+    - 0.0
+    - 4.0891
+    camera_PV: CLA-S02-DIA-CAM-01
+  CLA-S02-MAG-HVCOR-02:
+    type: kicker
+    length: 0.03
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S02-MAG-HCOR-02
+    Vertical_PV: CLA-S02-MAG-VCOR-02
+    horizontal_pv: CLA-S02-MAG-HCOR-02
+    vertical_pv: CLA-S02-MAG-VCOR-02
+    centre:
+    - 0.0
+    - 0.0
+    - 4.23661
+    datum:
+    - 0.0
+    - 0.0
+    - 4.25161
+    field_integral_coefficients_horizontal:
+    - 0.299132052459495
+    - 0.00869167241506522
+    field_integral_coefficients_vertical:
+    - 0.299132052459495
+    - 0.00869167241506522
+  CLA-S02-DIA-ECOL-01:
+    type: collimator
+    length: 0.35
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: elliptical
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 4.51862
+    datum:
+    - 0.0
+    - 0.0
+    - 4.69362
+  CLA-S02-SIM-APER-02:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 4.69362
+    datum:
+    - 0.0
+    - 0.0
+    - 4.69362
+  CLA-S02-MAG-HVCOR-03:
+    type: kicker
+    length: 0.03
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S02-MAG-HCOR-03
+    Vertical_PV: CLA-S02-MAG-VCOR-03
+    horizontal_pv: CLA-S02-MAG-HCOR-03
+    vertical_pv: CLA-S02-MAG-VCOR-03
+    centre:
+    - 0.0
+    - 0.0
+    - 4.809
+    datum:
+    - 0.0
+    - 0.0
+    - 4.824
+    field_integral_coefficients_horizontal:
+    - 0.299132052459495
+    - 0.00869167241506522
+    field_integral_coefficients_vertical:
+    - 0.299132052459495
+    - 0.00869167241506522
+  CLA-S02-DIA-SCR-02:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S02-DIA-SCR-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 5.0101
+    datum:
+    - 0.0
+    - 0.0
+    - 5.0101
+    camera_PV: CLA-S02-DIA-CAM-02
+  CLA-S02-MAG-QUAD-03:
+    type: quadrupole
+    length: 0.1007
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0303256
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 5.22715
+    datum:
+    - 0.0
+    - 0.0
+    - 5.2775
+    PV: CLA-S02-MAG-QUAD-03
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S02-MAG-QUAD-04:
+    type: quadrupole
+    length: 0.1007
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0854535
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 5.62715
+    datum:
+    - 0.0
+    - 0.0
+    - 5.6775
+    PV: CLA-S02-MAG-QUAD-04
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S02-MAG-QUAD-05:
+    type: quadrupole
+    length: 0.1007
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0743208
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 6.4403
+    datum:
+    - 0.0
+    - 0.0
+    - 6.49065
+    PV: CLA-S02-MAG-QUAD-05
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S02-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.05065
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S02-DIA-BPM-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 6.515975
+    datum:
+    - 0.0
+    - 0.0
+    - 6.5413
+    PV: CLA-S02-DIA-BPM-02
+  CLA-S02-DIA-SCR-03:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S02-DIA-SCR-03.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 6.5846
+    datum:
+    - 0.0
+    - 0.0
+    - 6.5846
+    camera_PV: CLA-S02-DIA-CAM-03
+  CLA-S02-MAG-HVCOR-04:
+    type: kicker
+    length: 0.076607
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    Horizontal_PV: CLA-S02-MAG-HCOR-04
+    Vertical_PV: CLA-S02-MAG-VCOR-04
+    horizontal_pv: CLA-S02-MAG-HCOR-04
+    vertical_pv: CLA-S02-MAG-VCOR-04
+    centre:
+    - 0.0
+    - 0.0
+    - 6.683746
+    datum:
+    - 0.0
+    - 0.0
+    - 6.72205
+    field_integral_coefficients_horizontal:
+    - 0.299132052459495
+    - 0.00869167241506522
+    field_integral_coefficients_vertical:
+    - 0.299132052459495
+    - 0.00869167241506522
+  CLA-L02-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 6.7485
+    datum:
+    - 0.0
+    - 0.0
+    - 6.7485
+  CLA-L02-LIN-CAV-01:
+    type: cavity
+    length: 4.06667
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/TWS_S-DL.hdf5
+    wakefield_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SzSx5um10mm.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 30000000.0
+    crest: 92.381
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 20
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0495
+    cell_length: 0.0333333333333333
+    frequency: 2998500000.0
+    n_cells: 121
+    Structure_Type: TravellingWave
+    phase: 23
+    shunt_impedance: 1.30693e8
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    datum:
+    - 0.0
+    - 0.0
+    - 10.87294
+    design_gamma: 100
+    design_power: 25e6
+    centre:
+    - 0.0
+    - 0.0
+    - 8.83099
+    structure_type: TravellingWave
+    attenuation_constant: 0.42
+  CLA-L02-SIM-APER-02:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 10.8965
+    datum:
+    - 0.0
+    - 0.0
+    - 10.8965
+  CLA-S03-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 10.8974
+    datum:
+    - 0.0
+    - 0.0
+    - 10.8974
+  CLA-S03-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S03-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 11.1924
+    datum:
+    - 0.0
+    - 0.0
+    - 11.2974
+  CLA-S03-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.157474
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 11.4664
+    datum:
+    - 0.0
+    - 0.0
+    - 11.5474
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S03-MAG-HVCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 11.7974
+    datum:
+    - 0.0
+    - 0.0
+    - 11.8224
+  CLA-S03-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S03-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 11.9107
+    datum:
+    - 0.0
+    - 0.0
+    - 11.9107
+  CLA-L03-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 12.0502
+    datum:
+    - 0.0
+    - 0.0
+    - 12.0502
+  CLA-L03-LIN-CAV-01:
+    type: cavity
+    length: 4.06667
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/TWS_S-DL.hdf5
+    wakefield_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SzSx5um10mm.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 27000000.0
+    crest: 88.381
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 20
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0495
+    cell_length: 0.0333333333333333
+    frequency: 2998500000.0
+    n_cells: 121
+    Structure_Type: TravellingWave
+    phase: 13
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    datum:
+    - 0.0
+    - 0.0
+    - 16.15857
+    centre:
+    - 0.0
+    - 0.0
+    - 14.125235
+    structure_type: TravellingWave
+  CLA-S04-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 16.2002
+    datum:
+    - 0.0
+    - 0.0
+    - 16.2002
+  CLA-S04-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 16.2002
+    datum:
+    - 0.0
+    - 0.0
+    - 16.2002
+    fit_point: 1.0
+  CLA-S04-MAG-HVCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 16.353768
+    datum:
+    - 0.0
+    - 0.0
+    - 16.378768
+  CLA-S04-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.100731
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 16.499268
+    datum:
+    - 0.0
+    - 0.0
+    - 16.580268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-DIA-ICT-01:
+    type: integrated_current_transformer
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 16.655768
+    datum:
+    - 0.0
+    - 0.0
+    - 16.680768
+  CLA-S04-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 16.785768
+    datum:
+    - 0.0
+    - 0.0
+    - 16.890768
+  CLA-S04-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0269461
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 17.019268
+    datum:
+    - 0.0
+    - 0.0
+    - 17.100268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 17.313563
+    datum:
+    - 0.0
+    - 0.0
+    - 17.313563
+  CLA-S04-MAG-QUAD-03:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.0628161
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 17.519268
+    datum:
+    - 0.0
+    - 0.0
+    - 17.600268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 17.7552
+    datum:
+    - 0.0
+    - 0.0
+    - 17.8602
+  CLA-S04-MAG-QUAD-04:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.033758
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 18.019268
+    datum:
+    - 0.0
+    - 0.0
+    - 18.100268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-MAG-HVCOR-02:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 18.349768
+    datum:
+    - 0.0
+    - 0.0
+    - 18.374768
+  CLA-S04-DIA-SCR-02:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-SCR-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 18.4536
+    datum:
+    - 0.0
+    - 0.0
+    - 18.4536
+  CLA-S04-DIA-SCR-03:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-SCR-03.sdds
+    centre:
+    - 0
+    - 0.0
+    - 19.233568
+    datum:
+    - 0
+    - 0.0
+    - 19.233568
+  CLA-S04-MAG-HVCOR-03:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0
+    - 0.0
+    - 19.4102
+    datum:
+    - 0
+    - 0.0
+    - 19.4352
+  CLA-S04-DIA-BPM-03:
+    type: beam_position_monitor
+    length: 0.035
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-03.sdds
+    centre:
+    - 0
+    - 0.0
+    - 19.5027
+    datum:
+    - 0
+    - 0.0
+    - 19.5202
+  CLA-S04-DIA-BPM-04:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-04.sdds
+    centre:
+    - 0
+    - 0.0
+    - 20.340268
+    datum:
+    - 0
+    - 0.0
+    - 20.445268
+  CLA-S04-DIA-SCR-04:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-SCR-04.sdds
+    centre:
+    - 0
+    - 0.0
+    - 20.488568
+    datum:
+    - 0
+    - 0.0
+    - 20.488568
+  CLA-S04-DIA-SCR-05:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-SCR-05.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 21.3152
+    datum:
+    - 0.0
+    - 0.0
+    - 21.3152
+  CLA-S04-MAG-QUAD-05:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0410889
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 21.534268
+    datum:
+    - 0.0
+    - 0.0
+    - 21.615268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-MAG-HVCOR-04:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 21.729768
+    datum:
+    - 0.0
+    - 0.0
+    - 21.754768
+  CLA-S04-MAG-QUAD-06:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.070186
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 22.034268
+    datum:
+    - 0.0
+    - 0.0
+    - 22.115268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-DIA-BPM-05:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-05.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 22.300268
+    datum:
+    - 0.0
+    - 0.0
+    - 22.405268
+  CLA-S04-MAG-QUAD-07:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.0845327
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 22.534268
+    datum:
+    - 0.0
+    - 0.0
+    - 22.615268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-MAG-HVCOR-05:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 22.789768
+    datum:
+    - 0.0
+    - 0.0
+    - 22.814768
+  CLA-S04-MAG-QUAD-08:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.043544
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 23.044268
+    datum:
+    - 0.0
+    - 0.0
+    - 23.125268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S04-DIA-BPM-06:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-DIA-BPM-06.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 23.2802685
+    datum:
+    - 0.0
+    - 0.0
+    - 23.3852685
+  CLA-S04-SIM-MARK-02:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S04-SIM-MARK-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 23.4572
+    datum:
+    - 0.0
+    - 0.0
+    - 23.4572
+    fit_point: 1.0
+  CLA-L4H-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.0041195
+    vertical_size: 0.0041195
+    centre:
+    - 0.0
+    - 0.0
+    - 23.4572
+    datum:
+    - 0.0
+    - 0.0
+    - 23.4572
+  CLA-L4H-LIN-CAV-01:
+    type: cavity
+    length: 0.75
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/TWS_X-DL.hdf5
+    wakefield_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SzSx20um25mmxband.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 24000000.0
+    crest: 250.639
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 20
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.012375
+    cell_length: 0.00833333
+    frequency: 11994000000.0
+    n_cells: 89
+    Structure_Type: TravellingWave
+    phase: -184
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    datum:
+    - 0.0
+    - 0.0
+    - 24.3147
+    centre:
+    - 0.0
+    - 0.0
+    - 23.9397
+    structure_type: TravellingWave
+  CLA-S05-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 24.4222
+    datum:
+    - 0.0
+    - 0.0
+    - 24.4222
+  CLA-S05-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.126655
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 24.734268
+    datum:
+    - 0.0
+    - 0.0
+    - 24.815268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S05-DIA-ICT-01:
+    type: integrated_current_transformer
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    centre:
+    - 0.0
+    - 0.0
+    - 24.886968
+    datum:
+    - 0.0
+    - 0.0
+    - 24.911968
+  CLA-S05-MAG-HVCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 25.0509
+    datum:
+    - 0.0
+    - 0.0
+    - 25.0759
+  CLA-S05-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.021
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S05-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 25.125638
+    datum:
+    - 0.0
+    - 0.0
+    - 25.136138
+  CLA-S05-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S05-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 25.1794
+    datum:
+    - 0.0
+    - 0.0
+    - 25.1794
+  CLA-S05-DIA-BAM-01:
+    type: beam_arrival_monitor
+    length: 0.08
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S05-DIA-BAM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 25.267128
+    datum:
+    - 0.0
+    - 0.0
+    - 25.307128
+  CLA-S05-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.209366
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 25.484268
+    datum:
+    - 0.0
+    - 0.0
+    - 25.565268
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S05-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S05-DIA-BPM-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 25.720268
+    datum:
+    - 0.0
+    - 0.0
+    - 25.825268
+  CLA-S05-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S05-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 25.8253
+    datum:
+    - 0.0
+    - 0.0
+    - 25.8253
+    fit_point: 1.0
+  CLA-VBC-MAG-DIP-01:
+    type: dipole
+    length: 0.200981
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.09
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.005
+    edge_field_integral: 0.4
+    centre:
+    - 0.0
+    - 0.0
+    - 26.165835
+    datum:
+    - 0.00953942
+    - 0.0
+    - 26.265948
+  CLA-VBC-MAG-DIP-02:
+    type: dipole
+    length: 0.200981
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.09
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: -0.09
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.005
+    edge_field_integral: 0.4
+    centre:
+    - 0.161944
+    - 0.0
+    - 27.865382
+    datum:
+    - 0.161944
+    - 0.0
+    - 27.965948
+  CLA-VBC-MAG-VCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - -0.15337356240980604
+    - 0
+    - 28.2881
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.3131
+  CLA-VBC-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.0312
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-VBC-DIA-BPM-01.sdds
+    centre:
+    - -0.15337356240980604
+    - 0
+    - 28.353848
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.369448
+  CLA-VBC-DIA-RCOL-01:
+    type: collimator
+    length: 0.48
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 1.0
+    vertical_size: 1.0
+    centre:
+    - -0.15337356240980604
+    - 0
+    - 28.6393
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.8793
+  CLA-VBC-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-VBC-DIA-SCR-01.sdds
+    centre:
+    - -0.15337356240980604
+    - 0
+    - 28.9048
+    datum:
+    - 0.161944
+    - 0.0
+    - 28.9048
+  CLA-VBC-MAG-DIP-03:
+    type: dipole
+    length: 0.200981
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: -0.09
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.005
+    edge_field_integral: 0.4
+    centre:
+    - 0.161944
+    - 0.0
+    - 29.365835
+    datum:
+    - 0.152405
+    - 0.0
+    - 29.465948
+  CLA-VBC-MAG-DIP-04:
+    type: dipole
+    length: 0.200981
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - -0.09
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.09
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.005
+    edge_field_integral: 0.4
+    centre:
+    - 0
+    - 0.0
+    - 31.065382
+    datum:
+    - 0
+    - 0.0
+    - 31.165948
+  CLA-VBC-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-VBC-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+    fit_point: 1.0
+  CLA-S06-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+    fit_point: 1.0
+  CLA-S06-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 31.2678
+    datum:
+    - 0.0
+    - 0.0
+    - 31.2678
+  CLA-S06-MAG-HVCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 31.6078
+    datum:
+    - 0.0
+    - 0.0
+    - 31.6328
+  CLA-S06-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.02
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 31.667988
+    datum:
+    - 0.0
+    - 0.0
+    - 31.677988
+  CLA-S06-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.157575
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 31.852988
+    datum:
+    - 0.0
+    - 0.0
+    - 31.927988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S06-DIA-BAM-01:
+    type: beam_arrival_monitor
+    length: 0.08
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-BAM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 32.103988
+    datum:
+    - 0.0
+    - 0.0
+    - 32.143988
+  CLA-S06-DIA-EOM-01:
+    type: beam_arrival_monitor
+    length: 0.2885
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-EOM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 32.39355
+    datum:
+    - 0.0
+    - 0.0
+    - 32.5378
+    fit_point: 1.0
+  CLA-S06-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.0616258
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 32.712988
+    datum:
+    - 0.0
+    - 0.0
+    - 32.787988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S06-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 32.925234
+    datum:
+    - 0.0
+    - 0.0
+    - 32.925234
+  CLA-S06-MAG-HVCOR-02:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 33.843
+    datum:
+    - 0.0
+    - 0.0
+    - 33.868
+  CLA-S06-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.025
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-BPM-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 33.929478
+    datum:
+    - 0.0
+    - 0.0
+    - 33.941978
+  CLA-S06-DIA-SCR-02:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-DIA-SCR-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 33.985278
+    datum:
+    - 0.0
+    - 0.0
+    - 33.985278
+  CLA-S06-SIM-MARK-02:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S06-SIM-MARK-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 34.118
+    datum:
+    - 0.0
+    - 0.0
+    - 34.118
+    fit_point: 1.0
+  CLA-L04-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.01
+    vertical_size: 0.01
+    centre:
+    - 0.0
+    - 0.0
+    - 34.118
+    datum:
+    - 0.0
+    - 0.0
+    - 34.118
+  CLA-L04-LIN-CAV-01:
+    type: cavity
+    length: 4.06667
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    field_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/TWS_S-DL.hdf5
+    wakefield_definition: /home/xkc85723/Documents/masterlattice/MasterLattice/Data_Files/SzSx5um10mm.hdf5
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 32000000.0
+    crest: 88.8
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 0
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 20
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0495
+    cell_length: 0.0333333333333333
+    frequency: 2998500000.0
+    n_cells: 121
+    Structure_Type: TravellingWave
+    phase: -45
+    lsc_cutoff_high:
+    - 0.2
+    - 0.25
+    lsc_enable: true
+    datum:
+    - 0.0
+    - 0.0
+    - 38.22627
+    centre:
+    - 0.0
+    - 0.0
+    - 36.192935
+    structure_type: TravellingWave
+  CLA-S07-SIM-START-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-SIM-START-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 38.2678
+    datum:
+    - 0.0
+    - 0.0
+    - 38.2678
+    fit_point: 1.0
+  CLA-S07-SIM-APER-01:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.017
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 38.2678
+    datum:
+    - 0.0
+    - 0.0
+    - 38.2678
+  CLA-S07-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-BPM-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 38.372988
+    datum:
+    - 0.0
+    - 0.0
+    - 38.477988
+  CLA-S07-MAG-HVCOR-01:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 38.653487
+    datum:
+    - 0.0
+    - 0.0
+    - 38.678487
+  CLA-S07-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.362686
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 38.852988
+    datum:
+    - 0.0
+    - 0.0
+    - 38.927988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 39.0278
+    datum:
+    - 0.0
+    - 0.0
+    - 39.0278
+    fit_point: 1.0
+  CLA-S07-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.116033
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 39.302988
+    datum:
+    - 0.0
+    - 0.0
+    - 39.377988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-BPM-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 39.582988
+    datum:
+    - 0.0
+    - 0.0
+    - 39.687988
+  CLA-S07-MAG-HVCOR-02:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 39.813464
+    datum:
+    - 0.0
+    - 0.0
+    - 39.838464
+  CLA-S07-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 39.931277
+    datum:
+    - 0.0
+    - 0.0
+    - 39.931277
+  CLA-S07-SIM-TDC-01-APER:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 0.005
+    vertical_size: 0.005
+    centre:
+    - 0.0
+    - 0.0
+    - 40.0078
+    datum:
+    - 0.0
+    - 0.0
+    - 40.0078
+  CLA-S07-DIA-TDC-01:
+    type: rf_deflecting_cavity
+    length: 0.45
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    tcolumn: '"t"'
+    zcolumn: '"z"'
+    ezcolumn: '"Ez"'
+    wxcolumn: '"Wx"'
+    wycolumn: '"Wy"'
+    wzcolumn: '"Wz"'
+    wakefieldcolumstring: '"z", "Wx", "Wy", "Wz"'
+    field_amplitude: 0.0
+    crest: 0.0
+    field_reference_position: start
+    change_p0: 1
+    n_kicks: 10
+    end1_focus: 1
+    end2_focus: 1
+    body_focus_model: SRS
+    lsc_bins: 100
+    current_bins: 0
+    interpolate_current_bins: 1
+    smooth_current_bins: 1
+    coupling_cell_length: 0.0
+    cell_length: 0.0333333333333333
+    frequency: 2998500000.0
+    n_cells: 13
+    tilt_angle: 1.5708
+    phase: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 40.5795
+    datum:
+    - 0.0
+    - 0.0
+    - 40.8045
+  CLA-S07-SIM-APER-02:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 1.0
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 41.1078
+    datum:
+    - 0.0
+    - 0.0
+    - 41.1078
+  CLA-S07-MAG-HVCOR-03:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 41.2328
+    datum:
+    - 0.0
+    - 0.0
+    - 41.2578
+  CLA-S07-DIA-BPM-03:
+    type: beam_position_monitor
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-BPM-03.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 41.307988
+    datum:
+    - 0.0
+    - 0.0
+    - 41.307988
+  CLA-S07-MAG-QUAD-03:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.190473
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 41.482988
+    datum:
+    - 0.0
+    - 0.0
+    - 41.557988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-MAG-QUAD-04:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.169476
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 42.232988
+    datum:
+    - 0.0
+    - 0.0
+    - 42.307988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-DIA-BPM-04:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-BPM-04.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 42.512988
+    datum:
+    - 0.0
+    - 0.0
+    - 42.617988
+  CLA-S07-DIA-SCR-02:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-SCR-02.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 42.661277
+    datum:
+    - 0.0
+    - 0.0
+    - 42.661277
+  CLA-S07-MAG-QUAD-05:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.154365
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 42.912988
+    datum:
+    - 0.0
+    - 0.0
+    - 42.987988
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-MAG-HVCOR-04:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 43.183528
+    datum:
+    - 0.0
+    - 0.0
+    - 43.208528
+  CLA-S07-DIA-CDR-01:
+    type: bunch_length_monitor
+    length: 0.3
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-CDR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 43.375
+    datum:
+    - 0.0
+    - 0.0
+    - 43.525
+    fit_point: 1.0
+  CLA-S07-MAG-QUAD-06:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 0.019829
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 43.66296
+    datum:
+    - 0.0
+    - 0.0
+    - 43.73796
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-DCP-SCR-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DCP-SCR-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 43.9318
+    datum:
+    - 0.0
+    - 0.0
+    - 43.9318
+  CLA-S07-SIM-APER-03:
+    type: aperture
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    shape: rectangular
+    horizontal_size: 1.0
+    vertical_size: 0.017
+    centre:
+    - 0.0
+    - 0.0
+    - 44.5278
+    datum:
+    - 0.0
+    - 0.0
+    - 44.5278
+  CLA-S07-DIA-BPM-05:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-S07-DIA-BPM-05.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 44.63296
+    datum:
+    - 0.0
+    - 0.0
+    - 44.73796
+  CLA-S07-MAG-QUAD-07:
+    type: quadrupole
+    length: 0.15
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: -0.225272
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - 0.0
+    - 0.0
+    - 44.91296
+    datum:
+    - 0.0
+    - 0.0
+    - 44.98796
+    isr_enable: true
+    sr_enable: true
+    bore: 0.037
+  CLA-S07-MAG-HVCOR-05:
+    type: kicker
+    length: 0.05
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - 0.0
+    - 0.0
+    - 45.1373
+    datum:
+    - 0.0
+    - 0.0
+    - 45.1623
+  CLA-SP3-SIM-MARK-01:
+    type: marker
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-SP3-SIM-MARK-01.sdds
+    centre:
+    - 0.0
+    - 0.0
+    - 45.287822
+    datum:
+    - 0.0
+    - 0.0
+    - 45.287822
+    fit_point: 1.0
+  CLA-SP3-MAG-DIP-01:
+    type: dipole
+    length: 0.4
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.0
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.523599
+    width: 0.2
+    entrance_edge_angle: 0.0
+    exit_edge_angle: 0.0
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    centre:
+    - 0.0
+    - 0.0
+    - 45.492521
+    datum:
+    - -0.102349
+    - 0.0
+    - 45.6697948
+  CLA-SP3-MAG-HVCOR-01:
+    type: kicker
+    length: 0.1
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    csr_bins: 100
+    deltaL: 0
+    csr_enable: 1
+    isr_enable: true
+    n_kicks: 8
+    sr_enable: true
+    integration_order: 4
+    nonlinear: 1
+    smoothing_half_width: 1
+    edge_order: 2
+    edge1_effects: 1
+    edge2_effects: 1
+    angle: 0.0
+    width: 0.2
+    entrance_edge_angle: angle
+    exit_edge_angle: angle
+    plane: horizontal
+    strength: 0.0
+    gap: 0.0001
+    half_gap: 0.016
+    edge_field_integral: 0.5
+    horizontal_kick: 0.0
+    vertical_kick: 0.0
+    centre:
+    - -0.245001
+    - 0.0
+    - 45.91687518
+    datum:
+    - -0.270001
+    - 0.0
+    - 45.96017645009441
+  CLA-SP3-DIA-BPM-01:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-SP3-DIA-BPM-01.sdds
+    centre:
+    - -0.3548355
+    - 0.0
+    - 46.1071141
+    datum:
+    - -0.4073355
+    - 0.0
+    - 46.1980468
+  CLA-SP3-DIA-SCR-01:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-SP3-DIA-SCR-01.sdds
+    centre:
+    - -0.4788055
+    - 0.0
+    - 46.32183645
+    datum:
+    - -0.4788055
+    - 0.0
+    - 46.32183645
+  CLA-SP3-MAG-QUAD-01:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 1.59249
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - -0.604833
+    - 0.0
+    - 46.5401225
+    datum:
+    - -0.642333
+    - 0.0
+    - 46.6050744
+    bore: 0.037
+  CLA-SP3-MAG-QUAD-02:
+    type: quadrupole
+    length: 0.162
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    k1l: 1.59249
+    n_kicks: 4
+    field_reference_position: middle
+    fringe_field_coefficient: 0.0
+    strength_errors:
+    - 0
+    gradient: 0.0
+    scale_field: false
+    multipoles:
+    - 0
+    smooth: 2
+    centre:
+    - -0.929743
+    - 0.0
+    - 47.1028831
+    datum:
+    - -0.967243
+    - 0.0
+    - 47.167835
+    bore: 0.037
+  CLA-SP3-DIA-BPM-02:
+    type: beam_position_monitor
+    length: 0.21
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-SP3-DIA-BPM-02.sdds
+    centre:
+    - -1.06939
+    - 0.0
+    - 47.3447588
+    datum:
+    - -1.12189
+    - 0.0
+    - 47.4356915
+  CLA-SP3-DIA-SCR-02:
+    type: screen
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    output_filename: CLA-SP3-DIA-SCR-02.sdds
+    centre:
+    - -1.1433905
+    - 0.0
+    - 47.4729314
+    datum:
+    - -1.1433905
+    - 0.0
+    - 47.4729314
+  CLA-SP3-DIA-FCUP-01:
+    type: faraday_cup
+    length: 0.0
+    position_errors:
+    - 0
+    - 0
+    - 0
+    rotation_errors:
+    - 0
+    - 0
+    - 0
+    global_rotation:
+    - 0.0
+    - 0.0
+    - 0.523599
+    rotation:
+    - 0
+    - 0
+    - 0
+    starting_rotation: 0.0
+    starting_offset:
+    - 0
+    - 0
+    - 0
+    centre:
+    - -1.442333
+    - 0.0
+    - 47.990715
+    datum:
+    - -1.442333
+    - 0.0
+    - 47.990715

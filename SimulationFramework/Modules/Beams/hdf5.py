@@ -120,13 +120,13 @@ def write_HDF5_beam_file(
             massvector = np.full(len(self.x), constants.electron_mass)
         array = np.array(
             [
-                self.x + xoffset,
-                self.y + yoffset,
-                self.z + zoffset,
+                self.x + UnitValue(xoffset, units="m"),
+                self.y + UnitValue(yoffset, units="m"),
+                self.z + UnitValue(zoffset, units="m"),
                 self.cpx,
                 self.cpy,
                 self.cpz,
-                self.t + toffset,
+                self.t + UnitValue(toffset, units="s"),
                 massvector,
                 chargevector,
                 self.nmacro,

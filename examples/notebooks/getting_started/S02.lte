@@ -1,0 +1,783 @@
+START: charge, total = 2.5000000000000007e-10;
+CLA-S02-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_01: lscdrift, l = 3e-06, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-HVCOR-01: kicker, l = 0.076607, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_02: lscdrift, l = 0.10326, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-QUAD-01: kquad, l = 0.1007, n_slices = 4,&
+k1 = -0.28168818272095336, isr = 1, synch_rad = 1, bore = 0.037;
+CLA-S02-DIA-BPM-01-drift-01: lscdrift, l = 0.02125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-BPM-01: watch, filename = CLA-S02-DIA-BPM-01.sdds;
+CLA-S02-DIA-BPM-01-drift-02: lscdrift, l = 0.02125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_03: lscdrift, l = 0.2568, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-QUAD-02: kquad, l = 0.1007, n_slices = 4,&
+k1 = 0.38300496524329697, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_04: lscdrift, l = 0.1116, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-SCR-01: watch, filename = CLA-S02-DIA-SCR-01.sdds;
+S02_DRIFT_05: lscdrift, l = 0.13251, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-HVCOR-02: kicker, l = 0.03, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_06: lscdrift, l = 0.09201, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-ECOL-01: ecol, l = 0.35, x_max = 0.01, y_max = 0.01;
+CLA-S02-SIM-APER-02: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_07: lscdrift, l = 0.10038, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-HVCOR-03: kicker, l = 0.03, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_08: lscdrift, l = 0.1861, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-SCR-02: watch, filename = CLA-S02-DIA-SCR-02.sdds;
+S02_DRIFT_09: lscdrift, l = 0.1667, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-QUAD-03: kquad, l = 0.1007, n_slices = 4,&
+k1 = 0.30114796425024826, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_10: lscdrift, l = 0.2993, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-QUAD-04: kquad, l = 0.1007, n_slices = 4,&
+k1 = 0.8485948361469713, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_11: lscdrift, l = 0.71245, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-QUAD-05: kquad, l = 0.1007, n_slices = 4,&
+k1 = 0.7380417080436942, isr = 1, synch_rad = 1, bore = 0.037;
+CLA-S02-DIA-BPM-02-drift-01: lscdrift, l = 0.025325, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-BPM-02: watch, filename = CLA-S02-DIA-BPM-02.sdds;
+CLA-S02-DIA-BPM-02-drift-02: lscdrift, l = 0.025325, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_12: lscdrift, l = 0.0433, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-DIA-SCR-03: watch, filename = CLA-S02-DIA-SCR-03.sdds;
+S02_DRIFT_13: lscdrift, l = 0.060843, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S02-MAG-HVCOR-04: kicker, l = 0.076607, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_14: lscdrift, l = 0.02645, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L02-SIM-APER-01: maxamp, x_max = 0.01, y_max = 0.01;
+S02_DRIFT_15: lscdrift, l = 0.120968, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L02-LIN-CAV-01: rfcw, l = 4.06667, tcolumn = "t", wxcolumn = "Wx",&
+wycolumn = "Wy", wzcolumn = "Wz", wakefile = "SzSx5um10mm.sdds",&
+wakefile = "SzSx5um10mm.sdds", wakefile = "SzSx5um10mm.sdds",&
+volt = 87539819.51089449, change_p0 = 1, n_kicks = 360, end1_focus = 1,&
+end2_focus = 1, body_focus_model = SRS, lsc_bins = 20, n_bins = 0,&
+interpolate = 1, smoothing = 1, cell_length = 0.0333333333333333,&
+freq = 2998500000.0, phase = 67, lsc = 1;
+S02_DRIFT_16: lscdrift, l = 0.032175, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L02-SIM-APER-02: maxamp, x_max = 0.01, y_max = 0.01;
+S02_DRIFT_17: lscdrift, l = 0.0009, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_18: lscdrift, l = 0.19, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-DIA-BPM-01-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-DIA-BPM-01: watch, filename = CLA-S03-DIA-BPM-01.sdds;
+CLA-S03-DIA-BPM-01-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_19: lscdrift, l = 0.088, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-MAG-QUAD-01: kquad, l = 0.162, n_slices = 4,&
+k1 = -0.9720617283950617, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_20: lscdrift, l = 0.225, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_21: lscdrift, l = 0.0883, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S03-DIA-SCR-01: watch, filename = CLA-S03-DIA-SCR-01.sdds;
+S02_DRIFT_22: lscdrift, l = 0.1395, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L03-SIM-APER-01: maxamp, x_max = 0.01, y_max = 0.01;
+S02_DRIFT_23: lscdrift, l = 0.114969, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L03-LIN-CAV-01: rfcw, l = 4.06667, tcolumn = "t", wxcolumn = "Wx",&
+wycolumn = "Wy", wzcolumn = "Wz", wakefile = "SzSx5um10mm.sdds",&
+wakefile = "SzSx5um10mm.sdds", wakefile = "SzSx5um10mm.sdds",&
+volt = 78785837.55980504, change_p0 = 1, n_kicks = 360, end1_focus = 1,&
+end2_focus = 1, body_focus_model = SRS, lsc_bins = 20, n_bins = 0,&
+interpolate = 1, smoothing = 1, cell_length = 0.0333333333333333,&
+freq = 2998500000.0, phase = 82, lsc = 1;
+S02_DRIFT_24: lscdrift, l = 0.04163, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+CLA-S04-SIM-MARK-01: watch, filename = CLA-S04-SIM-MARK-01.sdds;
+S02_DRIFT_25: lscdrift, l = 0.128568, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_26: lscdrift, l = 0.0395, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-01: kquad, l = 0.162, n_slices = 4, k1 = 0.6217962962962963,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_27: lscdrift, l = 0.0505, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-ICT-01: moni, l = 0.05;
+CLA-S04-DIA-BPM-01-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-01: watch, filename = CLA-S04-DIA-BPM-01.sdds;
+CLA-S04-DIA-BPM-01-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_28: lscdrift, l = 0.0475, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-02: kquad, l = 0.162, n_slices = 4,&
+k1 = 0.16633395061728395, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_29: lscdrift, l = 0.213295, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-SCR-01: watch, filename = CLA-S04-DIA-SCR-01.sdds;
+S02_DRIFT_30: lscdrift, l = 0.124705, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-03: kquad, l = 0.162, n_slices = 4,&
+k1 = -0.3877537037037037, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_31: lscdrift, l = 0.049932, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-02-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-02: watch, filename = CLA-S04-DIA-BPM-02.sdds;
+CLA-S04-DIA-BPM-02-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_32: lscdrift, l = 0.078068, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-04: kquad, l = 0.162, n_slices = 4,&
+k1 = -0.20838271604938274, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_33: lscdrift, l = 0.2245, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-HVCOR-02: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_34: lscdrift, l = 0.078832, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-SCR-02: watch, filename = CLA-S04-DIA-SCR-02.sdds;
+S02_DRIFT_35: lscdrift, l = 0.779968, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-SCR-03: watch, filename = CLA-S04-DIA-SCR-03.sdds;
+S02_DRIFT_36: lscdrift, l = 0.151632, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-HVCOR-03: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_37: lscdrift, l = 0.05, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-03-drift-01: lscdrift, l = 0.0175, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-03: watch, filename = CLA-S04-DIA-BPM-03.sdds;
+CLA-S04-DIA-BPM-03-drift-02: lscdrift, l = 0.0175, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_38: lscdrift, l = 0.715068, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-04-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-04: watch, filename = CLA-S04-DIA-BPM-04.sdds;
+CLA-S04-DIA-BPM-04-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_39: lscdrift, l = 0.0433, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-SCR-04: watch, filename = CLA-S04-DIA-SCR-04.sdds;
+S02_DRIFT_40: lscdrift, l = 0.826632, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-SCR-05: watch, filename = CLA-S04-DIA-SCR-05.sdds;
+S02_DRIFT_41: lscdrift, l = 0.138068, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-05: kquad, l = 0.162, n_slices = 4, k1 = 0.2536351851851852,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_42: lscdrift, l = 0.0895, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-HVCOR-04: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_43: lscdrift, l = 0.1985, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-06: kquad, l = 0.162, n_slices = 4, k1 = 0.4332469135802469,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_44: lscdrift, l = 0.08, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-05-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-05: watch, filename = CLA-S04-DIA-BPM-05.sdds;
+CLA-S04-DIA-BPM-05-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_45: lscdrift, l = 0.048, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-07: kquad, l = 0.162, n_slices = 4, k1 = 0.5218067901234568,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_46: lscdrift, l = 0.1495, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-HVCOR-05: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_47: lscdrift, l = 0.1485, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-MAG-QUAD-08: kquad, l = 0.162, n_slices = 4,&
+k1 = -0.2687901234567901, isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_48: lscdrift, l = 0.05, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-06-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-DIA-BPM-06: watch, filename = CLA-S04-DIA-BPM-06.sdds;
+CLA-S04-DIA-BPM-06-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_49: lscdrift, l = 0.071932, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S04-SIM-MARK-02: watch, filename = CLA-S04-SIM-MARK-02.sdds;
+CLA-L4H-SIM-APER-01: maxamp, x_max = 0.0041195, y_max = 0.0041195;
+S02_DRIFT_50: lscdrift, l = 0.121146, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L4H-LIN-CAV-01: rfcw, l = 0.75, tcolumn = "t", wxcolumn = "Wx",&
+wycolumn = "Wy", wzcolumn = "Wz", wakefile = "SzSx20um25mmxband.sdds",&
+wakefile = "SzSx20um25mmxband.sdds", wakefile = "SzSx20um25mmxband.sdds",&
+volt = 12841054.009924041, change_p0 = 1, n_kicks = 261, end1_focus = 1,&
+end2_focus = 1, body_focus_model = SRS, lsc_bins = 20, n_bins = 0,&
+interpolate = 1, smoothing = 1, cell_length = 0.00833333,&
+freq = 11994000000.0, phase = 274, lsc = 1;
+S02_DRIFT_51: lscdrift, l = 0.1075, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_52: lscdrift, l = 0.231068, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-MAG-QUAD-01: kquad, l = 0.162, n_slices = 4, k1 = -0.781820987654321,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_53: lscdrift, l = 0.0467, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-ICT-01: moni, l = 0.05;
+S02_DRIFT_54: lscdrift, l = 0.113932, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_55: lscdrift, l = 0.039238, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-BPM-01-drift-01: lscdrift, l = 0.0105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-BPM-01: watch, filename = CLA-S05-DIA-BPM-01.sdds;
+CLA-S05-DIA-BPM-01-drift-02: lscdrift, l = 0.0105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_56: lscdrift, l = 0.043262, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-SCR-01: watch, filename = CLA-S05-DIA-SCR-01.sdds;
+S02_DRIFT_57: lscdrift, l = 0.047728, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-BAM-01: moni, l = 0.08;
+S02_DRIFT_58: lscdrift, l = 0.09614, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-MAG-QUAD-02: kquad, l = 0.162, n_slices = 4, k1 = 1.2923827160493826,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_59: lscdrift, l = 0.05, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-BPM-02-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-DIA-BPM-02: watch, filename = CLA-S05-DIA-BPM-02.sdds;
+CLA-S05-DIA-BPM-02-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_60: lscdrift, l = 3.2e-05, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S05-SIM-MARK-01: watch, filename = CLA-S05-SIM-MARK-01.sdds;
+S02_DRIFT_61: lscdrift, l = 0.239977, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-MAG-DIP-01: csrcsbend, l = 0.200981, bins = 100, csr = 1, isr = 1,&
+n_slices = 8, synch_rad = 1, integration_order = 4, nonlinear = 1,&
+sg_halfwidth = 1, edge_order = 2, edge1_effects = 1, edge2_effects = 1,&
+angle = 0.09, e1 = 0, e2 = 0, hgap = 0.005, fint = 0.4, k1 = 0;
+S02_DRIFT_62: lscdrift, l = 1.510013, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-MAG-DIP-02: csrcsbend, l = 0.200981, bins = 100, csr = 1, isr = 1,&
+n_slices = 8, synch_rad = 1, integration_order = 4, nonlinear = 1,&
+sg_halfwidth = 1, edge_order = 2, edge1_effects = 1, edge2_effects = 1,&
+angle = -0.09, e1 = 0, e2 = 0, hgap = 0.005, fint = 0.4, k1 = 0;
+S02_DRIFT_63: lscdrift, l = 0.433277, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-MAG-VCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_64: lscdrift, l = 0.025148, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-DIA-BPM-01-drift-01: lscdrift, l = 0.0156, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-DIA-BPM-01: watch, filename = CLA-VBC-DIA-BPM-01.sdds;
+CLA-VBC-DIA-BPM-01-drift-02: lscdrift, l = 0.0156, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_65: lscdrift, l = 0.029852, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-DIA-RCOL-01: ecol, l = 0.48, x_max = 1.0, y_max = 1.0;
+S02_DRIFT_66: lscdrift, l = 0.0255, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-DIA-SCR-01: watch, filename = CLA-VBC-DIA-SCR-01.sdds;
+S02_DRIFT_67: lscdrift, l = 0.478924, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-MAG-DIP-03: csrcsbend, l = 0.200981, bins = 100, csr = 1, isr = 1,&
+n_slices = 8, synch_rad = 1, integration_order = 4, nonlinear = 1,&
+sg_halfwidth = 1, edge_order = 2, edge1_effects = 1, edge2_effects = 1,&
+angle = -0.09, e1 = 0, e2 = 0, hgap = 0.005, fint = 0.4, k1 = 0;
+S02_DRIFT_68: lscdrift, l = 1.510013, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-MAG-DIP-04: csrcsbend, l = 0.200981, bins = 100, csr = 1, isr = 1,&
+n_slices = 8, synch_rad = 1, integration_order = 4, nonlinear = 1,&
+sg_halfwidth = 1, edge_order = 2, edge1_effects = 1, edge2_effects = 1,&
+angle = 0.09, e1 = 0, e2 = 0, hgap = 0.005, fint = 0.4, k1 = 0;
+S02_DRIFT_69: lscdrift, l = 0.10186, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-VBC-SIM-MARK-01: watch, filename = CLA-VBC-SIM-MARK-01.sdds;
+CLA-S06-SIM-MARK-01: watch, filename = CLA-S06-SIM-MARK-01.sdds;
+CLA-S06-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_70: lscdrift, l = 0.315, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_71: lscdrift, l = 0.025188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-BPM-01-drift-01: lscdrift, l = 0.01, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-BPM-01: watch, filename = CLA-S06-DIA-BPM-01.sdds;
+CLA-S06-DIA-BPM-01-drift-02: lscdrift, l = 0.01, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_72: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-MAG-QUAD-01: kquad, l = 0.15, n_slices = 4, k1 = 1.0505, isr = 1,&
+synch_rad = 1, bore = 0.037;
+S02_DRIFT_73: lscdrift, l = 0.136, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-BAM-01: moni, l = 0.08;
+S02_DRIFT_74: lscdrift, l = 0.105312, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-EOM-01: moni, l = 0.2885;
+S02_DRIFT_75: lscdrift, l = 0.100188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-MAG-QUAD-02: kquad, l = 0.15, n_slices = 4, k1 = -0.4108386666666667,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_76: lscdrift, l = 0.137246, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-SCR-01: watch, filename = CLA-S06-DIA-SCR-01.sdds;
+S02_DRIFT_77: lscdrift, l = 0.892766, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-MAG-HVCOR-02: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_78: lscdrift, l = 0.048978, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-BPM-02-drift-01: lscdrift, l = 0.0125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-BPM-02: watch, filename = CLA-S06-DIA-BPM-02.sdds;
+CLA-S06-DIA-BPM-02-drift-02: lscdrift, l = 0.0125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_79: lscdrift, l = 0.0433, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-DIA-SCR-02: watch, filename = CLA-S06-DIA-SCR-02.sdds;
+S02_DRIFT_80: lscdrift, l = 0.132722, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S06-SIM-MARK-02: watch, filename = CLA-S06-SIM-MARK-02.sdds;
+CLA-L04-SIM-APER-01: maxamp, x_max = 0.01, y_max = 0.01;
+S02_DRIFT_81: lscdrift, l = 0.11489, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-L04-LIN-CAV-01: rfcw, l = 4.06667, tcolumn = "t", wxcolumn = "Wx",&
+wycolumn = "Wy", wzcolumn = "Wz", wakefile = "SzSx5um10mm.sdds",&
+wakefile = "SzSx5um10mm.sdds", wakefile = "SzSx5um10mm.sdds",&
+volt = 93375807.47828746, change_p0 = 1, n_kicks = 360, end1_focus = 1,&
+end2_focus = 1, body_focus_model = SRS, lsc_bins = 20, n_bins = 0,&
+interpolate = 1, smoothing = 1, cell_length = 0.0333333333333333,&
+freq = 2998500000.0, phase = 135, lsc = 1;
+S02_DRIFT_82: lscdrift, l = 0.04153, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-SIM-START-01: watch, filename = CLA-S07-SIM-START-01.sdds;
+CLA-S07-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S02_DRIFT_83: lscdrift, l = 0.000188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-01-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-01: watch, filename = CLA-S07-DIA-BPM-01.sdds;
+CLA-S07-DIA-BPM-01-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_84: lscdrift, l = 0.150499, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_85: lscdrift, l = 0.099501, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-01: kquad, l = 0.15, n_slices = 4, k1 = 2.4179066666666666,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_86: lscdrift, l = 0.099812, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-SIM-MARK-01: watch, filename = CLA-S07-SIM-MARK-01.sdds;
+S02_DRIFT_87: lscdrift, l = 0.200188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-02: kquad, l = 0.15, n_slices = 4, k1 = -0.7735533333333333,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_88: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-02-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-02: watch, filename = CLA-S07-DIA-BPM-02.sdds;
+CLA-S07-DIA-BPM-02-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_89: lscdrift, l = 0.100476, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-HVCOR-02: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_90: lscdrift, l = 0.092813, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-SCR-01: watch, filename = CLA-S07-DIA-SCR-01.sdds;
+S02_DRIFT_91: lscdrift, l = 0.076523, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-SIM-TDC-01-APER: maxamp, x_max = 0.005, y_max = 0.005;
+S02_DRIFT_92: lscdrift, l = 0.3467, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-TDC-01: rfdf, l = 0.45, voltage = 0.0, n_kicks = 0,&
+frequency = 2998500000.0, tilt = 1.5708, phase = 0.0;
+S02_DRIFT_93: lscdrift, l = 0.3033, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-SIM-APER-02: maxamp, x_max = 1.0, y_max = 0.017;
+S02_DRIFT_94: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-HVCOR-03: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_95: lscdrift, l = 0.050188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-03: watch, filename = CLA-S07-DIA-BPM-03.sdds;
+S02_DRIFT_96: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-03: kquad, l = 0.15, n_slices = 4, k1 = -1.2698200000000002,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_97: lscdrift, l = 0.6, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-04: kquad, l = 0.15, n_slices = 4, k1 = -1.12984, isr = 1,&
+synch_rad = 1, bore = 0.037;
+S02_DRIFT_98: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-04-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-04: watch, filename = CLA-S07-DIA-BPM-04.sdds;
+CLA-S07-DIA-BPM-04-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_99: lscdrift, l = 0.043289, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-SCR-02: watch, filename = CLA-S07-DIA-SCR-02.sdds;
+S02_DRIFT_100: lscdrift, l = 0.176711, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-05: kquad, l = 0.15, n_slices = 4, k1 = 1.0291000000000001,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_101: lscdrift, l = 0.17054, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-HVCOR-04: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_102: lscdrift, l = 0.016472, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-CDR-01: moni, l = 0.3;
+S02_DRIFT_103: lscdrift, l = 0.06296, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-06: kquad, l = 0.15, n_slices = 4, k1 = 0.13219333333333333,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_104: lscdrift, l = 0.19384, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DCP-SCR-01: watch, filename = CLA-S07-DCP-SCR-01.sdds;
+S02_DRIFT_105: lscdrift, l = 0.596, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-SIM-APER-03: maxamp, x_max = 1.0, y_max = 0.017;
+S02_DRIFT_106: lscdrift, l = 0.00016, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-05-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-DIA-BPM-05: watch, filename = CLA-S07-DIA-BPM-05.sdds;
+CLA-S07-DIA-BPM-05-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_107: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-QUAD-07: kquad, l = 0.15, n_slices = 4, k1 = -1.5018133333333334,&
+isr = 1, synch_rad = 1, bore = 0.037;
+S02_DRIFT_108: lscdrift, l = 0.12434, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-S07-MAG-HVCOR-05: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_109: lscdrift, l = 0.125522, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-SIM-MARK-01: watch, filename = CLA-SP3-SIM-MARK-01.sdds;
+S02_DRIFT_110: lscdrift, l = 1e-06, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-MAG-DIP-01: csrcsbend, l = 0.4, bins = 100, csr = 1, isr = 1,&
+n_slices = 8, synch_rad = 1, integration_order = 4, nonlinear = 1,&
+sg_halfwidth = 1, edge_order = 2, edge1_effects = 1, edge2_effects = 1,&
+angle = 0.523599, e1 = 0, e2 = 0, hgap = 0.016, fint = 0.5, k1 = 0;
+S02_DRIFT_111: lscdrift, l = 0.235304, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-MAG-HVCOR-01: kicker, l = 0.1, hkick = 0.0, vkick = 0.0;
+S02_DRIFT_112: lscdrift, l = 0.064669, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-BPM-01-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-BPM-01: watch, filename = CLA-SP3-DIA-BPM-01.sdds;
+CLA-SP3-DIA-BPM-01-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_113: lscdrift, l = 0.14294, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-SCR-01: watch, filename = CLA-SP3-DIA-SCR-01.sdds;
+S02_DRIFT_114: lscdrift, l = 0.171055, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-MAG-QUAD-01: kquad, l = 0.162, n_slices = 4, k1 = 9.830185185185185,&
+bore = 0.037;
+S02_DRIFT_115: lscdrift, l = 0.48782, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-MAG-QUAD-02: kquad, l = 0.162, n_slices = 4, k1 = 9.830185185185185,&
+bore = 0.037;
+S02_DRIFT_116: lscdrift, l = 0.093294, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-BPM-02-drift-01: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-BPM-02: watch, filename = CLA-SP3-DIA-BPM-02.sdds;
+CLA-SP3-DIA-BPM-02-drift-02: lscdrift, l = 0.105, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+S02_DRIFT_117: lscdrift, l = 0.043001, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-SCR-02: watch, filename = CLA-SP3-DIA-SCR-02.sdds;
+S02_DRIFT_118: lscdrift, l = 0.597885, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1, high_frequency_cutoff1 = -1,&
+low_frequency_cutoff0 = -1, low_frequency_cutoff1 = -1;
+CLA-SP3-DIA-FCUP-01: moni, l = 0.0;
+end: watch, filename = CLA-SP3-DIA-FCUP-01.sdds;
+S02: Line=(START, CLA-S02-SIM-APER-01, S02_DRIFT_01, &
+CLA-S02-MAG-HVCOR-01, S02_DRIFT_02, CLA-S02-MAG-QUAD-01, &
+CLA-S02-DIA-BPM-01-drift-01, CLA-S02-DIA-BPM-01, &
+CLA-S02-DIA-BPM-01-drift-02, S02_DRIFT_03, &
+CLA-S02-MAG-QUAD-02, S02_DRIFT_04, CLA-S02-DIA-SCR-01, &
+S02_DRIFT_05, CLA-S02-MAG-HVCOR-02, S02_DRIFT_06, &
+CLA-S02-DIA-ECOL-01, CLA-S02-SIM-APER-02, S02_DRIFT_07, &
+CLA-S02-MAG-HVCOR-03, S02_DRIFT_08, CLA-S02-DIA-SCR-02, &
+S02_DRIFT_09, CLA-S02-MAG-QUAD-03, S02_DRIFT_10, &
+CLA-S02-MAG-QUAD-04, S02_DRIFT_11, CLA-S02-MAG-QUAD-05, &
+CLA-S02-DIA-BPM-02-drift-01, CLA-S02-DIA-BPM-02, &
+CLA-S02-DIA-BPM-02-drift-02, S02_DRIFT_12, &
+CLA-S02-DIA-SCR-03, S02_DRIFT_13, CLA-S02-MAG-HVCOR-04, &
+S02_DRIFT_14, CLA-L02-SIM-APER-01, S02_DRIFT_15, &
+CLA-L02-LIN-CAV-01, S02_DRIFT_16, CLA-L02-SIM-APER-02, &
+S02_DRIFT_17, CLA-S03-SIM-APER-01, S02_DRIFT_18, &
+CLA-S03-DIA-BPM-01-drift-01, CLA-S03-DIA-BPM-01, &
+CLA-S03-DIA-BPM-01-drift-02, S02_DRIFT_19, &
+CLA-S03-MAG-QUAD-01, S02_DRIFT_20, CLA-S03-MAG-HVCOR-01, &
+S02_DRIFT_21, CLA-S03-DIA-SCR-01, S02_DRIFT_22, &
+CLA-L03-SIM-APER-01, S02_DRIFT_23, CLA-L03-LIN-CAV-01, &
+S02_DRIFT_24, CLA-S04-SIM-APER-01, CLA-S04-SIM-MARK-01, &
+S02_DRIFT_25, CLA-S04-MAG-HVCOR-01, S02_DRIFT_26, &
+CLA-S04-MAG-QUAD-01, S02_DRIFT_27, CLA-S04-DIA-ICT-01, &
+CLA-S04-DIA-BPM-01-drift-01, CLA-S04-DIA-BPM-01, &
+CLA-S04-DIA-BPM-01-drift-02, S02_DRIFT_28, &
+CLA-S04-MAG-QUAD-02, S02_DRIFT_29, CLA-S04-DIA-SCR-01, &
+S02_DRIFT_30, CLA-S04-MAG-QUAD-03, S02_DRIFT_31, &
+CLA-S04-DIA-BPM-02-drift-01, CLA-S04-DIA-BPM-02, &
+CLA-S04-DIA-BPM-02-drift-02, S02_DRIFT_32, &
+CLA-S04-MAG-QUAD-04, S02_DRIFT_33, CLA-S04-MAG-HVCOR-02, &
+S02_DRIFT_34, CLA-S04-DIA-SCR-02, S02_DRIFT_35, &
+CLA-S04-DIA-SCR-03, S02_DRIFT_36, CLA-S04-MAG-HVCOR-03, &
+S02_DRIFT_37, CLA-S04-DIA-BPM-03-drift-01, &
+CLA-S04-DIA-BPM-03, CLA-S04-DIA-BPM-03-drift-02, &
+S02_DRIFT_38, CLA-S04-DIA-BPM-04-drift-01, &
+CLA-S04-DIA-BPM-04, CLA-S04-DIA-BPM-04-drift-02, &
+S02_DRIFT_39, CLA-S04-DIA-SCR-04, S02_DRIFT_40, &
+CLA-S04-DIA-SCR-05, S02_DRIFT_41, CLA-S04-MAG-QUAD-05, &
+S02_DRIFT_42, CLA-S04-MAG-HVCOR-04, S02_DRIFT_43, &
+CLA-S04-MAG-QUAD-06, S02_DRIFT_44, &
+CLA-S04-DIA-BPM-05-drift-01, CLA-S04-DIA-BPM-05, &
+CLA-S04-DIA-BPM-05-drift-02, S02_DRIFT_45, &
+CLA-S04-MAG-QUAD-07, S02_DRIFT_46, CLA-S04-MAG-HVCOR-05, &
+S02_DRIFT_47, CLA-S04-MAG-QUAD-08, S02_DRIFT_48, &
+CLA-S04-DIA-BPM-06-drift-01, CLA-S04-DIA-BPM-06, &
+CLA-S04-DIA-BPM-06-drift-02, S02_DRIFT_49, &
+CLA-S04-SIM-MARK-02, CLA-L4H-SIM-APER-01, S02_DRIFT_50, &
+CLA-L4H-LIN-CAV-01, S02_DRIFT_51, CLA-S05-SIM-APER-01, &
+S02_DRIFT_52, CLA-S05-MAG-QUAD-01, S02_DRIFT_53, &
+CLA-S05-DIA-ICT-01, S02_DRIFT_54, CLA-S05-MAG-HVCOR-01, &
+S02_DRIFT_55, CLA-S05-DIA-BPM-01-drift-01, &
+CLA-S05-DIA-BPM-01, CLA-S05-DIA-BPM-01-drift-02, &
+S02_DRIFT_56, CLA-S05-DIA-SCR-01, S02_DRIFT_57, &
+CLA-S05-DIA-BAM-01, S02_DRIFT_58, CLA-S05-MAG-QUAD-02, &
+S02_DRIFT_59, CLA-S05-DIA-BPM-02-drift-01, &
+CLA-S05-DIA-BPM-02, CLA-S05-DIA-BPM-02-drift-02, &
+S02_DRIFT_60, CLA-S05-SIM-MARK-01, S02_DRIFT_61, &
+CLA-VBC-MAG-DIP-01, S02_DRIFT_62, CLA-VBC-MAG-DIP-02, &
+S02_DRIFT_63, CLA-VBC-MAG-VCOR-01, S02_DRIFT_64, &
+CLA-VBC-DIA-BPM-01-drift-01, CLA-VBC-DIA-BPM-01, &
+CLA-VBC-DIA-BPM-01-drift-02, S02_DRIFT_65, &
+CLA-VBC-DIA-RCOL-01, S02_DRIFT_66, CLA-VBC-DIA-SCR-01, &
+S02_DRIFT_67, CLA-VBC-MAG-DIP-03, S02_DRIFT_68, &
+CLA-VBC-MAG-DIP-04, S02_DRIFT_69, CLA-VBC-SIM-MARK-01, &
+CLA-S06-SIM-MARK-01, CLA-S06-SIM-APER-01, S02_DRIFT_70, &
+CLA-S06-MAG-HVCOR-01, S02_DRIFT_71, &
+CLA-S06-DIA-BPM-01-drift-01, CLA-S06-DIA-BPM-01, &
+CLA-S06-DIA-BPM-01-drift-02, S02_DRIFT_72, &
+CLA-S06-MAG-QUAD-01, S02_DRIFT_73, CLA-S06-DIA-BAM-01, &
+S02_DRIFT_74, CLA-S06-DIA-EOM-01, S02_DRIFT_75, &
+CLA-S06-MAG-QUAD-02, S02_DRIFT_76, CLA-S06-DIA-SCR-01, &
+S02_DRIFT_77, CLA-S06-MAG-HVCOR-02, S02_DRIFT_78, &
+CLA-S06-DIA-BPM-02-drift-01, CLA-S06-DIA-BPM-02, &
+CLA-S06-DIA-BPM-02-drift-02, S02_DRIFT_79, &
+CLA-S06-DIA-SCR-02, S02_DRIFT_80, CLA-S06-SIM-MARK-02, &
+CLA-L04-SIM-APER-01, S02_DRIFT_81, CLA-L04-LIN-CAV-01, &
+S02_DRIFT_82, CLA-S07-SIM-START-01, CLA-S07-SIM-APER-01, &
+S02_DRIFT_83, CLA-S07-DIA-BPM-01-drift-01, &
+CLA-S07-DIA-BPM-01, CLA-S07-DIA-BPM-01-drift-02, &
+S02_DRIFT_84, CLA-S07-MAG-HVCOR-01, S02_DRIFT_85, &
+CLA-S07-MAG-QUAD-01, S02_DRIFT_86, CLA-S07-SIM-MARK-01, &
+S02_DRIFT_87, CLA-S07-MAG-QUAD-02, S02_DRIFT_88, &
+CLA-S07-DIA-BPM-02-drift-01, CLA-S07-DIA-BPM-02, &
+CLA-S07-DIA-BPM-02-drift-02, S02_DRIFT_89, &
+CLA-S07-MAG-HVCOR-02, S02_DRIFT_90, CLA-S07-DIA-SCR-01, &
+S02_DRIFT_91, CLA-S07-SIM-TDC-01-APER, S02_DRIFT_92, &
+CLA-S07-DIA-TDC-01, S02_DRIFT_93, CLA-S07-SIM-APER-02, &
+S02_DRIFT_94, CLA-S07-MAG-HVCOR-03, S02_DRIFT_95, &
+CLA-S07-DIA-BPM-03, S02_DRIFT_96, CLA-S07-MAG-QUAD-03, &
+S02_DRIFT_97, CLA-S07-MAG-QUAD-04, S02_DRIFT_98, &
+CLA-S07-DIA-BPM-04-drift-01, CLA-S07-DIA-BPM-04, &
+CLA-S07-DIA-BPM-04-drift-02, S02_DRIFT_99, &
+CLA-S07-DIA-SCR-02, S02_DRIFT_100, CLA-S07-MAG-QUAD-05, &
+S02_DRIFT_101, CLA-S07-MAG-HVCOR-04, S02_DRIFT_102, &
+CLA-S07-DIA-CDR-01, S02_DRIFT_103, CLA-S07-MAG-QUAD-06, &
+S02_DRIFT_104, CLA-S07-DCP-SCR-01, S02_DRIFT_105, &
+CLA-S07-SIM-APER-03, S02_DRIFT_106, &
+CLA-S07-DIA-BPM-05-drift-01, CLA-S07-DIA-BPM-05, &
+CLA-S07-DIA-BPM-05-drift-02, S02_DRIFT_107, &
+CLA-S07-MAG-QUAD-07, S02_DRIFT_108, CLA-S07-MAG-HVCOR-05, &
+S02_DRIFT_109, CLA-SP3-SIM-MARK-01, S02_DRIFT_110, &
+CLA-SP3-MAG-DIP-01, S02_DRIFT_111, CLA-SP3-MAG-HVCOR-01, &
+S02_DRIFT_112, CLA-SP3-DIA-BPM-01-drift-01, &
+CLA-SP3-DIA-BPM-01, CLA-SP3-DIA-BPM-01-drift-02, &
+S02_DRIFT_113, CLA-SP3-DIA-SCR-01, S02_DRIFT_114, &
+CLA-SP3-MAG-QUAD-01, S02_DRIFT_115, CLA-SP3-MAG-QUAD-02, &
+S02_DRIFT_116, CLA-SP3-DIA-BPM-02-drift-01, &
+CLA-SP3-DIA-BPM-02, CLA-SP3-DIA-BPM-02-drift-02, &
+S02_DRIFT_117, CLA-SP3-DIA-SCR-02, S02_DRIFT_118, &
+CLA-SP3-DIA-FCUP-01, END )

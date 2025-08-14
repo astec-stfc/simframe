@@ -516,6 +516,12 @@ class beam(BaseModel):
             except KeyError:
                 raise AttributeError(key)
 
+    def __getattr__(self, key):
+        try:
+            return self.__getitem__(key)
+        except AttributeError:
+            return getattr(self._beam, key)
+
     def __repr__(self):
         return repr(
             {

@@ -1935,7 +1935,7 @@ class Framework(BaseModel):
             )
 
 
-class frameworkDirectory(Munch):
+class frameworkDirectory(BaseModel):
     """
     Class to load a tracking run from a directory and read the Beam and Twiss files and make them available
     """
@@ -1975,10 +1975,7 @@ class frameworkDirectory(Munch):
         )
         if not isinstance(self.framework, Framework):
             directory = "." if self.directory is None else os.path.abspath(self.directory)
-            self.framework = Framework(
-                directory=self.directory,
-                **kwargs,
-            )
+            self.framework = Framework(**kwargs,)
             self.framework.loadSettings(directory + "/" + self.settings)
         else:
             self.framework = self.framework

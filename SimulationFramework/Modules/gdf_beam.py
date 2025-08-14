@@ -1,6 +1,7 @@
 import re
 from munch import Munch
 import easygdf
+import numpy as np
 
 
 class gdf_beam(Munch):
@@ -27,6 +28,9 @@ class gdf_beam(Munch):
     @property
     def positions(self) -> dict:
         return self._positions
+
+    def single_position_data(self) -> None:
+        [setattr(self, k, self.screens_touts[k]) for k in ["x", "y", "z", "GBx", "GBy", "GBz", "m", "q", "nmacro"]]
 
     def _create_times_dictionary(self) -> None:
         self._times = {s["time"]: s for s in self.touts}

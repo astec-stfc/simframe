@@ -1,11 +1,13 @@
 import sys
+import os
 import numpy as np
 import csv
 from .. import constants
+from ..units import UnitValue
 
 
-def read_csv_file(self, file, delimiter=" "):
-    with open(file, "r") as f:
+def read_csv_file(self, filename, delimiter=" "):
+    with open(filename, "r") as f:
         data = np.array(
             [
                 line
@@ -20,25 +22,25 @@ def read_csv_file(self, file, delimiter=" "):
     return data
 
 
-def write_csv_file(self, file, data):
+def write_csv_file(self, filename, data):
     if sys.version_info[0] > 2:
-        with open(file, "w", newline="") as f:
+        with open(filename, "w", newline="") as f:
             writer = csv.writer(
                 f, delimiter=" ", quoting=csv.QUOTE_NONNUMERIC, skipinitialspace=True
             )
             [writer.writerow(line) for line in data]
     else:
-        with open(file, "wb") as f:
+        with open(filename, "wb") as f:
             writer = csv.writer(
                 f, delimiter=" ", quoting=csv.QUOTE_NONNUMERIC, skipinitialspace=True
             )
             [writer.writerow(line) for line in data]
 
 
-def read_astra_beam_file(self, file, normaliseZ=False, keepLost=False):
+def read_astra_beam_file(self, filename, normaliseZ=False, keepLost=False):
     self.reset_dicts()
-    data = read_csv_file(self, file)
-    self.filename = file
+    data = read_csv_file(self, filename)
+    self.filename = filename
     interpret_astra_data(self, data, normaliseZ=normaliseZ, keepLost=keepLost)
 
 
@@ -49,7 +51,7 @@ def interpret_astra_data(self, data, normaliseZ=False, keepLost=False):
     zref = z[0]
     self.code = "ASTRA"
     self._beam.reference_particle = data[0]
-    self._beam.toffset = 1e-9 * data[0][6]
+    self._beam.toffset = UnitValue(1e-9 * data[0][6], units="z")
     # if normaliseZ:
     #     self._beam['reference_particle'][2] = 0
     self.longitudinal_reference = "z"
@@ -57,84 +59,90 @@ def interpret_astra_data(self, data, normaliseZ=False, keepLost=False):
     z = self.normalise_to_ref_particle(z, subtractmean=False)
     cpz = self.normalise_to_ref_particle(cpz, subtractmean=False)
     clock = self.normalise_to_ref_particle(clock, subtractmean=True)
-    self._beam.px = cpx * self.q_over_c
-    self._beam.py = cpy * self.q_over_c
-    self._beam.pz = cpz * self.q_over_c
-    self._beam.clock = 1.0e-9 * clock
-    self._beam.charge = 1.0e-9 * charge
-    self._beam.status = status
-    self._beam.z = z
-    self._beam.particle_mass = [self.mass_index[i] for i in index]
-    self._beam.particle_rest_energy = [
-        m * constants.speed_of_light**2 for m in self._beam.particle_mass
-    ]
-    self._beam.particle_rest_energy_eV = [
-        E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
-    ]
-    self._beam.particle_charge = [
-        constants.elementary_charge * self.charge_sign_index[i] for i in index
-    ]
+    self._beam.px = UnitValue(cpx * self.q_over_c, units="kg*m/s")
+    self._beam.py = UnitValue(cpy * self.q_over_c, units="kg*m/s")
+    self._beam.pz = UnitValue(cpz * self.q_over_c, units="kg*m/s")
+    self._beam.clock = UnitValue(1.0e-9 * clock, units="s")
+    self._beam.charge = UnitValue(1.0e-9 * charge, units="C")
+    self._beam.status = UnitValue(status)
+    self._beam.z = UnitValue(z, units="m")
+    self._beam.particle_mass = UnitValue([self.mass_index[i] for i in index], units="kg")
+    self._beam.particle_rest_energy = UnitValue(
+        [
+            m * constants.speed_of_light**2 for m in self._beam.particle_mass
+        ], units="J")
+    self._beam.particle_rest_energy_eV = UnitValue(
+        [
+            E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
+        ], units="eV")
+    self._beam.particle_charge = UnitValue(
+        [
+            constants.elementary_charge * self.charge_sign_index[i] for i in index
+        ], units="C")
     # print self.Bz
-    self._beam.t = [
-        clock if status == -1 else ((z - zref) / (-1 * Bz * constants.speed_of_light))
-        for status, z, Bz, clock in zip(
-            self._beam.status, z, self.Bz, self._beam.clock
-        )
-    ]
+    self._beam.t = UnitValue(
+        [
+            clock if status == -1 else ((z - zref) / (-1 * Bz * constants.speed_of_light))
+            for status, z, Bz, clock in zip(
+                self._beam.status, z, self.Bz, self._beam.clock
+            )
+        ], units="s")
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
-    self._beam.x = x  # - self.xp * (self.t - np.mean(self.t))
-    self._beam.y = y  # - self.yp * (self.t - np.mean(self.t))
-    self._beam.total_charge = np.sum(1.0e-9 * charge)
-    self._beam.nmacro = np.array(
+    self._beam.x = UnitValue(x, units="m")  # - self.xp * (self.t - np.mean(self.t))
+    self._beam.y = UnitValue(y, units="m")  # - self.yp * (self.t - np.mean(self.t))
+    self._beam.total_charge = UnitValue(np.sum(1.0e-9 * charge), units="C")
+    self._beam.nmacro = UnitValue(np.array(
         np.array(self._beam.charge) / self._beam.particle_charge
-    )
+    ), units="")
 
 
-def read_csrtrack_beam_file(self, file):
+def read_csrtrack_beam_file(self, filename):
     self.reset_dicts()
-    data = self.read_csv_file(file)
+    data = self.read_csv_file(filename)
     self.code = "CSRTrack"
     self._beam.reference_particle = data[0]
     self.longitudinal_reference = "z"
     z, x, y, cpz, cpx, cpy, charge = np.transpose(data[1:])
     z = self.normalise_to_ref_particle(z, subtractmean=False)
     cpz = self.normalise_to_ref_particle(cpz, subtractmean=False)
-    self._beam.x = x
-    self._beam.y = y
-    self._beam.z = z
-    self._beam.px = cpx * self.q_over_c
-    self._beam.py = cpy * self.q_over_c
-    self._beam.pz = cpz * self.q_over_c
-    self._beam.clock = np.full(len(self.x), 0)
-    self._beam.clock[0] = data[0, 0] * 1e-9
-    self._beam.status = np.full(len(self.x), 1)
-    self._beam.t = self.z / (
-        -1 * self.Bz * constants.speed_of_light
-    )  # [time if status is -1 else 0 for time, status in zip(clock, self._beam['status'])]
-    self._beam.charge = charge
-    self._beam.total_charge = np.sum(self._beam.charge)
+    self._beam.x = UnitValue(x, units="m")
+    self._beam.y = UnitValue(y, units="m")
+    self._beam.z = UnitValue(z, units="m")
+    self._beam.px = UnitValue(cpx * self.q_over_c, units="kg*m/s")
+    self._beam.py = UnitValue(cpy * self.q_over_c, units="kg*m/s")
+    self._beam.pz = UnitValue(cpz * self.q_over_c, units="kg*m/s")
+    self._beam.clock = UnitValue(np.full(len(self.x), 0), units="s")
+    self._beam.clock[0] = UnitValue(data[0, 0] * 1e-9, units="s")
+    self._beam.status = UnitValue(np.full(len(self.x), 1), units="")
+    self._beam.t = UnitValue(
+        self.z / (-1 * self.Bz * constants.speed_of_light),
+        units="s"
+    ) # [time if status is -1 else 0 for time, status in zip(clock, self._beam['status'])]
+    self._beam.charge = UnitValue(charge, units="C")
+    self._beam.total_charge = UnitValue(np.sum(self._beam.charge), units="C")
 
 
-def read_pacey_beam_file(self, fileName, charge=250e-12):
+def read_pacey_beam_file(self, filename, charge=250e-12):
     self.reset_dicts()
-    data = self.read_csv_file(fileName, delimiter="\t")
-    self.filename = fileName
+    data = self.read_csv_file(filename, delimiter="\t")
+    self.filename = filename
     self.code = "TPaceyASTRA"
     self.longitudinal_reference = "z"
     x, y, z, cpx, cpy, cpz = np.transpose(data)
     # cp = np.sqrt(cpx**2 + cpy**2 + cpz**2)
-    self._beam.x = x
-    self._beam.y = y
-    self._beam.z = z
-    self._beam.px = cpx * self.q_over_c
-    self._beam.py = cpy * self.q_over_c
-    self._beam.pz = cpz * self.q_over_c
-    self._beam.t = [
-        (z / (-1 * Bz * constants.speed_of_light)) for z, Bz in zip(self.z, self.Bz)
-    ]
+    self._beam.x = UnitValue(x, units="m")
+    self._beam.y = UnitValue(y, units="m")
+    self._beam.z = UnitValue(z, units="m")
+    self._beam.px = UnitValue(cpx * self.q_over_c, units="kg*m/s")
+    self._beam.py = UnitValue(cpy * self.q_over_c, units="kg*m/s")
+    self._beam.pz = UnitValue(cpz * self.q_over_c, units="kg*m/s")
+    self._beam.t = UnitValue(
+        [
+            (z / (-1 * Bz * constants.speed_of_light)) for z, Bz in zip(self.z, self.Bz)
+        ], units="s")
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
-    self._beam.total_charge = charge
-    self._beam.charge = []
+    self._beam.total_charge = UnitValue(charge, units="C")
+    self._beam.charge = UnitValue(np.full(len(x), charge / len(x)), units="C")
 
 
 def convert_csrtrackfile_to_astrafile(self, csrtrackfile, astrafile):
@@ -171,12 +179,15 @@ def create_ref_particle(self, array, index=0, subtractmean=False):
 
 def write_astra_beam_file(
     self,
-    file: str,
+    filename: str = None,
     index: int = None,
     status: int = 5,
     charge: float | None = None,
     normaliseZ: bool = False,
 ):
+    if filename is None:
+        fn = os.path.splitext(self.filename)
+        filename = fn[0].strip(".ocelot").strip(".openpmd") + ".astra"
     if not isinstance(index, (list, tuple, np.ndarray)):
         if len(self._beam.charge) == len(self._beam.x):
             chargevector = 1e9 * self._beam.charge
@@ -261,7 +272,7 @@ def write_astra_beam_file(
     array[1:, 5] = array[1:, 5] - ref_particle[5]
     array[0, 6] = array[0, 6] + ref_particle[6]
     np.savetxt(
-        file,
+        filename,
         array,
         fmt=(
             "%.12e",

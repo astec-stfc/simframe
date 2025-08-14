@@ -35,7 +35,13 @@ CMAP1 = copy(plt.get_cmap("plasma"))
 # beamobject = rbf.beam()
 
 
-def density_plot(particle_group, key="x", bins=None, **kwargs):
+def density_plot(
+        particle_group,
+        key="x",
+        bins=None,
+        filename=None,
+        **kwargs,
+):
     """
     1D density plot. Also see: marginal_plot
 
@@ -49,11 +55,11 @@ def density_plot(particle_group, key="x", bins=None, **kwargs):
         n = len(particle_group)
         bins = int(n / 100)
     # Scale to nice units and get the factor, unit prefix
-    x, f1, p1 = nice_array(particle_group[key])
+    x, f1, p1 = nice_array(getattr(particle_group, key))
     if key != "charge":
         w = abs(particle_group["charge"])
     else:
-        w = np.ones(len(particle_group[key]))
+        w = np.ones(len(getattr(particle_group, key)))
     u1 = ""  # particle_group.units(key).unitSymbol
     ux = p1 + u1
 
@@ -73,18 +79,22 @@ def density_plot(particle_group, key="x", bins=None, **kwargs):
         ax.set_ylabel(f"{hist_prefix}C/{ux}")
 
     ax.set_xlabel(labelx)
+    if isinstance(filename, str):
+        plt.savefig(filename)
+
 
 
 def slice_plot(
-    particle_group,
-    xkey="t",
-    ykey="slice_current",
-    xlim=None,
-    nice=True,
-    include_legend=True,
-    subtract_mean=True,
-    bins=None,
-    **kwargs,
+        particle_group,
+        xkey="t",
+        ykey="slice_current",
+        xlim=None,
+        nice=True,
+        include_legend=True,
+        subtract_mean=True,
+        bins=None,
+        filename=None,
+        **kwargs,
 ):
     """
     slice plot. Also see: marginal_plot
@@ -105,7 +115,7 @@ def slice_plot(
         bins = int(n / 100)
     P.slice.slices = bins
 
-    X = getattr(P, "slice_" + xkey)
+    X = getattr(P.slice, "slice_" + xkey)
     if subtract_mean:
         X = X - np.mean(X)
 
@@ -149,7 +159,7 @@ def slice_plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = ["" for key in keys]  # [I.units(key) for key in keys]
+        ulist = [getattr(P.slice, key).units for key in keys]  # [I.units(key) for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -157,7 +167,7 @@ def slice_plot(
         unit = str(ulist[0])
 
         # Data
-        data = [np.array(getattr(P, key)[good]) for key in keys]
+        data = [np.array(getattr(P.slice, key)[good]) for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
@@ -189,7 +199,9 @@ def slice_plot(
             lines += a
             labels += b
         ax_plot[0].legend(lines, labels, loc="best")
-    return fig
+
+    if isinstance(filename, str):
+        plt.savefig(filename)
 
 
 def marginal_plot(
@@ -202,6 +214,7 @@ def marginal_plot(
     subtract_mean=[False, False],
     cmap=None,
     limits=None,
+    filename=None,
     **kwargs,
 ):
     """
@@ -227,19 +240,19 @@ def marginal_plot(
     # Scale to nice units and get the factor, unit prefix
     x, f1, p1 = nice_array(
         scale[0]
-        * (particle_group[key1] - subtract_mean[0] * np.mean(particle_group[key1]))
+        * (getattr(particle_group, key1) - subtract_mean[0] * np.mean(getattr(particle_group, key1)))
     )
     y, f2, p2 = nice_array(
         scale[1]
-        * (particle_group[key2] - subtract_mean[1] * np.mean(particle_group[key2]))
+        * (getattr(particle_group, key2) - subtract_mean[1] * np.mean(getattr(particle_group, key2)))
     )
     x = x / scale[0]
     y = y / scale[1]
 
     w = np.full(len(x), 1)  #
-    charge = particle_group["charge"]
+    charge = getattr(particle_group, "charge")
 
-    u1, u2 = units
+    u1, u2 = [getattr(particle_group, k).units for k in [key1, key2]]
     ux = p1 + u1
     uy = p2 + u2
 
@@ -333,7 +346,8 @@ def marginal_plot(
     ax_joint.set_xlabel(labelx)
     ax_joint.set_ylabel(labely)
 
-    return fig
+    if isinstance(filename, str):
+        plt.savefig(filename)
 
 
 def plot(self, keys=None, bins=None, type="density", **kwargs):
@@ -353,20 +367,21 @@ def plot(self, keys=None, bins=None, type="density", **kwargs):
 
 
 def plotScreenImage(
-    beam,
-    keys=["x", "y"],
-    scale=[1, 1],
-    iscale=1,
-    colormap=plt.cm.jet,
-    size=None,
-    grid=False,
-    marginals=False,
-    limits=None,
-    screen=False,
-    use_scipy=False,
-    subtract_mean=[False, False],
-    title="",
-    **kwargs,
+        beam,
+        keys=["x", "y"],
+        scale=[1, 1],
+        iscale=1,
+        colormap=plt.cm.jet,
+        size=None,
+        grid=False,
+        marginals=False,
+        limits=None,
+        screen=False,
+        use_scipy=False,
+        subtract_mean=[False, False],
+        title="",
+        filename=None,
+        **kwargs,
 ):
     # Do the self-consistent density estimate
     key1, key2 = keys
@@ -378,13 +393,13 @@ def plotScreenImage(
         size = [size, size]
 
     x, f1, p1 = nice_array(
-        scale[0] * (beam[key1] - subtract_mean[0] * np.mean(beam[key1]))
+        scale[0] * (getattr(beam, key1) - subtract_mean[0] * np.mean(getattr(beam, key1)))
     )
     y, f2, p2 = nice_array(
-        scale[1] * (beam[key2] - subtract_mean[1] * np.mean(beam[key2]))
+        scale[1] * (getattr(beam, key2) - subtract_mean[1] * np.mean(getattr(beam, key2)))
     )
 
-    u1, u2 = [beam[k].units for k in keys]
+    u1, u2 = [getattr(beam, k).units for k in keys]
     ux = p1 + u1
     uy = p2 + u2
 
@@ -392,7 +407,8 @@ def plotScreenImage(
     labely = f"{key2} ({uy})"
 
     if fastKDE_installed and not use_scipy:
-        kwargs.pop("subtract_means")
+        if "subtract_mean" in kwargs:
+            kwargs.pop("subtract_mean")
         myPDF, axes = fastKDE.pdf(x, y, use_xarray=False, **kwargs)
         v1, v2 = axes
     elif SciPy_installed:
@@ -599,6 +615,7 @@ def plotScreenImage(
     else:
         plt.suptitle(title)
     # Show the final image
-    plt.draw()
+    # plt.draw()
 
-    # return fig
+    if isinstance(filename, str):
+        plt.savefig(filename)

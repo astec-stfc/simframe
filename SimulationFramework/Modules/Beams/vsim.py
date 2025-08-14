@@ -1,5 +1,6 @@
 import numpy as np
 from .. import constants
+from ..units import UnitValue
 
 
 def read_vsim_h5_beam_file(self, filename, charge=70e-12, interval=1):
@@ -11,18 +12,20 @@ def read_vsim_h5_beam_file(self, filename, charge=70e-12, interval=1):
     self.code = "VSIM"
     self["longitudinal_reference"] = "z"
     cp = np.sqrt(cpx**2 + cpy**2 + cpz**2)
-    self._beam.x = x
-    self._beam.y = y
-    self._beam.z = z
-    self._beam.px = cpx * self.particle_mass
-    self._beam.py = cpy * self.particle_mass
-    self._beam.pz = cpz * self.particle_mass
-    self._beam.t = [
-        (z / (-1 * Bz * constants.speed_of_light)) for z, Bz in zip(self.z, self.Bz)
-    ]
+    self._beam.x = UnitValue(x, units="m")
+    self._beam.y = UnitValue(y, units="m")
+    self._beam.z = UnitValue(z, units="m")
+    self._beam.px = UnitValue(cpx * self.particle_mass, units="kg*m/s")
+    self._beam.py = UnitValue(cpy * self.particle_mass, units="kg*m/s")
+    self._beam.pz = UnitValue(cpz * self.particle_mass, units="kg*m/s")
+    self._beam.t = UnitValue(
+        [
+            (z / (-1 * Bz * constants.speed_of_light)) for z, Bz in zip(self.z, self.Bz)
+        ],
+        units="s",
+    )
     # self._beam['t'] = self.z / (1 * self.Bz * constants.speed_of_light)#[time if status is -1 else 0 for time, status in zip(clock, status)]#
-    self._beam.total_charge = charge
-    self._beam.charge = []
+    self._beam.set_total_charge(charge)
 
 
 def write_vsim_beam_file(self, file, normaliseT=False):

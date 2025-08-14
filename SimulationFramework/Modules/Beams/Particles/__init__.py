@@ -32,7 +32,34 @@ from typing import Dict, Any
 
 class Particles(BaseModel):
     """
-    Class describing particles in 6D phase space.
+    Class describing particles in 6D phase space
+    [x (m), y (m), z (m) / t (s), px (kg*m/s), py (kg*m/s), pz (kg*m/s)].
+
+    The following objects are created based on this distribution:
+    - :attr:`~centroids` -- see :class:`~SimulationFramework.Modules.Beams.Particles.centroids.centroids`
+    - :attr:`~emittance` -- see :class:`~SimulationFramework.Modules.Beams.Particles.emittance.emittance`
+    - :attr:`~kde` -- see :class:`~SimulationFramework.Modules.Beams.Particles.kde.kde`
+    - :attr:`~mve` -- see :class:`~SimulationFramework.Modules.Beams.Particles.mve.MVE`
+    - :attr:`~sigmas` -- see :class:`~SimulationFramework.Modules.Beams.Particles.sigmas.sigmas`
+    - :attr:`~slice` -- see :class:`~SimulationFramework.Modules.Beams.Particles.slice.slice`
+    - :attr:`~twiss` -- see :class:`~SimulationFramework.Modules.Beams.Particles.twiss.twiss`
+
+    The following properties are derived from these arrays:
+    - :attr:`~fullbeam` -- the transpose of the 6D array.
+    - [:attr:`~xp`, :attr:`~yp`] -- horizontal and vertical angular distributions.
+    - [:attr:`~xc`, :attr:`~xpc`, :attr:`~yc`, :attr:`~ypc`] -- horizontal and vertical positions and
+    angular distributions, corrected for dispersion.
+    - [:attr:`~cpx`, :attr:`~cpy`, :attr:`~cpz`] -- the beam momenta in eV/c.
+    - :attr:`~deltap` -- fractional momentum deviation from the mean.
+    - [:attr:`~p`, :attr:`~cp`] -- total beam momentum in kg*m/s and eV/c, respectively.
+    - [:attr:`~Ex`, :attr:`~Ey`, :attr:`~Ez`] -- beam energies in eV.
+    - [:attr:`~Bx`, :attr:`~By`, :attr:`~Bz`] -- relativistic betas.
+    - :attr:`~gamma` -- relativistic Lorentz factor.
+    - :attr:`~Brho` -- magnetic rigidity.
+    - :attr:`~BetaGamma` -- beam momentum as beta*gamma.
+    - [:attr:`~kinetic_energy`, :attr:`~mean_energy`] -- kinetic energy in J and its mean.
+    - :attr:`~E0_eV` -- rest energy of the particles in eV.
+    - :attr:`~Q` -- total charge of the bunch in C.
     """
 
     class Config:
@@ -605,7 +632,7 @@ class Particles(BaseModel):
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Lorentz factor
         """
-        return UnitValue(np.sqrt(1 + (self.cp / self.particle_rest_energy_eV) ** 2), "")
+        return UnitValue(np.sqrt(1 + (self.cp.val / self.particle_rest_energy_eV.val) ** 2), "")
 
     @property
     def BetaGamma(self) -> UnitValue:
@@ -727,9 +754,9 @@ class Particles(BaseModel):
         q: float
             The total charge
         """
-        self.total_charge = q
-        particle_q = q / (len(self.charge))
-        self.charge = np.full(len(self.charge), particle_q)
+        self.total_charge = UnitValue(q, units="C")
+        particle_q = q / (len(self.x))
+        self.charge = UnitValue(np.full(len(self.x), particle_q), units="C")
 
     # @property
     # def sigma_z(self):
