@@ -4,7 +4,7 @@ from SimulationFramework.Framework_objects import (
 )
 from SimulationFramework.Modules.Fields import field
 import numpy as np
-from pydantic import field_validator
+from pydantic import field_validator, SerializeAsAny
 from typing import Literal
 
 
@@ -88,31 +88,31 @@ class cavity(frameworkElement):
     cell_length: float = 0.0
     """Length of cavity cell"""
 
-    frequency: float | None = None
+    frequency: float = None
     """Cavity frequency"""
 
-    cavity_type: str | None = None
+    cavity_type: str = None
     """Type of cavity"""
 
-    n_cells: int | float = None
+    n_cells: SerializeAsAny[int | float] = None
     """Number of cavity cells"""
 
-    ez_peak: float | None = None
+    ez_peak: float = None
     """Peak longitudinal electric field"""
 
-    field_definition: str | field | None = None
+    field_definition: SerializeAsAny[str | field] = None
     """Name of cavity field or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    wakefield_definition: str | field | None = None
+    wakefield_definition: SerializeAsAny[str | field] = None
     """Name of wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    longitudinal_wakefield: str | field | None = None
+    longitudinal_wakefield: SerializeAsAny[str | field] = None
     """Name of longitudinal wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    transverse_wakefield: str | field | None = None
+    transverse_wakefield: SerializeAsAny[str | field] = None
     """Name of transverse wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    Structure_Type: Literal["TravellingWave", "StandingWave"] | None = None
+    Structure_Type: Literal["TravellingWave", "StandingWave"] = None
     """Cavity structure type"""
 
     smooth: int | None = None
@@ -126,6 +126,13 @@ class cavity(frameworkElement):
     def validate_n_kicks(cls, v: int) -> int:
         cls.n_cells = int(v)
         return int(v)
+
+    @field_validator("frequency", mode="before")
+    @classmethod
+    def validate_frequency(cls, v: float | np.int64 | None) -> float | None:
+        if v is not None:
+            return float(v)
+        return v
 
     def get_cells(self) -> int | None:
         """

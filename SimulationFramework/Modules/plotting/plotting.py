@@ -72,7 +72,7 @@ def fieldmap_data(element):
             np.transpose([field.z.value.val, field.Ez.value.val]),
             field.start_cell_z,
             field.end_cell_z,
-            element.cells,
+            element.n_cells,
             field.mode_denominator,
         )
     else:
@@ -177,8 +177,8 @@ def load_elements(
             elements = [
                 e
                 for e in elements
-                if e["position_start"][2] <= bounds[1]
-                and e["position_end"][2] >= bounds[0] - 0.1
+                if e.position_start[2] <= bounds[1]
+                and e.position_end[2] >= bounds[0] - 0.1
             ]
         for e in elements:
             if (
@@ -437,7 +437,7 @@ def plot(
     if include_particles:
         # try:
         for pname in range(len(P)):  # Modified from Impact
-            xp = np.mean(np.array(P[pname][xkey]))
+            xp = np.mean(np.array(getattr(P[pname], xkey)))
             if xp >= limits[0] and xp <= limits[1]:
                 Pnames.append(pname)
                 X_particles.append(xp)
@@ -515,9 +515,9 @@ def plot(
                 Y_particles = np.array(
                     [
                         (
-                            np.std(P[name][key])
+                            np.std(getattr(P[name],key))
                             if key in P._parameters["data"]
-                            else P[name][key]
+                            else getattr(P[name], key)
                         )
                         for name in Pnames
                     ]

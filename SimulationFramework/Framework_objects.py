@@ -63,6 +63,7 @@ from pydantic import (
     BaseModel,
     field_validator,
     PositiveInt,
+    SerializeAsAny,
 )
 from typing import (
     Dict,
@@ -473,10 +474,10 @@ class frameworkElement(frameworkObject):
     global_rotation: List[float] = [0, 0, 0]
     """Global rotation of the element in the simulation [x,y,z]."""
 
-    rotation: List[float] | float = [0, 0, 0]
+    rotation: SerializeAsAny[List[float] | float] = [0, 0, 0]
     """Local rotation of the element in the simulation [x,y,z]."""
 
-    starting_rotation: float = 0.0
+    starting_rotation: SerializeAsAny[float | List[float]] = 0.0
     """Initial rotation of the element, used for specific simulation setups."""
 
     conversion_rules_elegant: Dict = {}
@@ -491,10 +492,10 @@ class frameworkElement(frameworkObject):
     subelement: bool = False
     """Flag indicating whether the element is a sub-element of a larger structure."""
 
-    field_definition: field | str = None
+    field_definition: SerializeAsAny[field | str] = None
     """Field definition for the element, can be a field object or a string representing a file."""
 
-    wakefield_definition: field | str = None
+    wakefield_definition: SerializeAsAny[field | str] = None
     """Wakefield definition for the element, can be a field object or a string representing a file."""
 
     def __init__(self, *args, **kwargs):

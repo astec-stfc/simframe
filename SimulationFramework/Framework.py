@@ -1208,7 +1208,7 @@ class Framework(BaseModel):
             # return [item for sublist in all_elements for item in sublist]
         return [
             (
-                {"name": element, **self.elementObjects[element]}
+                {"name": element, **self.elementObjects[element].model_dump()}
                 if param is None
                 else self.elementObjects[element][param]
             )

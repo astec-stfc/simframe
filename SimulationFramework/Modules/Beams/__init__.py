@@ -18,7 +18,7 @@ Classes:
 """
 import os
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Dict, Any, List
 import numpy as np
 from warnings import warn
 import re
@@ -59,7 +59,10 @@ except ImportError:
 
 # I can't think of a clever way of doing this, so...
 def get_properties(obj):
-    return [f for f in dir(obj) if type(getattr(obj, f)) is property and f != "__fields_set__"]
+    props = [f for f in dir(obj) if type(getattr(obj, f)) is property and f != "__fields_set__"]
+    if hasattr(obj, "model_fields"):
+        props += list(obj.model_fields.keys())
+    return props
 
 
 parameters = {
@@ -79,6 +82,9 @@ class particlesGroup(BaseModel):
     Class for grouping together properties of multiple particle distributions, such as
     the :class:`~SimulationFramework.Modules.Beams.Particles.emittance.emittance` objects.
     """
+    particles: List = None
+    """List of :class:`~SimulationFramework.Modules.Beams.Particles.Particles` or its 
+    sub-classes"""
 
     def __init__(self, particles=None, *args, **kwargs):
         super(particlesGroup, self).__init__(*args, **kwargs)
@@ -86,7 +92,7 @@ class particlesGroup(BaseModel):
 
     def __getitem__(self, key):
         if key == "particles":
-            return super(particlesGroup, self).__getitem__(key)
+            return getattr(self, key)
         else:
             data = [getattr(p, key) for p in self.particles]
             return UnitValue(data, units=data[0].units)
@@ -130,7 +136,7 @@ class beamGroup(BaseModel):
         return repr(list(self.beams.keys()))
 
     def __len__(self):
-        return len(super(beamGroup, self).__getitem__("beams"))
+        return len(list(self.beams.keys()))
 
     def __getitem__(self, key):
         if isinstance(key, int):
@@ -141,9 +147,9 @@ class beamGroup(BaseModel):
             return statsGroup(self, getattr(np, key))
         for p in parameters:
             if key in parameters[p]:
-                return getattr(super(beamGroup, self).__getattr__(p), key)
+                return getattr(self, key)
         else:
-            return super(beamGroup, self).__getitem__(key)
+            return getattr(self, key)
 
     def __init__(self, filenames=[], beams=[], *args, **kwargs):
         super(beamGroup, self).__init__(*args, **kwargs)
@@ -196,13 +202,13 @@ class beamGroup(BaseModel):
             func = function
         self.beams = dict(
             sorted(
-                self.beams.items(), key=lambda item: func(item[1][key]), *args, **kwargs
+                self.beams.items(), key=lambda item: func(getattr(item[1], key)), *args, **kwargs
             )
         )
         return self
 
     def add(self, filename):
-        if isinstance(filename, (str)):
+        if isinstance(filename, str):
             filename = [filename]
         for file in filename:
             if os.path.isdir(file):
@@ -485,53 +491,49 @@ class beam(BaseModel):
     def __len__(self):
         return len(self._beam.x)
 
-    def __getitem__(self, key):
-        # print('beams key', key)
-        for p in parameters:
-            if key in parameters[p]:
-                return getattr(super().__getattr__(p), key)
-        if hasattr(np, key):
-            return stats(self, getattr(np, key))
-        if hasattr(self._beam, key):
-            return getattr(self._beam, key)
-        else:
-            try:
-                return super(beam, self).__getitem__(key)
-            except KeyError:
-                raise AttributeError(key)
+    # def __getitem__(self, key):
+    #     # print('beams key', key)
+    #     for p in parameters:
+    #         if key in parameters[p]:
+    #             return getattr(self, key)
+    #     if hasattr(np, key):
+    #         return stats(self, getattr(np, key))
+    #     if hasattr(self._beam, key):
+    #         return getattr(self._beam, key)
+    #     else:
+    #         try:
+    #             return getattr(self, key)
+    #         except KeyError:
+    #             raise AttributeError(key)
 
     def __setitem__(self, key, value):
         for p in parameters:
             if key in parameters[p]:
-                return super().__getattr__(p).__setitem__(key, value)
+                return setattr(getattr(self, p), key, value)
         # if hasattr(np, key):
         #     return stats(self, getattr(np, key))
-        if hasattr(self, "_beam") and hasattr(
-            super(beam, self).__getitem__("_beam"), key
-        ):
-            return setattr(super(beam, self).__getitem__("_beam"), key, value)
+        if hasattr(self, "_beam") and hasattr(self._beam, key):
+            return setattr(self._beam, key, value)
         else:
             try:
-                return super(beam, self).__setitem__(key, value)
+                return setattr(self, key, value)
             except KeyError:
                 raise AttributeError(key)
 
     def __getattr__(self, key):
-        try:
-            return self.__getitem__(key)
-        except AttributeError:
-            return getattr(self._beam, key)
+        for p in parameters:
+            if key in parameters[p]:
+                return getattr(getattr(self, p), key)
+        # try:
+        #     return getattr(self, key)
+        # except AttributeError:
+        #     return getattr(self._beam, key)
 
     def __repr__(self):
         return repr(
             {
                 "filename": self.filename,
                 "code": self.code,
-                "Particles": [
-                    k
-                    for k in self._beam.keys()
-                    if isinstance(self._beam[k], np.ndarray) and self._beam[k].size > 0
-                ],
             }
         )
 
