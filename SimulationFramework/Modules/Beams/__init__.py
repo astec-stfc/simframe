@@ -13,7 +13,9 @@ for example from a directory.
 
 Classes:
     - :class:`~SimulationFramework.Modules.Beams.beam`: Generic container for a particle beam.
+
     - :class:`~SimulationFramework.Modules.Beams.beamGroup`: Container for a group of particle beams.
+
     - :class:`~SimulationFramework.Modules.Beams.particlesGroup`: Container for a group of particle distributions.
 """
 import os
@@ -252,18 +254,25 @@ class beam(BaseModel):
     of this class (see :class:`~SimulationFramework.Modules.Beams.Particles.Particles`).
 
     Additional results from analysis of the beam are contained in the following properties:
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.sigmas` -- average beam properties,
     see :class:`~SimulationFramework.Modules.Beams.Particles.sigmas.sigmas`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.centroids` -- beam centroids,
     see :class:`~SimulationFramework.Modules.Beams.Particles.centroids.centroids`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.centroids` -- various emittance calculations,
     see :class:`~SimulationFramework.Modules.Beams.Particles.emittance.emittance`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.kde` -- kernel density estimator,
     see :class:`~SimulationFramework.Modules.Beams.Particles.kde.kde`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.mve` -- minimum volume ellipse,
     see :class:`~SimulationFramework.Modules.Beams.Particles.mve.MVE`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.slices` -- calculations of slice properties,
     see :class:`~SimulationFramework.Modules.Beams.Particles.slice.slice`.
+
     - :attr:`~SimulationFramework.Modules.Beams.beam.twiss` -- Twiss parameters,
     see :class:`~SimulationFramework.Modules.Beams.Particles.twiss.twiss`.
 

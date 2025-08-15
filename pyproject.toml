@@ -31,10 +31,16 @@ dependencies = [
     "fastKDE<2",
     "pydantic>=2.5.3",
     "attrs>=23.2.0",
-    "ocelot-desy==24.3.0",
+    "ocelot-desy==25.06.0",
     "scipy>=1.5, <1.14",
     "soliday.sdds",
     "easygdf>=2.1.1",
+    "deap",
+    "pyqtgraph",
+    "sphinx>8.2",
+    "sphinx-rtd-theme",
+    "myst-nb",
+    "sphinx_autodoc_typehints>=3.2.0",
 ]
 
 requires-python = ">= 3.10"

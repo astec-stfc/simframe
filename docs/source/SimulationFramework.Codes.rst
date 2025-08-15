@@ -1,22 +1,6 @@
 Framework Codes
 =================================
 
-Supported Tracking Codes
--------------------
-
-The following codes are supported in **SimFrame**:
-
-.. toctree::
-   :maxdepth: 2
-
-   SimulationFramework.Codes.ASTRA
-   SimulationFramework.Codes.CSRTrack
-   SimulationFramework.Codes.Elegant
-   SimulationFramework.Codes.GPT
-   SimulationFramework.Codes.Ocelot
-
-
-
 Submodules
 ----------
 

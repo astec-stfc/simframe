@@ -19,7 +19,7 @@ Classes:
     - :class:`~SimulationFramework.Elements.solenoid.solenoid`: Solenoid magnet.
     - :class:`~SimulationFramework.Elements.aperture.aperture`: Aperture.
     - :class:`~SimulationFramework.Elements.scatter.scatter`: Scatter object.
-    - :class:`~SimulationFramework.Elements.scatter.scatter`: Cleaner object.
+    - :class:`~SimulationFramework.Elements.cleaner.cleaner`: Cleaner object.
     - :class:`~SimulationFramework.Elements.wall_current_monitor.wall_current_monitor`: \
     Wall current monitor.
     - :class:`~SimulationFramework.Elements.integrated_current_transformer.integrated_current_transformer`: \
