@@ -22,3 +22,7 @@ tests/CLARA/Basefiles/Base_250pC/CLA-S02-SIM-APER-01.sdds
 *checkpoint.ipynb
 *.pyc*
 *Untitled*
+docs/source/examples/notebooks/getting_started/*
+docs/source/examples/notebooks/utility_functions/*
+docs/source/examples/notebooks/changes.yaml
+docs/source/examples/notebooks/params.yaml
