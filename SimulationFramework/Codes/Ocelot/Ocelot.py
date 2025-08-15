@@ -10,6 +10,7 @@ Classes:
     converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
     :class:`~SimulationFramework.Framework_elements.frameworkLattice` into an Ocelot lattice object,
     and for tracking through it.
+
 """
 from ...Framework_objects import frameworkLattice, getGrids
 from ...Framework_elements import screen

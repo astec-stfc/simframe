@@ -193,7 +193,7 @@ class MBI(PhysProc):
         Calculate beam slice parameters
 
         :param p_array: Particle array object
-        :param slices: if true, calculate beam properties along the full slice; if false,
+        :param slices: if true, calculate beam properties along the full slice; if false,\
         calculate slice properties of the central slice
         :return: dictionary containing relevant slice parameters obtained from `Ocelot global slice analysis`_
 

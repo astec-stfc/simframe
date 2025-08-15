@@ -522,7 +522,8 @@ def plot(
                         for name in Pnames
                     ]
                 )
-                ax.scatter(X_particles / factor_x, Y_particles / factor, color=color)
+                if not all (v is None for v in Y_particles):
+                    ax.scatter(X_particles / factor_x, Y_particles / factor, color=color)
             # except:
             #     pass
         labels = ["$" + k.replace("sigma", r"\sigma") + "$" for k in labels]

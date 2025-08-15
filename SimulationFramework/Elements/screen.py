@@ -211,7 +211,7 @@ class screen(frameworkElement):
                 postOffset=-1 * np.array(self.starting_offset),
             )
             HDF5filename = (self.objectname + ".hdf5").strip('"')
-            toffset = self.beam["toffset"]
+            toffset = self.beam.toffset
             rbf.hdf5.write_HDF5_beam_file(
                 self.beam,
                 self.global_parameters["master_subdir"] + "/" + HDF5filename,

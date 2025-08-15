@@ -525,6 +525,7 @@ class slice(BaseModel):
         Get the slice horizontal emittance.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice horizontal emittance
         """
@@ -545,6 +546,7 @@ class slice(BaseModel):
         Get the slice vertical emittance.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice vertical emittance
         """
@@ -565,6 +567,7 @@ class slice(BaseModel):
         Get the normalised slice horizontal emittance.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Normalised slice horizontal emittance
         """
@@ -589,6 +592,7 @@ class slice(BaseModel):
         Get the normalised slice vertical emittance.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Normalised slice vertical emittance
         """
@@ -614,6 +618,7 @@ class slice(BaseModel):
         Get the slice current based on the bunch charge and temporal binning.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice current
         """
@@ -631,6 +636,7 @@ class slice(BaseModel):
         Get the peak current (i.e. max of :attr:`~slice_current`)
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Peak current
         """
@@ -644,6 +650,7 @@ class slice(BaseModel):
         Get the index of the peak current slice from :attr:`~slice_current`.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Peak current slice
         """
@@ -657,6 +664,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal beta.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice beta
         """
@@ -669,6 +677,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal alpha.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice alpha
         """
@@ -681,6 +690,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal gamma.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice gamma
         """
@@ -693,6 +703,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical beta.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice beta
         """
@@ -705,6 +716,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical alpha.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice alpha
         """
@@ -717,6 +729,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical gamma.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice gamma
         """
@@ -728,6 +741,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal beta.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice beta
         """
@@ -745,6 +759,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal alpha.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice alpha
         """
@@ -766,6 +781,7 @@ class slice(BaseModel):
         Get the slice Twiss horizontal gamma.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice gamma
         """
@@ -783,6 +799,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical beta.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice beta
         """
@@ -800,6 +817,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical alpha.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice alpha
         """
@@ -821,6 +839,7 @@ class slice(BaseModel):
         Get the slice Twiss vertical gamma.
 
         Returns
+        -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Slice gamma
         """

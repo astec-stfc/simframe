@@ -607,7 +607,7 @@ class astraLattice(frameworkLattice):
             postOffset=-1 * np.array(self.starting_offset),
         )
         HDF5filename = self.elementObjects[self.end].objectname + ".hdf5"
-        toffset = self.global_parameters["beam"]["toffset"]
+        toffset = self.global_parameters["beam"].toffset
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
             self.global_parameters["master_subdir"] + "/" + HDF5filename,
@@ -957,7 +957,8 @@ class astra_charge(astra_header):
         """
         Flag to indicate whether space charge is enabled.
 
-        Returns:
+        Returns
+        -------
         bool
             True if enabled
         """
@@ -974,7 +975,8 @@ class astra_charge(astra_header):
         Get the number of space charge bins, see
         :func:`~SimulationFramework.Framework_objects.getGrids.getGridSizes`.
 
-        Returns:
+        Returns
+        -------
         int
             The number of space charge bins based on the number of particles
         """

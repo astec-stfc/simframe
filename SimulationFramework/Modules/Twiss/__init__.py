@@ -7,6 +7,7 @@ Classes:
   - :class:`~SimulationFramework.Modules.Twiss.twiss`: Twiss object class
 """
 
+from __future__ import annotations
 import os
 import math
 import warnings
@@ -54,6 +55,61 @@ code_signatures = [
     ["astra", "Xemit.001"],
     ["ocelot", "_twiss.npz"],
 ]
+
+twiss_defaults = {
+    "z": {"name": "z", "unit": "m"},
+    "s": {"name": "s", "unit": "m"},
+    "t": {"name": "t", "unit": "s"},
+    "kinetic_energy": {"name": "kinetic_energy", "unit": "eV"},
+    "gamma": {"name": "gamma", "unit": ""},
+    "cp": {"name": "cp", "unit": "eV/c"},
+    "cp_eV": {"name": "cp_eV", "unit": "eV/c"},
+    "p": {"name": "p", "unit": "kg*m/s"},
+    "ex": {"name": "ex", "unit": "m-rad"},
+    "enx": {"name": "enx", "unit": "m-rad"},
+    "ecnx": {"name": "ecnx", "unit": "m-rad"},
+    "ey": {"name": "ey", "unit": "m-rad"},
+    "eny": {"name": "eny", "unit": "m-rad"},
+    "ecny": {"name": "ecny", "unit": "m-rad"},
+    "ez": {"name": "ey", "unit": "eV*s"},
+    "enz": {"name": "eny", "unit": "eV*s"},
+    "ecnz": {"name": "ecnz", "unit": "eV*s"},
+    "beta_x": {"name": "beta_x", "unit": "m"},
+    "gamma_x": {"name": "gamma_x", "unit": ""},
+    "alpha_x": {"name": "alpha_x", "unit": ""},
+    "beta_y": {"name": "beta_y", "unit": "m"},
+    "gamma_y": {"name": "gamma_y", "unit": ""},
+    "alpha_y": {"name": "alpha_y", "unit": ""},
+    "beta_z": {"name": "beta_z", "unit": "m"},
+    "gamma_z": {"name": "gamma_z", "unit": ""},
+    "alpha_z": {"name": "alpha_z", "unit": ""},
+    "sigma_x": {"name": "sigma_x", "unit": "m"},
+    "sigma_xp": {"name": "sigma_xp", "unit": "rad"},
+    "sigma_y": {"name": "sigma_y", "unit": "m"},
+    "sigma_yp": {"name": "sigma_yp", "unit": "rad"},
+    "sigma_t": {"name": "sigma_t", "unit": "s"},
+    "sigma_z": {"name": "sigma_z", "unit": "m"},
+    "sigma_p": {"name": "sigma_p", "unit": "kg*m/s"},
+    "sigma_cp": {"name": "sigma_cp", "unit": "eV/c"},
+    "mean_x": {"name": "mean_x", "unit": "m"},
+    "mean_y": {"name": "mean_y", "unit": "m"},
+    "mux": {"name": "mux", "unit": "2 pi"},
+    "muy": {"name": "muy", "unit": "2 pi"},
+    "eta_x": {"name": "eta_x", "unit": "m"},
+    "eta_xp": {"name": "eta_xp", "unit": "rad"},
+    "eta_y": {"name": "eta_y", "unit": "m"},
+    "eta_yp": {"name": "eta_yp", "unit": "rad"},
+    "element_name": {"name": "element_name", "unit": "", "dtype": "U"},
+    "lattice_name": {"name": "lattice_name", "unit": "", "dtype": "U"},
+    "eta_x_beam": {"name": "eta_x_beam", "unit": "m"},
+    "eta_xp_beam": {"name": "eta_xp_beam", "unit": "rad"},
+    "eta_y_beam": {"name": "eta_y_beam", "unit": "m"},
+    "eta_yp_beam": {"name": "eta_yp_beam", "unit": "rad"},
+    "beta_x_beam": {"name": "beta_x_beam", "unit": "m"},
+    "alpha_x_beam": {"name": "alpha_x_beam", "unit": ""},
+    "beta_y_beam": {"name": "beta_y_beam", "unit": "m"},
+    "alpha_y_beam": {"name": "alpha_y_beam", "unit": ""},
+}
 
 
 class twissParameter(BaseModel):
@@ -145,161 +201,157 @@ class twiss(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    z: twissParameter = twissParameter(name="z", unit="m")
+    z: "twissParameter" = None
     """The longitudinal position of the beam in the simulation."""
 
-    s: twissParameter = twissParameter(name="s", unit="m")
+    s: "twissParameter" = None
     """The longitudinal position of the beam in the simulation."""
 
-    t: twissParameter = twissParameter(name="t", unit="s")
+    t: "twissParameter" = None
     """The time coordinate of the beam in the simulation."""
 
-    kinetic_energy: twissParameter = twissParameter(name="kinetic_energy", unit="eV")
+    kinetic_energy: "twissParameter" = None
     """The kinetic energy of the beam."""
 
-    gamma: twissParameter = twissParameter(name="gamma", unit="")
+    gamma: "twissParameter" = None
     """The Lorentz factor of the beam, defined as E/mc^2."""
 
-    cp: twissParameter = twissParameter(name="cp", unit="eV/c")
+    cp: "twissParameter" = None
     """The momentum of the beam in eV/c."""
 
-    cp_eV: twissParameter = twissParameter(name="cp_eV", unit="eV/c")
+    cp_eV: "twissParameter" = None
     """The momentum of the beam in eV/c, specifically for energy calculations."""
 
-    p: twissParameter = twissParameter(name="p", unit="kg*m/s")
+    p: "twissParameter" = None
     """The momentum of the beam in kg*m/s, calculated as cp * q_over_c."""
 
-    enx: twissParameter = twissParameter(name="enx", unit="m-radians")
+    enx: "twissParameter" = None
     """The normalized horizontal emittance of the beam."""
 
-    ex: twissParameter = twissParameter(name="ex", unit="m-radians")
+    ex: "twissParameter" = None
     """The horizontal emittance of the beam."""
 
-    eny: twissParameter = twissParameter(name="eny", unit="m-radians")
+    eny: "twissParameter" = None
     """The normalized vertical emittance of the beam."""
 
-    ey: twissParameter = twissParameter(name="ey", unit="m-radians")
+    ey: "twissParameter" = None
     """The vertical emittance of the beam."""
 
-    enz: twissParameter = twissParameter(name="enz", unit="eV*s")
+    enz: "twissParameter" = None
     """The normalized longitudinal emittance of the beam, typically in eV*s."""
 
-    ez: twissParameter = twissParameter(name="ez", unit="eV*s")
+    ez: "twissParameter" = None
     """The longitudinal emittance of the beam, typically in eV*s."""
 
-    beta_x: twissParameter = twissParameter(name="beta_x", unit="m")
+    beta_x: "twissParameter" = None
     """The beta function in the x-direction."""
 
-    gamma_x: twissParameter = twissParameter(name="gamma_x", unit="")
+    gamma_x: "twissParameter" = None
     """The twiss gamma function in the x-direction."""
 
-    alpha_x: twissParameter = twissParameter(name="alpha_x", unit="")
+    alpha_x: "twissParameter" = None
     """The alpha function in the x-direction."""
 
-    beta_y: twissParameter = twissParameter(name="beta_y", unit="m")
+    beta_y: "twissParameter" = None
     """The beta function in the y-direction."""
 
-    gamma_y: twissParameter = twissParameter(name="gamma_y", unit="")
+    gamma_y: "twissParameter" = None
     """The twiss gamma function in the y-direction."""
 
-    alpha_y: twissParameter = twissParameter(name="alpha_y", unit="")
+    alpha_y: "twissParameter" = None
     """The alpha function in the y-direction."""
 
-    beta_z: twissParameter = twissParameter(name="beta_z", unit="m")
+    beta_z: "twissParameter" = None
     """The beta function in the z-direction."""
 
-    gamma_z: twissParameter = twissParameter(name="gamma_z", unit="")
+    gamma_z: "twissParameter" = None
     """The twiss gamma function in the z-direction."""
 
-    alpha_z: twissParameter = twissParameter(name="alpha_z", unit="")
+    alpha_z: "twissParameter" = None
     """The alpha function in the z-direction."""
 
-    sigma_x: twissParameter = twissParameter(name="sigma_x", unit="m")
+    sigma_x: "twissParameter" = None
     """The standard deviation of the beam in the x-direction."""
 
-    sigma_xp: twissParameter = twissParameter(name="sigma_xp", unit="rad")
+    sigma_xp: "twissParameter" = None
     """The standard deviation of the beam in the xp-direction."""
 
-    sigma_y: twissParameter = twissParameter(name="sigma_y", unit="m")
+    sigma_y: "twissParameter" = None
     """The standard deviation of the beam in the y-direction."""
 
-    sigma_yp: twissParameter = twissParameter(name="sigma_yp", unit="rad")
+    sigma_yp: "twissParameter" = None
     """The standard deviation of the beam in the yp-direction."""
 
-    sigma_z: twissParameter = twissParameter(name="sigma_z", unit="m")
+    sigma_z: "twissParameter" = None
     """The standard deviation of the beam in the z-direction."""
 
-    sigma_t: twissParameter = twissParameter(name="sigma_t", unit="s")
+    sigma_t: "twissParameter" = None
     """The standard deviation of the beam in time."""
 
-    sigma_p: twissParameter = twissParameter(name="sigma_p", unit="kg * m/s")
+    sigma_p: "twissParameter" = None
     """The standard deviation of the beam momentum in kg*m/s."""
 
-    sigma_cp: twissParameter = twissParameter(name="sigma_cp", unit="eV/c")
+    sigma_cp: "twissParameter" = None
     """The standard deviation of the beam momentum in eV/c."""
 
-    mean_x: twissParameter = twissParameter(name="mean_x", unit="m")
+    mean_x: "twissParameter" = None
     """The mean position of the beam in the x-direction."""
 
-    mean_y: twissParameter = twissParameter(name="mean_y", unit="m")
+    mean_y: "twissParameter" = None
     """The mean position of the beam in the y-direction."""
 
-    mux: twissParameter = twissParameter(name="mux", unit="2 pi")
+    mux: "twissParameter" = None
     """The horizontal phase advance of the beam, in units of 2 pi."""
 
-    muy: twissParameter = twissParameter(name="muy", unit="2 pi")
+    muy: "twissParameter" = None
     """The vertical phase advance of the beam, in units of 2 pi."""
 
-    eta_x: twissParameter = twissParameter(name="eta_x", unit="m")
+    eta_x: "twissParameter" = None
     """The horizontal dispersion of the beam."""
 
-    eta_xp: twissParameter = twissParameter(name="eta_xp", unit="rad")
+    eta_xp: "twissParameter" = None
     """The horizontal dispersion derivative of the beam."""
 
-    eta_y: twissParameter = twissParameter(name="eta_y", unit="m")
+    eta_y: "twissParameter" = None
     """The vertical dispersion of the beam."""
 
-    eta_yp: twissParameter = twissParameter(name="eta_yp", unit="rad")
+    eta_yp: "twissParameter" = None
     """The vertical dispersion derivative of the beam."""
 
-    element_name: twissParameter = twissParameter(
-        name="element_name", unit="", dtype="U"
-    )
+    element_name: "twissParameter" = None
     """The name of the element in the simulation."""
 
-    lattice_name: twissParameter = twissParameter(
-        name="lattice_name", unit="", dtype="U"
-    )
+    lattice_name: "twissParameter" = None
     """The name of the lattice in the simulation."""
 
-    ecnx: twissParameter = twissParameter(name="ecnx", unit="m-mrad")
+    ecnx: "twissParameter" = None
     """The normalized horizontal emittance of the beam, in m-mrad."""
 
-    ecny: twissParameter = twissParameter(name="ecny", unit="m-mrad")
+    ecny: "twissParameter" = None
     """The normalized vertical emittance of the beam, in m-mrad."""
 
-    eta_x_beam: twissParameter = twissParameter(name="eta_x_beam", unit="m")
+    eta_x_beam: "twissParameter" = None
     """The horizontal dispersion of the beam, specifically for beam parameters."""
 
-    eta_xp_beam: twissParameter = twissParameter(name="eta_xp_beam", unit="radians")
+    eta_xp_beam: "twissParameter" = None
     """The horizontal dispersion derivative of the beam, specifically for beam parameters."""
 
-    eta_y_beam: twissParameter = twissParameter(name="eta_y_beam", unit="m")
+    eta_y_beam: "twissParameter" = None
     """The vertical dispersion of the beam, specifically for beam parameters."""
 
-    eta_yp_beam: twissParameter = twissParameter(name="eta_yp_beam", unit="radians")
+    eta_yp_beam: "twissParameter" = None
     """The vertical dispersion derivative of the beam, specifically for beam parameters."""
 
-    beta_x_beam: twissParameter = twissParameter(name="beta_x_beam", unit="m")
+    beta_x_beam: "twissParameter" = None
     """The beta function in the x-direction, specifically for beam parameters."""
 
-    beta_y_beam: twissParameter = twissParameter(name="beta_y_beam", unit="m")
+    beta_y_beam: "twissParameter" = None
     """The beta function in the y-direction, specifically for beam parameters."""
 
-    alpha_x_beam: twissParameter = twissParameter(name="alpha_x_beam", unit="")
+    alpha_x_beam: "twissParameter" = None
     """The alpha function in the x-direction, specifically for beam parameters."""
 
-    alpha_y_beam: twissParameter = twissParameter(name="alpha_y_beam", unit="")
+    alpha_y_beam: "twissParameter" = None
     """The alpha function in the y-direction, specifically for beam parameters."""
 
     rest_mass: float | None = None
@@ -505,10 +557,8 @@ class twiss(BaseModel):
         """
         self.sddsindex = 0
         for name in self.model_fields:
-            if isinstance(getattr(self, name), twissParameter):
-                setattr(
-                    self, name, twissParameter(name=name, unit=getattr(self, name).unit)
-                )
+            if name in list(twiss_defaults.keys()):
+                setattr(self, name, twissParameter(**twiss_defaults["name"]))
         self.elegantTwiss = {}
 
     def sort(self, key: str = "z", reverse: bool = False) -> None:

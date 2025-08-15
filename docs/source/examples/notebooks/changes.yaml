@@ -1,0 +1,16 @@
+CLA-S02-MAG-QUAD-01:
+  k1l: 5.0
+  n_kicks: 7
+CLA-S02-MAG-QUAD-02:
+  k1l: 5.0
+  n_kicks: 7
+CLA-VBC-MAG-DIP-01:
+  angle: 0.1
+CLA-VBC-MAG-DIP-02:
+  angle: 0.1
+CLA-VBC-MAG-DIP-03:
+  angle: 0.1
+CLA-VBC-MAG-DIP-04:
+  angle: 0.1
+CLA-SP3-MAG-DIP-01:
+  angle: 0.1

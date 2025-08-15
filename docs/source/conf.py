@@ -67,6 +67,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
+    "myst_nb",
 ]
 
 
@@ -143,6 +144,12 @@ autodoc_default_options = {
 autodoc_pydantic_settings_show_config_summary = (
     False
 )
+
+autodoc_pydantic_field_list_validators = False
+autodoc_pydantic_model_show_validator_members = False
+
+nb_execution_mode = "auto"  # options: "off", "auto", "force"
+
 
 # mapping to other projects' documentation pages
 intersphinx_mapping = {

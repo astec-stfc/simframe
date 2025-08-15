@@ -6,19 +6,19 @@ from numpy import linalg
 def getMinVolEllipse(P=None, tolerance=0.01):
     """Find the minimum volume ellipsoid which holds all the points
 
-    Based on work by Nima Moshtagh
-    http://www.mathworks.com/matlabcentral/fileexchange/9542
-    and also by looking at:
-    http://cctbx.sourceforge.net/current/python/scitbx.math.minimum_covering_ellipsoid.html
-    Which is based on the first reference anyway!
+    Based on work by `Nima Moshtagh`_
 
     Here, P is a numpy array of N dimensional points like this:
     P = [[x,y,z,...], <-- one point per line
          [x,y,z,...],
          [x,y,z,...]]
 
-    Returns:
-    (center, radii, rotation)
+    Returns
+    -------
+    tuple
+        (center, radii, rotation)
+
+    .. _Nima Moshtagh: http://www.mathworks.com/matlabcentral/fileexchange/9542
 
     """
 

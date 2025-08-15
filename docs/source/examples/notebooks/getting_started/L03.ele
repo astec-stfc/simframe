@@ -1,0 +1,53 @@
+&global_settings
+	inhibit_fsync = 0
+	mpi_io_read_buffer_size = 16777216
+	mpi_io_write_buffer_size = 16777216
+	usleep_mpi_io_kludge = 0
+	mpi_io_force_file_sync = 0
+&end
+&run_setup
+	lattice = L03.lte
+	use_beamline = L03
+	centroid = %s.cen
+	sigma = %s.sig
+	losses = %s.loss
+	default_order = 3
+	p_central = 226.36244914364292
+	always_change_p0 = 1
+	s_start = 12.0502
+&end
+&run_control
+	n_steps = 1
+	n_passes = 1
+&end
+&twiss_output
+	filename = %s.twi
+	matched = 0
+	output_at_each_step = 0
+	statistics = 1
+	radiation_integrals = 1
+	beta_x = 29.787506582574235
+	alpha_x = -3.4029422695784937
+	eta_x = -0.002720816342428479
+	etap_x = -0.00044678668746841543
+	beta_y = 29.733916778065847
+	alpha_y = -3.3757309077370277
+&end
+&floor_coordinates
+	filename = %s.flr
+	theta0 = 0
+	magnet_centers = 0
+&end
+&matrix_output
+	full_matrix_only = 0
+	SDDS_output = %s.mat
+	SDDS_output_order = 2
+&end
+&sdds_beam
+	input = L03.sdds
+	reuse_bunch = 1
+	sample_interval = 1
+	center_arrival_time = 0
+&end
+&track
+&end

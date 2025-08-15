@@ -10,5 +10,3 @@ Framework Elements
 
 .. toctree::
    :maxdepth: 2
-
-   Elements

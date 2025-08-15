@@ -14,11 +14,12 @@ It provides a wrapper for several well-known particle tracking codes:
 * `GPT <https://www.pulsar.nl/gpt/>`_
 * `Elegant <https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#elegant>`_
 * `CSRTrack <https://www.desy.de/xfel-beam/csrtrack/>`_
+* `Ocelot <https://github.com/ocelot-collab/ocelot>`_
 
 The primary use for SimFrame has been for simulating the `CLARA <https://www.astec.stfc.ac.uk/Pages/CLARA.aspx>`_ particle accelerator.
 
-Navigation
-==========
+Setup
+-----
 .. warning::
    | This site is currently **under construction**.
    | Some pages may have missing or incomplete reference documentation.
@@ -28,11 +29,31 @@ Navigation
    
    installation
    getting-started
+   MasterLattice
+   
+.. API
+   ---
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API
+   
    Framework_objects
    Framework_elements
    SimulationFramework.Codes
    SimulationFramework.Modules
-   MasterLattice
+   
+.. Examples
+   --------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples
+
+   examples/notebooks/getting_started
+   examples/notebooks/beams_example
+   examples/notebooks/utility_functions
+
 
 
 Indices and tables

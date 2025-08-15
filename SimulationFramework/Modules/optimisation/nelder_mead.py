@@ -1,11 +1,15 @@
+"""
+Pure Python/Numpy implementation of the Nelder-Mead algorithm.
+Taken from `fchollet`_; also see `Wikipedia entry`_
+
+.. _fchollet: https://github.com/fchollet/nelder-mead
+
+.. _Wikipedia entry: https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+"""
+
 import copy
 from functools import partial
 
-"""
-    Pure Python/Numpy implementation of the Nelder-Mead algorithm.
-    Taken from: https://github.com/fchollet/nelder-mead
-    Reference: https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
-"""
 
 
 def nelder_mead(

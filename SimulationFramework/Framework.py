@@ -29,6 +29,7 @@ import inspect
 from typing import Any, Dict
 from pprint import pprint
 import numpy as np
+from copy import deepcopy
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
@@ -100,6 +101,28 @@ latticeClasses = [
         sys.modules["SimulationFramework.Framework_lattices"]
     )
     if inspect.isclass(obj)
+]
+
+disallowed = [
+    "allowedkeywords",
+    "conversion_rules_elegant",
+    "conversion_rules_ocelot",
+    "objectdefaults",
+    "global_parameters",
+    "objectname",
+    "subelement",
+    "beam",
+]
+
+disallowed_changes = [
+    "allowedkeywords",
+    "conversion_rules_elegant",
+    "conversion_rules_ocelot",
+    "objectdefaults",
+    "global_parameters",
+    "beam",
+    "field_definition",
+    "wakefield_definition",
 ]
 
 
@@ -572,8 +595,8 @@ class Framework(BaseModel):
 
         self.original_elementObjects = {}
         for e in self.elementObjects:
-            self.original_elementObjects[e] = self.elementObjects[e]
-        self.original_elementObjects["generator"] = self.generator
+            self.original_elementObjects[e] = deepcopy(self.elementObjects[e])
+        self.original_elementObjects["generator"] = deepcopy(self.generator)
 
     def save_settings(
         self,
@@ -654,13 +677,6 @@ class Framework(BaseModel):
         dict
             Dictionary containing changes in the lattice, with element names and changed parameters
         """
-        disallowed = [
-            "allowedkeywords",
-            "conversion_rules_elegant",
-            "conversion_rules_ocelot",
-            "objectdefaults",
-            "global_parameters",
-        ]
         changedict = {}
         if elementtype is not None:
             changeelements = self.getElementType(elementtype, "objectname")
@@ -683,7 +699,7 @@ class Framework(BaseModel):
                 if new is not None:
                     if e not in changedict:
                         changedict[e] = {}
-                    changedict[e][k] = convert_numpy_types(new[k])
+                    changedict[e][k] = convert_numpy_types(getattr(new, k[0]))
         else:
             for e in changeelements:
                 element = None
@@ -691,20 +707,34 @@ class Framework(BaseModel):
                     element = self.elementObjects[e]
                 elif e == "generator":
                     element = self.generator
-                if not self.original_elementObjects[e] == element:
+                cond = False
+                orig = self.original_elementObjects[e]
+                new = element
+                if isinstance(element, frameworkElement):
+                    kval = [k for k in new.model_fields_set if k not in disallowed_changes]
+                    new_model_fields = {k: getattr(new, k) for k in new.model_fields_set if
+                                        k not in disallowed_changes}
+                    orig_model_fields = {k: getattr(orig, k) for k in orig.model_fields_set if
+                                         k not in disallowed_changes}
+                    for k in kval:
+                        if not k in list(orig_model_fields.keys()):
+                            cond = True
+                        elif new_model_fields[k] != orig_model_fields[k]:
+                            cond = True
+                if cond:
                     orig = self.original_elementObjects[e]
                     new = element
                     # try:
                     changedict[e] = {
-                        k: convert_numpy_types(new[k])
+                        k[0]: convert_numpy_types(getattr(new, k[0]))
                         for k in new
-                        if k in orig and not new[k] == orig[k] and k not in disallowed
+                        if k in orig and not getattr(new, k[0]) == getattr(orig, k[0]) and k[0] not in disallowed_changes
                     }
                     changedict[e].update(
                         {
-                            k: convert_numpy_types(new[k])
+                            k[0]: convert_numpy_types(getattr(new, k[0]))
                             for k in new
-                            if k not in orig and k not in disallowed
+                            if k not in orig and k[0] not in disallowed_changes
                         }
                     )
                     if changedict[e] == {}:
@@ -791,17 +821,6 @@ class Framework(BaseModel):
                 return
             elements = list(self.latticeObjects[lattice].elements.keys())
             filename = pre + "_" + lattice + "_lattice.yaml"
-        disallowed = [
-            "allowedkeywords",
-            "conversion_rules_elegant",
-            "conversion_rules_ocelot",
-            "objectdefaults",
-            "global_parameters",
-            "objectname",
-            "subelement",
-            "beam",
-            "master_lattice_location",
-        ]
         for e in elements:
             new = self.elementObjects[e]
             # try:
@@ -1210,7 +1229,7 @@ class Framework(BaseModel):
             (
                 {"name": element, **self.elementObjects[element].model_dump()}
                 if param is None
-                else self.elementObjects[element][param]
+                else getattr(self.elementObjects[element], param)
             )
             for element in list(self.elementObjects.keys())
             if self.elementObjects[element].objecttype.lower() == typ.lower()
@@ -1242,7 +1261,7 @@ class Framework(BaseModel):
         elems = self.getElementType(typ)
         if len(elems) == len(values):
             for e, v in zip(elems, values):
-                e[setting] = v
+                setattr(self[e["name"]], setting, v)
         else:
             raise ValueError
 
@@ -1267,8 +1286,10 @@ class Framework(BaseModel):
         if isinstance(parameter, dict) and value is None:
             for p, v in parameter.items():
                 self.modifyElement(elementName, p, v)
-        elif isinstance(parameter, (list, set)) and value is None:
-            for p, v in parameter:
+        elif isinstance(parameter, list) and isinstance(value, list):
+            if len(parameter) != len(value):
+                raise ValueError("parameter and value must be of the same length")
+            for p, v in zip(parameter, value):
                 self.modifyElement(elementName, p, v)
         elif elementName in self.groupObjects:
             self.groupObjects[elementName].change_Parameter(parameter, value)
@@ -1340,7 +1361,7 @@ class Framework(BaseModel):
         if isinstance(parameter, dict) and value is None:
             for p, v in parameter.items():
                 self.modifyLattice(latticeName, p, v)
-        elif isinstance(parameter, (list, set)) and value is None:
+        elif isinstance(parameter, list) and isinstance(value, list):
             for p, v in parameter:
                 self.modifyLattice(latticeName, p, v)
         elif latticeName in self.latticeObjects:
@@ -1432,21 +1453,19 @@ class Framework(BaseModel):
         """Saves a list of parameters to a file"""
         output = {}
         if isinstance(parameters, dict):
-            for k, v in list(parameters.items()):
-                output[k] = {}
-                if isinstance(v, (list, tuple)):
-                    for p in v:
-                        output[k][p] = getattr(self[k], p)
-                else:
-                    output[k][v] = getattr(self[k], v)
+            try:
+                output.update({parameters["name"]: {k1: v1 for k1, v1 in parameters.items() if v1 not in disallowed}})
+            except KeyError:
+                warn("parameters dictionary must contain 'name' key")
         elif isinstance(parameters, (list, tuple)):
-            for k, v in parameters:
-                output[k] = {}
-                if isinstance(v, (list, tuple)):
-                    for p in v:
-                        output[k][p] = getattr(self[k], p)
-                else:
-                    output[k][v] = getattr(self[k], v)
+            try:
+                for k in parameters:
+                    output.update({k["name"]: {}})
+                    output[k["name"]].update({subk: k[subk] for subk in k if subk not in disallowed})
+            except TypeError:
+                warn("parameters must be a dictionary or a list of dictionaries containing a 'name' key")
+        else:
+            warn("could not parse parameters; they should be a dict, list or tuple")
         with open(file, "w") as yaml_file:
             yaml.default_flow_style = True
             yaml.dump(output, yaml_file)
@@ -1495,11 +1514,11 @@ class Framework(BaseModel):
             warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
 
     def __getitem__(self, key: str) -> Any:
-        if key in self.elementObjects:
+        if key in list(self.elementObjects.keys()):
             return self.elementObjects.get(key)
-        elif key in self.latticeObjects:
+        elif key in list(self.latticeObjects.keys()):
             return self.latticeObjects.get(key)
-        elif key in self.groupObjects:
+        elif key in list(self.groupObjects.keys()):
             return self.groupObjects.get(key)
         else:
             try:
@@ -2109,16 +2128,6 @@ class frameworkDirectory(BaseModel):
                 warn(f"{elem} does not have field {field}; returning entire element")
                 return elem
         else:
-            disallowed = [
-                "allowedkeywords",
-                "conversion_rules_elegant",
-                "conversion_rules_ocelot",
-                "objectdefaults",
-                "global_parameters",
-                "objectname",
-                "subelement",
-                "beam",
-            ]
             pprint(
                 {
                     k.replace("object", ""): v
