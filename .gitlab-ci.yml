@@ -5,7 +5,7 @@ sphinx-job:
   image: python:3.12
   stage: docs
   only:
-    - pydantify-test
+    - pydantify-all
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
