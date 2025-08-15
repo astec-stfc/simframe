@@ -11,7 +11,7 @@ The following codes are supported in `SimFrame`:
     - GPT
 
     - ELEGANT
-    
+
     - Ocelot
 
 A specific :class:`~SimulationFramework.Codes.Generators.Generators.frameworkGenerator` class
