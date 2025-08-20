@@ -558,7 +558,7 @@ class twiss(BaseModel):
         self.sddsindex = 0
         for name in self.model_fields:
             if name in list(twiss_defaults.keys()):
-                setattr(self, name, twissParameter(**twiss_defaults["name"]))
+                setattr(self, name, twissParameter(**twiss_defaults[name]))
         self.elegantTwiss = {}
 
     def sort(self, key: str = "z", reverse: bool = False) -> None:

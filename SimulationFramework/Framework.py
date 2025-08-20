@@ -1488,7 +1488,7 @@ class Framework(BaseModel):
             Lattice prefix
         """
         if lattice in self.latticeObjects:
-            self.latticeObjects[lattice].prefix = prefix
+            self.latticeObjects[lattice].set_prefix(prefix)
         else:
             warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
 

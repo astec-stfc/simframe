@@ -64,6 +64,7 @@ from pydantic import (
     field_validator,
     PositiveInt,
     SerializeAsAny,
+    computed_field,
 )
 from typing import (
     Dict,
@@ -1814,21 +1815,21 @@ class frameworkLattice(BaseModel):
             self.elements[element.objectname if i == index else k] = element
 
     @property
-    def csr_enable(self):
+    def csr_enable(self) -> bool:
         """
         Property to get or set the CSR enable flag.
         """
         return self._csr_enable
 
     @csr_enable.setter
-    def csr_enable(self, csr):
+    def csr_enable(self, csr) -> None:
+        print(1)
         self.csrDrifts = csr
         self._csr_enable = csr
 
-    @property
-    def prefix(self):
+    def set_prefix(self, prefix) -> None:
         """
-        Property to get or set the prefix for the input file block.
+        Set the prefix for the input file block.
 
         Returns
         -------
@@ -1836,16 +1837,7 @@ class frameworkLattice(BaseModel):
             The prefix string used in the input file block.
         """
         if "input" not in self.file_block:
-            self.file_block["input"] = {}
-        if "prefix" not in self.file_block["input"]:
-            self.file_block["input"]["prefix"] = ""
-        return self.file_block["input"]["prefix"]
-
-    @prefix.setter
-    def prefix(self, prefix):
-        if "input" not in self.file_block:
-            self.file_block["input"] = {}
-        self.file_block["input"]["prefix"] = prefix
+            self.file_block["input"] = {"prefix": prefix}
 
     def update_groups(self) -> None:
         """
