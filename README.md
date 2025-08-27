@@ -22,25 +22,22 @@ A range of other codes are also currently under active development.
 ------------------- |
 [![Documentation](https://img.shields.io/badge/simframe-documentation-blue.svg)](https://acceleratorsimframe.readthedocs.io/)  |
 
-## Getting Started
+## Installation
 
 Cloning from Github
 -------------------
 
 Clone `SimFrame` from Github:
 
-.. code-block:: bash
-
+```bash
     git clone https://github.com/astec-stfc/simframe.git
-    
-Installation
-------------
+```
 
 The package and its dependencies can be installed using the following command in the `simframe` directory:
 
-.. code-block:: bash
-
+```bash
     pip install .
+```
     
 Optional Dependencies
 ---------------------
