@@ -59,8 +59,7 @@ The first step in starting a new `SimFrame` simulation is to define the lattice,
 
 The following is part of the ``CLARA`` Injector, in a file  called ``YAML/CLA_Gun400.yaml`` for example:
 
-.. code-block:: yaml
-
+```yaml
     elements:
         CLA-HRG1-SIM-APER-01:
             centre: [0, 0, 0]
@@ -102,6 +101,7 @@ The following is part of the ``CLARA`` Injector, in a file  called ``YAML/CLA_Gu
             horizontal_size: 0.017
             shape: rectangular
             type: aperture
+```
 
 Note the use of ``sub_elements`` to define elements that overlap an existing element (in this case, a solenoid placed around the gun). 
 We make extensive use of `substitutions` to define the locations of field definition files.
@@ -113,8 +113,7 @@ Defining the Lattice Simulation
 
 The simulation of the lattice is defined in a separate ``YAML`` file, for example ``CLA-Injector.def``:
 
-.. code-block:: yaml
-
+```yaml
     generator:
         default: clara_400_3ps
     files:
@@ -142,6 +141,7 @@ The simulation of the lattice is defined in a separate ``YAML`` file, for exampl
                 end_element: CLA-S02-SIM-APER-01
     elements:
         filename: YAML/CLA_Gun400.yaml
+```
 
 This lattice definition would produce several output files (called ``injector400.in`` and ``Linac.lte``) for running in the **ASTRA** and **Elegant** beam tracking codes.
 The elements are loaded from the file ``YAML/CLA_Gun400.yaml`` defined above. Element definitions can also be defined directly in the ``.def`` file.
@@ -155,8 +155,7 @@ from the previous ``file`` block.
 Running SimFrame
 ----------------
 
-.. code-block:: python
-
+```python
     import SimulationFramework.Framework as fw
 
 
@@ -179,7 +178,7 @@ Running SimFrame
     # This is a scaling parameter
     # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
     framework.generator.number_of_particles = 2 ** (3 * scaling)
-
+```
 
 Example Notebooks
 -----------------
