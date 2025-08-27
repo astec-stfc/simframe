@@ -5,10 +5,10 @@ Installation
    | **SimFrame** is compatible only with python `3.10` and above.
    | Installing the package may require authentication with an STFC Federal ID or valid SSH key.
 
-Cloning from GitLab
+Cloning from Github
 -------------------
 
-Clone :mod:`SimFrame` from GitLab:
+Clone :mod:`SimFrame` from Github:
 
 .. code-block:: bash
 

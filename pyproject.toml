@@ -13,6 +13,7 @@ dynamic = ["version"]
 authors = [
     {name = "James Jones", email = "james.jones@stfc.ac.uk"},
 ]
+license = "GPL-3.0-or-later"
 maintainers = [
     {name = "James Jones", email = "james.jones@stfc.ac.uk"},
     {name = "Alex Brynes", email = "alexander.brynes@stfc.ac.uk"},
@@ -46,10 +47,10 @@ dependencies = [
 requires-python = ">= 3.10"
 classifiers = [
     "Programming Language :: Python :: 3.10",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+#    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
 
 [project.urls]
-Homepage = "https://gitlab.stfc.ac.uk/jkj62/simframe"
-Repository = "https://gitlab.stfc.ac.uk/jkj62/simframe.git"
-Issues = "https://gitlab.stfc.ac.uk/jkj62/simframe/-/issues/"
+Homepage = "https://github.com/astec-stfc/simframe"
+Repository = "https://github.com/astec-stfc/simframe.git"
+Issues = "https://github.com/astec-stfc/simframe/-/issues/"
