@@ -30,13 +30,13 @@ Cloning from Github
 Clone `SimFrame` from Github:
 
 ```bash
-    git clone https://github.com/astec-stfc/simframe.git
+git clone https://github.com/astec-stfc/simframe.git
 ```
 
 The package and its dependencies can be installed using the following command in the `simframe` directory:
 
 ```bash
-    pip install .
+pip install .
 ```
     
 Optional Dependencies
