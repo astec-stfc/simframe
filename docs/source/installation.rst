@@ -12,12 +12,12 @@ Clone :mod:`SimFrame` from GitLab:
 
 .. code-block:: bash
 
-    git clone https://gitlab.stfc.ac.uk/jkj62/simframe.git
+    git clone https://github.com/astec-stfc/simframe.git
 
 Install via pip
 -------------------
 
-Install :mod:`SimFrame` from the ``apclara1.dl.ac.uk`` pypi server:
+Install :mod:`SimFrame` from the ``apclara1.dl.ac.uk`` pypi server (requires STFC user ID):
 
 .. code-block:: bash
 
@@ -29,16 +29,33 @@ Required Dependencies
 
 :mod:`SimFrame` has the following required dependencies:
 
-* `fastkde==1.0.19`
-* `h5py==3.4.0`
-* `matplotlib==3.4.3`
-* `mpl_axes_aligner==1.3`
-* `munch==2.5.0`
-* ``numpy==1.21.2``
+* `fastKDE>=2.1.5`
+* `h5py>=3.4.0`
+* `matplotlib>=3.4.3`
+* `mpl_axes_aligner>=1.3`
+* `munch>=2.5.0`
+* `numpy>=2.2.6`
 * `progressbar2==4.0.0`
 * `pyyaml==6.0`
 * `pyzmq==22.3.0`
-* `scipy==1.7.1`
+* `scipy>=1.7.1`
+* `deepdiff>=5`
+* `tqdm>=4`
+* `PyQt5>=5.15`
+* `PyYAML>=5.3`
+* `lox>=0.11`
+* `pydantic>=2.5.3`
+* `attrs>=23.2.0`
+* `ocelot-desy>=25.06.0`
+* `easygdf>=2.1.1`
+* `soliday.sdds`
+* `numexpr>=2.11.0`
+* `numba>=0.61.2`
+* `pyFFTW==0.15.0`
+* `sphinx>8.2`
+* `sphinx-rtd-theme`
+* `myst-nb`
+* `sphinx_autodoc_typehints>=3.2.0`
 
 
 You can also install via the ``requirements.txt`` file from the git repo:
@@ -52,8 +69,8 @@ Optional Dependencies
 
 The following dependencies are optional, but are generally required for running ``CLARA`` simulations:
 
-* `MasterLattice`
-* `SimCodes`
+* `MasterLattice <https://github.com/astec-stfc/masterlattice.git>`__
+* `SimCodes <https://github.com/astec-stfc/simcodes.git>`__
 
 The can all be installed from the ``apclara1.dl.ac.uk`` pypi server:
 
