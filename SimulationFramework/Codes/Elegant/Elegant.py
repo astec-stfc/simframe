@@ -58,6 +58,7 @@ Classes:
 """
 
 import os
+import time
 from copy import copy
 import subprocess
 import numpy as np
@@ -525,11 +526,7 @@ class elegantLattice(frameworkLattice):
         file for this lattice section, and create the ELEGANT command files.
         """
         super().preProcess()
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         HDF5filename = prefix + self.particle_definition + ".hdf5"
         if os.path.isfile(expand_substitution(self, HDF5filename)):
             filepath = expand_substitution(self, HDF5filename)
@@ -590,7 +587,7 @@ class elegantLattice(frameworkLattice):
         self.screen_threaded_function.gather()
         self.commandFiles = {}
 
-    def hdf5_to_sdds(self, write: bool=True) -> None:
+    def hdf5_to_sdds(self, write: bool = True) -> None:
         """
         Convert the HDF5 beam input file to an SDDS file, and create a
         :class:`~SimulationFramework.Elements.charge.charge` object as the first element

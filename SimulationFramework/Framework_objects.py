@@ -338,11 +338,14 @@ class frameworkObject(BaseModel):
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
-        if name in self.model_fields:
+        if name in frameworkObject.model_fields:
             super().__setattr__(name, value)
         else:
-            # Store extras in __dict__ (allowed by Config.extra = 'allow')
-            self.__dict__[name] = value
+            try:
+                super().__setattr__(name, value)
+            except Exception:
+                # Store extras in __dict__ (allowed by Config.extra = 'allow')
+                self.__dict__[name] = value
 
     def change_Parameter(self, key: str, value: Any) -> None:
         """
@@ -519,11 +522,14 @@ class frameworkElement(frameworkObject):
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
-        if name in self.model_fields:
+        if name in frameworkElement.model_fields:
             super().__setattr__(name, value)
         else:
-            # Store extras in __dict__ (allowed by Config.extra = 'allow')
-            self.__dict__[name] = value
+            try:
+                super().__setattr__(name, value)
+            except Exception:
+                # Store extras in __dict__ (allowed by Config.extra = 'allow')
+                self.__dict__[name] = value
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -1792,11 +1798,14 @@ class frameworkLattice(BaseModel):
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
-        if name in self.model_fields:
+        if name in frameworkLattice.model_fields:
             super().__setattr__(name, value)
         else:
-            # Store extras in __dict__ (allowed by Config.extra = 'allow')
-            self.__dict__[name] = value
+            try:
+                super().__setattr__(name, value)
+            except Exception:
+                # Store extras in __dict__ (allowed by Config.extra = 'allow')
+                self.__dict__[name] = value
 
     def insert_element(self, index: int, element) -> None:
         """
@@ -1827,9 +1836,9 @@ class frameworkLattice(BaseModel):
         self.csrDrifts = csr
         self._csr_enable = csr
 
-    def set_prefix(self, prefix) -> None:
+    def get_prefix(self) -> str:
         """
-        Set the prefix for the input file block.
+        Get the prefix from the input file block.
 
         Returns
         -------
@@ -1837,7 +1846,34 @@ class frameworkLattice(BaseModel):
             The prefix string used in the input file block.
         """
         if "input" not in self.file_block:
-            self.file_block["input"] = {"prefix": prefix}
+            self.file_block["input"] = {}
+        if "prefix" not in self.file_block["input"]:
+            self.file_block["input"]["prefix"] = ""
+        return self.file_block["input"]["prefix"]
+
+    def set_prefix(self, prefix: str) -> None:
+        """
+        Set the prefix for the input file block.
+
+        Parameters
+        ----------
+        prefix: str
+            The prefix string used in the input file block.
+        """
+        if not hasattr(self, "file_block") or self.file_block is None:
+            self.file_block = {}
+        if "input" not in self.file_block or self.file_block["input"] is None:
+            self.file_block["input"] = {}
+        self.file_block["input"]["prefix"] = prefix
+
+    @computed_field
+    @property
+    def prefix(self) -> str:
+        return self.get_prefix()
+
+    @prefix.setter
+    def prefix(self, prefix: str) -> None:
+        self.set_prefix(prefix)
 
     def update_groups(self) -> None:
         """

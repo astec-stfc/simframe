@@ -863,7 +863,6 @@ class Particles(BaseModel):
         tuple
             The transformed arrays
         """
-        start = time.time()
         p = self.cp
         pAve = np.mean(p)
         gamma = np.mean(self.gamma)

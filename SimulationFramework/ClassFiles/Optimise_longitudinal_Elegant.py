@@ -108,7 +108,7 @@ class Optimise_Elegant(runEle.fitnessFunc):
             save_state = True
             dir = self.optdir + str(self.opt_iteration)
 
-        # print('dir = ', dir)
+        print('dir = ', dir)
         self.setup_lattice(self.inputlist, dir)
         print("New run = ", list(inputargs), dir)
         self.before_tracking()

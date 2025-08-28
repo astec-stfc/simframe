@@ -213,11 +213,7 @@ class ocelotLattice(frameworkLattice):
         Get the initial particle distribution defined in `file_block['input']['prefix']` if it exists.
         """
         super().preProcess()
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         prefix = prefix if self.trackBeam else prefix + self.particle_definition
         self.hdf5_to_npz(prefix)
 

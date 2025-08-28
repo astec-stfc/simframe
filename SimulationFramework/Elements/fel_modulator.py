@@ -1,5 +1,4 @@
 from SimulationFramework.Framework_objects import frameworkElement, elements_Elegant
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class fel_modulator(frameworkElement):

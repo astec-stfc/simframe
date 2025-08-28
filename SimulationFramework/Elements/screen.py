@@ -241,12 +241,10 @@ class screen(frameworkElement):
         """
         self.beam.sddsindex = sddsindex
         elegantbeamfilename = self.output_filename.replace(".sdds", ".SDDS").strip('"')
-        # print('sdds_to_hdf5')
         rbf.sdds.read_SDDS_beam_file(
             self.beam,
             self.global_parameters["master_subdir"] + "/" + elegantbeamfilename,
         )
-        # print('sdds_to_hdf5', 'read_SDDS_beam_file')
         HDF5filename = (
             self.output_filename.replace(".sdds", ".hdf5")
             .replace(".SDDS", ".hdf5")
@@ -261,7 +259,6 @@ class screen(frameworkElement):
             zoffset=self.end,
             toffset=(-1 * np.mean(self.global_parameters["beam"].t)),
         )
-        # print('sdds_to_hdf5', 'write_HDF5_beam_file')
         if self.global_parameters["delete_tracking_files"]:
             os.remove(
                 (

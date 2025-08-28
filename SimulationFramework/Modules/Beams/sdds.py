@@ -22,31 +22,28 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
             else:
                 try:
                     beamprops.update({k: v})
-                except AttributeError:
+                except Exception:
                     pass
         else:
             try:
-                setattr(self._beam, k, v)
-                beamprops.update({k: v})
-            except TypeError:
+                beamprops.update({k: np.array(v)})
+            except Exception:
                 pass
     for k in required_keys:
-        if k not in list(beamprops.keys()):
+        if k not in beamprops.keys():
             raise ValueError(f"Could not find column {k} in SDDS file")
     self.filename = fileName
-    self._beam.particle_mass = UnitValue(np.full(len(beamprops["x"]), constants.m_e), units="kg")
+    self._beam.particle_mass = UnitValue(
+        np.full(len(beamprops["x"]), constants.m_e), units="kg"
+    )
     # print('SDDS', self._beam["particle_mass"])
     self._beam.particle_rest_energy = UnitValue(
-        (
-            self._beam.particle_mass * constants.speed_of_light**2
-        ),
+        (self._beam.particle_mass * constants.speed_of_light**2),
         units="J",
     )
     # print('SDDS', self._beam["particle_rest_energy"])
     self._beam.particle_rest_energy_eV = UnitValue(
-        (
-            self._beam.particle_rest_energy / constants.elementary_charge
-        ),
+        (self._beam.particle_rest_energy / constants.elementary_charge),
         units="eV",
     )
     # print('SDDS', self._beam["particle_rest_energy_eV"])
@@ -67,13 +64,11 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
     self._beam.px = UnitValue(cpx * self.q_over_c, units="kg*m/s")
     self._beam.py = UnitValue(cpy * self.q_over_c, units="kg*m/s")
     self._beam.pz = UnitValue(cpz * self.q_over_c, units="kg*m/s")
-    # self._beam['t'] = self._beam['t']
     self._beam.z = UnitValue(
-            (-1 * self._beam.Bz * constants.speed_of_light) * (
-            beamprops["t"] - np.mean(beamprops["t"])
-        ),
+        (-1 * self._beam.Bz * constants.speed_of_light)
+        * (beamprops["t"] - np.mean(beamprops["t"])),
         units="m",
-    )# np.full(len(self.t), 0)
+    )  # np.full(len(self.t), 0)
     if "Charge" in elegantData and len(elegantData["Charge"]) > 0:
         self._beam.set_total_charge(elegantData["Charge"][0])
     elif charge is None:
@@ -81,7 +76,6 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
     else:
         self._beam.set_total_charge(charge)
     self._beam.nmacro = UnitValue(np.full(len(self._beam.z), 1), units="")
-    # self._beam['charge'] = []
 
 
 def write_SDDS_file(self, filename: str = None, ascii=False, xyzoffset=[0, 0, 0]):

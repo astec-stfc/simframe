@@ -49,11 +49,7 @@ class mad8Lattice(frameworkLattice):
 
     def preProcess(self):
         super().preProcess()
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         if self.trackBeam:
             self.hdf5_to_tfs(prefix)
         self.commandFile = mad8TrackFile(

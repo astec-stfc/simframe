@@ -74,7 +74,7 @@ class Optimise_transverse(runEle.fitnessFunc):
         # try:
         twiss = self.twiss
         self.framework.change_Lattice_Code("All", "elegant")
-        self.framework["S02"].prefix = self.base_files
+        self.framework["S02"].set_prefix(self.base_files)
         self.framework.track(startfile="S02", endfile="FMS")
 
         constraintsList = {}

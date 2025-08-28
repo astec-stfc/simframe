@@ -118,13 +118,7 @@ class fitnessFunc(object):
     def setup_lattice(self, inputargs, tempdir, *args, **kwargs):
         self.dirname = tempdir
         self.input_parameters = list(inputargs)
-
-        self.framework = fw.Framework(
-            self.dirname,
-            clean=self.clean,
-            overwrite=self.overwrite,
-            verbose=self.verbose,
-        )
+        self.framework.setSubDirectory(self.dirname)
 
         # print('self.ncpu = ', self.ncpu)
         if not os.name == "nt":
@@ -178,19 +172,14 @@ class fitnessFunc(object):
     def track(self, endfile=None, **kwargs):
         # ## Have we defined where the base files are?
         if self.base_files is not None:
-            if self.verbose:
-                print("Using base_files = ", self.base_files)
             self.framework[self.start_lattice].prefix = self.base_files
+            if self.verbose:
+                print("Using base_files = ", self.framework[self.start_lattice].prefix)
         # ## If not, use the defaults based on the location of the CLARA example directory
         elif self.CLARA_dir is not None:
+            self.framework[self.start_lattice].prefix = self.CLARA_dir + "/basefiles_" + str(self.scaling) + "/"
             if self.verbose:
-                print(
-                    "Using CLARA_dir base_files = ",
-                    self.CLARA_dir + "/basefiles_" + str(self.scaling) + "/",
-                )
-            self.framework[self.start_lattice].prefix = (
-                self.CLARA_dir + "/basefiles_" + str(self.scaling) + "/"
-            )
+                print("Using CLARA_dir base_files = ", self.framework[self.start_lattice].prefix)
 
         # ## Are we are setting the charge?
         if self.startcharge is not None:

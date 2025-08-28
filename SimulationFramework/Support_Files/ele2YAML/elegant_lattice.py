@@ -274,7 +274,7 @@ class ElegantLattice(BaseModel):
     lattice: List[str]
     elements: Dict[str, ElegantElement]
     floor: dict
-    prefix: str = "."
+    _duplicate_prefix: str = "."
 
     @field_validator("elements", mode="before")
     @classmethod
@@ -304,7 +304,7 @@ class ElegantLattice(BaseModel):
             if elem in duplicates:
                 no = counter.counter(elem)
                 counter.add(elem)
-                name = elem + self.prefix + str(no)
+                name = elem + self._duplicate_prefix + str(no)
             else:
                 name = elem
             new_elements[name] = deepcopy(self.elements[elem])

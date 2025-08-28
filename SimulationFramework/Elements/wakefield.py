@@ -1,7 +1,6 @@
 from SimulationFramework.Elements.cavity import cavity
 from SimulationFramework.Elements.drift import drift
 from SimulationFramework.Framework_objects import elements_Elegant
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 from SimulationFramework.Modules.Fields import field
 
 
@@ -228,9 +227,7 @@ class wakefield(cavity):
                 self.objectname + "-drift", type="drift", **{"length": self.length}
             )
             wholestring += d._write_Elegant()
-        for key, value in list(
-            merge_two_dicts(self.objectproperties, self.objectdefaults).items()
-        ):
+        for key, value in self.objectproperties:
             if (
                 not key == "name"
                 and not key == "type"

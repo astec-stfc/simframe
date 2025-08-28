@@ -77,6 +77,8 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
             # by default extract only the first run (in ELEGANT this is the fiducial)
             if isinstance(elegantData[k], np.ndarray) and (elegantData[k].ndim > 1):
                 elegantData[k] = elegantData[k][0]
+            else:
+                elegantData[k] = np.array(elegantData[k])
         z = elegantData["Z"]
         self.z.val = np.append(self.z.val, z)
         self.s.val = np.append(self.s.val, elegantData["s"])
@@ -142,6 +144,9 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
         # self.append('sigma_cp', elegantData['Sdelta'] * cp )
         self.sigma_cp.val = np.append(
             self.sigma_cp.val, elegantData["Sdelta"] * cp / constants.elementary_charge
+        )
+        self.mean_cp.val = np.append(
+            self.mean_cp.val, elegantData["Cdelta"] * cp / constants.elementary_charge
         )
         # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
 

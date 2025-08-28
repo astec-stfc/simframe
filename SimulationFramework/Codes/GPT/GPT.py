@@ -378,11 +378,7 @@ class gptLattice(frameworkLattice):
         """
         super().preProcess()
         self.headers["setfile"].particle_definition = self.objectname + ".gdf"
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         self.hdf5_to_gdf(prefix)
 
     def run(self) -> None:

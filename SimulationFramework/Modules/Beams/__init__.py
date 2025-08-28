@@ -807,7 +807,7 @@ def save_HDF5_summary_file(directory=".", filename="./Beam_Summary.hdf5", files=
         beam_files = glob.glob(directory + "/*.hdf5")
         files = []
         for bf in beam_files:
-            with h5py.File(bf, "a") as f:
+            with h5py.File(bf, "r") as f:
                 if "/beam/beam" in f:
                     files.append(bf)
     hdf5.write_HDF5_summary_file(filename, files)

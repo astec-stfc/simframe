@@ -22,6 +22,7 @@ Classes:
     and reading the Beam and Twiss files and making them available.
 """
 
+import time
 import os
 import sys
 import yaml
@@ -147,7 +148,7 @@ class Framework(BaseModel):
         arbitrary_types_allowed = True
         validate_assignment = True
 
-    directory: str = "test"
+    directory: str
     """The directory into which simulation files will be placed"""
 
     master_lattice: str | None = None
@@ -218,9 +219,6 @@ class Framework(BaseModel):
     filedirectory: str = ""
     """Directory for files"""
 
-    subdirectory: str | None = None
-    """Directory into which files are to be placed"""
-
     generator: frameworkGenerator | None = None
     """The :class:`~SimulationFramework.Codes.Generators.Generators.frameworkGenerator` object"""
 
@@ -230,16 +228,7 @@ class Framework(BaseModel):
     settingsFilename: str | None = None
     """Filename containing lattice settings"""
 
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(Framework, self).__init__(
-            *args,
-            **kwargs,
-        )
+    def model_post_init(self, __context):
         gptlicense = os.environ["GPTLICENSE"] if "GPTLICENSE" in os.environ else ""
         astra_use_wsl = os.environ["WSL_ASTRA"] if "WSL_ASTRA" in os.environ else 1
         self.global_parameters = {
@@ -533,9 +522,9 @@ class Framework(BaseModel):
                 self.read_Element(name, elem)
 
     def loadSettings(
-            self,
-            filename: str | None = None,
-            settings: FrameworkSettings | None = None,
+        self,
+        filename: str | None = None,
+        settings: FrameworkSettings | None = None,
     ) -> None:
         """
         Load Lattice Settings from file or dictionary. These settings contain the lattice lines and
@@ -658,9 +647,9 @@ class Framework(BaseModel):
         )
 
     def detect_changes(
-            self,
-            elementtype: str | None = None,
-            elements: list | None = None,
+        self,
+        elementtype: str | None = None,
+        elements: list | None = None,
     ) -> dict:
         """
         Detect lattice changes from the original loaded lattice and return a dictionary of changes.
@@ -699,7 +688,7 @@ class Framework(BaseModel):
                 if new is not None:
                     if e not in changedict:
                         changedict[e] = {}
-                    changedict[e][k] = convert_numpy_types(getattr(new, k[0]))
+                    changedict[e][k] = convert_numpy_types(getattr(new, k))
         else:
             for e in changeelements:
                 element = None
@@ -711,13 +700,21 @@ class Framework(BaseModel):
                 orig = self.original_elementObjects[e]
                 new = element
                 if isinstance(element, frameworkElement):
-                    kval = [k for k in new.model_fields_set if k not in disallowed_changes]
-                    new_model_fields = {k: getattr(new, k) for k in new.model_fields_set if
-                                        k not in disallowed_changes}
-                    orig_model_fields = {k: getattr(orig, k) for k in orig.model_fields_set if
-                                         k not in disallowed_changes}
+                    kval = [
+                        k for k in new.model_fields_set if k not in disallowed_changes
+                    ]
+                    new_model_fields = {
+                        k: getattr(new, k)
+                        for k in new.model_fields_set
+                        if k not in disallowed_changes
+                    }
+                    orig_model_fields = {
+                        k: getattr(orig, k)
+                        for k in orig.model_fields_set
+                        if k not in disallowed_changes
+                    }
                     for k in kval:
-                        if not k in list(orig_model_fields.keys()):
+                        if k not in list(orig_model_fields.keys()):
                             cond = True
                         elif new_model_fields[k] != orig_model_fields[k]:
                             cond = True
@@ -728,7 +725,9 @@ class Framework(BaseModel):
                     changedict[e] = {
                         k[0]: convert_numpy_types(getattr(new, k[0]))
                         for k in new
-                        if k in orig and not getattr(new, k[0]) == getattr(orig, k[0]) and k[0] not in disallowed_changes
+                        if k in orig
+                        and not getattr(new, k[0]) == getattr(orig, k[0])
+                        and k[0] not in disallowed_changes
                     }
                     changedict[e].update(
                         {
@@ -858,10 +857,10 @@ class Framework(BaseModel):
                 yaml.dump(dic, yaml_file)
 
     def load_changes_file(
-            self,
-            filename: str | tuple | list | None = None,
-            apply: bool = True,
-            verbose: bool = False,
+        self,
+        filename: str | tuple | list | None = None,
+        apply: bool = True,
+        verbose: bool = False,
     ) -> dict | list:
         """
         Loads a saved changes file and applies the settings to the current lattice.
@@ -993,10 +992,10 @@ class Framework(BaseModel):
         return noerror
 
     def change_Lattice_Code(
-            self,
-            latticename: str,
-            code: str,
-            exclude: str | list | tuple | None = None,
+        self,
+        latticename: str,
+        code: str,
+        exclude: str | list | tuple | None = None,
     ) -> None:
         """
         Changes the tracking code for a given lattice.
@@ -1035,11 +1034,11 @@ class Framework(BaseModel):
                 )
 
     def read_Element(
-            self,
-            elementname: str,
-            element: dict,
-            subelement: bool = False,
-            parent: str = None,
+        self,
+        elementname: str,
+        element: dict,
+        subelement: bool = False,
+        parent: str = None,
     ) -> None:
         """
         Reads an element definition and creates the element and any sub-elements
@@ -1072,10 +1071,10 @@ class Framework(BaseModel):
                     self.read_Element(name, elem, subelement=True, parent=elementname)
 
     def add_Element(
-            self,
-            name: str | None = None,
-            typ: str | None = None,
-            **kwargs,
+        self,
+        name: str | None = None,
+        typ: str | None = None,
+        **kwargs,
     ) -> frameworkElement | None:
         """
         Instantiates and adds the element definition to :attr:`~elementObjects`
@@ -1125,9 +1124,7 @@ class Framework(BaseModel):
         #     raise NameError('Element \'%s\' does not exist' % type)
 
     def replace_Element(
-            self, name: str | None = None,
-            typ: str | None = None,
-            **kwargs
+        self, name: str | None = None, typ: str | None = None, **kwargs
     ) -> frameworkElement:
         """
         Replaces an element type with a new type and updates the definitions
@@ -1169,9 +1166,9 @@ class Framework(BaseModel):
         #     raise NameError('Element \'%s\' does not exist' % type)
 
     def getElement(
-            self,
-            element: str,
-            param: str | None = None,
+        self,
+        element: str,
+        param: str | None = None,
     ) -> dict | Any | frameworkElement:
         """
         Returns the element object or a parameter of that element
@@ -1200,9 +1197,9 @@ class Framework(BaseModel):
             return {}
 
     def getElementType(
-            self,
-            typ: str | list | tuple,
-            param: str | None = None,
+        self,
+        typ: str | list | tuple,
+        param: str | None = None,
     ) -> dict | list | Any:
         """
         Gets all elements of the specified type, or the parameter of each of those elements
@@ -1236,10 +1233,10 @@ class Framework(BaseModel):
         ]
 
     def setElementType(
-            self,
-            typ: str,
-            setting: str,
-            values: Any,
+        self,
+        typ: str,
+        setting: str,
+        values: Any,
     ) -> None:
         """
         Modifies the specified parameter of each element of a given type
@@ -1266,10 +1263,10 @@ class Framework(BaseModel):
             raise ValueError
 
     def modifyElement(
-            self,
-            elementName: str,
-            parameter: str | list | dict,
-            value: Any = None,
+        self,
+        elementName: str,
+        parameter: str | list | dict,
+        value: Any = None,
     ) -> None:
         """
         Modifies an element parameter
@@ -1297,9 +1294,10 @@ class Framework(BaseModel):
             setattr(self.elementObjects[elementName], parameter, value)
 
     def modifyElements(
-            self, elementNames: str | list,
-            parameter: str | list | dict,
-            value: Any = None,
+        self,
+        elementNames: str | list,
+        parameter: str | list | dict,
+        value: Any = None,
     ) -> None:
         """
         Modifies parameters for multiple elements
@@ -1319,10 +1317,10 @@ class Framework(BaseModel):
             self.modifyElement(elem, parameter, value)
 
     def modifyElementType(
-            self,
-            elementType: str,
-            parameter: str,
-            value: Any,
+        self,
+        elementType: str,
+        parameter: str,
+        value: Any,
     ) -> None:
         """
         Modifies an element or a list of elements of a given type
@@ -1341,10 +1339,10 @@ class Framework(BaseModel):
             self.modifyElement(elementName, parameter, value)
 
     def modifyLattice(
-            self,
-            latticeName: str,
-            parameter: str | list | dict,
-            value: Any = None,
+        self,
+        latticeName: str,
+        parameter: str | list | dict,
+        value: Any = None,
     ) -> None:
         """
         Modify a lattice definition,
@@ -1368,10 +1366,10 @@ class Framework(BaseModel):
             setattr(self.latticeObjects[latticeName], parameter, value)
 
     def modifyLattices(
-            self,
-            latticeNames: str | list,
-            parameter: str | list | dict,
-            value: Any = None,
+        self,
+        latticeNames: str | list,
+        parameter: str | list | dict,
+        value: Any = None,
     ) -> None:
         """
         Modify a lattice definition for a list of lattices
@@ -1391,9 +1389,9 @@ class Framework(BaseModel):
             self.modifyLattice(latt, parameter, value)
 
     def add_Generator(
-            self,
-            default: str | None = None,
-            **kwargs,
+        self,
+        default: str | None = None,
+        **kwargs,
     ) -> None:
         """
         Add a file generator based on a keyword dictionary.
@@ -1424,8 +1422,8 @@ class Framework(BaseModel):
         self.latticeObjects["generator"] = self.generator
 
     def change_generator(
-            self,
-            generator: str,
+        self,
+        generator: str,
     ) -> None:
         """
         Changes the generator from one type to another.
@@ -1454,16 +1452,28 @@ class Framework(BaseModel):
         output = {}
         if isinstance(parameters, dict):
             try:
-                output.update({parameters["name"]: {k1: v1 for k1, v1 in parameters.items() if v1 not in disallowed}})
+                output.update(
+                    {
+                        parameters["name"]: {
+                            k1: v1
+                            for k1, v1 in parameters.items()
+                            if v1 not in disallowed
+                        }
+                    }
+                )
             except KeyError:
                 warn("parameters dictionary must contain 'name' key")
         elif isinstance(parameters, (list, tuple)):
             try:
                 for k in parameters:
                     output.update({k["name"]: {}})
-                    output[k["name"]].update({subk: k[subk] for subk in k if subk not in disallowed})
+                    output[k["name"]].update(
+                        {subk: k[subk] for subk in k if subk not in disallowed}
+                    )
             except TypeError:
-                warn("parameters must be a dictionary or a list of dictionaries containing a 'name' key")
+                warn(
+                    "parameters must be a dictionary or a list of dictionaries containing a 'name' key"
+                )
         else:
             warn("could not parse parameters; they should be a dict, list or tuple")
         with open(file, "w") as yaml_file:
@@ -1471,9 +1481,9 @@ class Framework(BaseModel):
             yaml.dump(output, yaml_file)
 
     def set_lattice_prefix(
-            self,
-            lattice: str,
-            prefix: str,
+        self,
+        lattice: str,
+        prefix: str,
     ) -> None:
         """
         Sets the 'prefix' parameter for a lattice in :attr:`~latticeObjects`,
@@ -1490,12 +1500,14 @@ class Framework(BaseModel):
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].set_prefix(prefix)
         else:
-            warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
+            warn(
+                f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}"
+            )
 
     def set_lattice_sample_interval(
-            self,
-            lattice: str,
-            interval: int,
+        self,
+        lattice: str,
+        interval: int,
     ) -> None:
         """
         Sets the 'sample_interval' parameter for a lattice, which determines the sampling of the distribution.
@@ -1511,7 +1523,9 @@ class Framework(BaseModel):
         if lattice in self.latticeObjects:
             self.latticeObjects[lattice].sample_interval = interval
         else:
-            warn(f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}")
+            warn(
+                f"{lattice} not found in latticeObjects; valid lattices are {list(self.latticeObjects.keys())}"
+            )
 
     def __getitem__(self, key: str) -> Any:
         if key in list(self.elementObjects.keys()):
@@ -1891,11 +1905,11 @@ class Framework(BaseModel):
         self.pushRunSettings()
 
     def setElementScan(
-            self,
-            name: str,
-            item: str,
-            scanrange: list,
-            multiplicative: bool = False,
+        self,
+        name: str,
+        item: str,
+        scanrange: list,
+        multiplicative: bool = False,
     ) -> None:
         """
         Define a parameter scan for a single parameter of a given machine element.
@@ -1993,8 +2007,11 @@ class frameworkDirectory(BaseModel):
             **kwargs,
         )
         if not isinstance(self.framework, Framework):
-            directory = "." if self.directory is None else os.path.abspath(self.directory)
-            self.framework = Framework(**kwargs,)
+            directory = (
+                "." if self.directory is None else os.path.abspath(self.directory)
+            )
+            print(kwargs)
+            self.framework = Framework(**kwargs)
             self.framework.loadSettings(directory + "/" + self.settings)
         else:
             self.framework = self.framework
@@ -2142,7 +2159,5 @@ def load_directory(
     directory: str = ".", twiss: bool = True, beams: bool = False, **kwargs
 ) -> frameworkDirectory:
     """Load a directory from a SimFrame tracking run and return a frameworkDirectory object"""
-    fw = frameworkDirectory(
-        directory=directory, twiss=twiss, beams=beams, **kwargs
-    )
+    fw = frameworkDirectory(directory=directory, twiss=twiss, beams=beams, **kwargs)
     return fw

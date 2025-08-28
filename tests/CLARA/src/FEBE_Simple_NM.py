@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 from SimulationFramework.ClassFiles.Optimise_longitudinal_Elegant import (
     Optimise_Elegant,
@@ -288,6 +289,7 @@ class FEBE_Mode_1(FEBE):
         self.framework["CLA-S07-DCP-EM-01"].factor = 0
 
     def calculate_constraints(self):
+        start = time.time()
         constraintsList = {}
 
         linac_indexes = [i for i, name in enumerate(self.linac_names) if "-L0" in name]
@@ -301,18 +303,18 @@ class FEBE_Mode_1(FEBE):
 
         self.beam.read_SDDS_beam_file(self.dirname + "/CLA-FEC1-SIM-FOCUS-01.sdds")
 
-        slice_length = 1e-15
-        self.beam.slice.slice_length = slice_length
-        self.beam.slice.bin_time()
-        (
-            peakI,
-            peakIstd,
-            peakIMomentumSpread,
-            peakIEmittanceX,
-            peakIEmittanceY,
-            peakIMomentum,
-            peakIDensity,
-        ) = self.beam.slice.sliceAnalysis()
+        # slice_length = 1e-15
+        # self.beam.slice.slice_length = slice_length
+        # self.beam.slice.bin_time()
+        # (
+        #     peakI,
+        #     peakIstd,
+        #     peakIMomentumSpread,
+        #     peakIEmittanceX,
+        #     peakIEmittanceY,
+        #     peakIMomentum,
+        #     peakIDensity,
+        # ) = self.beam.slice.sliceAnalysis()
 
         t = 1e12 * (self.beam.t - np.mean(self.beam.t))
         meanp = np.mean(self.beam.cp.val)

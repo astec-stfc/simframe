@@ -93,6 +93,7 @@ twiss_defaults = {
     "sigma_cp": {"name": "sigma_cp", "unit": "eV/c"},
     "mean_x": {"name": "mean_x", "unit": "m"},
     "mean_y": {"name": "mean_y", "unit": "m"},
+    "mean_cp": {"name": "mean_cp", "unit": "eV/c"},
     "mux": {"name": "mux", "unit": "2 pi"},
     "muy": {"name": "muy", "unit": "2 pi"},
     "eta_x": {"name": "eta_x", "unit": "m"},
@@ -299,6 +300,9 @@ class twiss(BaseModel):
 
     mean_y: "twissParameter" = None
     """The mean position of the beam in the y-direction."""
+
+    mean_cp: "twissParameter" = None
+    """The mean value of the beam momentum in eV/c."""
 
     mux: "twissParameter" = None
     """The horizontal phase advance of the beam, in units of 2 pi."""
@@ -556,7 +560,7 @@ class twiss(BaseModel):
         This is useful for starting fresh with a new set of twiss parameters or when reloading data.
         """
         self.sddsindex = 0
-        for name in self.model_fields:
+        for name in twiss.model_fields:
             if name in list(twiss_defaults.keys()):
                 setattr(self, name, twissParameter(**twiss_defaults[name]))
         self.elegantTwiss = {}

@@ -425,11 +425,7 @@ class astraLattice(frameworkLattice):
         :func:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun.hdf5_to_astra`.
         """
         super().preProcess()
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         self.headers["newrun"].hdf5_to_astra(prefix, self.initial_twiss)
         self.headers["charge"].npart = len(self.global_parameters["beam"].x)
 

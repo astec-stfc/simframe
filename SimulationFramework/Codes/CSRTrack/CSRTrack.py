@@ -199,11 +199,7 @@ class csrtrackLattice(frameworkLattice):
         :func:`~SimulationFramework.Codes.CSRTrack.csrtrack_particles.hdf5_to_astra`.
         """
         super().preProcess()
-        prefix = (
-            self.file_block["input"]["prefix"]
-            if "input" in self.file_block and "prefix" in self.file_block["input"]
-            else ""
-        )
+        prefix = self.get_prefix()
         self.CSRTrackelementObjects["particles"].hdf5_to_astra(prefix)
 
     def postProcess(self) -> None:

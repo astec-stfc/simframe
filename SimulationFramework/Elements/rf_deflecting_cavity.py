@@ -1,5 +1,4 @@
 from SimulationFramework.Elements.cavity import cavity, elements_Elegant
-from SimulationFramework.Modules.merge_two_dicts import merge_two_dicts
 
 
 class rf_deflecting_cavity(cavity):
