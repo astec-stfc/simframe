@@ -63,7 +63,7 @@ class quadrupole(frameworkElement):
         k1: float
             Quadrupole K1
         """
-        self.k1l = float(self.length) * float(k1)
+        self.k1l = float(self.length) * float(k1) if self.length > 0 else k1
 
     @property
     def dk1(self) -> float:

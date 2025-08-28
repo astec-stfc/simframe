@@ -466,6 +466,9 @@ class frameworkElement(frameworkObject):
     length: float = 0.0
     """Length of the element in the simulation, typically in meters."""
 
+    centre: List[float] = [0, 0, 0]
+    """Centre of the element in the simulation [x,y,z]."""
+
     position_errors: List[float] = [0, 0, 0]
     """Position errors of the element in the simulation [x,y,z]."""
 
@@ -547,6 +550,16 @@ class frameworkElement(frameworkObject):
         return repr(
             {k: getattr(self, k) for k in self.model_fields_set if k not in disallowed}
         )
+
+    @field_validator("length", mode="before")
+    @classmethod
+    def validate_length(cls, value: float) -> float:
+        """Validate the length to ensure it is a non-negative float."""
+        if not isinstance(value, (int, float)):
+            raise ValueError("length must be a float or an int.")
+        if value < 0:
+            raise ValueError("length must be non-negative.")
+        return float(value)
 
     @property
     def propertiesDict(self) -> dict:
