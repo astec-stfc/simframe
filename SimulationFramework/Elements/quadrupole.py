@@ -1,6 +1,6 @@
 from SimulationFramework.Framework_objects import frameworkElement
 from typing import List
-
+from pydantic import computed_field
 
 class quadrupole(frameworkElement):
     """
@@ -34,7 +34,7 @@ class quadrupole(frameworkElement):
     smooth: int | float = 2
     """Number of points to smooth the field map [ASTRA only]"""
 
-    bore: float = 0.037
+    bore: float = None
     """Bore radius of the quadrupole"""
 
     def __init__(
@@ -47,6 +47,7 @@ class quadrupole(frameworkElement):
             **kwargs,
         )
 
+    @computed_field
     @property
     def k1(self) -> float:
         """
@@ -150,7 +151,7 @@ class quadrupole(frameworkElement):
                     },
                 ],
                 ["Q_smooth", {"value": self.smooth, "default": None}],
-                ["Q_bore", {"value": self.bore, "default": None, "type": "not_zero"}],
+                ["Q_bore", {"value": self.bore, "default": 0.037, "type": "not_zero"}],
                 ["Q_noscale", {"value": self.scale_field}],
                 ["Q_mult_a", {"type": "list", "value": self.multipoles}],
             ]

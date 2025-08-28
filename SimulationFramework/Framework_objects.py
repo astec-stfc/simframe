@@ -1331,7 +1331,7 @@ class frameworkElement(frameworkObject):
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         setattr(self, "k2", self.k2 if self.k2 is not None else 0)
         setattr(self, "k3", self.k3 if self.k3 is not None else 0)
-        for key, value in self.objectproperties:
+        for key in {**self.model_fields, **self.model_computed_fields}:
             if (
                 not key == "name"
                 and not key == "type"
@@ -1341,18 +1341,19 @@ class frameworkElement(frameworkObject):
                 value = (
                     getattr(self, key)
                     if hasattr(self, key) and getattr(self, key) is not None
-                    else value
+                    else None
                 )
-                key = self._convertKeyword_Elegant(key)
-                value = 1 if value is True else value
-                value = 0 if value is False else value
-                tmpstring = ", " + key + " = " + str(value)
-                if len(string + tmpstring) > 76:
-                    wholestring += string + ",&\n"
-                    string = ""
-                    string += tmpstring[2::]
-                else:
-                    string += tmpstring
+                if value is not None:
+                    key = self._convertKeyword_Elegant(key)
+                    value = 1 if value is True else value
+                    value = 0 if value is False else value
+                    tmpstring = ", " + key + " = " + str(value)
+                    if len(string + tmpstring) > 76:
+                        wholestring += string + ",&\n"
+                        string = ""
+                        string += tmpstring[2::]
+                    else:
+                        string += tmpstring
         wholestring += string + ";\n"
         return wholestring
 

@@ -911,7 +911,7 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        if beta and alpha:
+        if all([beta is not None and alpha is not None]):
             x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
             self.x = x
             # self.xp = xp
@@ -945,7 +945,7 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        if beta and alpha:
+        if all([beta is not None and alpha is not None]):
             y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
             self.y = y
             # self.yp = yp
