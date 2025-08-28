@@ -2024,7 +2024,7 @@ class frameworkDirectory(BaseModel):
             self.beams = None
             self.twiss = rtf.twiss()
         if self.twiss:
-            self.twiss.load_directory(directory)
+            self.twiss.load_directory(directory, verbose=self.verbose)
 
     if use_matplotlib:
 
