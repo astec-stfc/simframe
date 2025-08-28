@@ -95,7 +95,7 @@ class ocelotLattice(frameworkLattice):
     .. _PhysProc: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/physics_proc.py
     """
 
-    smooth: float = 0.01
+    smooth_param: float = 0.01
     """Smoothing parameter"""
 
     lsc: bool = True
@@ -128,16 +128,19 @@ class ocelotLattice(frameworkLattice):
     mbi_navi: MBI | None = None
     """Physics process for calculating microbunching gain"""
 
+    mbi: Dict = {}
+    """Dictionary containing settings for microbunching gain calculation"""
+
     def __init__(self, *args, **kwargs):
         super(ocelotLattice, self).__init__(*args, **kwargs)
         self.oceglobal = (
             self.settings["global"]["OCELOTsettings"]
             if "OCELOTsettings" in list(self.settings["global"].keys())
-            else self.oceglobal
+            else oceglobal
         )
-        for f in self.model_fields_set:
+        for f in self.model_fields:
             if f in list(self.oceglobal.keys()):
-                setattr(self, field, self.oceglobal[f])
+                setattr(self, f, self.oceglobal[f])
 
         if (
             "input" in self.file_block
@@ -244,7 +247,7 @@ class ocelotLattice(frameworkLattice):
         )
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
-            f'{self.global_parameters["master_subdir"]}/{self.allElementObjects[self.start].objectname}.hdf5',
+            f'{self.global_parameters["master_subdir"]}/{self.elementObjects[self.start].objectname}.hdf5',
         )
         ocebeamfilename = HDF5filename.replace("hdf5", "ocelot.npz")
         self.pin = rbf.beam.write_ocelot_beam_file(
@@ -260,7 +263,11 @@ class ocelotLattice(frameworkLattice):
         if self.sample_interval > 1:
             pin = pin.thin_out(nth=self.sample_interval)
         self.tws, self.pout = track(
-            self.lat_obj, pin, navi=navi, calc_tws=True, twiss_disp_correction=True
+            self.lat_obj,
+            pin,
+            navi=navi,
+            calc_tws=True,
+            twiss_disp_correction=True,
         )
 
     def postProcess(self) -> None:
@@ -289,7 +296,7 @@ class ocelotLattice(frameworkLattice):
             for k, v in t.__dict__.items():
                 # Offset the s values to the start of the lattice
                 if k == "s":
-                    v += self.startObject["position_start"][2]
+                    v += self.startObject.position_start[2]
                 twsdat[k].append(v)
         savez_compressed(
             f'{self.global_parameters["master_subdir"]}/{self.objectname}_twiss.npz',
