@@ -190,6 +190,8 @@ class SDDSColumn(SDDSObject):
 
     @property
     def data(self):
+        if isinstance(self._data, (np.ndarray)):
+            return self._data.tolist()
         return self._data
 
     @data.setter
@@ -453,7 +455,7 @@ class SDDSFile(object):
                 column.type,
                 column.fieldlength,
             )
-            self._sddsObject.setColumnValueLists(column.name, [list(column.data)])
+            self._sddsObject.setColumnValueLists(column.name, [column.data])
         self._sddsObject.save(filename)
 
     def load(self, *args, **kwargs):

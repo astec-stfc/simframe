@@ -1,3 +1,4 @@
+from copy import deepcopy as copy
 import warnings
 from math import copysign
 import numpy as np
@@ -396,11 +397,10 @@ class Particles(Munch):
     ):
         p = self.cp
         pAve = np.mean(p)
-        p = [a / pAve - 1 for a in p]
+        p = p / pAve - 1
         eta1, etap1, _ = self.twiss.calculate_etax()
-        for i, ii in enumerate(x):
-            x[i] -= p[i] * eta1
-            xp[i] -= p[i] * etap1
+        x -= p * eta1
+        xp -= p * etap1
 
         S11, S12, S22 = self.computeCorrelations(xslice, xpslice)
         emit = np.sqrt(S11 * S22 - S12**2)
@@ -418,11 +418,10 @@ class Particles(Munch):
             R12 *= factor
             R22 *= factor
             R21 *= factor
-        for i, ii in enumerate(x):
-            x0 = x[i]
-            xp0 = xp[i]
-            x[i] = R11 * x0 + R12 * xp0
-            xp[i] = R21 * x0 + R22 * xp0
+        x0 = copy(x)
+        xp0 = copy(xp)
+        x = R11 * x0 + R12 * xp0
+        xp = R21 * x0 + R22 * xp0
         return x, xp
 
     def rematchXPlanePeakISlice(self, beta=False, alpha=False, nEmit=False):
