@@ -887,7 +887,6 @@ koct:
   l: double
   k3: double
   tilt: double
-  bore: double
   b: double
   dx: double
   dy: double
@@ -919,7 +918,6 @@ kquad:
   l: double
   k1: double
   tilt: double
-  bore: double
   b: double
   dx: double
   dy: double
@@ -1016,7 +1014,6 @@ ksext:
   l: double
   k2: double
   tilt: double
-  bore: double
   b: double
   dx: double
   dy: double
@@ -1313,7 +1310,6 @@ mult:
   l: double
   knl: double
   tilt: double
-  bore: double
   btipl: double
   dx: double
   dy: double
