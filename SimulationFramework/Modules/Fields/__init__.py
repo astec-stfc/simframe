@@ -162,7 +162,7 @@ class field(BaseModel):
     length: int | None = None
     """Length of the field, if applicable."""
 
-    frequency: float | None = None
+    frequency: float | np.int64 | None = None
     """Frequency of the field, if applicable."""
 
     radius: float | None = (

@@ -922,6 +922,8 @@ class Particles(BaseModel):
             self.px = cpx * self.q_over_c
             self.py = cpy * self.q_over_c
             self.pz = cpz * self.q_over_c
+        elif all([beta is False, alpha is False]):
+            pass
         else:
             warnings.warn("Both beta and alpha must be provided to rematch")
 
@@ -954,6 +956,8 @@ class Particles(BaseModel):
             self.px = cpx * self.q_over_c
             self.py = cpy * self.q_over_c
             self.pz = cpz * self.q_over_c
+        elif all([beta is False, alpha is False]):
+            pass
         else:
             warnings.warn("Both beta and alpha must be provided to rematch")
 

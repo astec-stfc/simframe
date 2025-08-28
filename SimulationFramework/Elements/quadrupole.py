@@ -31,6 +31,12 @@ class quadrupole(frameworkElement):
     multipoles: List[float] = [0]
     """Multipole elements in the quad"""
 
+    smooth: int | float = 2
+    """Number of points to smooth the field map [ASTRA only]"""
+
+    bore: float = 0.037
+    """Bore radius of the quadrupole"""
+
     def __init__(
         self,
         *args,
@@ -63,7 +69,7 @@ class quadrupole(frameworkElement):
         k1: float
             Quadrupole K1
         """
-        self.k1l = float(self.length) * float(k1)
+        self.k1l = float(self.length) * float(k1) if self.length > 0 else k1
 
     @property
     def dk1(self) -> float:

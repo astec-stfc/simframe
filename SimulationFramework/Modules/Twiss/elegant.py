@@ -80,6 +80,7 @@ def read_elegant_twiss_files(self, filename, startS=0, reset=True):
             else:
                 elegantData[k] = np.array(elegantData[k])
         z = elegantData["Z"]
+        z += self.z.val[-1] if len(self.z.val) > 0 else 0
         self.z.val = np.append(self.z.val, z)
         self.s.val = np.append(self.s.val, elegantData["s"])
         cp = elegantData["pCentral0"] * self.E0

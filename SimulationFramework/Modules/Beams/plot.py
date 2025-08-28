@@ -57,7 +57,7 @@ def density_plot(
     # Scale to nice units and get the factor, unit prefix
     x, f1, p1 = nice_array(getattr(particle_group, key))
     if key != "charge":
-        w = abs(particle_group["charge"])
+        w = abs(particle_group.charge)
     else:
         w = np.ones(len(getattr(particle_group, key)))
     u1 = ""  # particle_group.units(key).unitSymbol
