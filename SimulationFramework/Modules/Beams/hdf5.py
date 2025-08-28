@@ -188,25 +188,18 @@ def read_HDF5_beam_file(self, filename, local=False):
         else:
             raise ValueError(f"HDF5 columns unknown: {columns}")
         self._beam.particle_rest_energy = UnitValue(
-            [
-                m * constants.speed_of_light**2 for m in self._beam.particle_mass
-            ],
+            self._beam.particle_mass * constants.speed_of_light**2,
             "J",
         )
 
         self._beam.particle_rest_energy_eV = UnitValue(
-            [
-                E0 / constants.elementary_charge
-                for E0 in self._beam.particle_rest_energy
-            ],
+            self._beam.particle_rest_energy / constants.elementary_charge,
             "eV/c",
         )
 
         self._beam.charge = UnitValue(charge, "C")
         self._beam.particle_charge = UnitValue(
-            [
-                constants.elementary_charge * q for q in self._beam.chargesign
-            ],
+            constants.elementary_charge * np.full(len(x), self._beam.chargesign),
             "C",
         )
 

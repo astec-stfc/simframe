@@ -11,6 +11,8 @@ Functions are also available for rematching the beam based on Twiss parameters.
 Classes:
     - :class:`~SimulationFramework.Modules.Particles.Particles`: Container for a particle distribution.
 """
+
+from copy import deepcopy as copy
 import warnings
 from math import copysign
 import numpy as np
@@ -29,6 +31,7 @@ except ImportError:
 from ...units import UnitValue, unit_multiply
 from pydantic import BaseModel, computed_field
 from typing import Dict, Any
+
 
 class Particles(BaseModel):
     """
@@ -106,7 +109,9 @@ class Particles(BaseModel):
     # particle_mass = UnitValue(constants.m_e, "kg")
     # E0 = UnitValue(particle_mass * constants.speed_of_light**2, "J")
     # E0_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
-    q_over_c: UnitValue = UnitValue(constants.elementary_charge / constants.speed_of_light, "C/c")
+    q_over_c: UnitValue = UnitValue(
+        constants.elementary_charge / constants.speed_of_light, "C/c"
+    )
     """Elementary charge divided by speed of light"""
 
     speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
@@ -234,6 +239,7 @@ class Particles(BaseModel):
 
     def __init__(self, *args, **kwargs):
         super(Particles, self).__init__(*args, **kwargs)
+
     #
     # def __getitem__(self, key):
     #     if isinstance(super(Particles, self).__getitem__(key), (list, tuple)):
@@ -246,9 +252,7 @@ class Particles(BaseModel):
 
     def model_dump(self, *args, **kwargs) -> Dict:
         # Only include computed fields
-        computed_keys = {
-            f for f in self.__pydantic_decorators__.computed_fields.keys()
-        }
+        computed_keys = {f for f in self.__pydantic_decorators__.computed_fields.keys()}
         full_dump = super().model_dump(*args, **kwargs)
         mod_dump = {k: v for k, v in full_dump.items() if k in computed_keys}
         for col in ["x", "y", "z", "cpx", "cpy", "cpz"]:
@@ -356,9 +360,7 @@ class Particles(BaseModel):
         return self._mve
 
     def covariance(
-            self,
-            u: np.ndarray | UnitValue,
-            up: np.ndarray | UnitValue
+        self, u: np.ndarray | UnitValue, up: np.ndarray | UnitValue
     ) -> UnitValue | int:
         """
         Get the covariance from two arrays
@@ -654,7 +656,9 @@ class Particles(BaseModel):
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Lorentz factor
         """
-        return UnitValue(np.sqrt(1 + (self.cp.val / self.particle_rest_energy_eV.val) ** 2), "")
+        return UnitValue(
+            np.sqrt(1 + (self.cp.val / self.particle_rest_energy_eV.val) ** 2), ""
+        )
 
     @property
     def BetaGamma(self) -> UnitValue:
@@ -817,9 +821,7 @@ class Particles(BaseModel):
         return UnitValue(np.mean(self.kinetic_energy), "J")
 
     def computeCorrelations(
-            self,
-            x: UnitValue | np.ndarray,
-            y: UnitValue | np.ndarray
+        self, x: UnitValue | np.ndarray, y: UnitValue | np.ndarray
     ) -> tuple:
         """
         Get the covariances `(cov(x,x), cov(x,y), cov(y,y))`,
@@ -833,12 +835,12 @@ class Particles(BaseModel):
         return self.covariance(x, x), self.covariance(x, y), self.covariance(y, y)
 
     def performTransformation(
-            self,
-            x: UnitValue | np.ndarray,
-            xp: UnitValue | np.ndarray,
-            beta: bool | float | UnitValue=False,
-            alpha: bool | float | UnitValue=False,
-            nEmit: bool | float | UnitValue=False,
+        self,
+        x: UnitValue | np.ndarray,
+        xp: UnitValue | np.ndarray,
+        beta: bool | float | UnitValue = False,
+        alpha: bool | float | UnitValue = False,
+        nEmit: bool | float | UnitValue = False,
     ) -> tuple:
         """
         Transform the arrays provided with respect to the Twiss and emittance functions given.
@@ -861,14 +863,14 @@ class Particles(BaseModel):
         tuple
             The transformed arrays
         """
+        start = time.time()
         p = self.cp
         pAve = np.mean(p)
         gamma = np.mean(self.gamma)
-        p = [a / pAve - 1 for a in p]
+        p = p / pAve - 1
         eta1, etap1, _ = self.twiss.calculate_etax()
-        for i, ii in enumerate(x):
-            x[i] -= p[i] * eta1
-            xp[i] -= p[i] * etap1
+        x -= p * eta1
+        xp -= p * etap1
 
         S11, S12, S22 = self.computeCorrelations(x, xp)
         emit = np.sqrt(S11 * S22 - S12**2)
@@ -880,24 +882,23 @@ class Particles(BaseModel):
         R12 = 0
         R21 = (alpha1 - alpha2) / np.sqrt(beta1 * beta2)
         R22 = beta1 / np.sqrt(beta1 * beta2)
-        if nEmit is not False:
+        if nEmit:
             factor = np.sqrt(float(nEmit) / (emit * gamma))
             R11 *= factor
             R12 *= factor
             R22 *= factor
             R21 *= factor
-        for i, ii in enumerate(x):
-            x0 = x[i]
-            xp0 = xp[i]
-            x[i] = R11 * x0 + R12 * xp0
-            xp[i] = R21 * x0 + R22 * xp0
+        x0 = copy(x)
+        xp0 = copy(xp)
+        x = R11 * x0 + R12 * xp0
+        xp = R21 * x0 + R22 * xp0
         return x, xp
 
     def rematchXPlane(
-            self,
-            beta: UnitValue | float | bool=False,
-            alpha: UnitValue | float | bool=False,
-            nEmit: UnitValue | float | bool=False,
+        self,
+        beta: UnitValue | float | bool = False,
+        alpha: UnitValue | float | bool = False,
+        nEmit: UnitValue | float | bool = False,
     ) -> None:
         """
         Rematch :attr:`~x` and :attr:`~xp` with respect to the Twiss and emittance functions given.
@@ -911,12 +912,12 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        if not (beta is False and alpha is False):
+        if beta and alpha:
             x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
             self.x = x
             # self.xp = xp
 
-            cpz = self.cp / np.sqrt(xp ** 2 + self.yp**2 + 1)
+            cpz = self.cp / np.sqrt(xp**2 + self.yp**2 + 1)
             cpx = xp * cpz
             cpy = self.yp * cpz
             self.px = cpx * self.q_over_c
@@ -925,10 +926,11 @@ class Particles(BaseModel):
         else:
             warnings.warn("Both beta and alpha must be provided to rematch")
 
-    def rematchYPlane(self,
-            beta: UnitValue | float | bool=False,
-            alpha: UnitValue | float | bool=False,
-            nEmit: UnitValue | float | bool=False,
+    def rematchYPlane(
+        self,
+        beta: UnitValue | float | bool = False,
+        alpha: UnitValue | float | bool = False,
+        nEmit: UnitValue | float | bool = False,
     ) -> None:
         """
         Rematch :attr:`~y` and :attr:`~yp` with respect to the Twiss and emittance functions given.
@@ -942,12 +944,12 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        if not (beta is False and alpha is False):
+        if beta and alpha:
             y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
             self.y = y
             # self.yp = yp
 
-            cpz = self.cp / np.sqrt(self.xp**2 + yp ** 2 + 1)
+            cpz = self.cp / np.sqrt(self.xp**2 + yp**2 + 1)
             cpx = self.xp * cpz
             cpy = yp * cpz
             self.px = cpx * self.q_over_c
@@ -957,14 +959,14 @@ class Particles(BaseModel):
             warnings.warn("Both beta and alpha must be provided to rematch")
 
     def performTransformationPeakISlice(
-            self,
-            xslice: UnitValue | np.ndarray,
-            xpslice: UnitValue | np.ndarray,
-            x: UnitValue | np.ndarray,
-            xp: UnitValue | np.ndarray,
-            beta: UnitValue | float | bool=False,
-            alpha: UnitValue | float | bool=False,
-            nEmit: UnitValue | float | bool=False,
+        self,
+        xslice: UnitValue | np.ndarray,
+        xpslice: UnitValue | np.ndarray,
+        x: UnitValue | np.ndarray,
+        xp: UnitValue | np.ndarray,
+        beta: UnitValue | float | bool = False,
+        alpha: UnitValue | float | bool = False,
+        nEmit: UnitValue | float | bool = False,
     ) -> tuple:
         """
         Transform the arrays provided with respect to the Twiss and emittance functions given,
@@ -1024,10 +1026,10 @@ class Particles(BaseModel):
         return x, xp
 
     def rematchXPlanePeakISlice(
-            self,
-            beta=False,
-            alpha=False,
-            nEmit=False,
+        self,
+        beta=False,
+        alpha=False,
+        nEmit=False,
     ) -> None:
         """
         Rematch :attr:`~x` and :attr:`~xp` with respect to the Twiss and emittance functions given,
@@ -1051,7 +1053,7 @@ class Particles(BaseModel):
         self.x = x
         # self.xp = xp
 
-        cpz = self.cp / np.sqrt(xp ** 2 + self.yp**2 + 1)
+        cpz = self.cp / np.sqrt(xp**2 + self.yp**2 + 1)
         cpx = xp * cpz
         cpy = self.yp * cpz
         self.px = cpx * self.q_over_c
@@ -1059,10 +1061,10 @@ class Particles(BaseModel):
         self.pz = cpz * self.q_over_c
 
     def rematchYPlanePeakISlice(
-            self,
-            beta=False,
-            alpha=False,
-            nEmit=False,
+        self,
+        beta=False,
+        alpha=False,
+        nEmit=False,
     ) -> None:
         """
         Rematch :attr:`~y` and :attr:`~yp` with respect to the Twiss and emittance functions given,
@@ -1086,7 +1088,7 @@ class Particles(BaseModel):
         self.y = y
         # self.yp = yp
 
-        cpz = self.cp / np.sqrt(self.xp**2 + yp ** 2 + 1)
+        cpz = self.cp / np.sqrt(self.xp**2 + yp**2 + 1)
         cpx = self.xp * cpz
         cpy = yp * cpz
         self.px = cpx * self.q_over_c

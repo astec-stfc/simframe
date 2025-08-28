@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from .. import constants
 from ..units import UnitValue
@@ -83,7 +84,7 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
     # self._beam['charge'] = []
 
 
-def write_SDDS_file(self, filename: str=None, ascii=False, xyzoffset=[0, 0, 0]):
+def write_SDDS_file(self, filename: str = None, ascii=False, xyzoffset=[0, 0, 0]):
     """Save an SDDS file using the SDDS class."""
     if filename is None:
         fn = os.path.splitext(self.filename)
