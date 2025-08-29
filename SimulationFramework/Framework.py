@@ -54,6 +54,7 @@ from .FrameworkHelperFunctions import (
 from pydantic import (
     BaseModel,
     field_validator,
+    ConfigDict,
 )
 from warnings import warn
 
@@ -143,10 +144,11 @@ class Framework(BaseModel):
     Summary files containing Twiss parameters, and a summary of the beam files, are generated after tracking.
     """
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+    )
 
     directory: str
     """The directory into which simulation files will be placed"""

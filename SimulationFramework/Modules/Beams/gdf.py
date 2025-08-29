@@ -134,7 +134,7 @@ def read_gdf_beam_file(
         [
             E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
         ],
-        units="eV",
+        units="eV/c",
     )
     self._beam.particle_charge = UnitValue([self._beam.sign(q) for q in gdfbeamdata.q], units="C")
 

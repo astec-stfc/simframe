@@ -65,6 +65,7 @@ from pydantic import (
     PositiveInt,
     SerializeAsAny,
     computed_field,
+    ConfigDict,
 )
 from typing import (
     Dict,
@@ -277,10 +278,11 @@ class frameworkObject(BaseModel):
     and handle various simulation-specific functionalities.
     """
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+    )
 
     objectname: str
     """Name of the object, used as a unique identifier in the simulation."""
@@ -1660,10 +1662,11 @@ class frameworkLattice(BaseModel):
     See :ref:`creating-the-lattice-elements`
     """
 
-    class Config:
-        extra = "allow"
-        arbitrary_types_allowed = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+    )
 
     name: str
     """Name of the lattice, used as a prefix for output files and commands."""

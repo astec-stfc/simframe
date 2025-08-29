@@ -27,7 +27,7 @@ def read_ocelot_beam_file(self, filename):
         (
                 self._beam.particle_rest_energy / constants.elementary_charge
         ),
-        units="eV",
+        units="eV/c",
     )
     # self._beam.gamma = UnitValue(parray.gamma, units="")
     self._beam.x = UnitValue(parray.x(), units="m")

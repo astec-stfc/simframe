@@ -74,7 +74,7 @@ def interpret_astra_data(self, data, normaliseZ=False, keepLost=False):
     self._beam.particle_rest_energy_eV = UnitValue(
         [
             E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
-        ], units="eV")
+        ], units="eV/c")
     self._beam.particle_charge = UnitValue(
         [
             constants.elementary_charge * self.charge_sign_index[i] for i in index
@@ -114,6 +114,16 @@ def read_csrtrack_beam_file(self, filename):
     self._beam.clock = UnitValue(np.full(len(self.x), 0), units="s")
     self._beam.clock[0] = UnitValue(data[0, 0] * 1e-9, units="s")
     self._beam.status = UnitValue(np.full(len(self.x), 1), units="")
+    self._beam.particle_mass = UnitValue([constants.m_e], units="kg")
+    self._beam.particle_rest_energy = UnitValue(
+        [
+            m * constants.speed_of_light ** 2 for m in self._beam.particle_mass
+        ], units="J")
+    self._beam.particle_rest_energy_eV = UnitValue(
+        [
+            E0 / constants.elementary_charge for E0 in self._beam.particle_rest_energy
+        ], units="eV/c")
+    self._beam.particle_charge = UnitValue([constants.elementary_charge], units="C")
     self._beam.t = UnitValue(
         self.z / (-1 * self.Bz * constants.speed_of_light),
         units="s"

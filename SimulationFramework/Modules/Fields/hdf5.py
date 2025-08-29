@@ -134,6 +134,7 @@ def write_HDF5_field_file(self):
             "mode_numerator",
             "mode_denominator",
             "orientation",
+            "length",
         ]
         for att in attrs:
             if hasattr(self, att):

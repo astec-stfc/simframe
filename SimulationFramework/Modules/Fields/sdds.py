@@ -122,37 +122,38 @@ def read_SDDS_field_file(self, filename: str, field_type: str):
         elegantObject = SDDSFile(index=1, ascii=False)
     elegantObject.read_file(filename, page=-1)
     if field_type in ["LongitudinalWake", "3DWake", "TransverseWake"]:
-        for val in elegantObject._columns.values():
+        for key, val in elegantObject._columns.items():
+            data = np.array(val.data)
             if val.unit == "m":
                 setattr(
                     self,
                     "z",
-                    FieldParameter(name="z", value=UnitValue(val.data, units=val.unit)),
+                    FieldParameter(name="z", value=UnitValue(data, units=val.unit)),
                 )
             elif val.unit == "s":
                 setattr(
                     self,
-                    "z",
+                    "t",
                     FieldParameter(
-                        name="z", value=UnitValue(val.data / speed_of_light, units="m")
+                        name="t", value=UnitValue(data, units="m")
                     ),
                 )
             elif val.unit == "V/C":
                 setattr(
                     self,
                     "Wz",
-                    FieldParameter(name="Wz", value=UnitValue(val.data, units="V/C")),
+                    FieldParameter(name="Wz", value=UnitValue(data, units="V/C")),
                 )
             elif val.unit == "V/C/m":
                 setattr(
                     self,
                     "Wx",
-                    FieldParameter(name="Wx", value=UnitValue(val.data, units="V/C/m")),
+                    FieldParameter(name="Wx", value=UnitValue(data, units="V/C/m")),
                 )
                 setattr(
                     self,
                     "Wy",
-                    FieldParameter(name="Wy", value=UnitValue(val.data, units="V/C/m")),
+                    FieldParameter(name="Wy", value=UnitValue(data, units="V/C/m")),
                 )
             else:
                 raise ValueError(f"Unit {val.unit} not recognised in {filename}")

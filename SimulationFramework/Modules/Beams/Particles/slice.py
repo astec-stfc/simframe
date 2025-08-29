@@ -10,7 +10,11 @@ import numpy as np
 
 from ...units import UnitValue
 from ... import constants
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 from typing import Dict
 
 
@@ -18,6 +22,11 @@ class slice(BaseModel):
     """
     Class for calculating slice properties of a particle distribution.
     """
+
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     _slicelength: int | float = 0
     """Temporal length of slices"""
@@ -51,10 +60,6 @@ class slice(BaseModel):
 
     _t_binned: np.ndarray = None
     """Indices of temporal bins"""
-
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
 
     def __init__(self, beam, *args, **kwargs):
         super(slice, self).__init__(*args, **kwargs)
@@ -645,9 +650,9 @@ class slice(BaseModel):
 
     @computed_field
     @property
-    def slice_max_peak_current_slice(self) -> UnitValue:
+    def slice_max_peak_current_slice(self) -> int:
         """
-        Get the index of the peak current slice from :attr:`~slice_current`.
+        Get the peak slice current slice from :attr:`~slice_current`.
 
         Returns
         -------
@@ -655,7 +660,7 @@ class slice(BaseModel):
             Peak current slice
         """
         peakI = self.slice_current
-        return UnitValue(list(abs(peakI)).index(max(abs(peakI))), units="A")
+        return list(abs(peakI)).index(max(abs(peakI)))
 
     @computed_field
     @property
@@ -750,7 +755,7 @@ class slice(BaseModel):
         emitbins = list(zip(xbins, exbins))
         return UnitValue(
             [self.beam.covariance(x, x) / ex if ex > 0 else 0 for x, ex in emitbins],
-            units="m/rad",
+            units="m",
         )
 
     @property
@@ -808,7 +813,7 @@ class slice(BaseModel):
         emitbins = list(zip(ybins, eybins))
         return UnitValue(
             [self.beam.covariance(y, y) / ey if ey > 0 else 0 for y, ey in emitbins],
-            units="m/rad",
+            units="m",
         )
 
     @property

@@ -37,7 +37,7 @@ def write_opal_field_file(
         The frequency of the field
     radius: float | None
         The radius of the field, for 1D axially symmetric fields; defaults to 0.1
-     fourier: int = 100
+    fourier: int = 100
         Number of fourier coefficients
     orientation: str | None
         Orientation of the field (for 2D)
@@ -75,8 +75,8 @@ def write_opal_field_file(
             warn("Not enough fourier components provided; defaulting to 1/100")
             fourier = int(length / 100)
     if self.field_type == "1DMagnetoStatic":
-        zmin = min(self.z.value.val) * 1e-2
-        zmax = max(self.z.value.val) * 1e-2
+        zmin = min(self.z.value.val) * 1e2
+        zmax = max(self.z.value.val) * 1e2
         data = self.Bz.value.val
         head = ["1DMagnetoStatic", str(fourier)]
         if radius is None:
@@ -84,7 +84,7 @@ def write_opal_field_file(
             radius = 0.1
         rvals = [str(0), str(radius * 100), str(length), fourier]
         zvals = [str(zmin), str(zmax), str(length)]
-        header = [head, rvals, zvals]
+        header = [head, zvals, rvals]
     elif self.field_type == "1DElectroDynamic":
         if frequency is None:
             warn("RF Frequency not provided to field class")
@@ -121,17 +121,19 @@ def write_opal_field_file(
         rad = ["0.0", str(self.radius * 10), str(rlen)]
         data = np.transpose([ezvals, ervals, eabsvals, brvals])
         header = [head, leng, freq, rad]
-    elif "wake" in self.field_type:
-        write_SDDS_field_file(self)
+    elif "wake" in self.field_type.lower():
         warn(f"Field type {self.field_type} defaulting to SDDS type; use with caution")
+        return write_SDDS_field_file(self)
     else:
         warn(f"Field type {self.field_type} not supported for OPAL")
     if data is not None:
         with open(f"{opal_file}", "w") as f:
             for h in header:
                 f.write(" ".join([str(x) for x in h]) + "\n")
-            for d in data:
-                f.write(" ".join([str(x) for x in d]) + "\n")
+            for dat in data:
+                if not type(dat) in [list, np.ndarray]:
+                    dat = [dat]
+                f.write(" ".join([str(x) for x in dat]) + "\n")
     return opal_file
 
 
@@ -219,8 +221,8 @@ def read_opal_field_file(
                 )
             setattr(self, "fourier", int(rl[0].split(" ")[1]))
             setattr(self, "radius", float(rl[2].split(" ")[1]) * 1e-2)
-            zstart = float(rl[1].split(" ")[0])
-            zend = float(rl[1].split(" ")[1])
+            zstart = float(rl[1].split(" ")[0]) * 1e-2
+            zend = float(rl[1].split(" ")[1]) * 1e-2
         fdat = np.loadtxt(filename, skiprows=3)
         zvals = np.linspace(zstart, zend, len(fdat))
         setattr(self, "z", FieldParameter(name="z", value=UnitValue(zvals, units="m")))

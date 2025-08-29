@@ -7,7 +7,11 @@ Classes:
     - :class:`~SimulationFramework.Modules.Particles.sigmas.sigmas`: Sigma calculations.
 """
 import numpy as np
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 from ...units import UnitValue
 
 
@@ -16,9 +20,10 @@ class sigmas(BaseModel):
     Class for calculating sigmas of a particle distribution.
     """
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     def __init__(self, beam, *args, **kwargs):
         super(sigmas, self).__init__(*args, **kwargs)
@@ -175,6 +180,19 @@ class sigmas(BaseModel):
         """
         return np.std(self.beam.cp)
         # return self.beam.cp.std()/np.mean(self.beam.cp)
+
+    @computed_field
+    @property
+    def linear_chirp_t_cpz(self) -> UnitValue:
+        """
+        Linear chirp of the beam as std(t) / (max(cpz) - min(cpz))
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Linear chirp t/cpz
+        """
+        return -1 * np.std(self.beam.t) / (max(self.beam.cpz) - min(self.beam.cpz))
 
     @computed_field
     @property

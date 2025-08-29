@@ -19,7 +19,10 @@ Classes:
     - :class:`~SimulationFramework.Modules.Beams.particlesGroup`: Container for a group of particle distributions.
 """
 import os
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+)
 from typing import Dict, Any, List
 import numpy as np
 from warnings import warn
@@ -315,9 +318,10 @@ class beam(BaseModel):
     particle_mass: np.ndarray = None
     """Particle mass in kg"""
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     def __init__(self, filename=None, *args, **kwargs):
         super(beam, self).__init__(*args, **kwargs)
@@ -749,6 +753,12 @@ class beam(BaseModel):
         newbeam.longitudinal_reference = "z"
 
         return newbeam
+
+    def rotate_beamXZ(self, theta, preOffset=[0, 0, 0], postOffset=[0, 0, 0]):
+        hdf5.rotate_beamXZ(self, theta, preOffset=preOffset, postOffset=postOffset)
+
+    def unrotate_beamXZ(self):
+        hdf5.unrotate_beamXZ(self)
 
 
 def load_directory(directory=".", types={"SimFrame": ".hdf5"}, verbose=False) -> beamGroup:

@@ -228,14 +228,15 @@ class field(BaseModel):
                 field_type=field_type,
                 frequency=frequency,
                 cavity_type=cavity_type,
+                **kwargs,
             )
 
     @model_validator(mode="before")
     def validate_fields(cls, values):
         return values
 
-    def model_dump(self):
-        return self.filename
+    # def model_dump(self):
+    #     return self.filename
 
     def reset_dicts(self) -> None:
         """
@@ -269,9 +270,12 @@ class field(BaseModel):
         List[float] | None:
             A list of Z values if available, otherwise None.
         """
-        if self.t.value is not None and self.z.value is None:
+        if isinstance(self.z, FieldParameter):
+            return self.z.value.val
+        elif isinstance(self.t, FieldParameter):
             return -1 * abs(self.t.value.val * speed_of_light)
-        return self.z.value.val
+        else:
+            raise ValueError("Neither t nor z are defined")
 
     @property
     def t_values(self) -> List[float] | None:
@@ -284,9 +288,12 @@ class field(BaseModel):
         List[float] | None:
             A list of time values if available, otherwise None.
         """
-        if self.z is not None and self.t.value is None:
+        if isinstance(self.t, FieldParameter):
+            return self.t.value.val
+        elif isinstance(self.z, FieldParameter):
             return abs(self.z.value.val / speed_of_light)
-        return self.t.value.val
+        else:
+            raise ValueError("Neither t nor z are defined")
 
     def read_field_file(
         self,
@@ -294,6 +301,7 @@ class field(BaseModel):
         field_type: str | None = None,
         cavity_type: str | None = None,
         frequency: float | None = None,
+        normalize_b: bool = True
     ) -> None:
         """
         Read a field file and populate the field parameters based on the file type.
@@ -301,15 +309,16 @@ class field(BaseModel):
 
         Parameters
         ----------
-        filename: str:
+        filename: str
             The path to the field file to be read.
-        field_type: fieldtype | None:
+        field_type: fieldtype | None
             The type of the field, e.g., '1DElectroStatic', '1DMagnetoStatic', etc.
-        cavity_type: cavitytype | None:
+        cavity_type: cavitytype | None
             The type of the cavity, e.g., 'StandingWave', 'TravellingWave'.
-        frequency: float | None:
+        frequency: float | None
             The frequency of the field, if applicable.
-
+        normalize_b: bool
+            Normalize Bx and By with respect to Bz (True by default)
         Returns
         -------
         None:
@@ -339,6 +348,7 @@ class field(BaseModel):
                     field_type=field_type,
                     cavity_type=cavity_type,
                     frequency=frequency,
+                    normalize_b=normalize_b,
                 )
             elif fext.lower() in [".opal"]:
                 # print('Field: read_field_file: opal', filename, fext.lower())
@@ -446,7 +456,7 @@ class field(BaseModel):
             The path to the written field file, or None if the field file has not been read.
         """
         if not self.read:
-            print(
+            warnings.warn(
                 "Field file not read in. Use read_field_file to load in an hdf5 field file."
             )
             return

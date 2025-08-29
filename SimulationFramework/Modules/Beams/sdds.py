@@ -44,7 +44,7 @@ def read_SDDS_beam_file(self, fileName, charge=None, ascii=False, page=-1):
     # print('SDDS', self._beam["particle_rest_energy"])
     self._beam.particle_rest_energy_eV = UnitValue(
         (self._beam.particle_rest_energy / constants.elementary_charge),
-        units="eV",
+        units="eV/c",
     )
     # print('SDDS', self._beam["particle_rest_energy_eV"])
     self._beam.particle_charge = UnitValue(

@@ -6,7 +6,11 @@ This module calculates the Twiss properties of a particle distribution.
 Classes:
     - :class:`~SimulationFramework.Modules.Particles.twiss.twiss`: Twiss calculations.
 """
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 import numpy as np
 from ...units import UnitValue
 from typing import Dict
@@ -17,9 +21,10 @@ class twiss(BaseModel):
     Class for calculating Twiss properties of a particle distribution.
     """
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     def __init__(self, beam, *args, **kwargs):
         super(twiss, self).__init__(*args, **kwargs)

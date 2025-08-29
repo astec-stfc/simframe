@@ -55,13 +55,22 @@ def rotate_beamXZ(self, theta, preOffset=[0, 0, 0], postOffset=[0, 0, 0]):
             self._beam.reference_particle[5],
         ) = np.dot([beam], rotation_matrix)[0]
 
-    self.rotation = theta
-    self._beam.offset = preOffset
+    self._beam.x = UnitValue(self._beam.x, "m")
+    self._beam.y = UnitValue(self._beam.y, "m")
+    self._beam.z = UnitValue(self._beam.z, "m")
+    self._beam.px = UnitValue(self._beam.x, "kg*m/s")
+    self._beam.py = UnitValue(self._beam.py, "kg*m/s")
+    self._beam.pz = UnitValue(self._beam.pz, "kg*m/s")
+
+    self._beam.theta += theta
+    self._beam.offset = +preOffset
+    self.theta += float(theta)
+    self.offset = +preOffset
 
 
 def unrotate_beamXZ(self):
-    if abs(self.rotation) > 0:
-        self.rotate_beamXZ(-1 * self.rotation, -1 * self._beam.offset)
+    if abs(self.theta) > 0:
+        self.rotate_beamXZ(-1 * self.theta, -1 * self._beam.offset)
 
 
 def write_HDF5_beam_file(
@@ -223,6 +232,6 @@ def read_HDF5_beam_file(self, filename, local=False):
         self.starting_position = startposition
         theta = np.array(h5file.get("/Parameters/Rotation"))
         theta = theta if theta is not None else 0
-        self.theta = theta
+        self.theta = float(theta)
         if local is True:
             rotate_beamXZ(self.theta, preOffset=self.starting_position)

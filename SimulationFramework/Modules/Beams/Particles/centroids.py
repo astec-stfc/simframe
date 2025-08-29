@@ -7,8 +7,13 @@ Classes:
     - :class:`~SimulationFramework.Modules.Particles.centroids.centroids`: Centroid calculations.
 """
 import numpy as np
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 from ...units import UnitValue
+from ... import constants
 from typing import Dict
 
 class centroids(BaseModel):
@@ -16,9 +21,10 @@ class centroids(BaseModel):
     Class for calculating centroids of a particle distribution.
     """
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     def __init__(self, beam, *args, **kwargs):
         super(centroids, self).__init__(*args, **kwargs)
@@ -322,11 +328,11 @@ class centroids(BaseModel):
     @property
     def CEn(self) -> UnitValue:
         """
-        Mean beam energy
+        Mean beam energy in eV
 
         Returns
         -------
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Mean energy
         """
-        return np.mean(self.beam.cp * self.beam.particle_rest_energy)
+        return UnitValue(np.mean(self.beam.cp + self.beam.particle_rest_energy_eV), "eV")

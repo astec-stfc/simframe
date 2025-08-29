@@ -88,6 +88,20 @@ def generate_astra_field_data(self) -> np.ndarray:
         ezdata = self.Ez.value.val
         if self.cavity_type == "TravellingWave":
             spdata = ["" for _ in range(self.length)]
+            if any(
+                    [
+                        getattr(self, param) is None for param in [
+                            "start_cell_z",
+                            "end_cell_z",
+                            "mode_numerator",
+                            "mode_denominator"
+                        ]
+                    ]
+            ):
+                raise ValueError(
+                    "start_cell_z, end_cell_z", "mode_numerator", "mode_denominator"
+                    "must be defined for TravellingWave cavities"
+                )
             preamble = np.array(
                 [
                     [
@@ -279,7 +293,7 @@ def read_astra_field_file(
             )
     elif field_type == "3DWake":
         fdat = np.loadtxt(filename)
-        numrows = int(fdat[1, 0]) - 1
+        numrows = int(fdat[1, 0])
         setattr(
             self,
             "z",
@@ -299,7 +313,7 @@ def read_astra_field_file(
             "Wx",
             FieldParameter(
                 name="Wx",
-                value=UnitValue(fdat[numrows + 8 : (2 * numrows) + 8][::, 1]),
+                value=UnitValue(fdat[numrows + 7 : (2 * numrows) + 7][::, 1]),
                 units="V/C/m",
             ),
         )
@@ -308,7 +322,7 @@ def read_astra_field_file(
             "Wy",
             FieldParameter(
                 name="Wy",
-                value=UnitValue(fdat[(2 * numrows) + 12 :][::, 1]),
+                value=UnitValue(fdat[(2 * numrows) + 10 :][::, 1]),
                 units="V/C/m",
             ),
         )

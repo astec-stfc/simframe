@@ -29,7 +29,11 @@ try:
 except ImportError:
     pass
 from ...units import UnitValue, unit_multiply
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 from typing import Dict, Any
 
 
@@ -87,9 +91,10 @@ class Particles(BaseModel):
 
     """
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     # properties = {
     #     "x": "m",
@@ -170,7 +175,7 @@ class Particles(BaseModel):
     nmacro: int | np.ndarray | UnitValue = None
     """Number of macroparticles in this object"""
 
-    theta: UnitValue | float = None
+    theta: UnitValue | float = 0.0
     """Horizontal rotation of particle distribution with respect to the nominal axis [rad]"""
 
     reference_particle: list | np.ndarray = None
@@ -178,6 +183,9 @@ class Particles(BaseModel):
 
     toffset: float | UnitValue = None
     """Temporal offset [s]"""
+
+    offset: UnitValue | list | np.ndarray = [0, 0, 0]
+    """Beam positional offset in Cartesian coordinates"""
 
     mass_index: Dict = {
         1: constants.m_e,  # electron
@@ -209,31 +217,20 @@ class Particles(BaseModel):
         int
             Particle index (see :attr:`~mass_index` and :attr:`~charge_sign_index`.
         """
-        if m == constants.m_e:
+        if m == constants.m_e or (0.9 * constants.m_e) < m < (1.1 * constants.m_e):
             if self.sign(q) > 0:
                 # print('found positron')
                 return 2
             # print('found electron')
             return 1
-        elif m == constants.m_p:
+        elif m == constants.m_p or (0.9 * constants.m_p) < m < (1.1 * constants.m_p):
             if self.sign(q) > 0:
                 # print('found proton')
                 return 3
             # print('found h-')
             return 4
-        elif (0.9 * constants.m_e) < m < (1.1 * constants.m_e):
-            if self.sign(q) < 0:
-                # print('found electron')
-                return 1
-            else:
-                # print('found positron')
-                return 2
-        elif (0.9 * constants.m_p) < m < (1.1 * constants.m_p):
-            if self.sign(q) > 0:
-                # print('found proton')
-                return 3
-            # print('found h-')
-            return 4
+        else:
+            raise ValueError(f"Particle with mass {m} and charge {q} not supported")
 
     """ ********************  Statistical Parameters  ************************* """
 
@@ -798,6 +795,8 @@ class Particles(BaseModel):
         :class:`~SimulationFramework.Modules.units.UnitValue`
             Kinetic energy of particles
         """
+        if self.particle_rest_energy is None:
+            self.particle_rest_energy = self.particle_rest_energy_eV / constants.elementary_charge
         return UnitValue(
             np.array(
                 (
@@ -895,9 +894,9 @@ class Particles(BaseModel):
 
     def rematchXPlane(
         self,
-        beta: UnitValue | float | bool = False,
-        alpha: UnitValue | float | bool = False,
-        nEmit: UnitValue | float | bool = False,
+        beta: UnitValue | float = None,
+        alpha: UnitValue | float = None,
+        nEmit: UnitValue | float = None,
     ) -> None:
         """
         Rematch :attr:`~x` and :attr:`~xp` with respect to the Twiss and emittance functions given.
@@ -913,16 +912,16 @@ class Particles(BaseModel):
         """
         if all([beta is not None and alpha is not None]):
             x, xp = self.performTransformation(self.x, self.xp, beta, alpha, nEmit)
-            self.x = x
+            self.x = UnitValue(x, "m")
             # self.xp = xp
 
             cpz = self.cp / np.sqrt(xp**2 + self.yp**2 + 1)
             cpx = xp * cpz
             cpy = self.yp * cpz
-            self.px = cpx * self.q_over_c
-            self.py = cpy * self.q_over_c
-            self.pz = cpz * self.q_over_c
-        elif all([beta is False, alpha is False]):
+            self.px = UnitValue(cpx * self.q_over_c, "kg*m/s")
+            self.py = UnitValue(cpy * self.q_over_c, "kg*m/s")
+            self.pz = UnitValue(cpz * self.q_over_c, "kg*m/s")
+        elif all([beta is None, alpha is None]):
             pass
         else:
             warnings.warn("Both beta and alpha must be provided to rematch")
@@ -945,18 +944,18 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        if all([beta is not None and alpha is not None]):
+        if all([beta is not None, alpha is not None]):
             y, yp = self.performTransformation(self.y, self.yp, beta, alpha, nEmit)
-            self.y = y
+            self.y = UnitValue(y, "m")
             # self.yp = yp
 
             cpz = self.cp / np.sqrt(self.xp**2 + yp**2 + 1)
             cpx = self.xp * cpz
             cpy = yp * cpz
-            self.px = cpx * self.q_over_c
-            self.py = cpy * self.q_over_c
-            self.pz = cpz * self.q_over_c
-        elif all([beta is False, alpha is False]):
+            self.px = UnitValue(cpx * self.q_over_c, "kg*m/s")
+            self.py = UnitValue(cpy * self.q_over_c, "kg*m/s")
+            self.pz = UnitValue(cpz * self.q_over_c, "kg*m/s")
+        elif all([beta is None, alpha is None]):
             pass
         else:
             warnings.warn("Both beta and alpha must be provided to rematch")
@@ -967,9 +966,9 @@ class Particles(BaseModel):
         xpslice: UnitValue | np.ndarray,
         x: UnitValue | np.ndarray,
         xp: UnitValue | np.ndarray,
-        beta: UnitValue | float | bool = False,
-        alpha: UnitValue | float | bool = False,
-        nEmit: UnitValue | float | bool = False,
+        beta: UnitValue | float = None,
+        alpha: UnitValue | float = None,
+        nEmit: UnitValue | float = None,
     ) -> tuple:
         """
         Transform the arrays provided with respect to the Twiss and emittance functions given,
@@ -999,6 +998,7 @@ class Particles(BaseModel):
         """
         p = self.cp
         pAve = np.mean(p)
+        gamma = np.mean(self.gamma)
         p = [a / pAve - 1 for a in p]
         eta1, etap1, _ = self.twiss.calculate_etax()
         for i, ii in enumerate(x):
@@ -1009,14 +1009,14 @@ class Particles(BaseModel):
         emit = np.sqrt(S11 * S22 - S12**2)
         beta1 = S11 / emit
         alpha1 = -S12 / emit
-        beta2 = beta if beta is not False else beta1
-        alpha2 = alpha if alpha is not False else alpha1
+        beta2 = beta if beta is not None else beta1
+        alpha2 = alpha if alpha is not None else alpha1
         R11 = beta2 / np.sqrt(beta1 * beta2)
         R12 = 0
         R21 = (alpha1 - alpha2) / np.sqrt(beta1 * beta2)
         R22 = beta1 / np.sqrt(beta1 * beta2)
         if nEmit is not False:
-            factor = np.sqrt(nEmit / (emit * pAve))
+            factor = np.sqrt(nEmit / (emit * gamma))
             R11 *= factor
             R12 *= factor
             R22 *= factor
@@ -1047,21 +1047,21 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        peakIPosition = self.slice_max_peak_current_slice
-        xslice = self.slice_data(self.x)[peakIPosition]
-        xpslice = self.slice_data(self.xp)[peakIPosition]
+        peakIPosition = self.slice.slice_max_peak_current_slice
+        xslice = self.slice.slice_data(self.x)[peakIPosition]
+        xpslice = self.slice.slice_data(self.xp)[peakIPosition]
         x, xp = self.performTransformationPeakISlice(
             xslice, xpslice, self.x, self.xp, beta, alpha, nEmit
         )
-        self.x = x
+        self.x = UnitValue(x, "m")
         # self.xp = xp
 
         cpz = self.cp / np.sqrt(xp**2 + self.yp**2 + 1)
         cpx = xp * cpz
         cpy = self.yp * cpz
-        self.px = cpx * self.q_over_c
-        self.py = cpy * self.q_over_c
-        self.pz = cpz * self.q_over_c
+        self.px = UnitValue(cpx * self.q_over_c, "kg*m/s")
+        self.py = UnitValue(cpy * self.q_over_c, "kg*m/s")
+        self.pz = UnitValue(cpz * self.q_over_c, "kg*m/s")
 
     def rematchYPlanePeakISlice(
         self,
@@ -1082,18 +1082,18 @@ class Particles(BaseModel):
         nEmit: :class:`~SimulationFramework.Modules.units.UnitValue` or float or bool
             The emittance to transform the arrays.
         """
-        peakIPosition = self.slice_max_peak_current_slice
-        yslice = self.slice_data(self.y)[peakIPosition]
-        ypslice = self.slice_data(self.yp)[peakIPosition]
+        peakIPosition = self.slice.slice_max_peak_current_slice
+        yslice = self.slice.slice_data(self.y)[peakIPosition]
+        ypslice = self.slice.slice_data(self.yp)[peakIPosition]
         y, yp = self.performTransformationPeakISlice(
             yslice, ypslice, self.y, self.yp, beta, alpha, nEmit
         )
-        self.y = y
+        self.y = UnitValue(y, "m")
         # self.yp = yp
 
         cpz = self.cp / np.sqrt(self.xp**2 + yp**2 + 1)
         cpx = self.xp * cpz
         cpy = yp * cpz
-        self.px = cpx * self.q_over_c
-        self.py = cpy * self.q_over_c
-        self.pz = cpz * self.q_over_c
+        self.px = UnitValue(cpx * self.q_over_c, "kg*m/s")
+        self.py = UnitValue(cpy * self.q_over_c, "kg*m/s")
+        self.pz = UnitValue(cpz * self.q_over_c, "kg*m/s")

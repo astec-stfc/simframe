@@ -10,7 +10,11 @@ Classes:
     - :class:`~SimulationFramework.Modules.Particles.emittance.emittance`: Emittance calculations.
 """
 import numpy as np
-from pydantic import BaseModel, computed_field
+from pydantic import (
+    BaseModel,
+    computed_field,
+    ConfigDict,
+)
 from ...units import UnitValue
 
 
@@ -19,9 +23,10 @@ class emittance(BaseModel):
     Class for calculating emittances of a particle distribution.
     """
 
-    class Config:
-        arbitrary_types_allowed = True
-        extra = "allow"
+    model_config = ConfigDict(
+        extra="allow",
+        arbitrary_types_allowed=True,
+    )
 
     def __init__(self, beam, *args, **kwargs):
         super(emittance, self).__init__(*args, **kwargs)
