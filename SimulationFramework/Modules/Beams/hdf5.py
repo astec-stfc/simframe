@@ -58,7 +58,7 @@ def rotate_beamXZ(self, theta, preOffset=[0, 0, 0], postOffset=[0, 0, 0]):
     self._beam.x = UnitValue(self._beam.x, "m")
     self._beam.y = UnitValue(self._beam.y, "m")
     self._beam.z = UnitValue(self._beam.z, "m")
-    self._beam.px = UnitValue(self._beam.x, "kg*m/s")
+    self._beam.px = UnitValue(self._beam.px, "kg*m/s")
     self._beam.py = UnitValue(self._beam.py, "kg*m/s")
     self._beam.pz = UnitValue(self._beam.pz, "kg*m/s")
 
