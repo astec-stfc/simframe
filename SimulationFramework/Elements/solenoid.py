@@ -25,10 +25,10 @@ class solenoid(frameworkElement):
     smooth: float = 10.0
     """Smoothing parameter"""
 
-    array_names: list[str] = None
+    array_names: list[str] | None = None
     """Names for the solenoid field file array"""
 
-    field_amplitude: float = None
+    field_amplitude: float = 0.0
     """Solenoid peak field amplitude"""
 
     def __init__(self, *args, **kwargs):

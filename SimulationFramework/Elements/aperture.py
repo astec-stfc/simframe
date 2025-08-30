@@ -7,25 +7,25 @@ class aperture(frameworkElement):
     Class defining an aperture or collimator.
     """
 
-    number_of_elements: int = None
+    number_of_elements: int | None = None
     """Number of aperture elements"""
 
     shape: Literal["elliptical", "planar", "circular", "rectangular", "scraper"] = None
     """Aperture shape"""
 
-    horizontal_size: float = None
+    horizontal_size: float | None = None
     """Horizontal size of aperture"""
 
-    vertical_size: float = None
+    vertical_size: float | None = None
     """Vertical size of aperture"""
 
-    radius: float = None
+    radius: float | None = None
     """Radius of aperture"""
 
-    negative_extent: float = None
+    negative_extent: float | None = None
     """Longitudinal start position of an aperture"""
 
-    positive_extent: float = None
+    positive_extent: float | None = None
     """Longitudinal end position of an aperture"""
 
     def __init__(self, *args, **kwargs):

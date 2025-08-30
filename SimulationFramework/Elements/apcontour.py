@@ -17,6 +17,3 @@ class apcontour(frameworkElement):
 
     ycolumn: str = ""
     """Name of column containing y data """
-
-    def __init__(self, *args, **kwargs):
-        super(apcontour, self).__init__(*args, **kwargs)

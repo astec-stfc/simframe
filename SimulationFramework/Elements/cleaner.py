@@ -22,7 +22,7 @@ class cleaner(frameworkElement):
         wholestring = ""
         etype = "clean"
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

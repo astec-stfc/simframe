@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from ..units import UnitValue
+import numpy as np
 
 
 class FieldParameter(BaseModel):
@@ -17,4 +18,4 @@ class FieldParameter(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     name: str
-    value: UnitValue | None = None
+    value: UnitValue | np.ndarray | list | None = None

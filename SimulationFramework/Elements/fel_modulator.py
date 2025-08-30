@@ -6,44 +6,45 @@ class fel_modulator(frameworkElement):
     Class defining a modulator undulator.
     """
 
-    n_steps: int = None
+    n_steps: int | None = None
     """Number of steps for tracking"""
 
-    periods: int = None
+    periods: int | None = None
     """Number of periods in the modulator"""
 
-    peak_field: float = None
+    peak_field: float = 0.0
     """Peak magnetic field"""
-    gradient: float = None
+
+    gradient: float | None = None
     """Gradient of magnetic field"""
 
-    method: str = None
+    method: str | None = None
     """Tracking method"""
 
-    wavelength: float = None
+    wavelength: float = 0.0
     """Wavelength of laser"""
 
-    peak_power: float = None
+    peak_power: float = 0.0
     """Laser peak power"""
 
-    phase: float = None
+    phase: float = 0.0
     """Laser phase"""
 
-    horizontal_mode_number: int = None
+    horizontal_mode_number: int | None = None
     """Horizontal mode number"""
 
-    vertical_mode_number: int = None
+    vertical_mode_number: int | None = None
     """Vertical mode number"""
 
-    helical: bool = None
+    helical: bool = False
     """Flag to indicate whether a helical undulator is used"""
 
-    time_offset: float = None
+    time_offset: float = 0.0
     """Time offset between laser pulse and particle beam"""
 
     def __init__(
         self,
-        objecttype="modulator",
+        objecttype="fel_modulator",
         *args,
         **kwargs,
     ):
@@ -89,7 +90,7 @@ class fel_modulator(frameworkElement):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

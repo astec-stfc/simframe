@@ -1,0 +1,175 @@
+ --------------------------------------------------------------------------
+
+               Astra - A space charge tracking algorithm 
+                             Version 3.2              
+                         DESY,  Hamburg 2011          
+                         29. 8.2025  13:51
+
+     Parameter file is:  FODO.in                                           
+     trial                                                                           
+
+ Initialize element settings:
+     neglecting space charge forces 
+
+ --------------------------------------------------------------------------
+ Quadrupole:
+
+     quadrupole no.:        1         at =   5.0000E-02 m
+
+     WARNING: fringe fields of quadrupole no.:    1 overlap
+     peak gradient renormalized.
+
+     quadrupole no.:        2         at =   0.2000     m
+
+     WARNING: fringe fields of quadrupole no.:    2 overlap
+     peak gradient renormalized.
+
+
+          quadrupoles number:   1 and   2 overlap
+
+     quadrupole no.:        3         at =   0.3500     m
+
+     WARNING: fringe fields of quadrupole no.:    3 overlap
+     peak gradient renormalized.
+
+
+          quadrupoles number:   2 and   3 overlap
+
+ --------------------------------------------------------------------------
+    1000 particles from file FODO_input.astra                                  
+
+     Particles taken into account      N =       1000
+     total charge                      Q =     0.1000     nC
+     horizontal beam position          x =     0.4390     mm
+     vertical beam position            y =     7.5171E-02 mm
+     longitudinal beam position        z =     1.8908E-06 m
+     horizontal beam size          sig x =      9.890     mm
+     vertical beam size            sig y =      9.790     mm
+     longitudinal beam size        sig z =      1.055     mm
+     average kinetic energy            E =      999.5     MeV
+     energy spread                    dE =      1.001     keV
+     average momentum                  P =      1000.     MeV/c
+     transverse beam emittance     eps x =      19.14     pi mrad mm
+     correlated divergence         cor x =    -2.4008E-05 mrad 
+     transverse beam emittance     eps y =      18.73     pi mrad mm
+     correlated divergence         cor y =    -8.3214E-05 mrad
+     longitudinal beam emittance   eps z =      1.056     pi keV mm
+     correlated energy spread      cor z =     5.8923E-04 keV
+     emittance ratio eps y/eps x         =      1.022    
+     Reduced emittances: 
+     hor. emittance minus z correlation:         =      19.13     pi mrad mm
+     hor. emittance minus z & E correlation:     =      19.09     pi mrad mm
+     ver. emittance minus z correlation:         =      18.72     pi mrad mm
+     ver. emittance minus z & E correlation:     =      18.68     pi mrad mm
+     long. emitance minus 2nd order corr.:       =      1.054     pi keV mm
+     long. emitance minus 2nd & 3rd order corr.: =      1.053     pi keV mm
+ --------------------------------------------------------------------------
+     Start auto phasing: 
+
+     Cavity phasing completed:
+     Cavity number   Energy gain [MeV]  at  Phase [deg]
+ --------------------------------------------------------------------------
+ on axis tracking of the reference particle:
+     initial position                  z =   2.9942E-04 m
+                                       x =   0.4278     mm
+                                       y =    2.861     mm
+     initial momentum                  p =    1000.     MeV/c
+     global phase shift              phi =    0.000     deg
+     time step for integration        dt =    70.00     ps
+ --------------------------------------------------------------------------
+ Online element settings:
+
+     gradient of quadrupole no.:   1     =   -66.71     T/m
+     gradient of quadrupole no.:   2     =    133.4     T/m
+     gradient of quadrupole no.:   3     =   -33.36     T/m
+ --------------------------------------------------------------------------
+
+     particle reaches position         z =   0.4000     m
+     time of flight is                 t =    1.333     ns
+     final momentum                    p =    1000.     MeV/c
+     final phase (cavity 1)      phi_end =    0.000     deg
+ --------------------------------------------------------------------------
+ off axis tracking of the reference particle: 
+     initial position                  z =   2.9942E-04 m
+                                       x =    10.32     mm
+                                       y =    12.65     mm
+
+     final position                    x =    9.874     mm
+                                       y =    9.540     mm
+     divergence                    px/pz =    4.973     mrad
+                                   py/pz =   -25.69     mrad
+ --------------------------------------------------------------------------
+ tracking of     1000 particles :
+     tracking will stop at             z =   0.4000     m
+
+
+     final checkpoint at               z =   0.4000     m
+     total number of iteration steps:            40
+
+     WARNING: average step size might be limited by output parameter Zemit
+
+
+     **********************************************************************
+
+     Particles taken into account      N =       1000
+     total charge                      Q =     0.1000     nC
+     horizontal beam position          x =     0.4208     mm
+     vertical beam position            y =     5.6621E-02 mm
+     longitudinal beam position        z =     0.4000     m
+     horizontal beam size          sig x =      9.479     mm
+     vertical beam size            sig y =      7.396     mm
+     longitudinal beam size        sig z =      1.056     mm
+     average kinetic energy            E =      999.5     MeV
+     energy spread                    dE =      1.001     keV
+     average momentum                  P =      1000.     MeV/c
+     transverse beam emittance     eps x =      3990.     pi mrad mm
+     correlated divergence         cor x =      4.856     mrad 
+     transverse beam emittance     eps y =      4625.     pi mrad mm
+     correlated divergence         cor y =     -19.83     mrad
+     longitudinal beam emittance   eps z =      1.057     pi keV mm
+     correlated energy spread      cor z =    -4.5591E-05 keV
+     emittance ratio eps y/eps x         =     0.8627    
+     Reduced emittances: 
+     hor. emittance minus z correlation:         =      3801.     pi mrad mm
+     hor. emittance minus z & E correlation:     =      3792.     pi mrad mm
+     ver. emittance minus z correlation:         =      3929.     pi mrad mm
+     ver. emittance minus z & E correlation:     =      3917.     pi mrad mm
+     long. emitance minus 2nd order corr.:       =      1.056     pi keV mm
+     long. emitance minus 2nd & 3rd order corr.: =      1.054     pi keV mm
+
+     Particle Statistics: 
+
+
+     Total number of particles on stack     =       1000
+     Positrons                              =       1000
+     particles at the cathode               =          0
+     active particles                       =       1000
+     passive particles (lost out of bunch)  =          0
+     probe particles                        =          0
+     backward traveling particles           =          0
+     particles lost with z<Zmin             =          0
+     particles lost due to cathode field    =          0
+     particles lost on aperture             =          0
+
+     Tracking ended with     4 warning(s)
+
+
+     **********************************************************************
+
+     Emittance information saved to file    : FODO.Xemit.001                
+     Emittance information saved to file    : FODO.Yemit.001                
+     Emittance information saved to file    : FODO.Zemit.001                
+     Ref. part. information saved to file   : FODO.ref.001                  
+     Phase-space distributions logged in    : FODO.Log.001                  
+     Correlation data saved to file         : FODO.Xemit2.001               
+     Correlation data saved to file         : FODO.Yemit2.001               
+     Correlation data saved to file         : FODO.Zemit2.001               
+
+     **********************************************************************
+
+     Error results saved to file            : FODO.Error.001                
+
+     finished simulation  29. 8.2025     13:51
+     execution time:  0.06 sec                         
+     Goodbye.
+ --------------------------------------------------------------------------

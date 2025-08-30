@@ -5,13 +5,3 @@ class integrated_current_transformer(wall_current_monitor):
     """
     Class defining an ICT element.
     """
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(integrated_current_transformer, self).__init__(
-            *args,
-            **kwargs,
-        )

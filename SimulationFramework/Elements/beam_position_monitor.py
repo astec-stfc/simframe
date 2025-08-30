@@ -6,12 +6,6 @@ class beam_position_monitor(screen):
     Class defining a beam position moinitor.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(beam_position_monitor, self).__init__(
-            *args,
-            **kwargs,
-        )
-
     def _write_ASTRA(self, n, **kwargs):
         return self._write_ASTRA_dictionary(
             dict(

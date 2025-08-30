@@ -49,8 +49,11 @@ class cavity(frameworkElement):
     field_amplitude: float = 0.0
     """Cavity field amplitude [V]"""
 
-    crest: float = 0.0
+    crest: float | None = 0.0
     """Crest phase"""
+
+    phase: float | None = 0.0
+    """Off-crest phase"""
 
     field_reference_position: Literal["start", "middle", "end"] = "start"
     """Reference position for field"""
@@ -88,31 +91,31 @@ class cavity(frameworkElement):
     cell_length: float = 0.0
     """Length of cavity cell"""
 
-    frequency: float = None
+    frequency: float | None = None
     """Cavity frequency"""
 
-    cavity_type: str = None
+    cavity_type: str | None = None
     """Type of cavity"""
 
     n_cells: SerializeAsAny[int | float] = None
     """Number of cavity cells"""
 
-    ez_peak: float = None
+    ez_peak: float | None = None
     """Peak longitudinal electric field"""
 
-    field_definition: SerializeAsAny[str | field] = None
+    field_definition: SerializeAsAny[str | field | None] = None
     """Name of cavity field or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    wakefield_definition: SerializeAsAny[str | field] = None
+    wakefield_definition: SerializeAsAny[str | field | None] = None
     """Name of wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    longitudinal_wakefield: SerializeAsAny[str | field] = None
+    longitudinal_wakefield: SerializeAsAny[str | field | None] = None
     """Name of longitudinal wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    transverse_wakefield: SerializeAsAny[str | field] = None
+    transverse_wakefield: SerializeAsAny[str | field | None] = None
     """Name of transverse wakefield or :class:`~SimulationFramework.Modules.Fields.field` object"""
 
-    Structure_Type: Literal["TravellingWave", "StandingWave"] = None
+    Structure_Type: Literal["TravellingWave", "StandingWave"] | None = None
     """Cavity structure type"""
 
     smooth: int | None = None
@@ -294,7 +297,7 @@ class cavity(frameworkElement):
             )
             self.set_wakefield_column_names(wakefield_file_name)
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"
@@ -372,7 +375,7 @@ class cavity(frameworkElement):
 
         type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if key not in [
                 "name",
                 "type",

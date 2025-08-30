@@ -50,6 +50,7 @@ from copy import deepcopy
 import yaml
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules.MathParser import MathParser
+from .Framework_Settings import FrameworkSettings
 from .FrameworkHelperFunctions import chunks, expand_substitution, checkValue, chop, dot
 from .FrameworkHelperFunctions import _rotation_matrix
 from .Modules.Fields import field
@@ -71,6 +72,7 @@ from typing import (
     Dict,
     List,
     Any,
+    Tuple,
 )
 
 if os.name == "nt":
@@ -296,13 +298,16 @@ class frameworkObject(BaseModel):
     allowedkeywords: List | Dict = {}
     """List of allowed keywords for the object, which defines what properties can be set."""
 
-    def __init__(self, *args, **kwargs):
-        super(frameworkObject, self).__init__(
-            *args,
-            **kwargs,
-        )
-        if "global_parameters" in kwargs:
-            self.global_parameters = kwargs["global_parameters"]
+    global_parameters: Dict = {}
+    """Global parameters to be cascaded through all objects."""
+
+    def model_post_init(self, __context):
+        extra_fields = {
+            k: v for k, v in self.model_dump().items()
+            if k not in self.__annotations__
+        }
+        for k, v in extra_fields.items():
+            setattr(self, k, v)
         if self.objecttype in commandkeywords:
             self.allowedkeywords = commandkeywords[self.objecttype]
         elif self.objecttype in elementkeywords:
@@ -316,11 +321,10 @@ class frameworkObject(BaseModel):
                     elementkeywords[self.objecttype]["framework_keywords"],
                 )
         else:
-            warn(f"Unknown type = {self.objecttype}")
-            raise NameError
+            raise NameError(f"Unknown type = {self.objecttype}")
         self.allowedkeywords = [x.lower() for x in self.allowedkeywords]
-        for key, value in list(kwargs.items()):
-            self.add_property(key, value)
+        # for key, value in list(kwargs.items()):
+        #     self.add_property(key, value)
 
     @field_validator("objectname", mode="before")
     @classmethod
@@ -338,16 +342,11 @@ class frameworkObject(BaseModel):
             raise ValueError("objecttype must be a string.")
         return value
 
-    def __setattr__(self, name, value):
-        # Let Pydantic set known fields normally
-        if name in frameworkObject.model_fields:
-            super().__setattr__(name, value)
-        else:
-            try:
-                super().__setattr__(name, value)
-            except Exception:
-                # Store extras in __dict__ (allowed by Config.extra = 'allow')
-                self.__dict__[name] = value
+    # def __setattr__(self, name, value):
+    #     # Let Pydantic set known fields normally
+    #     if name in frameworkObject.model_fields:
+    #         return super().__setattr__(name, value)
+    #     object.__setattr__(self, name, value)
 
     def change_Parameter(self, key: str, value: Any) -> None:
         """
@@ -433,7 +432,7 @@ class frameworkObject(BaseModel):
         frameworkObject
             The object itself, allowing for method chaining.
         """
-        return self
+        return {key: getattr(self, key) for key in self.model_fields}
 
     # def __getitem__(self, key):
     #     lkey = key.lower()
@@ -471,22 +470,22 @@ class frameworkElement(frameworkObject):
     length: float = 0.0
     """Length of the element in the simulation, typically in meters."""
 
-    centre: List[float] = [0, 0, 0]
+    centre: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     """Centre of the element in the simulation [x,y,z]."""
 
-    position_errors: List[float] = [0, 0, 0]
+    position_errors: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     """Position errors of the element in the simulation [x,y,z]."""
 
-    rotation_errors: List[float] = [0, 0, 0]
+    rotation_errors: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     """Rotation errors of the element in the simulation [x,y,z]."""
 
-    global_rotation: List[float] = [0, 0, 0]
+    global_rotation: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     """Global rotation of the element in the simulation [x,y,z]."""
 
-    rotation: SerializeAsAny[List[float] | float] = [0, 0, 0]
+    rotation: SerializeAsAny[Tuple[float, float, float] | float] = (0.0, 0.0, 0.0)
     """Local rotation of the element in the simulation [x,y,z]."""
 
-    starting_rotation: SerializeAsAny[float | List[float]] = 0.0
+    starting_rotation: SerializeAsAny[float | Tuple[float, float, float]] = (0.0, 0.0, 0.0)
     """Initial rotation of the element, used for specific simulation setups."""
 
     conversion_rules_elegant: Dict = {}
@@ -495,23 +494,48 @@ class frameworkElement(frameworkObject):
     conversion_rules_ocelot: Dict = {}
     """Conversion rules for keywords when exporting to Ocelot format."""
 
-    starting_offset: List[float] = [0, 0, 0]
+    starting_offset: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     """Initial offset of the element, used for positioning in the simulation."""
 
     subelement: bool = False
     """Flag indicating whether the element is a sub-element of a larger structure."""
 
-    field_definition: SerializeAsAny[field | str] = None
+    field_definition: SerializeAsAny[field | str | None] = None
     """Field definition for the element, can be a field object or a string representing a file."""
 
-    wakefield_definition: SerializeAsAny[field | str] = None
+    wakefield_definition: SerializeAsAny[field | str | None] = None
     """Wakefield definition for the element, can be a field object or a string representing a file."""
 
-    def __init__(self, *args, **kwargs):
-        super(frameworkElement, self).__init__(
-            *args,
-            **kwargs,
-        )
+    PV: SerializeAsAny[str | None] = None
+    """EPICS PV root for the element"""
+
+    @field_validator("length", mode="before")
+    @classmethod
+    def validate_length(cls, value: float) -> float:
+        """Validate the length to ensure it is a non-negative float."""
+        if not isinstance(value, (int, float)):
+            raise ValueError("length must be a float or an int.")
+        if value < 0:
+            raise ValueError("length must be non-negative.")
+        return float(value)
+
+    @field_validator("subelement", mode="before")
+    @classmethod
+    def validate_subelement(cls, value: bool) -> bool:
+        """Validate that the subelement attribute is a bool."""
+        if not isinstance(value, bool):
+            raise ValueError("subelement must be a bool.")
+        return value
+
+    @field_validator("PV", mode="after")
+    @classmethod
+    def validate_PV(cls, value: str | None) -> str | None:
+        """Validate that the PV attribute is a str or None."""
+        if not isinstance(value, str):
+            return None
+        return value
+
+    def model_post_init(self, __context):
         self.conversion_rules_elegant = keyword_conversion_rules_elegant["general"]
         self.conversion_rules_ocelot = keyword_conversion_rules_ocelot["general"]
         if self.objecttype in keyword_conversion_rules_elegant:
@@ -524,17 +548,13 @@ class frameworkElement(frameworkObject):
                 keyword_conversion_rules_ocelot[self.objecttype],
                 keyword_conversion_rules_ocelot["general"],
             )
+        super().model_post_init(__context)
 
-    def __setattr__(self, name, value):
-        # Let Pydantic set known fields normally
-        if name in frameworkElement.model_fields:
-            super().__setattr__(name, value)
-        else:
-            try:
-                super().__setattr__(name, value)
-            except Exception:
-                # Store extras in __dict__ (allowed by Config.extra = 'allow')
-                self.__dict__[name] = value
+    # def __setattr__(self, name, value):
+    #     # Let Pydantic set known fields normally
+    #     if name in frameworkElement.model_fields:
+    #         return super().__setattr__(name, value)
+    #     object.__setattr__(self, name, value)
 
     def __mul__(self, other):
         return [self.objectproperties for x in range(other)]
@@ -558,16 +578,6 @@ class frameworkElement(frameworkObject):
         return repr(
             {k: getattr(self, k) for k in self.model_fields_set if k not in disallowed}
         )
-
-    @field_validator("length", mode="before")
-    @classmethod
-    def validate_length(cls, value: float) -> float:
-        """Validate the length to ensure it is a non-negative float."""
-        if not isinstance(value, (int, float)):
-            raise ValueError("length must be a float or an int.")
-        if value < 0:
-            raise ValueError("length must be non-negative.")
-        return float(value)
 
     @property
     def propertiesDict(self) -> dict:
@@ -623,7 +633,7 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        x: float
             The x-coordinate of the element's starting position.
 
         """
@@ -650,7 +660,7 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        y: float
             The y-coordinate of the element's starting position.
 
         """
@@ -677,7 +687,7 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        z: float
             The z-coordinate of the element's starting position.
 
         """
@@ -704,11 +714,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        x: float
             The x-coordinate of the element.
 
         """
-        self.position_errors[0] = x
+        poserr = list(self.position_errors)
+        self.position_errors = (x, poserr[1], poserr[2])
 
     @property
     def dy(self):
@@ -730,11 +741,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        y: float
             The y-offset of the element.
 
         """
-        self.position_errors[1] = y
+        poserr = list(self.position_errors)
+        self.position_errors = (poserr[0], y, poserr[2])
 
     @property
     def dz(self):
@@ -756,11 +768,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        z: float
             The z-offset of the element.
 
         """
-        self.position_errors[2] = z
+        poserr = list(self.position_errors)
+        self.position_errors = (poserr[0], poserr[1], z)
 
     @property
     def x_rot(self) -> float:
@@ -773,7 +786,7 @@ class frameworkElement(frameworkObject):
             The global x-rotation of the element.
 
         """
-        return self.global_rotation[1]
+        return self.global_rotation[0]
 
     @property
     def y_rot(self) -> float:
@@ -786,7 +799,7 @@ class frameworkElement(frameworkObject):
             The global y-rotation of the element.
 
         """
-        return self.global_rotation[2] + self.starting_rotation
+        return self.global_rotation[1]
 
     @property
     def z_rot(self) -> float:
@@ -799,7 +812,49 @@ class frameworkElement(frameworkObject):
             The global z-rotation of the element.
 
         """
-        return self.global_rotation[0]
+        return self.global_rotation[2]
+
+    @z_rot.setter
+    def z_rot(self, x: float) -> None:
+        """
+        Sets the global x-rotation of the element.
+
+        Parameters
+        ----------
+        x: float
+            The global x-rotation of the element.
+
+        """
+        roterr = list(self.global_rotation)
+        self.global_rotation = (x, roterr[1], roterr[2])
+
+    @y_rot.setter
+    def y_rot(self, y: float) -> None:
+        """
+        Sets the global y-rotation of the element.
+
+        Parameters
+        ----------
+        y: float
+            The global y-rotation of the element.
+
+        """
+        roterr = list(self.global_rotation)
+        self.global_rotation = (roterr[0], y, roterr[2])
+
+    @z_rot.setter
+    def z_rot(self, z: float) -> None:
+        """
+        Sets the global z-rotation of the element.
+
+        Parameters
+        ----------
+        z: float
+            The global z-rotation of the element.
+
+        """
+        roterr = list(self.global_rotation)
+        self.global_rotation = (roterr[0], roterr[1], z)
 
     @property
     def dx_rot(self) -> float:
@@ -812,7 +867,7 @@ class frameworkElement(frameworkObject):
             The local x-rotation of the element.
 
         """
-        return self.rotation_errors[1]
+        return self.rotation_errors[0]
 
     @dx_rot.setter
     def dx_rot(self, x: float) -> None:
@@ -821,11 +876,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        x: float
             The x-rotation error of the element.
 
         """
-        self.rotation_errors[1] = x
+        roterr = list(self.rotation_errors)
+        self.rotation_errors = (x, roterr[1], roterr[2])
 
     @property
     def dy_rot(self):
@@ -838,7 +894,7 @@ class frameworkElement(frameworkObject):
             The local y-rotation of the element.
 
         """
-        return self.rotation_errors[2]
+        return self.rotation_errors[1]
 
     @dy_rot.setter
     def dy_rot(self, y: float) -> None:
@@ -847,11 +903,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        y: float
             The y-rotation error of the element.
 
         """
-        self.rotation_errors[2] = y
+        roterr = list(self.rotation_errors)
+        self.rotation_errors = (roterr[0], y, roterr[2])
 
     @property
     def dz_rot(self):
@@ -864,7 +921,7 @@ class frameworkElement(frameworkObject):
             The local z-rotation of the element.
 
         """
-        return self.rotation_errors[0]
+        return self.rotation_errors[2]
 
     @dz_rot.setter
     def dz_rot(self, z: float) -> None:
@@ -873,11 +930,12 @@ class frameworkElement(frameworkObject):
 
         Parameters
         ----------
-        float
+        z: float
             The z-rotation error of the element.
 
         """
-        self.rotation_errors[0] = z
+        roterr = list(self.rotation_errors)
+        self.rotation_errors = (roterr[0], roterr[1], z)
 
     @property
     def tilt(self):
@@ -893,39 +951,26 @@ class frameworkElement(frameworkObject):
         return self.dz_rot
 
     @property
-    def PV(self) -> str:
-        """
-        Returns the PV root name of the element, which is used for identifying the element in a control system.
-
-        Returns
-        -------
-        str
-            The PV root name of the element, which is either the `PV_root` attribute or the `objectName`.
-
-        """
-        if hasattr(self, "PV_root"):
-            return self.PV_root
-        else:
-            return self.objectname
-
-    @property
-    def get_field_amplitude(self) -> float:
+    def get_field_amplitude(self) -> float | None:
         """
         Returns the field amplitude of the element, scaled by `field_scale` if it exists.
 
         Returns
         -------
-        float
+        float or None
             The field amplitude of the element, which is either scaled by `field_scale`
             or directly taken from `field_amplitude`.
+            Returns None if `field_amplitude` is not defined
 
         """
-        if hasattr(self, "field_scale") and isinstance(self.field_scale, (int, float)):
-            return float(self.field_scale) * float(
-                expand_substitution(self, self.field_amplitude)
-            )
-        else:
-            return float(expand_substitution(self, self.field_amplitude))
+        if hasattr(self, "field_amplitude"):
+            if hasattr(self, "field_scale") and isinstance(self.field_scale, (int, float)):
+                return float(self.field_scale) * float(
+                    expand_substitution(self, self.field_amplitude)
+                )
+            else:
+                return float(expand_substitution(self, self.field_amplitude))
+        return None
 
     def get_field_reference_position(self) -> list:
         """
@@ -996,7 +1041,7 @@ class frameworkElement(frameworkObject):
         return _rotation_matrix(self.theta)
 
     def rotated_position(
-        self, pos: tuple = (0, 0, 0), offset: list = None, theta: float = None
+        self, pos: tuple = (0, 0, 0), offset: list | tuple = None, theta: float = None
     ) -> int | float | complex | list:
         """
         Returns the position of the element after applying a rotation and an offset.
@@ -1065,7 +1110,7 @@ class frameworkElement(frameworkObject):
         return list(start)
 
     @property
-    def middle(self) -> list:
+    def middle(self) -> list | tuple:
         """
         Returns the middle position of the element, which is the center of the element's length.
 
@@ -1089,7 +1134,7 @@ class frameworkElement(frameworkObject):
         return self.position_end
 
     @property
-    def position_end(self) -> list:
+    def position_end(self) -> list | np.ndarray:
         """
         Returns the end position of the element, which is calculated based on its starting position and length.
 
@@ -1190,7 +1235,7 @@ class frameworkElement(frameworkObject):
                 n_cells=self.n_cells,
             )
 
-    def _write_ASTRA_dictionary(self, d: dict, n: int = 1) -> str:
+    def _write_ASTRA_dictionary(self, d: dict, n: int | None = 1) -> str:
         """
         Generates a string representation of the object's properties in the ASTRA format.
 
@@ -1330,9 +1375,9 @@ class frameworkElement(frameworkObject):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        setattr(self, "k1", self.k1 if self.k1 is not None else 0)
-        setattr(self, "k2", self.k2 if self.k2 is not None else 0)
-        setattr(self, "k3", self.k3 if self.k3 is not None else 0)
+        # setattr(self, "k1", self.k1 if self.k1 is not None else 0)
+        # setattr(self, "k2", self.k2 if self.k2 is not None else 0)
+        # setattr(self, "k3", self.k3 if self.k3 is not None else 0)
         for key in {**self.model_fields, **self.model_computed_fields}:
             if (
                 not key == "name"
@@ -1427,10 +1472,10 @@ class frameworkElement(frameworkObject):
 
         type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
         obj = type_conversion_rules_Ocelot[self.objecttype](eid=self.objectname)
-        setattr(self, "k1", self.k1 if self.k1 is not None else 0)
-        setattr(self, "k2", self.k2 if self.k2 is not None else 0)
-        setattr(self, "k3", self.k3 if self.k3 is not None else 0)
-        for key, value in self.objectproperties:
+        # setattr(self, "k1", self.k1 if self.k1 is not None else 0)
+        # setattr(self, "k2", self.k2 if self.k2 is not None else 0)
+        # setattr(self, "k3", self.k3 if self.k3 is not None else 0)
+        for key, value in self.objectproperties.items():
             if (key not in ["name", "type", "commandtype"]) and (
                 not type(obj) in [Aperture, Marker]
             ):
@@ -1575,15 +1620,26 @@ class csrdrift(frameworkElement):
     """Flag to allow for interpolation of computed longitudinal space charge wake.
     See `Elegant manual`_"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(csrdrift, self).__init__(
-            *args,
-            **kwargs,
-        )
+    length: float = None
+
+    csr_enable: bool = True
+
+    lsc_enable: bool = True
+
+    use_stupakov: int = 1
+
+    csrdz: float = 0.01
+
+    lsc_bins: int = 20
+
+    lsc_high_frequency_cutoff_start: float | int = -1
+
+    lsc_high_frequency_cutoff_end: float | int = -1
+
+    lsc_low_frequency_cutoff_start: float | int = -1
+
+    lsc_low_frequency_cutoff_end: float | int = -1
+
 
     def _write_Elegant(self) -> str:
         """
@@ -1597,7 +1653,7 @@ class csrdrift(frameworkElement):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"
@@ -1629,27 +1685,11 @@ class lscdrift(csrdrift):
     Class defining a drift including LSC effects.
     """
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(lscdrift, self).__init__(
-            *args,
-            **kwargs,
-        )
-
 
 class edrift(csrdrift):
     """
     Class defining a drift.
     """
-
-    def __init__(self, *args, **kwargs):
-        super(edrift, self).__init__(
-            *args,
-            **kwargs,
-        )
 
 
 class frameworkLattice(BaseModel):
@@ -1671,6 +1711,12 @@ class frameworkLattice(BaseModel):
     name: str
     """Name of the lattice, used as a prefix for output files and commands."""
 
+    objectname: str | None = ""
+    """Name of the lattice, used as a prefix for output files and commands."""
+
+    objecttype: str | None  = ""
+    """Type of the lattice, used as a prefix for output files and commands."""
+
     file_block: Dict
     """File block containing input and output settings for the lattice."""
 
@@ -1683,8 +1729,8 @@ class frameworkLattice(BaseModel):
     runSettings: runSetup
     """Run settings for the lattice, including number of runs and random seed."""
 
-    settings: Dict
-    """Settings for the lattice, including global and group-specific settings."""
+    settings: FrameworkSettings
+    """Instance of :class:`~SimulationFramework.Framework_Settings.FrameworkSettings`"""
 
     executables: exes.Executables
     """Executable commands for running simulations, defined in the Executables class.
@@ -1738,91 +1784,73 @@ class frameworkLattice(BaseModel):
     initial_twiss: Dict = {}
     """Initial Twiss parameters for the lattice, used for tracking and analysis."""
 
-    def __init__(
-        self,
-        name,
-        file_block,
-        elementObjects,
-        groupObjects,
-        runSettings,
-        settings,
-        executables,
-        global_parameters,
-        *args,
-        **kwargs,
-    ):
-        super(frameworkLattice, self).__init__(
-            name=name,
-            file_block=file_block,
-            elementObjects=elementObjects,
-            groupObjects=groupObjects,
-            runSettings=runSettings,
-            settings=settings,
-            executables=executables,
-            global_parameters=global_parameters,
-            *args,
-            **kwargs,
-        )
+
+    def model_post_init(self, __context):
+        # super().model_post_init(__context)
         for key, value in list(self.elementObjects.items()):
             setattr(self, key, value)
         self.allElements = list(self.elementObjects.keys())
         self.objectname = self.name
 
         # define settings for simulations with multiple runs
-        self.updateRunSettings(runSettings)
-
-    @field_validator("file_block", mode="before")
-    @classmethod
-    def validate_file_block(cls, value: Dict) -> Dict:
-        """
-        Validate the file_block dictionary to ensure it has the required structure.
-        This method checks if the file_block is a dictionary and contains the necessary keys.
-
-        Raises
-        ------
-        ValueError
-            If the file_block is not a dictionary or does not contain the required keys.
-        """
-        if not isinstance(value, dict):
+        self.updateRunSettings(self.runSettings)
+        if not isinstance(self.file_block, dict):
             raise ValueError("file_block must be a dictionary.")
-        if "groups" in value:
-            if value["groups"] is not None:
-                cls.groupSettings = value["groups"]
-        if "input" in value:
-            if "sample_interval" in value["input"]:
-                cls.sample_interval = value["input"]["sample_interval"]
-        return value
+        if "groups" in self.file_block:
+            if self.file_block["groups"] is not None:
+                self.groupSettings = self.file_block["groups"]
+        if "input" in self.file_block:
+            if "sample_interval" in self.file_block["input"]:
+                self.sample_interval = self.file_block["input"]["sample_interval"]
+        self.globalSettings = self.settings["global"]
 
-    @field_validator("settings", mode="before")
-    @classmethod
-    def validate_settings(cls, value: Dict) -> Dict:
-        """
-        Validate the settings dictionary to ensure it has the required structure.
-        This method checks if the settings is a dictionary and contains the necessary keys.
-
-        Raises
-        ------
-        ValueError
-            If the settings is not a dictionary or does not contain the required keys.
-
-        """
-        if not isinstance(value, dict):
-            raise ValueError("settings must be a dictionary.")
-        if "global" in value:
-            if value["global"] is not None:
-                cls.globalSettings = value["global"]
-        return value
+    # @field_validator("file_block", mode="before")
+    # @classmethod
+    # def validate_file_block(cls, value: Dict) -> Dict:
+    #     """
+    #     Validate the file_block dictionary to ensure it has the required structure.
+    #     This method checks if the file_block is a dictionary and contains the necessary keys.
+    #
+    #     Raises
+    #     ------
+    #     ValueError
+    #         If the file_block is not a dictionary or does not contain the required keys.
+    #     """
+    #     if not isinstance(value, dict):
+    #         raise ValueError("file_block must be a dictionary.")
+    #     if "groups" in value:
+    #         if value["groups"] is not None:
+    #             cls.groupSettings = value["groups"]
+    #     if "input" in value:
+    #         if "sample_interval" in value["input"]:
+    #             cls.sample_interval = value["input"]["sample_interval"]
+    #     return value
+    #
+    # @field_validator("settings", mode="before")
+    # @classmethod
+    # def validate_settings(cls, value: Dict) -> Dict:
+    #     """
+    #     Validate the settings dictionary to ensure it has the required structure.
+    #     This method checks if the settings is a dictionary and contains the necessary keys.
+    #
+    #     Raises
+    #     ------
+    #     ValueError
+    #         If the settings is not a dictionary or does not contain the required keys.
+    #
+    #     """
+    #     if not isinstance(value, dict):
+    #         raise ValueError("settings must be a dictionary.")
+    #     if "global" in value:
+    #         if value["global"] is not None:
+    #             cls.globalSettings = value["global"]
+    #     return value
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
         if name in frameworkLattice.model_fields:
-            super().__setattr__(name, value)
-        else:
-            try:
-                super().__setattr__(name, value)
-            except Exception:
-                # Store extras in __dict__ (allowed by Config.extra = 'allow')
-                self.__dict__[name] = value
+            return super().__setattr__(name, value)
+        object.__setattr__(self, name, value)
 
     def insert_element(self, index: int, element) -> None:
         """
@@ -2532,8 +2560,8 @@ class frameworkLattice(BaseModel):
                         global_parameters=self.global_parameters,
                         **{
                             "length": round(length, 6),
-                            "position_start": list(d[0]),
-                            "position_end": list(d[1]),
+                            # "position_start": list(d[0]),
+                            # "position_end": list(d[1]),
                             "centre": middle,
                             "csr_enable": csr,
                             "lsc_enable": lsc,
@@ -2762,17 +2790,10 @@ class frameworkCommand(frameworkObject):
     for various simulation codes.
     """
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(frameworkCommand, self).__init__(
-            *args,
-            **kwargs,
-        )
+    def model_post_init(self, __context):
         if self.objecttype not in commandkeywords:
             raise NameError("Command '%s' does not exist" % self.objecttype)
+        super().model_post_init(__context)
 
     def write_Elegant(self) -> str:
         """
@@ -2786,7 +2807,7 @@ class frameworkCommand(frameworkObject):
         string = "&" + self.objecttype + "\n"
         for key in commandkeywords[self.objecttype]:
             if (
-                key.lower() in self.objectproperties.allowedkeywords
+                key.lower() in self.allowedkeywords
                 and not key == "objectname"
                 and not key == "objecttype"
                 and hasattr(self, key)
@@ -3118,13 +3139,13 @@ class chicane(frameworkGroup):
                     0,
                     obj[i].centre[2],
                 ]
-                obj[i].global_rotation[2] = ref_angle
+                obj[i].z_rot = ref_angle
                 # print('after',obj[i])
             if obj[i] in dipole_objs:
                 # print('DIPOLE before',obj[i])
                 ref_pos = obj[i].middle
                 obj[i].angle = a * self.ratios[dipole_number]
-                ref_angle = obj[i].global_rotation[2] + obj[i].angle
+                ref_angle = obj[i].z_rot + obj[i].angle
                 dipole_number += 1
                 # print('DIPOLE after',obj[i])
         # print('\n\n\n')

@@ -261,10 +261,13 @@ def copylink(source, destination):
 
 
 def convert_numpy_types(v):
-    if isinstance(v, (dict)):
+    if isinstance(v, dict):
         return {key: convert_numpy_types(item) for key, item in v.items()}
     elif isinstance(v, (np.ndarray, list, tuple)):
-        return [convert_numpy_types(li) for li in v]
+        try:
+            return [convert_numpy_types(li) for li in v]
+        except TypeError:
+            return float(v)
     elif isinstance(v, (np.float64, np.float32, np.float16)):
         return float(v)
     elif isinstance(

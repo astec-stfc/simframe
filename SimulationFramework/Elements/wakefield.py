@@ -15,7 +15,7 @@ class wakefield(cavity):
     scale_kick: float = 1.0
     """Wake kick scaling factor"""
 
-    fringe_field_coefficient: float = None
+    fringe_field_coefficient: float | None = None
     """Fringe field coefficient for cavity"""
 
     x_offset: float = 0.0
@@ -227,7 +227,7 @@ class wakefield(cavity):
                 self.objectname + "-drift", type="drift", **{"length": self.length}
             )
             wholestring += d._write_Elegant()
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

@@ -4,6 +4,7 @@ from SimulationFramework.Framework_objects import frameworkElement, elements_Ele
 from SimulationFramework.Modules import Beams as rbf
 from warnings import warn
 from SimulationFramework.Modules.gdf_beam import gdf_beam
+from pydantic import field_validator
 
 
 class screen(frameworkElement):
@@ -14,21 +15,15 @@ class screen(frameworkElement):
     beam: rbf.beam | None = None
     """:class:`~SimulationFramework.Modules.Beams.beam object"""
 
-    output_filename: str = ""
+    output_filename: str | None = None
     """Output filename for the screen"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(screen, self).__init__(
-            *args,
-            **kwargs,
-        )
+    def model_post_init(self, __context):
         self.beam = rbf.beam()
-        if "output_filename" not in kwargs:
-            self.output_filename = str(self.objectname) + ".sdds"
+        if self.output_filename is None:
+            self.output_filename = self.objectname + ".sdds"
+        super().model_post_init(__context)
+
 
     def _write_ASTRA(self, n, **kwargs) -> str:
         """
@@ -70,8 +65,7 @@ class screen(frameworkElement):
         # if self.length > 0:
         #     d = drift(self.objectname+'-drift-01', type='drift', **{'length': self.length/2})
         #     wholestring+=d._write_Elegant()
-        for key, value in self.objectproperties:
-            # print(f'key = {key} ckey = {self._convertKeyword_Elegant(key)} el = {elements_Elegant[etype]}')
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"
@@ -206,7 +200,7 @@ class screen(frameworkElement):
             )
             rbf.hdf5.rotate_beamXZ(
                 self.beam,
-                -1 * self.starting_rotation,
+                -1 * self.starting_rotation[2],
                 preOffset=[0, 0, 0],
                 postOffset=-1 * np.array(self.starting_offset),
             )
@@ -230,7 +224,7 @@ class screen(frameworkElement):
                     ).strip('"')
                 )
 
-    def sdds_to_hdf5(self, sddsindex: int = 1) -> None:
+    def sdds_to_hdf5(self, sddsindex: int = 1, toffset: float = 0.0) -> None:
         """
         Convert the SDDS beam file name to HDF5 format and write the beam file.
 
@@ -257,7 +251,7 @@ class screen(frameworkElement):
             sourcefilename=elegantbeamfilename,
             pos=self.middle,
             zoffset=self.end,
-            toffset=(-1 * np.mean(self.global_parameters["beam"].t)),
+            toffset=toffset,
         )
         if self.global_parameters["delete_tracking_files"]:
             os.remove(

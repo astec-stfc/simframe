@@ -79,7 +79,8 @@ from ...Framework_objects import (
 from ...Framework_elements import charge, screen
 from ...FrameworkHelperFunctions import saveFile, expand_substitution
 from ...Modules import Beams as rbf
-from typing import Dict, List, Any
+from typing import Dict, List
+from pydantic import field_validator
 
 
 class elegantLattice(frameworkLattice):
@@ -136,8 +137,8 @@ class elegantLattice(frameworkLattice):
     commandFilesOrder: List = []
     """Order in which commands are to be written in the ELEGANT input file"""
 
-    def __init__(self, *args, **kwargs):
-        super(elegantLattice, self).__init__(*args, **kwargs)
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
         self.particle_definition = self.elementObjects[self.start].objectname
         self.q = charge(
             objectname="START",
@@ -558,10 +559,10 @@ class elegantLattice(frameworkLattice):
         sddsindex: int
             SDDS object index
         """
-        try:
-            return scr.sdds_to_hdf5(sddsindex)
-        except Exception:
-            return None
+        # try:
+        return scr.sdds_to_hdf5(sddsindex, toffset=-1 * np.mean(self.global_parameters["beam"].Particles.t))
+        # except Exception:
+        #     return None
 
     def postProcess(self) -> None:
         """
@@ -707,11 +708,11 @@ class elegantCommandFile(frameworkCommand):
     """
     Generic class for generating elements for an ELEGANT input file
     """
-    lattice: frameworkLattice | str = None
-    """The :class:`~SimulationFramework.Framework_objects.frameworkLattice` object"""
-
-    def __init__(self, *args, **kwargs):
-        super(elegantCommandFile, self).__init__(*args, **kwargs)
+    # lattice: frameworkLattice
+    # """The :class:`~SimulationFramework.Framework_objects.frameworkLattice` object"""
+    #
+    # def __init__(self, *args, **kwargs):
+    #     super(elegantCommandFile, self).__init__(*args, **kwargs)
 
 
 class elegant_global_settings_command(elegantCommandFile):
@@ -736,27 +737,33 @@ class elegant_global_settings_command(elegantCommandFile):
     usleep_mpi_io_kludge: int = 0
     """See this parameter in `Elegant global settings`_ for more details."""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(elegant_global_settings_command, self).__init__(
-            objectname="global_settings",
-            objecttype="global_settings",
-            *args,
-            **kwargs,
-        )
-        kwargs.update(
-            {
-                "inhibit_fsync": self.inhibit_fsync,
-                "mpi_io_force_file_sync": self.mpi_io_force_file_sync,
-                "mpi_io_read_buffer_size": self.mpi_io_read_buffer_size,
-                "mpi_io_write_buffer_size": self.mpi_io_write_buffer_size,
-                "usleep_mpi_io_kludge": self.usleep_mpi_io_kludge,
-            }
-        )
-        self.add_properties(**kwargs)
+    objectname: str = "global_settings"
+    """Name of object for frameworkObject"""
+
+    objecttype: str = "global_settings"
+    """Type of object for frameworkObject"""
+
+    # def __init__(
+    #     self,
+    #     *args,
+    #     **kwargs,
+    # ):
+    #     super(elegant_global_settings_command, self).__init__(
+    #         objectname="global_settings",
+    #         objecttype="global_settings",
+    #         *args,
+    #         **kwargs,
+    #     )
+    #     kwargs.update(
+    #         {
+    #             "inhibit_fsync": self.inhibit_fsync,
+    #             "mpi_io_force_file_sync": self.mpi_io_force_file_sync,
+    #             "mpi_io_read_buffer_size": self.mpi_io_read_buffer_size,
+    #             "mpi_io_write_buffer_size": self.mpi_io_write_buffer_size,
+    #             "usleep_mpi_io_kludge": self.usleep_mpi_io_kludge,
+    #         }
+    #     )
+    #     self.add_properties(**kwargs)
 
 
 class elegant_run_setup_command(elegantCommandFile):
@@ -787,21 +794,34 @@ class elegant_run_setup_command(elegantCommandFile):
     sigma: str = "%s.sig"
     """File to which sigma data is to be written"""
 
-    def __init__(self, *args, **kwargs):
-        super(elegant_run_setup_command, self).__init__(
-            objectname="run_setup", objecttype="run_setup", *args, **kwargs
-        )
-        self.lattice_filename = self.lattice.objectname + ".lte"
-        for k in self.model_fields_set:
-            if k not in kwargs:
-                kwargs.update({k: getattr(self, k)})
-        kwargs.pop("lattice")
-        self.add_properties(
-            lattice=self.lattice_filename,
-            use_beamline=self.lattice.objectname,
-            s_start=self.lattice.startObject.position_start[2],
-            **kwargs,
-        )
+    lattice_filename: str = None
+    """Name of lattice filename for ELEGANT"""
+
+    s_start: float = 0.0
+    """Starting s position"""
+
+    objectname: str = "run_setup"
+    """Name of objectname for elegant run_setup"""
+
+    objecttype: str = "run_setup"
+    """Name of objecttype for elegant run_setup"""
+
+    @field_validator("lattice", mode="before")
+    @classmethod
+    def validate_lattice_filename(cls, value: frameworkLattice | str):
+        if isinstance(value, frameworkLattice):
+            # cls.use_beamline = value.objectname
+            cls.s_start = value.startObject.position_start[2]
+            return value.objectname + ".lte"
+        elif isinstance(value, str):
+            # cls.use_beamline = value
+            cls.s_start = 0
+            return value + ".lte"
+
+    @property
+    def use_beamline(self) -> str:
+        """Get the beamline name from the lattice name"""
+        return self.lattice.objectname
 
 
 class elegant_error_elements_command(elegantCommandFile):
@@ -826,18 +846,11 @@ class elegant_error_elements_command(elegantCommandFile):
     error_log: str = "%s.erl"
     """File to which errors are to be logged"""
 
-    # build commands for randomised errors on specified elements
-    def __init__(self, *args, **kwargs):
-        super(elegant_error_elements_command, self).__init__(
-            objectname="error_control", objecttype="error_control", **kwargs
-        )
-        self.add_properties(
-            **{
-                "objecttype": "error_control",
-                "no_errors_for_first_step": self.no_errors_for_first_step,
-                "error_log": self.error_log,
-            }
-        )
+    objectname: str = "error_control"
+    """Name of frameworkObject objectname"""
+
+    objecttype: str = "error_control"
+    """Name of frameworkObject objecttype"""
 
 
 class elegant_scan_elements_command(elegantCommandFile):
@@ -859,18 +872,21 @@ class elegant_scan_elements_command(elegantCommandFile):
     lattice: frameworkLattice = None
     """:class:`~SimulationFramework.Framework_objects.frameworkLattice object"""
 
-    # build command for a systematic parameter scan
-    def __init__(self, *args, **kwargs):
-        super(elegant_scan_elements_command, self).__init__(
-            objectname="vary_element", objecttype="vary_element", *args, **kwargs
-        )
-        self.elementScan.update(
+    objectname: str = "vary_element"
+    """Name of frameworkObject objectname"""
+
+    objecttype: str = "vary_element"
+    """Name of frameworkObject objecttype"""
+
+    @field_validator("elementScan", mode="after")
+    @classmethod
+    def validate_element_scan(cls, value):
+        value.update(
             {
-                "objecttype": "vary_element",
-                "index_number": self.index_number,
+                "objecttype": cls.objecttype,
+                "index_number": cls.index_number,
             }
         )
-        self.add_properties(**self.elementScan)
 
 
 class elegant_run_control_command(elegantCommandFile):
@@ -879,6 +895,13 @@ class elegant_run_control_command(elegantCommandFile):
 
     .. _Elegant run control: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu68.html#x76-750007.59
     """
+
+    objectname: str = "run_control"
+    """Name of frameworkObject objectname"""
+
+    objecttype: str = "run_control"
+    """Name of frameworkObject objecttype"""
+
     def __init__(self, *args, **kwargs):
         super(elegant_run_control_command, self).__init__(
             objectname="run_control", objecttype="run_control", *args, **kwargs

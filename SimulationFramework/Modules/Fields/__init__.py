@@ -270,9 +270,9 @@ class field(BaseModel):
         List[float] | None:
             A list of Z values if available, otherwise None.
         """
-        if isinstance(self.z, FieldParameter):
+        if self.z.value is not None:
             return self.z.value.val
-        elif isinstance(self.t, FieldParameter):
+        elif self.t.value is not None:
             return -1 * abs(self.t.value.val * speed_of_light)
         else:
             raise ValueError("Neither t nor z are defined")
@@ -288,9 +288,9 @@ class field(BaseModel):
         List[float] | None:
             A list of time values if available, otherwise None.
         """
-        if isinstance(self.t, FieldParameter):
+        if self.t.value is not None:
             return self.t.value.val
-        elif isinstance(self.z, FieldParameter):
+        elif self.z.value is not None:
             return abs(self.z.value.val / speed_of_light)
         else:
             raise ValueError("Neither t nor z are defined")
@@ -301,7 +301,8 @@ class field(BaseModel):
         field_type: str | None = None,
         cavity_type: str | None = None,
         frequency: float | None = None,
-        normalize_b: bool = True
+        normalize_b: bool = True,
+        **kwargs,
     ) -> None:
         """
         Read a field file and populate the field parameters based on the file type.

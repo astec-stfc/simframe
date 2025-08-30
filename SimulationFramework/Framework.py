@@ -638,14 +638,16 @@ class Framework(BaseModel):
         self.latticeObjects[name] = getattr(
             frameworkLattices, code.lower() + "Lattice"
         )(
-            name,
-            lattice,
-            self.elementObjects,
-            self.groupObjects,
-            self.runSetup,
-            self.settings,
-            self.executables,
-            self.global_parameters,
+            name=name,
+            objectname=name,
+            objecttype=code.lower() + "Lattice",
+            file_block=lattice,
+            elementObjects=self.elementObjects,
+            groupObjects=self.groupObjects,
+            runSettings=self.runSetup,
+            settings=self.settings,
+            executables=self.executables,
+            global_parameters=self.global_parameters,
         )
 
     def detect_changes(
@@ -1025,14 +1027,14 @@ class Framework(BaseModel):
                 self.latticeObjects[latticename] = getattr(
                     frameworkLattices, code.lower() + "Lattice"
                 )(
-                    currentLattice.objectname,
-                    currentLattice.file_block,
-                    self.elementObjects,
-                    self.groupObjects,
-                    self.runSetup,
-                    self.settings,
-                    self.executables,
-                    self.global_parameters,
+                    name=currentLattice.objectname,
+                    file_block=currentLattice.file_block,
+                    elementObjects=self.elementObjects,
+                    groupObjects=self.groupObjects,
+                    runSettings=self.runSetup,
+                    settings=self.settings,
+                    executables=self.executables,
+                    global_parameters=self.global_parameters,
                 )
 
     def read_Element(
@@ -1108,20 +1110,20 @@ class Framework(BaseModel):
         # try:
         if typ is None:
             typ = kwargs["type"]
-        try:
-            element = getattr(frameworkElements, typ)(
-                objectname=name,
-                objecttype=typ,
-                global_parameters=self.global_parameters,
-                **kwargs,
-            )
-            element.update_field_definition()
-            self.elementObjects[name] = element
-            return element
-        except Exception as ex:
-            print("add_Element error:", ex)
-            print("add_Element error:", typ, name, kwargs)
-        return
+        # try:
+        element = getattr(frameworkElements, typ)(
+            objectname=name,
+            objecttype=typ,
+            global_parameters=self.global_parameters,
+            **kwargs,
+        )
+        element.update_field_definition()
+        self.elementObjects[name] = element
+        return element
+        # except Exception as ex:
+        #     print("add_Element error:", ex)
+        #     print("add_Element error:", typ, name, kwargs)
+        # return
         # except Exception as e:
         #     raise NameError('Element \'%s\' does not exist' % type)
 

@@ -110,6 +110,9 @@ class ocelotLattice(frameworkLattice):
     mbin_csr: int = 5
     """Number of macroparticle bins for CSR calculations"""
 
+    wake_factor: float = 1.0
+    """Multiplication factor for wakefields"""
+
     sigmamin_csr: float = 1e-5
     """Minimum size for CSR calculations"""
 
@@ -131,8 +134,8 @@ class ocelotLattice(frameworkLattice):
     mbi: Dict = {}
     """Dictionary containing settings for microbunching gain calculation"""
 
-    def __init__(self, *args, **kwargs):
-        super(ocelotLattice, self).__init__(*args, **kwargs)
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
         self.oceglobal = (
             self.settings["global"]["OCELOTsettings"]
             if "OCELOTsettings" in list(self.settings["global"].keys())
@@ -171,8 +174,8 @@ class ocelotLattice(frameworkLattice):
             objectname=self.endObject.objectname,
             objecttype="screen",
             centre=self.endObject.centre,
-            position_start=self.endObject.position_start,
-            position_end=self.endObject.position_start,
+            # position_start=self.endObject.position_start,
+            # position_end=self.endObject.position_start,
             global_rotation=self.endObject.global_rotation,
             global_parameters=self.global_parameters,
             **kwargs,
@@ -241,11 +244,12 @@ class ocelotLattice(frameworkLattice):
             self.global_parameters["beam"],
             os.path.abspath(filepath),
         )
+        hdf5outname = f'{self.global_parameters["master_subdir"]}/{self.elementObjects[self.start].objectname}.hdf5'
         rbf.hdf5.write_HDF5_beam_file(
             self.global_parameters["beam"],
-            f'{self.global_parameters["master_subdir"]}/{self.elementObjects[self.start].objectname}.hdf5',
+            hdf5outname,
         )
-        ocebeamfilename = HDF5filename.replace("hdf5", "ocelot.npz")
+        ocebeamfilename = hdf5outname.replace("hdf5", "ocelot.npz")
         self.pin = rbf.beam.write_ocelot_beam_file(
             self.global_parameters["beam"], ocebeamfilename, write=write
         )
@@ -498,7 +502,7 @@ class ocelotLattice(frameworkLattice):
 
         .. _Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
         """
-        if isinstance(loc, field.field):
+        if isinstance(loc, field):
             loc = loc.write_field_file(code="astra")
         wake = Wake(
             step=100,

@@ -291,19 +291,19 @@ class beam(BaseModel):
     speed_of_light: UnitValue = UnitValue(constants.speed_of_light, "m/s")
     """Speed of light"""
 
-    filename: str = None
+    filename: str | None = None
     """Name of beam distribution file; if provided on instantiation, load the file into this object"""
 
     sddsindex: int = 0
     """Index for SDDS files"""
 
-    code: str = None
+    code: str | None = None
     """Code from which the beam distribution was generated"""
 
-    reference_particle: np.ndarray = None
+    reference_particle: np.ndarray | None  = None
     """Reference particle for ASTRA-type distributions"""
 
-    longitudinal_reference: np.ndarray | str = None
+    longitudinal_reference: np.ndarray | str | None = None
     """Longitudinal reference position for ASTRA-type distributions"""
 
     starting_position: list | np.ndarray = [0, 0, 0]
@@ -315,7 +315,7 @@ class beam(BaseModel):
     offset: list | np.ndarray = [0, 0, 0]
     """Beam offset from nominal axis [x,y,z]"""
 
-    particle_mass: np.ndarray = None
+    particle_mass: np.ndarray | None = None
     """Particle mass in kg"""
 
     model_config = ConfigDict(

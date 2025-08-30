@@ -14,10 +14,10 @@ class kicker(dipole):
     vertical_kick: float = 0.0
     """Vertical kick in radians"""
 
-    Horizontal_PV: str = None
+    Horizontal_PV: str | None = None
     """EPICS process variable name for the horizontal corrector"""
 
-    Vertical_PV: str = None
+    Vertical_PV: str | None = None
     """EPICS process variable name for the vertical corrector"""
 
     def __init__(self, *args, **kwargs):
@@ -58,7 +58,7 @@ class kicker(dipole):
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

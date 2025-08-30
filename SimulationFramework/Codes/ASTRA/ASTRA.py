@@ -32,7 +32,7 @@ from copy import deepcopy
 import numpy as np
 import lox
 from lox.worker.thread import ScatterGatherDescriptor
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Any, Tuple
 
 from ...Framework_objects import (
     frameworkLattice,
@@ -90,25 +90,25 @@ class astraLattice(frameworkLattice):
     headers: Dict = {}
     """Headers to be included in the ASTRA lattice file"""
 
-    starting_offset: List = [0, 0, 0]
+    starting_offset: Tuple[float, float, float] = (0, 0, 0)
     """Initial offset of first element"""
 
-    starting_rotation: float = 0
+    starting_rotation: Tuple[float, float, float] = (0, 0, 0)
     """Initial rotation of first element"""
 
-    def __init__(self, *args, **kwargs):
-        super(astraLattice, self).__init__(*args, **kwargs)
+    def model_post_init(self, __context: Any) -> None:
+        super().model_post_init(__context)
         self.starting_offset = (
             eval(expand_substitution(self, self.file_block["starting_offset"]))
             if "starting_offset" in self.file_block
-            else [0, 0, 0]
+            else (0, 0, 0)
         )
 
         # This calculated the starting rotation based on the input file and the number of dipoles
         self.starting_rotation = (
-            -1 * self.elementObjects[self.start].global_rotation[2]
+            (0, 0, -1 * self.elementObjects[self.start].global_rotation[2])
             if self.elementObjects[self.start].global_rotation is not None
-            else 0
+            else (0, 0, 0)
         )
         self.starting_rotation = (
             eval(expand_substitution(self, str(self.file_block["starting_rotation"])))
@@ -122,8 +122,8 @@ class astraLattice(frameworkLattice):
         if "ASTRAsettings" not in self.globalSettings:
             self.globalSettings["ASTRAsettings"] = {}
         self.headers["newrun"] = astra_newrun(
-            self.starting_offset,
-            self.starting_rotation,
+            starting_offset=self.starting_offset,
+            starting_rotation=self.starting_rotation,
             global_parameters=self.global_parameters,
             **merge_two_dicts(
                 self.file_block["input"], self.globalSettings["ASTRAsettings"]
@@ -159,15 +159,15 @@ class astraLattice(frameworkLattice):
         if "output" not in self.file_block:
             self.file_block["output"] = {}
         self.headers["output"] = astra_output(
-            self.screens_and_markers_and_bpms,
-            self.starting_offset,
-            self.starting_rotation,
+            # screens=self.screens_and_markers_and_bpms,
+            starting_offset=self.starting_offset,
+            starting_rotation=self.starting_rotation,
             global_parameters=self.global_parameters,
             **merge_two_dicts(
                 self.file_block["output"], self.globalSettings["ASTRAsettings"]
             ),
         )
-
+        #
         # Create a "charge" block
         if "charge" not in self.file_block:
             self.file_block["charge"] = {}
@@ -184,7 +184,7 @@ class astraLattice(frameworkLattice):
                 self.globalSettings["ASTRAsettings"],
             ),
         )
-
+        #
         # Create an "error" block
         if "global_errors" not in self.file_block:
             self.file_block["global_errors"] = {}
@@ -332,6 +332,7 @@ class astraLattice(frameworkLattice):
         """
         fulltext = ""
         # Create objects for the newrun, output and charge blocks
+        self.headers["output"].screens = self.screens_and_markers_and_bpms
         self.headers["output"].start_element = self.elementObjects[self.start]
         self.headers["output"].end_element = self.elementObjects[self.end]
         self.headers["output"].screens = self.screens_and_bpms
@@ -368,7 +369,7 @@ class astraLattice(frameworkLattice):
                         if hasattr(element, "wakefield_definition") and isinstance(
                             element.wakefield_definition, field
                         ):
-                            original_properties = deepcopy(element.objectproperties)
+                            original_properties = deepcopy(element)
                             original_properties.objectname = (
                                 f"{element.objectname}_wake"
                             )
@@ -598,7 +599,7 @@ class astraLattice(frameworkLattice):
         )
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
-            -1 * self.starting_rotation,
+            -1 * self.starting_rotation[2],
             preOffset=[0, 0, 0],
             postOffset=-1 * np.array(self.starting_offset),
         )
@@ -620,16 +621,6 @@ class astra_header(frameworkElement):
     """
     Generic class for generating ASTRA namelists
     """
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(astra_header, self).__init__(
-            *args,
-            **kwargs,
-        )
 
     def framework_dict(self) -> Dict:
         return dict()
@@ -673,8 +664,10 @@ class astra_newrun(astra_header):
 
     run: int = 1
     """Run number"""
+
     head: str = "trial"
     """Run name"""
+
     lprompt: bool = False
     """If true a pause statement is included at the end
     of the run to avoid vanishing of the window in case of an error."""
@@ -694,8 +687,11 @@ class astra_newrun(astra_header):
     bunch_charge: float | None = None
     """Bunch charge"""
 
-    toffset: float | None = None
+    toffset: float = 0.0
     """Time offset of reference particle"""
+
+    offset: list | np.ndarray = [0, 0, 0]
+    """Beam offset from nominal axis [x,y,z]"""
 
     track_all: bool = True
     """If false, only the reference particle will be tracked"""
@@ -715,23 +711,14 @@ class astra_newrun(astra_header):
     h_min: float = 0.07
     """Minimum time step for the Runge-Kutta integration."""
 
-    def __init__(
-        self,
-        offset,
-        rotation,
-        objectname="newrun",
-        objecttype="astra_newrun",
-        *args,
-        **kwargs,
-    ):
-        super(astra_header, self).__init__(
-            offset=offset,
-            rotation=rotation,
-            objectname=objectname,
-            objecttype=objecttype,
-            *args,
-            **kwargs,
-        )
+    objectname: str = "newrun"
+    """Name of object"""
+
+    objecttype: str = "astra_newrun"
+    """Type of object"""
+
+    global_parameters: Dict
+    """Global parameters cascaded from above"""
 
     def framework_dict(self) -> Dict:
         """
@@ -787,7 +774,7 @@ class astra_newrun(astra_header):
         self.global_parameters["beam"].beam.rematchYPlane(**initial_twiss["vertical"])
         rbf.hdf5.rotate_beamXZ(
             self.global_parameters["beam"],
-            self.rotation,
+            self.rotation[2],
             preOffset=self.offset,
         )
         astrabeamfilename = self.output_particle_definition
@@ -821,25 +808,17 @@ class astra_output(astra_header):
     tracks: bool = True
     """If true, output files according to Table 3 and Table 4 are generated. See `ASTRA manual`_"""
 
-    def __init__(
-        self,
-        screens,
-        offset,
-        rotation,
-        objectname="output",
-        objecttype="astra_output",
-        *args,
-        **kwargs,
-    ):
-        super(astra_header, self).__init__(
-            screens=screens,
-            offset=offset,
-            rotation=rotation,
-            objectname=objectname,
-            objecttype=objecttype,
-            *args,
-            **kwargs,
-        )
+    screens: List[screen] | None = None
+    """List of :class:`~SimulationFramework.Framework_elements.screen.screen` objects"""
+
+    objectname: str = "output"
+    """Name of object"""
+
+    objecttype: str = "astra_output"
+    """Type of object"""
+
+    offset: list | np.ndarray = [0, 0, 0]
+    """Beam offset from nominal axis [x,y,z]"""
 
     def framework_dict(self) -> Dict:
         """
@@ -936,16 +915,16 @@ class astra_charge(astra_header):
     smooth_z: int = 2
     """Smoothing parameter for z-direction. Only for 3D FFT algorithm."""
 
-    def __init__(
-        self,
-        objectname="charge",
-        objecttype="astra_charge",
-        *args,
-        **kwargs,
-    ):
-        super(astra_header, self).__init__(
-            objectname=objectname, objecttype=objecttype, *args, **kwargs
-        )
+    grids: getGrids | None = None
+    """Space charge grids"""
+
+    objectname: str = "charge"
+    """Name of object"""
+
+    objecttype: str = "astra_charge"
+    """Type of object"""
+
+    def model_post_init(self, __context):
         self.grids = getGrids()
 
     @property
@@ -1047,21 +1026,11 @@ class astra_errors(astra_header):
     suppress_output: bool = False
     """If true any generation of output other than the error file is suppressed."""
 
-    def __init__(
-        self,
-        element=None,
-        objectname="astra_error",
-        objecttype="global_error",
-        *args,
-        **kwargs,
-    ):
-        super(astra_errors, self).__init__(
-            objectname=objectname,
-            objecttype=objecttype,
-            *args,
-            **kwargs,
-        )
-        self._element = element
+    objectname: str = "astra_error"
+    """Name of object"""
+
+    objecttype: str = "global_error"
+    """Type of object"""
 
     def write_ASTRA(self, n):
         keyword_dict = {}

@@ -6,8 +6,5 @@ class beam_arrival_monitor(screen):
     Class defining a beam arrival monitor.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(beam_arrival_monitor, self).__init__(*args, **kwargs)
-
     def _write_ASTRA(self, n, **kwargs):
         return ""

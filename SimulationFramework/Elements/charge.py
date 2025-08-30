@@ -6,7 +6,7 @@ class charge(frameworkElement):
     Class defining a charge element.
     """
 
-    total: float = None
+    total: float | None = None
     """Bunch charge [C]"""
 
     def __init__(self, *args, **kwargs):

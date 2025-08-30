@@ -2,12 +2,12 @@ from SimulationFramework.Framework_objects import frameworkElement, elements_Ele
 
 
 class scatter(frameworkElement):
-    probability: float = None
-    horizontal_scatter: float = None
-    vertical_scatter: float = None
-    horizontal_momentum_scatter: float = None
-    vertical_momentum_scatter: float = None
-    relative_momentum_scatter: float = None
+    probability: float | None = None
+    horizontal_scatter: float | None = None
+    vertical_scatter: float | None = None
+    horizontal_momentum_scatter: float | None = None
+    vertical_momentum_scatter: float | None = None
+    relative_momentum_scatter: float | None = None
 
     def __init__(
         self,
@@ -24,7 +24,7 @@ class scatter(frameworkElement):
         wholestring = ""
         etype = "scatter"
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

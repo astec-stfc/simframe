@@ -198,7 +198,7 @@ solenoid:
     }
 undulator:
   keywords: { peak_field, gradient, periods, method }
-modulator:
+fel_modulator:
   keywords:
     {
       peak_field,
@@ -216,6 +216,8 @@ modulator:
     }
 wiggler:
   keywords: { peak_field, k, poles, radius }
+watch_point:
+  keywords: {}
 wall_current_monitor:
   keywords: {}
 integrated_current_transformer:

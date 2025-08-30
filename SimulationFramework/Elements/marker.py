@@ -6,16 +6,6 @@ class marker(screen):
     Class defining a marker element.
     """
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(marker, self).__init__(
-            *args,
-            **kwargs,
-        )
-
     def _write_CSRTrack(self, n):
         return ""
 

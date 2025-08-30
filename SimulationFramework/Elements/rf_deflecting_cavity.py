@@ -31,7 +31,7 @@ class rf_deflecting_cavity(cavity):
         wholestring = ""
         etype = self._convertType_Elegant(self.objecttype)
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             # print('RFDF before', key, value)
             if (
                 not key == "name"

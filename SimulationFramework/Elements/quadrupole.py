@@ -34,7 +34,7 @@ class quadrupole(frameworkElement):
     smooth: int | float = 2
     """Number of points to smooth the field map [ASTRA only]"""
 
-    bore: float = None
+    bore: float | None = None
     """Bore radius of the quadrupole"""
 
     def __init__(

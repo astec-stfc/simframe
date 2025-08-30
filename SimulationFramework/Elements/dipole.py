@@ -1,4 +1,4 @@
-from copy import copy
+from copy import deepcopy
 import numpy as np
 from SimulationFramework.Elements.gpt_ccs import gpt_ccs
 from SimulationFramework.Framework_objects import (
@@ -63,10 +63,10 @@ class dipole(frameworkElement):
     width: float = 0.2
     """Dipole width"""
 
-    entrance_edge_angle: float | str = "angle"
+    entrance_edge_angle: float | str = 0.0
     """Entrance edge angle"""
 
-    exit_edge_angle: float | str = "angle"
+    exit_edge_angle: float | str = 0.0
     """Exit edge angle"""
 
     plane: Literal["horizontal", "vertical"] = "horizontal"
@@ -301,7 +301,7 @@ class dipole(frameworkElement):
             )
 
     def __neg__(self):
-        newself = copy.deepcopy(self)
+        newself = deepcopy(self)
         if (
             "exit_edge_angle" in newself.objectproperties
             and "entrance_edge_angle" in newself.objectproperties
@@ -342,10 +342,13 @@ class dipole(frameworkElement):
         """
         if estr in self.objectproperties:
             if isinstance(self.objectproperties[estr], str):
+                print(f"str {estr} {self.objectproperties[estr]} {default}")
                 return checkValue(self, self.objectproperties[estr], default)
             else:
+                print(f"nostr {self.objectproperties[estr]}")
                 return self.objectproperties[estr]
         else:
+            print(f"not {estr} {default}")
             return default
 
     @property
@@ -406,7 +409,7 @@ class dipole(frameworkElement):
         etype = "csrcsbend" if self.csr_enable or self.csr_enable > 0 else "csbend"
         string = self.objectname + ": " + etype
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"
@@ -456,7 +459,7 @@ class dipole(frameworkElement):
         type_conversion_rules_Ocelot = ocelot_conversion.ocelot_conversion_rules
         setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         valdict = {"eid": self.objectname}
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (not key in ["name", "type", "commandtype"]) and (
                 not type(type_conversion_rules_Ocelot[self.objecttype])
                 in [Aperture, Marker]
