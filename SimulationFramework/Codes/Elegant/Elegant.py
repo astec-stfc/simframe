@@ -439,10 +439,12 @@ class elegantLattice(frameworkLattice):
             )
             # print('run_setup')
             self.commandFiles["run_setup"] = elegant_run_setup_command(
-                lattice=self,
+                lattice=self.objectname + ".lte",
                 p_central=np.mean(self.global_parameters["beam"].BetaGamma),
                 seed=seed,
                 losses="%s.loss",
+                s_start=self.startObject.position_start[2],
+                use_beamline=self.objectname,
             )
 
             # print('generate commands for monte carlo jitter runs')
@@ -491,23 +493,27 @@ class elegantLattice(frameworkLattice):
             self.commandFiles["twiss_output"] = elegant_twiss_output_command(
                 lattice=self,
                 beam=self.global_parameters["beam"],
-                betax=self.betax,
-                betay=self.betay,
-                alphax=self.alphax,
-                alphay=self.alphay,
+                beta_x=self.global_parameters["beam"].twiss.beta_x_corrected,
+                beta_y=self.global_parameters["beam"].twiss.beta_y_corrected,
+                alpha_x=self.global_parameters["beam"].twiss.alpha_x_corrected,
+                alpha_y=self.global_parameters["beam"].twiss.alpha_y_corrected,
+                eta_x=self.global_parameters["beam"].twiss.eta_x,
+                eta_xp=self.global_parameters["beam"].twiss.eta_xp,
             )
             # print('floor_coordinates')
             self.commandFiles["floor_coordinates"] = elegant_floor_coordinates_command(
-                lattice=self
+                lattice=self,
+                X0=self.startObject.position_start[0],
+                Z0=self.startObject.position_start[2],
             )
             # print('matrix_output')
             self.commandFiles["matrix_output"] = elegant_matrix_output_command(
-                lattice=self
+                lattice=self,
             )
             # print('sdds_beam')
             self.commandFiles["sdds_beam"] = elegant_sdds_beam_command(
                 lattice=self,
-                elegantbeamfilename=self.objectname + ".sdds",
+                input=self.objectname + ".sdds",
                 sample_interval=self.sample_interval,
                 reuse_bunch=1,
                 fiducialization_bunch=0,
@@ -806,23 +812,6 @@ class elegant_run_setup_command(elegantCommandFile):
     objecttype: str = "run_setup"
     """Name of objecttype for elegant run_setup"""
 
-    @field_validator("lattice", mode="before")
-    @classmethod
-    def validate_lattice_filename(cls, value: frameworkLattice | str):
-        if isinstance(value, frameworkLattice):
-            # cls.use_beamline = value.objectname
-            cls.s_start = value.startObject.position_start[2]
-            return value.objectname + ".lte"
-        elif isinstance(value, str):
-            # cls.use_beamline = value
-            cls.s_start = 0
-            return value + ".lte"
-
-    @property
-    def use_beamline(self) -> str:
-        """Get the beamline name from the lattice name"""
-        return self.lattice.objectname
-
 
 class elegant_error_elements_command(elegantCommandFile):
     """
@@ -902,11 +891,11 @@ class elegant_run_control_command(elegantCommandFile):
     objecttype: str = "run_control"
     """Name of frameworkObject objecttype"""
 
-    def __init__(self, *args, **kwargs):
-        super(elegant_run_control_command, self).__init__(
-            objectname="run_control", objecttype="run_control", *args, **kwargs
-        )
-        self.add_properties(**kwargs)
+    n_steps: int = 1
+    """Number of steps"""
+
+    n_passes: int = 1
+    """Number of passes"""
 
 
 class elegant_twiss_output_command(elegantCommandFile):
@@ -919,67 +908,44 @@ class elegant_twiss_output_command(elegantCommandFile):
     beam: rbf.beam
     """Particle distribution"""
 
-    betax: float | None = None
+    beta_x: float | None = None
     """Initial beta_x; if `None`, take it from `beam`"""
 
-    betay: float | None = None
+    beta_y: float | None = None
     """Initial beta_y; if `None`, take it from `beam`"""
 
-    alphax: float | None = None
+    alpha_x: float | None = None
     """Initial alpha_x; if `None`, take it from `beam`"""
 
-    alphay: float | None = None
+    alpha_y: float | None = None
     """Initial alpha_y; if `None`, take it from `beam`"""
 
-    etax: float | None = None
+    eta_x: float | None = None
     """Initial eta_x; if `None`, take it from `beam`"""
 
-    etaxp: float | None = None
+    eta_xp: float | None = None
     """Initial eta_xp; if `None`, take it from `beam`"""
 
-    # build command for a systematic parameter scan
-    def __init__(self, *args, **kwargs):
-        super(elegant_twiss_output_command, self).__init__(
-            objectname="twiss_output",
-            objecttype="twiss_output",
-            *args,
-            **kwargs,
-        )
-        self.betax = (
-            self.betax if self.betax is not None else self.beam.twiss.beta_x_corrected
-        )
-        self.betay = (
-            self.betay if self.betay is not None else self.beam.twiss.beta_y_corrected
-        )
-        self.alphax = (
-            self.alphax
-            if self.alphax is not None
-            else self.beam.twiss.alpha_x_corrected
-        )
-        self.alphay = (
-            self.alphay
-            if self.alphay is not None
-            else self.beam.twiss.alpha_y_corrected
-        )
-        self.etax = self.etax if self.etax is not None else self.beam.twiss.eta_x
-        self.etaxp = self.etaxp if self.etaxp is not None else self.beam.twiss.eta_xp
+    matched: int = 0
+    """Flag to indicate whether beam is matched"""
 
-        kwargs.update(
-            {
-                "matched": 0,
-                "output_at_each_step": 0,
-                "radiation_integrals": 1,
-                "statistics": 1,
-                "filename": "%s.twi",
-                "beta_x": self.betax,
-                "alpha_x": self.alphax,
-                "beta_y": self.betay,
-                "alpha_y": self.alphay,
-                "eta_x": self.etax,
-                "etap_x": self.etaxp,
-            }
-        )
-        self.add_properties(**kwargs)
+    output_at_each_step: int = 0
+    """Flag to indicate whether to output twiss at each step"""
+
+    radiation_integrals: int = 1
+    """Calculate radiation integrals"""
+
+    statistics: int = 1
+    """Calculate beam statistics"""
+
+    filename: str = "%s.twi"
+    """Twiss output file"""
+
+    objectname: str = "twiss_output"
+    """Name of object"""
+
+    objecttype: str = "twiss_output"
+    """Type of object"""
 
 
 class elegant_floor_coordinates_command(elegantCommandFile):
@@ -991,27 +957,34 @@ class elegant_floor_coordinates_command(elegantCommandFile):
     lattice: frameworkLattice = None
     """:class:`~SimulationFramework.Framework_objects.frameworkLattice object"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(elegant_floor_coordinates_command, self).__init__(
-            objectname="floor_coordinates",
-            objecttype="floor_coordinates",
-            *args,
-            **kwargs,
-        )
-        kwargs.update(
-            {
-                "filename": "%s.flr",
-                "X0": self.lattice.startObject.position_start[0],
-                "Z0": self.lattice.startObject.position_start[2],
-                "theta0": 0,
-                "magnet_centers": 0,
-            }
-        )
-        self.add_properties(**kwargs)
+    filename: str = "%s.flr"
+    """Filename for elegant .flr file"""
+
+    X0: float = 0.0
+    """Initial horizontal floor position"""
+
+    Z0: float = 0.0
+    """Initial longitudinal floor position"""
+
+    theta0: float = 0.0
+    """Initial global rotation"""
+
+    magnet_centers: float = 0
+    """Global magnet centre"""
+
+    objectname: str = "floor_coordinates"
+    """Name of object"""
+
+    objecttype: str = "floor_coordinates"
+    """Type of object"""
+
+    @property
+    def x0(self) -> float:
+        return self.X0
+
+    @property
+    def z0(self) -> float:
+        return self.Z0
 
 
 class elegant_matrix_output_command(elegantCommandFile):
@@ -1030,25 +1003,19 @@ class elegant_matrix_output_command(elegantCommandFile):
     SDDS_output: str = "%s.mat"
     """File to which matrix data is to be written"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(elegant_matrix_output_command, self).__init__(
-            objectname="matrix_output",
-            objecttype="matrix_output",
-            *args,
-            **kwargs,
-        )
-        kwargs.update(
-            {
-                "full_matrix_only": self.full_matrix_only,
-                "SDDS_output_order": self.SDDS_output_order,
-                "SDDS_output": self.SDDS_output,
-            }
-        )
-        self.add_properties(**kwargs)
+    objectname: str = "matrix_output"
+    """Name of object"""
+
+    objecttype: str = "matrix_output"
+    """Type of object"""
+
+    @property
+    def sdds_output_order(self) -> int:
+        return self.SDDS_output_order
+
+    @property
+    def sdds_output(self) -> str:
+        return self.SDDS_output
 
 
 class elegant_sdds_beam_command(elegantCommandFile):
@@ -1058,18 +1025,26 @@ class elegant_sdds_beam_command(elegantCommandFile):
     .. _Elegant sdds beam: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu72.html#x80-790007.63
     """
 
-    elegantbeamfilename: str = ""
+    input: str = ""
     """Input filename for ELEGANT"""
 
-    def __init__(self, *args, **kwargs):
-        super(elegant_sdds_beam_command, self).__init__(
-            objectname="sdds_beam",
-            objecttype="sdds_beam",
-            *args,
-            **kwargs,
-        )
-        kwargs.update({"input": self.elegantbeamfilename})
-        self.add_properties(**kwargs)
+    objectname: str = "sdds_beam"
+    """Name of object"""
+
+    objecttype: str = "sdds_beam"
+    """Type of object"""
+
+    sample_interval: float | int = 1
+    """Fraction by which to reduce number of particles"""
+
+    reuse_bunch: int = 1
+    """Flag to indicate whether bunch is to be reused"""
+
+    fiducialization_bunch: int = 0
+    """Flag to indicate whether bunch is fiducial"""
+
+    center_arrival_time: int = 0
+    """Flag to indicate whether to centre arrival time"""
 
 
 class elegant_track_command(elegantCommandFile):
@@ -1082,19 +1057,11 @@ class elegant_track_command(elegantCommandFile):
     trackBeam: bool = True
     """Flag to indicate whether to include the track command"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(elegant_track_command, self).__init__(
-            objectname="track",
-            objecttype="track",
-            *args,
-            **kwargs,
-        )
-        if self.trackBeam:
-            self.add_properties(**kwargs)
+    objectname: str = "track"
+    """Name of object"""
+
+    objecttype: str = "track"
+    """Type of object"""
 
 
 class elegantOptimisation(elegantCommandFile):
