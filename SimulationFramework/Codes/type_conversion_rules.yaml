@@ -17,7 +17,7 @@ elegant:
   cavity: rfcw
   rf_deflecting_cavity: rfdf
   longitudinal_wakefield: wake
-  modulator: lsrmdltr
+  fel_modulator: lsrmdltr
   scatter: scatter
   aperture: maxamp
   shutter: drift

@@ -1,14 +1,28 @@
 from importlib.metadata import PackageNotFoundError
 
 from SimulationFramework.Framework_elements import *
-from SimulationFramework.Framework import runSetup
+from SimulationFramework.Framework import runSetup, load_directory
 from SimulationFramework.Framework_Settings import FrameworkSettings
 import SimulationFramework.Modules.Beams as rbf  # noqa E402
+from SimulationFramework.Modules.Beams.plot import (
+    plotScreenImage,
+    density_plot,
+    marginal_plot,
+    slice_plot,
+)
 import SimulationFramework.Modules.Twiss as rtf
 import SimulationFramework.Codes.Executables as exes
 from SimulationFramework.Framework_lattices import elegantLattice, astraLattice, ocelotLattice, gptLattice
+from SimulationFramework.FrameworkHelperFunctions import convert_numpy_types
+from SimulationFramework.Modules.Beams import Particles
+from SimulationFramework.Modules.Beams.Particles.emittance import emittance as emittanceobject
+from SimulationFramework.Modules.Beams.Particles.twiss import twiss as twissobject
+from SimulationFramework.Modules.Beams.Particles.slice import slice as sliceobject
+from SimulationFramework.Modules.Beams.Particles.sigmas import sigmas as sigmasobject
+from SimulationFramework.Modules.Beams.Particles.centroids import centroids as centroidsobject
 from test_beam import simple_beam
 import pytest
+import yaml
 from copy import deepcopy
 import os
 import shutil
@@ -91,6 +105,7 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
         "master_subdir": f'./fodo/{code}',
         "master_lattice_location": f'./fodo/{code}',
         "GPTLICENSE": "1115315511",
+        "delete_tracking_files": False,
     }
     executables = exes.Executables(global_parameters)
     latticedict = {
@@ -103,6 +118,8 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
             }
         }
     }
+    for name, elem in test_fodo_elements.items():
+        setattr(elem, "global_parameters", global_parameters)
     latattrs = {
         "name": "FODO",
         "file_block": latticedict["FODO"],
@@ -122,6 +139,55 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
 
 @pytest.mark.parametrize("code,lattice_class", [
     ("elegant", elegantLattice),
+    # ("gpt", gptLattice),
+])
+def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class):
+    lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+    lattice.preProcess()
+    lattice.write()
+    lattice.run()
+    lattice.postProcess()
+
+    settings = lattice.settings.copy()
+    settings = convert_numpy_types(settings)
+    subdir = lattice.global_parameters["master_subdir"]
+    t = rtf.load_directory(subdir)
+    t.save_HDF5_twiss_file(f"{subdir}/Twiss_Summary.hdf5")
+    rbf.save_HDF5_summary_file(subdir, f"{subdir}/Beam_Summary.hdf5")
+    with open(lattice.global_parameters["master_subdir"] + "/settings.def", "w") as yaml_file:
+        yaml.default_flow_style = True
+        yaml.safe_dump(settings, yaml_file, sort_keys=False)
+    fwdir = load_directory(lattice.global_parameters["master_subdir"], beams=True)
+    plt1, fig1, ax1 = fwdir.plot(
+        include_layout=True,
+        include_particles=True,
+        ykeys=['sigma_x', 'sigma_y'],
+        ykeys2=['sigma_z'],
+    )
+    plt1.close()
+    b1 = fwdir.beams[0]
+    plotScreenImage(b1, keys=["z", "cpz"], subtract_mean=[True, False])
+    density_plot(b1, key="x", bins=20)
+    marginal_plot(b1, key1="t", key2="cpz", bins=50, subtract_mean=[True, False])
+    slice_plot(b1, bins=500)
+    assert isinstance(fwdir.beams.sigmas, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.sigmas.particles[0], sigmasobject)
+    assert isinstance(fwdir.beams.centroids, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.centroids.particles[0], centroidsobject)
+    assert isinstance(fwdir.beams.emittance, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.emittance.particles[0], emittanceobject)
+    assert isinstance(fwdir.beams.twiss, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.twiss.particles[0], twissobject)
+    assert isinstance(fwdir.beams.slice, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.slice.particles[0], sliceobject)
+    assert isinstance(fwdir.beams.data, rbf.particlesGroup)
+    assert isinstance(fwdir.beams.data.particles[0], Particles)
+    scrnames = [e.objectname for e in lattice.screens_and_markers_and_bpms]
+    for name, file in fwdir.beams.getScreens().items():
+        assert name in scrnames
+        assert os.path.isfile(file)
+
+@pytest.mark.parametrize("code,lattice_class", [
     ("astra", astraLattice),
     ("ocelot", ocelotLattice),
     # ("gpt", gptLattice),

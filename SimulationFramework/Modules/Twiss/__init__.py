@@ -143,6 +143,15 @@ class twissParameter(BaseModel):
             return info.data["name"]
         return v
 
+    def min(self) -> float:
+        return min(self.val)
+
+    def max(self) -> float:
+        return max(self.val)
+
+    def __len__(self) -> int:
+        return len(self.val)
+
 
 class initialTwiss(BaseModel):
     """

@@ -1,22 +1,11 @@
 from pydantic import ValidationError
 
 from SimulationFramework.Framework_elements import *
-from SimulationFramework.Framework_objects import (
-    frameworkLattice,
-    frameworkElement,
-    frameworkObject,
-)
-from SimulationFramework.Framework import runSetup
-from SimulationFramework.Framework_Settings import FrameworkSettings
+from SimulationFramework.Framework_objects import frameworkElement
 import SimulationFramework.Modules.Beams as rbf  # noqa E402
-import SimulationFramework.Modules.Twiss as rtf
-import SimulationFramework.Codes.Executables as exes
-from SimulationFramework.Framework_lattices import elegantLattice, astraLattice, ocelotLattice, gptLattice
-from test_beam import simple_beam
+from test_field import simple_field
 import pytest
-from copy import deepcopy
-import os
-import shutil
+import warnings
 
 def all_subclasses(cls):
     subclasses = cls.__subclasses__()
@@ -24,7 +13,15 @@ def all_subclasses(cls):
         subclasses += all_subclasses(subclass)
     return subclasses
 
-def test_framework_object():
+@pytest.fixture
+def simple_element():
+    return frameworkElement(
+        objectname="ELEMENT",
+        objecttype="marker",
+        centre=[0, 0, 0],
+    )
+
+def test_framework_object(simple_element):
     with pytest.raises(NameError):
         frameworkElement(
             objectname="ELEMENT",
@@ -43,22 +40,48 @@ def test_framework_object():
             objecttype=1,
             centre=[0, 0, 0],
         )
-    element = frameworkElement(
-        objectname="ELEMENT",
-        objecttype="marker",
-        centre=[0, 0, 0],
-    )
     with pytest.raises(ValidationError):
-        element.centre= -1
+        simple_element.centre= -1
+
+def test_framework_object_positions(simple_element):
+    for param in ["x", "y", "z"]:
+        setattr(simple_element, param, 0.1)
+        setattr(simple_element, "d" + param, 0.1)
+        setattr(simple_element, param + "_rot", 0.1)
+        setattr(simple_element, "d" + param + "_rot", 0.1)
+    assert simple_element.position_errors == (0.1, 0.1, 0.1)
+    assert simple_element.centre == (0.1, 0.1, 0.1)
+    assert simple_element.global_rotation == (0.1, 0.1, 0.1)
+    assert simple_element.rotation_errors == (0.1, 0.1, 0.1)
+    assert simple_element.tilt == 0.1
+    assert simple_element.theta == 0.1
+    assert simple_element.get_field_amplitude is None
 
 
-def test_framework_elements():
+def test_framework_elements(simple_field):
+    warnings.filterwarnings("ignore", category=UserWarning)
     exclude = ["global", "gpt", "astra", "csrtrack"]
     for elem in all_subclasses(frameworkElement):
         if not any(x in elem.__name__ for x in exclude):
             element = elem(
                 objectname="ELEMENT",
                 objecttype=elem.__name__,
-                centre=[0, 0, 0],
+                global_parameters={"master_subdir": ".", "master_lattice_location": "."}
             )
+            if elem.__name__ in ["quadrupole", "dipole"]:
+                element.length = 1.0
+            element.write_Elegant()
+            element.write_Ocelot()
+            if elem.__name__ in ["cavity", "solenoid", "rf_deflecting_cavity"]:
+                if elem.__name__ in ["cavity", "rf_deflecting_cavity"]:
+                    element.frequency = 1e9
+                    element.wakefield_definition = simple_field
+                element.field_amplitude = 1e6
+                element.field_definition = simple_field
+            if elem.__name__ == "wakefield":
+                element.field_definition = simple_field
+            if elem.__name__ in ["aperture", "collimator", "scraper", "rcollimator"]:
+                element.shape = "circular"
+                element.horizontal_size = element.vertical_size = 1.0
+            element.write_ASTRA(1)
             assert element.x == element.y == element.z == element.dx == element.dy == element.dz == 0

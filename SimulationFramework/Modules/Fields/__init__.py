@@ -270,9 +270,9 @@ class field(BaseModel):
         List[float] | None:
             A list of Z values if available, otherwise None.
         """
-        if self.z.value is not None:
+        if isinstance(self.z, FieldParameter) and self.z.value is not None:
             return self.z.value.val
-        elif self.t.value is not None:
+        elif isinstance(self.t, FieldParameter) and self.t.value is not None:
             return -1 * abs(self.t.value.val * speed_of_light)
         else:
             raise ValueError("Neither t nor z are defined")
@@ -288,9 +288,9 @@ class field(BaseModel):
         List[float] | None:
             A list of time values if available, otherwise None.
         """
-        if self.t.value is not None:
+        if isinstance(self.t, FieldParameter) and self.t.value is not None:
             return self.t.value.val
-        elif self.z.value is not None:
+        elif isinstance(self.z, FieldParameter) and self.z.value is not None:
             return abs(self.z.value.val / speed_of_light)
         else:
             raise ValueError("Neither t nor z are defined")

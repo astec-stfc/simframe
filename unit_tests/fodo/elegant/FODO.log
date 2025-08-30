@@ -1,4 +1,4 @@
-Running elegant at Fri Aug 29 13:24:38 2025
+Running elegant at Sat Aug 30 16:56:57 2025
 
 This is elegant 2023.4, Oct 30 2024, by M. Borland, J. Calvey, M. Carla', N. Carmignani, AJ Dick, Z. Duan, M. Ehrlichman, L. Emery, W. Guo, N. Kuklev, R. Lindberg, V. Sajaev, R. Soliday, Y.-P. Sun, M. Wallbank, C.-X. Wang, Y. Wang, Y. Wu, and A. Xiao.
 =====================================================================================
@@ -38,7 +38,7 @@ statistics:    ET:  00:00:0.001 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:6996
     coord_limit = 1.000000000000000e+01,
     search_path = {NULL},
 &end
-statistics:    ET:  00:00:0.002 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:7001
+statistics:    ET:  00:00:0.001 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:7001
 &run_setup
     lattice = FODO.lte,
     use_beamline = FODO,
@@ -69,7 +69,7 @@ statistics:    ET:  00:00:0.002 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:7001
     random_number_seed = 987654321,
     correction_iterations = 1,
     echo_lattice = 0,
-    p_central = 1.956951174889305e+03,
+    p_central = 1.956951206925468e+03,
     p_central_mev = 0.000000000000000e+00,
     always_change_p0 = 1,
     load_balancing_on = 0,
@@ -105,12 +105,12 @@ statistics:    ET:  00:00:0.002 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:7046
     final_values_only = 0,
     statistics = 1,
     radiation_integrals = 1,
-    beta_x = 1.002098776121358e+04,
-    alpha_x = 4.774932182131534e-02,
-    eta_x = -1.262621040306797e-05,
-    etap_x = -9.167781286433176e-10,
-    beta_y = 1.001991238740674e+04,
-    alpha_y = 2.678796243918202e-02,
+    beta_x = 1.002414649065668e+04,
+    alpha_x = 4.306021122793229e-02,
+    eta_x = 5.470299894993221e-06,
+    etap_x = 0.000000000000000e+00,
+    beta_y = 9.908861381245244e+03,
+    alpha_y = 1.098585540697085e-02,
     eta_y = 0.000000000000000e+00,
     etap_y = 0.000000000000000e+00,
     reference_file = {NULL},
@@ -134,17 +134,17 @@ final Twiss parameters (chromaticity valid for fully second-order calculation on
          beta          alpha           nu           eta          eta'       dnu/d(dp/p)   dbeta/(dp/p)     accept.
           m                          1/2pi           m                         1/2pi            m          mm-mrad
 --------------------------------------------------------------------------------------------------------------------
-  x:  6.196695e+03  1.529039e+04  5.818326e-06 -9.929105e-06  2.449890e-05 -4.314664e-07  5.954851e+03  6.872009e+03
-ave:  1.155459e+04  4.619940e+03               -1.346157e-05  6.709451e-06
-min:  6.196695e+03 -2.496453e+04               -1.521529e-05 -2.610364e-05
-max:  1.455178e+04  3.313426e+04               -9.929105e-06  3.582951e-05
-  y:  7.902517e+03 -2.168356e+03  8.964219e-06  0.000000e+00  0.000000e+00 -4.463026e-06  4.853410e+03  9.980127e+03
-ave:  7.347512e+03  2.639767e+03                0.000000e+00  0.000000e+00
-min:  5.861317e+03 -9.079460e+03                0.000000e+00  0.000000e+00
-max:  1.001991e+04  1.747273e+04                0.000000e+00  0.000000e+00
-x acceptance limited to 6.872009e-03 by FODO_DRIFT_01 ending at 1.500000e-01 m
-y acceptance limited to 9.980127e-03 by START ending at 0.000000e+00 m
-statistics:    ET:  00:00:0.020 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7133
+  x:  6.198650e+03  1.529521e+04  5.816491e-06  4.301666e-06 -1.061436e-05 -4.313303e-07  5.956730e+03  6.869843e+03
+ave:  1.155823e+04  4.621393e+03                5.832149e-06 -2.907152e-06
+min:  6.198650e+03 -2.497241e+04                4.301666e-06 -1.552324e-05
+max:  1.455637e+04  3.314470e+04                6.591956e-06  1.130895e-05
+  y:  7.814947e+03 -2.144344e+03  9.064675e-06  0.000000e+00  0.000000e+00 -4.513036e-06  4.799621e+03  1.009198e+04
+ave:  7.266085e+03  2.610493e+03                0.000000e+00  0.000000e+00
+min:  5.796362e+03 -8.978859e+03                0.000000e+00  0.000000e+00
+max:  9.908861e+03  1.727907e+04                0.000000e+00  0.000000e+00
+x acceptance limited to 6.869843e-03 by FODO_DRIFT_01 ending at 1.500000e-01 m
+y acceptance limited to 1.009198e-02 by START ending at 0.000000e+00 m
+statistics:    ET:  00:00:0.013 CP:    0.00 BIO:0 DIO:0 PF:0 MEM:7133
 &floor_coordinates
     filename = %s.flr,
     X0 = 0.000000000000000e+00,
@@ -159,7 +159,7 @@ statistics:    ET:  00:00:0.020 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7133
     store_vertices = 0,
     store_centers = 0,
 &end
-statistics:    ET:  00:00:0.026 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7133
+statistics:    ET:  00:00:0.019 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7133
 &matrix_output
     printout = {NULL},
     printout_order = 1,
@@ -178,7 +178,7 @@ statistics:    ET:  00:00:0.026 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7133
     SDDS_output_match = {NULL},
 &end
 *** Warning: Some elements had no matrix. --- 3 elements had no matrix
-statistics:    ET:  00:00:0.034 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
+statistics:    ET:  00:00:0.025 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
 &sdds_beam
     input = FODO.sdds,
     input_list = {NULL},
@@ -205,7 +205,7 @@ statistics:    ET:  00:00:0.034 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
     duplicate_stagger[0] = 0.000000000000000e+00, 0.000000000000000e+00, 0.000000000000000e+00, 0.000000000000000e+00, 
         0.000000000000000e+00, 0.000000000000000e+00,
 &end
-statistics:    ET:  00:00:0.035 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
+statistics:    ET:  00:00:0.026 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
 &track
     center_on_orbit = 0,
     center_momentum_also = 1,
@@ -221,19 +221,19 @@ statistics:    ET:  00:00:0.035 CP:    0.01 BIO:0 DIO:0 PF:0 MEM:7172
 &end
 Updating floor coordinates
 tracking step 1
-29 Aug 25 13:24:38: Starting to read beam from SDDS file.
+30 Aug 25 16:56:57: Starting to read beam from SDDS file.
 Opening file "FODO.sdds"
 File FODO.sdds opened and checked.
 Read page 1 from file
 0 particle ID slots per bunch
 1000 rows in page 1
 File FODO.sdds was used up and closed.
-29 Aug 25 13:24:38: Done reading beam from SDDS file.
+30 Aug 25 16:56:57: Done reading beam from SDDS file.
 a total of 1000 data points were read
 
 tracking 1000 particles
-29 Aug 25 13:24:38: This step establishes energy profile vs s (fiducial beam).
-29 Aug 25 13:24:38: Rf phases/references reset.
+30 Aug 25 16:56:57: This step establishes energy profile vs s (fiducial beam).
+30 Aug 25 16:56:57: Rf phases/references reset.
 Dumping lost-particle data...
 n_lost = 0
 Dumping lost particles: n_to_track = 1000, n_lost = 0, n_particles = 1000
@@ -241,12 +241,12 @@ done.
 Dumping centroid data...done.
 Dumping sigma data...done.
 Post-tracking output completed.
-Tracking step completed   ET:  00:00:0.080 CP:    0.03 BIO:0 DIO:0 PF:0 MEM:7508
+Tracking step completed   ET:  00:00:0.064 CP:    0.02 BIO:0 DIO:0 PF:0 MEM:7506
 
 
 Finished tracking.
 End of input data encountered.
-statistics:    ET:  00:00:0.080 CP:    0.03 BIO:0 DIO:0 PF:0 MEM:7508
+statistics:    ET:  00:00:0.064 CP:    0.02 BIO:0 DIO:0 PF:0 MEM:7506
 
 ************************** Summary of warnings ****************************
 1 types of warnings were recorded:

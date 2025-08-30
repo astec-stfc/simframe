@@ -3,8 +3,6 @@ from SimulationFramework.Modules.Fields.FieldParameter import FieldParameter
 from SimulationFramework.Modules.units import UnitValue
 import pytest
 import numpy as np
-from scipy.constants import m_e, c, e, m_p
-from typing import Dict
 import os
 
 @pytest.fixture

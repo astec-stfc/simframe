@@ -91,16 +91,16 @@ class particlesGroup(BaseModel):
     """List of :class:`~SimulationFramework.Modules.Beams.Particles.Particles` or its 
     sub-classes"""
 
-    def __init__(self, particles=None, *args, **kwargs):
-        super(particlesGroup, self).__init__(*args, **kwargs)
-        self.particles = particles
-
-    def __getitem__(self, key):
-        if key == "particles":
-            return getattr(self, key)
-        else:
-            data = [getattr(p, key) for p in self.particles]
-            return UnitValue(data, units=data[0].units)
+    # def __init__(self, particles=None, *args, **kwargs):
+    #     super(particlesGroup, self).__init__(*args, **kwargs)
+    #     self.particles = particles
+    #
+    # def __getitem__(self, key):
+    #     if key == "particles":
+    #         return getattr(self, key)
+    #     else:
+    #         data = [getattr(p, key) for p in self.particles]
+    #         return UnitValue(data, units=data[0].units)
 
 
 class statsGroup(object):
@@ -170,35 +170,35 @@ class beamGroup(BaseModel):
 
     @property
     def data(self):
-        return particlesGroup([b._beam for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam for b in self.beams.values()])
 
     @property
     def sigmas(self):
-        return particlesGroup([b._beam.sigmas for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.sigmas for b in self.beams.values()])
 
     @property
     def centroids(self):
-        return particlesGroup([b._beam.centroids for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.centroids for b in self.beams.values()])
 
     @property
     def twiss(self):
-        return particlesGroup([b._beam.twiss for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.twiss for b in self.beams.values()])
 
     @property
     def slice(self):
-        return particlesGroup([b._beam.slice for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.slice for b in self.beams.values()])
 
     @property
     def emittance(self):
-        return particlesGroup([b._beam.emittance for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.emittance for b in self.beams.values()])
 
     @property
     def kde(self):
-        return particlesGroup([b._beam.kde for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.kde for b in self.beams.values()])
 
     @property
     def mve(self):
-        return particlesGroup([b._beam.mve for b in self.beams.values()])
+        return particlesGroup(particles=[b._beam.mve for b in self.beams.values()])
 
     def sort(self, key="z", function="mean", *args, **kwargs):
         if isinstance(function, str) and hasattr(np, function):

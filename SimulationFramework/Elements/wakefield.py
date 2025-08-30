@@ -2,6 +2,7 @@ from SimulationFramework.Elements.cavity import cavity
 from SimulationFramework.Elements.drift import drift
 from SimulationFramework.Framework_objects import elements_Elegant
 from SimulationFramework.Modules.Fields import field
+from warnings import warn
 
 
 class wakefield(cavity):
@@ -183,7 +184,7 @@ class wakefield(cavity):
         Parameters
         ----------
         file_name: str
-            Name of wakefield dile
+            Name of wakefield file
 
         Returns
         -------
@@ -222,6 +223,9 @@ class wakefield(cavity):
         wakefield_file_name = self.generate_field_file_name(
             self.field_definition, code="elegant"
         )
+        if wakefield_file_name is None:
+            warn(f"Wakefield file for {self.objectname} not provided")
+            return ""
         etype = self.set_column_names(wakefield_file_name)
         wholestring = ""
         string = self.objectname + ": " + etype

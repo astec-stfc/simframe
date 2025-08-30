@@ -591,83 +591,83 @@ class frameworkElement(frameworkObject):
     @property
     def x(self) -> float:
         """
-        Returns the x-coordinate of the element's starting position.
+        Returns the x-coordinate of the element's centre.
 
         Returns
         -------
         float
-            The x-coordinate of the element's starting position.
+            The x-coordinate of the element's centre.
 
         """
-        return self.position_start[0]
+        return list(self.centre)[0]
 
     @x.setter
     def x(self, x: float) -> None:
         """
-        Sets the x-coordinate of the element's starting position.
+        Sets the x-coordinate of the element's centre.
 
         Parameters
         ----------
         x: float
-            The x-coordinate of the element's starting position.
+            The x-coordinate of the element's centre.
 
         """
-        self.position_start[0] = x
-        self.position_end[0] = x
+        centre = list(self.centre)
+        self.centre = (x, centre[1], centre[2])
 
     @property
     def y(self) -> float:
         """
-        Returns the y-coordinate of the element's starting position.
+        Returns the y-coordinate of the element's centre.
 
         Returns
         -------
         float
-            The y-coordinate of the element's starting position.
+            The y-coordinate of the element's centre.
 
         """
-        return self.position_start[1]
+        return list(self.centre)[1]
 
     @y.setter
     def y(self, y) -> None:
         """
-        Sets the y-coordinate of the element's starting position.
+        Sets the y-coordinate of the element's centre.
 
         Parameters
         ----------
         y: float
-            The y-coordinate of the element's starting position.
+            The y-coordinate of the element's centre.
 
         """
-        self.position_start[1] = y
-        self.position_end[1] = y
+        centre = list(self.centre)
+        self.centre = (centre[0], y, centre[2])
 
     @property
     def z(self):
         """
-        Returns the z-coordinate of the element's starting position.
+        Returns the z-coordinate of the element's centre.
 
         Returns
         -------
         float
-            The z-coordinate of the element's starting position.
+            The z-coordinate of the element's centre.
 
         """
-        return self.position_start[2]
+        return list(self.centre)[2]
 
     @z.setter
     def z(self, z) -> None:
         """
-        Sets the z-coordinate of the element's starting position.
+        Sets the z-coordinate of the element's centre.
 
         Parameters
         ----------
         z: float
-            The z-coordinate of the element's starting position.
+            The z-coordinate of the element's centre.
 
         """
-        self.position_start[2] = z
-        self.position_end[2] = z
+        centre = list(self.centre)
+        self.centre = (centre[0], centre[1], z)
 
     @property
     def dx(self) -> float:
@@ -1517,6 +1517,12 @@ class frameworkElement(frameworkObject):
             else keyword
         )
 
+    def _write_ASTRA(self, n: int = 0, **kwargs: dict) -> str:
+        pass
+
+    def write_ASTRA(self, n: int = 0, **kwargs: dict) -> str:
+        return self._write_ASTRA(n, **kwargs)
+
     def _write_CSRTrack(self, n: int = 0, **kwargs: dict) -> str:
         pass
 
@@ -1860,7 +1866,6 @@ class frameworkLattice(BaseModel):
 
     @csr_enable.setter
     def csr_enable(self, csr) -> None:
-        print(1)
         self.csrDrifts = csr
         self._csr_enable = csr
 

@@ -15,16 +15,6 @@ class wiggler(frameworkElement):
     radius: float = 0.0
     """Wiggler radius"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(wiggler, self).__init__(
-            *args,
-            **kwargs,
-        )
-
     def _write_ASTRA(self, n: int, **kwargs) -> str:
         """
         Writes the wiggler element string for ASTRA.
@@ -67,7 +57,7 @@ class wiggler(frameworkElement):
         else:
             etype = "drift"
         string = self.objectname + ": " + etype
-        for key, value in self.objectproperties:
+        for key, value in self.objectproperties.items():
             if (
                 not key == "name"
                 and not key == "type"

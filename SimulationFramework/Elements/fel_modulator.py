@@ -42,17 +42,6 @@ class fel_modulator(frameworkElement):
     time_offset: float = 0.0
     """Time offset between laser pulse and particle beam"""
 
-    def __init__(
-        self,
-        objecttype="fel_modulator",
-        *args,
-        **kwargs,
-    ):
-        super(fel_modulator, self).__init__(
-            objecttype=objecttype,
-            *args,
-            **kwargs,
-        )
 
     def _write_ASTRA(self, n, **kwargs) -> str:
         """

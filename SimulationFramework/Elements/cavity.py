@@ -137,7 +137,7 @@ class cavity(frameworkElement):
             return float(v)
         return v
 
-    def get_cells(self) -> int | None:
+    def get_cells(self) -> int:
         """
         Get the number of cavity cells.
 
@@ -155,7 +155,7 @@ class cavity(frameworkElement):
             else:
                 cells = int(self.n_cells - (self.n_cells % 3))
         else:
-            cells = None
+            cells = 0
         return cells
 
     def _write_ASTRA(self, n, **kwargs) -> str:
@@ -182,8 +182,11 @@ class cavity(frameworkElement):
         )
         efield_def = [
             "FILE_EFieLD",
-            {"value": "'" + field_file_name + "'", "default": ""},
+            {"value": "'" + field_file_name + "field_file_name'", "default": ""},
         ]
+        for attr in ["frequency", "field_amplitude"]:
+            if getattr(self, attr) is None:
+                raise ValueError(f"cavity {attr} must be defined")
         return self._write_ASTRA_dictionary(
             dict(
                 [

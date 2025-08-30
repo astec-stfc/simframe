@@ -67,9 +67,9 @@ def plot(
         good = slice(None, None, None)  # everything
 
     # X axis scaling
-    units_x = str(I.units(xkey))
+    units_x = str(I.stat(xkey).unit)
     if nice:
-        X, factor_x, prefix_x = nice_array(X)
+        X, factor_x, prefix_x = nice_array(X.val)
         units_x = prefix_x + units_x
     else:
         factor_x = 1
@@ -91,7 +91,7 @@ def plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = [I.units(key) for key in keys]
+        ulist = [I.stat(key).unit for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -99,7 +99,7 @@ def plot(
         unit = str(ulist[0])
 
         # Data
-        data = [I.stat(key)[good] for key in keys]
+        data = [I.stat(key).val[good] for key in keys]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))

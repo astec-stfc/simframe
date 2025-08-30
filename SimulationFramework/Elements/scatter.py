@@ -9,15 +9,6 @@ class scatter(frameworkElement):
     vertical_momentum_scatter: float | None = None
     relative_momentum_scatter: float | None = None
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(scatter, self).__init__(
-            *args,
-            **kwargs,
-        )
         # print('Scatter object ', self.objectname,' - DP = ', self.objectproperties)
 
     def _write_Elegant(self):
