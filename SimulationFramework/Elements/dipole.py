@@ -338,13 +338,10 @@ class dipole(frameworkElement):
         """
         if estr in self.objectproperties:
             if isinstance(self.objectproperties[estr], str):
-                print(f"str {estr} {self.objectproperties[estr]} {default}")
                 return checkValue(self, self.objectproperties[estr], default)
             else:
-                print(f"nostr {self.objectproperties[estr]}")
                 return self.objectproperties[estr]
         else:
-            print(f"not {estr} {default}")
             return default
 
     @property
