@@ -65,8 +65,8 @@ class solenoid(frameworkElement):
                     ["S_smooth", {"value": self.smooth, "default": 10}],
                     ["S_xoff", {"value": field_ref_pos[0] + self.dx, "default": 0}],
                     ["S_yoff", {"value": field_ref_pos[1] + self.dy, "default": 0}],
-                    ["S_xrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
-                    ["S_yrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
+                    ["S_xrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
+                    ["S_yrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
                 ]
             ),
             n,

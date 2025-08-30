@@ -85,12 +85,12 @@ class aperture(frameworkElement):
             )
             dic["Ap_Z2"] = {"value": end, "default": 0}
         dic["A_xrot"] = {
-            "value": self.y_rot + self.dy_rot,
+            "value": self.x_rot + self.dx_rot,
             "default": 0,
             "type": "not_zero",
         }
         dic["A_yrot"] = {
-            "value": self.x_rot + self.dx_rot,
+            "value": self.y_rot + self.dy_rot,
             "default": 0,
             "type": "not_zero",
         }

@@ -814,8 +814,8 @@ class frameworkElement(frameworkObject):
         """
         return self.global_rotation[2]
 
-    @z_rot.setter
-    def z_rot(self, x: float) -> None:
+    @x_rot.setter
+    def x_rot(self, x: float) -> None:
         """
         Sets the global x-rotation of the element.
 
@@ -1018,14 +1018,13 @@ class frameworkElement(frameworkObject):
         """
         if hasattr(self, "global_rotation") and self.global_rotation is not None:
             rotation = (
-                self.global_rotation[2]
+                self.global_rotation[0]
                 if len(self.global_rotation) == 3
                 else self.global_rotation
             )
         else:
             rotation = 0
-        # if hasattr(self, 'starting_rotation') and self.starting_rotation is not None:
-        #     rotation +=  self.starting_rotation
+        rotation +=  self.starting_rotation[0]
         return rotation
 
     @property
@@ -1105,7 +1104,7 @@ class frameworkElement(frameworkObject):
         start = middle - self.rotated_position(
             (0, 0, self.length / 2.0),
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
         return list(start)
 
@@ -1147,7 +1146,7 @@ class frameworkElement(frameworkObject):
         end = start + self.rotated_position(
             (0, 0, self.length),
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
         return end
 
@@ -1172,7 +1171,7 @@ class frameworkElement(frameworkObject):
             + self.rotated_position(
                 vec,
                 offset=self.starting_offset,
-                theta=self.y_rot,
+                theta=self.x_rot,
             )
         )
 
@@ -1196,7 +1195,7 @@ class frameworkElement(frameworkObject):
             + self.rotated_position(
                 vec,
                 offset=self.starting_offset,
-                theta=self.y_rot,
+                theta=self.x_rot,
             )
         )
 
@@ -3128,7 +3127,7 @@ class chicane(frameworkGroup):
         dipole_number = 0
         ref_pos = None
         ref_angle = None
-        for i in range(len(obj)):
+        for e, i in enumerate(range(len(obj))):
             if dipole_number > 0:
                 # print('before',obj[i])
                 adj = obj[i].centre[2] - ref_pos[2]
@@ -3139,13 +3138,13 @@ class chicane(frameworkGroup):
                     0,
                     obj[i].centre[2],
                 ]
-                obj[i].z_rot = ref_angle
+                obj[i].x_rot = ref_angle
                 # print('after',obj[i])
             if obj[i] in dipole_objs:
                 # print('DIPOLE before',obj[i])
                 ref_pos = obj[i].middle
                 obj[i].angle = a * self.ratios[dipole_number]
-                ref_angle = obj[i].z_rot + obj[i].angle
+                ref_angle = obj[i].x_rot + obj[i].angle
                 dipole_number += 1
                 # print('DIPOLE after',obj[i])
         # print('\n\n\n')

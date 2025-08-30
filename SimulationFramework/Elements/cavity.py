@@ -216,7 +216,7 @@ class cavity(frameworkElement):
                     [
                         "C_xrot",
                         {
-                            "value": self.y_rot + self.dy_rot,
+                            "value": self.x_rot + self.dx_rot,
                             "default": None,
                             "type": "not_zero",
                         },
@@ -224,7 +224,7 @@ class cavity(frameworkElement):
                     [
                         "C_yrot",
                         {
-                            "value": self.x_rot + self.dx_rot,
+                            "value": self.y_rot + self.dy_rot,
                             "default": None,
                             "type": "not_zero",
                         },

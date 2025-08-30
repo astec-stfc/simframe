@@ -156,7 +156,7 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -183,7 +183,7 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -202,7 +202,7 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -219,7 +219,7 @@ class dipole(frameworkElement):
         return np.array(self.position_start) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -245,7 +245,7 @@ class dipole(frameworkElement):
         return np.array(middle) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -270,7 +270,7 @@ class dipole(frameworkElement):
         return np.array(start) + self.rotated_position(
             vec,
             offset=self.starting_offset,
-            theta=self.y_rot,
+            theta=self.x_rot,
         )
 
     @property
@@ -303,23 +303,19 @@ class dipole(frameworkElement):
     def __neg__(self):
         newself = deepcopy(self)
         if (
-            "exit_edge_angle" in newself.objectproperties
-            and "entrance_edge_angle" in newself.objectproperties
+            getattr(newself, "exit_edge_angle")
+            and getattr(newself, "entrance_edge_angle")
         ):
             e1 = newself["entrance_edge_angle"]
             e2 = newself["exit_edge_angle"]
-            newself.objectproperties["entrance_edge_angle"] = e2
-            newself.objectproperties["exit_edge_angle"] = e1
-        elif "entrance_edge_angle" in newself.objectproperties:
-            newself.objectproperties["exit_edge_angle"] = newself.objectproperties[
-                "entrance_edge_angle"
-            ]
-            del newself.objectproperties["entrance_edge_angle"]
-        elif "exit_edge_angle" in newself.objectproperties:
-            newself.objectproperties["entrance_edge_angle"] = newself.objectproperties[
-                "exit_edge_angle"
-            ]
-            del newself.objectproperties["exit_edge_angle"]
+            setattr(newself, "entrance_edge_angle", e2)
+            setattr(newself, "exit_edge_angle", e1)
+        elif getattr(newself, "entrance_edge_angle"):
+            setattr(newself, "exit_edge_angle", getattr(newself, "entrance_edge_angle"))
+            setattr(newself, "entrance_edge_angle", 0.0)
+        elif getattr(newself, "exit_edge_angle"):
+            setattr(newself, "entrance_edge_angle", getattr(newself, "exit_edge_angle"))
+            setattr(newself, "exit_edge_angle", 0.0)
         newself.objectname = "-" + newself.objectname
         return newself
 

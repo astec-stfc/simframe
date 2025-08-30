@@ -944,7 +944,7 @@ class Framework(BaseModel):
             start = elem.position_start
             end = elem.end
             length = elem.length
-            theta = elem.global_rotation[2]
+            theta = elem.global_rotation[0]
             if elem.objecttype == "dipole" and abs(float(elem.angle)) > 0:
                 angle = float(elem.angle)
                 rho = length / angle

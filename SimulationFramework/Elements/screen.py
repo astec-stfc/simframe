@@ -43,8 +43,8 @@ class screen(frameworkElement):
             dict(
                 [
                     ["Screen", {"value": self.middle[2], "default": 0}],
-                    ["Scr_xrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
-                    ["Scr_yrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
+                    ["Scr_xrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
+                    ["Scr_yrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
                 ]
             ),
             n,
