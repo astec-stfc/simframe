@@ -9,6 +9,9 @@ class rf_deflecting_cavity(cavity):
     n_kicks: int = 10
     """Number of TDC kicks"""
 
+    n_cells: int | float | None = 1
+    """Number of cells"""
+
     def __init__(
         self,
         *args,

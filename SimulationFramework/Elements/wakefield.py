@@ -85,7 +85,10 @@ class wakefield(cavity):
     scale_field_hz: float = 0.0
     """z-component of the horizontal direction vector."""
 
-    cells: int | None = 0
+    cells: int | None = 1
+    """Number of cells (if wake originated from a cavity)"""
+
+    n_cells: int | float | None = 1
     """Number of cells (if wake originated from a cavity)"""
 
     def __init__(

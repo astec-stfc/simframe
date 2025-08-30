@@ -12,7 +12,7 @@
 	sigma = %s.sig
 	losses = %s.loss
 	default_order = 3
-	p_central = 1956.951224468961
+	p_central = 1956.9512393711013
 	always_change_p0 = 1
 	s_start = 0.0
 &end
@@ -26,16 +26,17 @@
 	output_at_each_step = 0
 	statistics = 1
 	radiation_integrals = 1
-	beta_x = 9720.298341145311
-	alpha_x = 0.01605046664129801
-	eta_x = -5.38915343761344e-06
-	etap_x = 2.5465789666096575e-10
-	beta_y = 9972.185888084832
-	alpha_y = -0.010012620675751064
+	beta_x = 10046.065867578583
+	alpha_x = -0.04379999253053229
+	eta_x = 1.2386145515885736e-05
+	beta_y = 9702.572661420401
+	alpha_y = 0.01931836936234307
 &end
 &floor_coordinates
 	filename = %s.flr
-	theta0 = 0
+	X0 = 0.0
+	Z0 = 0.0
+	theta0 = 0.0
 	magnet_centers = 0
 &end
 &matrix_output

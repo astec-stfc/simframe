@@ -10,7 +10,7 @@ class aperture(frameworkElement):
     number_of_elements: int | None = None
     """Number of aperture elements"""
 
-    shape: Literal["elliptical", "planar", "circular", "rectangular", "scraper"] = None
+    shape: Literal["elliptical", "planar", "circular", "rectangular", "scraper"] | None = None
     """Aperture shape"""
 
     horizontal_size: float | None = None

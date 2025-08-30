@@ -509,31 +509,6 @@ class frameworkElement(frameworkObject):
     PV: SerializeAsAny[str | None] = None
     """EPICS PV root for the element"""
 
-    @field_validator("length", mode="before")
-    @classmethod
-    def validate_length(cls, value: float) -> float:
-        """Validate the length to ensure it is a non-negative float."""
-        if not isinstance(value, (int, float)):
-            raise ValueError("length must be a float or an int.")
-        if value < 0:
-            raise ValueError("length must be non-negative.")
-        return float(value)
-
-    @field_validator("subelement", mode="before")
-    @classmethod
-    def validate_subelement(cls, value: bool) -> bool:
-        """Validate that the subelement attribute is a bool."""
-        if not isinstance(value, bool):
-            raise ValueError("subelement must be a bool.")
-        return value
-
-    @field_validator("PV", mode="after")
-    @classmethod
-    def validate_PV(cls, value: str | None) -> str | None:
-        """Validate that the PV attribute is a str or None."""
-        if not isinstance(value, str):
-            return None
-        return value
 
     def model_post_init(self, __context):
         self.conversion_rules_elegant = keyword_conversion_rules_elegant["general"]
@@ -1619,25 +1594,34 @@ class csrdrift(frameworkElement):
     """Flag to allow for interpolation of computed longitudinal space charge wake.
     See `Elegant manual`_"""
 
-    length: float = None
-
     csr_enable: bool = True
+    """Enable CSR drift calculations"""
 
     lsc_enable: bool = True
+    """Enable LSC drift calculations"""
 
     use_stupakov: int = 1
+    """Use Stupakov formula; see `Elegant manual`_"""
 
     csrdz: float = 0.01
+    """Step size for CSR calculations"""
 
     lsc_bins: int = 20
+    """Number of bins for LSC calculations"""
 
-    lsc_high_frequency_cutoff_start: float | int = -1
+    lsc_high_frequency_cutoff_start: float = -1
+    """Spatial frequency at which smoothing filter begins. If not positive, no frequency filter smoothing is done. 
+    See `Elegant manual LSC drift`_
+    """
 
-    lsc_high_frequency_cutoff_end: float | int = -1
+    lsc_high_frequency_cutoff_end: float = -1
+    """Spatial frequency at which smoothing filter is 0. See `Elegant manual LSC drift`_"""
 
-    lsc_low_frequency_cutoff_start: float | int = -1
+    lsc_low_frequency_cutoff_start: float = -1
+    """Highest spatial frequency at which low-frequency cutoff filter is zero. See `Elegant manual LSC drift`_"""
 
-    lsc_low_frequency_cutoff_end: float | int = -1
+    lsc_low_frequency_cutoff_end: float = -1
+    """Lowest spatial frequency at which low-frequency cutoff filter is 1. See `Elegant manual LSC drift`_"""
 
 
     def _write_Elegant(self) -> str:
@@ -1755,18 +1739,18 @@ class frameworkLattice(BaseModel):
 
     lsc_high_frequency_cutoff_start: float = -1
     """Spatial frequency at which smoothing filter begins. If not positive, no frequency filter smoothing is done. 
-    See `Elegant manual`_
+    See `Elegant manual LSC drift`_
     
-    .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58"""
+    .. _Elegant manual LSC drift: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu168.html#x179-18000010.58"""
 
     lsc_high_frequency_cutoff_end: float = -1
-    """Spatial frequency at which smoothing filter is 0. See `Elegant manual`_"""
+    """Spatial frequency at which smoothing filter is 0. See `Elegant manual LSC drift`_"""
 
     lsc_low_frequency_cutoff_start: float = -1
-    """Highest spatial frequency at which low-frequency cutoff filter is zero. See `Elegant manual`_"""
+    """Highest spatial frequency at which low-frequency cutoff filter is zero. See `Elegant manual LSC drift`_"""
 
     lsc_low_frequency_cutoff_end: float = -1
-    """Lowest spatial frequency at which low-frequency cutoff filter is 1. See `Elegant manual`_"""
+    """Lowest spatial frequency at which low-frequency cutoff filter is 1. See `Elegant manual LSC drift`_"""
 
     sample_interval: int = 1
     """Sample interval for downsampling particles, in units of 2**(3*sample_interval)"""

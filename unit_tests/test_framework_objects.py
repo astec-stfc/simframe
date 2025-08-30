@@ -1,7 +1,10 @@
+from pydantic import ValidationError
+
 from SimulationFramework.Framework_elements import *
 from SimulationFramework.Framework_objects import (
     frameworkLattice,
     frameworkElement,
+    frameworkObject,
 )
 from SimulationFramework.Framework import runSetup
 from SimulationFramework.Framework_Settings import FrameworkSettings
@@ -22,11 +25,6 @@ def all_subclasses(cls):
     return subclasses
 
 def test_framework_object():
-    element = frameworkObject(
-        objectname="ELEMENT",
-        objecttype="marker",
-        centre=[0, 0, 0],
-    )
     with pytest.raises(NameError):
         frameworkElement(
             objectname="ELEMENT",
@@ -50,7 +48,8 @@ def test_framework_object():
         objecttype="marker",
         centre=[0, 0, 0],
     )
-    element.centre= -1
+    with pytest.raises(ValidationError):
+        element.centre= -1
 
 
 def test_framework_elements():

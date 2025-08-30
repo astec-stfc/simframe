@@ -10,7 +10,8 @@ head = trial,
 lprompt = False,
 high_res = True,
 Distribution = 'FODO_input.astra',
-n_red = 1
+n_red = 1,
+Toff = 0.0
 /
 
 &OUTPUT
