@@ -21,6 +21,12 @@ def test_fodo_settings():
             "output": {
                 "start_element": "BEGIN",
                 "end_element": "END",
+            },
+            "input": {
+                "twiss": {
+                    "beta_x": 10,
+                    "alpha_x": 0,
+                }
             }
         }
     }
@@ -58,6 +64,7 @@ def test_framework_functionality(test_init_framework, test_fodo_settings, simple
     test_init_framework.load_changes_file()
     test_init_framework.check_lattice_drifts()
     test_init_framework.change_Lattice_Code("FODO", "astra")
+    assert isinstance(test_init_framework["FODO"].__str__(), str)
     with pytest.raises(NotImplementedError):
         test_init_framework.change_Lattice_Code("FODO", "test")
     assert isinstance(test_init_framework.getElement("QUAD1"), quadrupole)
@@ -71,6 +78,12 @@ def test_framework_functionality(test_init_framework, test_fodo_settings, simple
         value=2.0,
     )
     assert test_init_framework.getElement("QUAD1", "k1l") == 2.0
+    assert isinstance(test_init_framework["FODO"].getZValues(), list)
+    assert isinstance(test_init_framework["FODO"].getZValues(as_dict=True), dict)
+    assert isinstance(test_init_framework["FODO"].getElems(), list)
+    assert isinstance(test_init_framework["FODO"].getElems(as_dict=True), dict)
+    assert isinstance(test_init_framework["FODO"].getSNamesElems(), tuple)
+    assert isinstance(test_init_framework["FODO"].getZNamesElems(), tuple)
     test_init_framework.modifyElements(
         elementNames="all",
         parameter="centre",
