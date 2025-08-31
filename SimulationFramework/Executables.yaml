@@ -31,5 +31,5 @@ posix:
   astra: [$simcodes$/ASTRA/Astra]
   Pelegant: ['mpiexec','-np', $ncpu$, 'Pelegant']
   elegant: ['elegant']
-  csrtrack: ['/opt/OpenMPI-1.4.5/bin/mpiexec','-n',$ncpu$,'/opt/CSRTrack/csrtrack_1.204_Linux_x86_64_OpenMPI_1.4.3']
+  csrtrack: [$simcodes$/CSRTrack/csrtrack_1.204_Linux_x86_64_serial]
   gpt: [$simcodes$/GPT3.3.6/bin/gpt, '-j',$ncpu$]

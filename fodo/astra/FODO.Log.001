@@ -4992,9 +4992,9 @@
  /
  End of Input deck
  Random Seed =           12
-FODO_input.astra               -0.2976D-04  0.0000D+00  F
+FODO_input.astra                0.2871D-04  0.0000D+00  F
 FODO.0040.001                   4.0000D-01  0.0000D+00  F
 
-     execution started:   31. 8.2025      7:57
-     execution finished:  31. 8.2025      7:57
-     execution time:  0.03 sec                         
+     execution started:   31. 8.2025     15:06
+     execution finished:  31. 8.2025     15:06
+     execution time:  0.06 sec                         

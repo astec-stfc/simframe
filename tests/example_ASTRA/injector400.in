@@ -1,0 +1,519 @@
+&NEWRUN
+track_all = True,
+auto_phase = True,
+phase_scan = False,
+check_ref_part = False,
+h_max = 0.07,
+h_min = 0.07,
+run = 1,
+head = trial,
+lprompt = False,
+high_res = True,
+Distribution = 'laser_input.astra',
+n_red = 1,
+Toff = 0.0
+/
+
+&OUTPUT
+zstart = 0.0,
+lmagnetized = False,
+refs = True,
+emits = True,
+phases = True,
+high_res = True,
+tracks = True,
+zemit = 329,
+zstop = 3.29693,
+Lsub_cor = True,
+Screen(1) = 0.894055,
+Screen(2) = 0.9803
+/
+
+&CHARGE
+cell_var = 2.0,
+min_grid = 3.424657e-13,
+smooth_x = 2,
+smooth_y = 2,
+smooth_z = 2,
+max_scale = 0.1,
+nrad = 8,
+nlong_in = 8,
+Lmirror = True,
+LSPCH = True,
+LSPCH3D = False
+/
+
+&ERROR
+log_error = True,
+suppress_output = False,
+errors = True,
+lerror = True
+/
+
+&CAVITY
+LEField = True
+C_pos(1) = 0.0, FILE_EFieLD(1) = 'HRRG_1D_RF.astra', C_numb(1) = 0, 
+Nue(1) = 2.9985, MaxE(1) = 120.0, Phi(1) = -9.0
+C_pos(2) = 1.19357, FILE_EFieLD(2) = 'TWS_S-DL.astra', 
+C_numb(2) = 60, Nue(2) = 2.9985, MaxE(2) = 21.0, Phi(2) = -16.0
+
+/
+&WAKE
+LWAKE = True
+Wk_Type(1) = "Taylor_Method_F", Wk_filename(1) = 'SzSx5um10mm.astra', 
+Wk_x(1) = 0.0, Wk_y(1) = 0.0, Wk_z(1) = 1.2597366666666667, 
+Wk_ex(1) = 0.0, Wk_ey(1) = 0.0, Wk_ez(1) = 1.0, Wk_hx(1) = 1.0, 
+Wk_hy(1) = 0.0, Wk_hz(1) = 0.0, Wk_equi_grid(1) = 0.66, 
+Wk_N_bin(1) = 10, Wk_ip_method(1) = 2, Wk_smooth(1) = 0.25, 
+Wk_sub(1) = 10, Wk_scaling(1) = 1.0
+Wk_Type(2) = "Taylor_Method_F", Wk_filename(2) = 'SzSx5um10mm.astra', 
+Wk_x(2) = 0.0, Wk_y(2) = 0.0, Wk_z(2) = 1.2930700000000002, 
+Wk_ex(2) = 0.0, Wk_ey(2) = 0.0, Wk_ez(2) = 1.0, Wk_hx(2) = 1.0, 
+Wk_hy(2) = 0.0, Wk_hz(2) = 0.0, Wk_equi_grid(2) = 0.66, 
+Wk_N_bin(2) = 10, Wk_ip_method(2) = 2, Wk_smooth(2) = 0.25, 
+Wk_sub(2) = 10, Wk_scaling(2) = 1.0
+Wk_Type(3) = "Taylor_Method_F", Wk_filename(3) = 'SzSx5um10mm.astra', 
+Wk_x(3) = 0.0, Wk_y(3) = 0.0, Wk_z(3) = 1.3264033333333334, 
+Wk_ex(3) = 0.0, Wk_ey(3) = 0.0, Wk_ez(3) = 1.0, Wk_hx(3) = 1.0, 
+Wk_hy(3) = 0.0, Wk_hz(3) = 0.0, Wk_equi_grid(3) = 0.66, 
+Wk_N_bin(3) = 10, Wk_ip_method(3) = 2, Wk_smooth(3) = 0.25, 
+Wk_sub(3) = 10, Wk_scaling(3) = 1.0
+Wk_Type(4) = "Taylor_Method_F", Wk_filename(4) = 'SzSx5um10mm.astra', 
+Wk_x(4) = 0.0, Wk_y(4) = 0.0, Wk_z(4) = 1.3597366666666666, 
+Wk_ex(4) = 0.0, Wk_ey(4) = 0.0, Wk_ez(4) = 1.0, Wk_hx(4) = 1.0, 
+Wk_hy(4) = 0.0, Wk_hz(4) = 0.0, Wk_equi_grid(4) = 0.66, 
+Wk_N_bin(4) = 10, Wk_ip_method(4) = 2, Wk_smooth(4) = 0.25, 
+Wk_sub(4) = 10, Wk_scaling(4) = 1.0
+Wk_Type(5) = "Taylor_Method_F", Wk_filename(5) = 'SzSx5um10mm.astra', 
+Wk_x(5) = 0.0, Wk_y(5) = 0.0, Wk_z(5) = 1.39307, Wk_ex(5) = 0.0, 
+Wk_ey(5) = 0.0, Wk_ez(5) = 1.0, Wk_hx(5) = 1.0, Wk_hy(5) = 0.0, 
+Wk_hz(5) = 0.0, Wk_equi_grid(5) = 0.66, Wk_N_bin(5) = 10, 
+Wk_ip_method(5) = 2, Wk_smooth(5) = 0.25, Wk_sub(5) = 10, 
+Wk_scaling(5) = 1.0
+Wk_Type(6) = "Taylor_Method_F", Wk_filename(6) = 'SzSx5um10mm.astra', 
+Wk_x(6) = 0.0, Wk_y(6) = 0.0, Wk_z(6) = 1.4264033333333332, 
+Wk_ex(6) = 0.0, Wk_ey(6) = 0.0, Wk_ez(6) = 1.0, Wk_hx(6) = 1.0, 
+Wk_hy(6) = 0.0, Wk_hz(6) = 0.0, Wk_equi_grid(6) = 0.66, 
+Wk_N_bin(6) = 10, Wk_ip_method(6) = 2, Wk_smooth(6) = 0.25, 
+Wk_sub(6) = 10, Wk_scaling(6) = 1.0
+Wk_Type(7) = "Taylor_Method_F", Wk_filename(7) = 'SzSx5um10mm.astra', 
+Wk_x(7) = 0.0, Wk_y(7) = 0.0, Wk_z(7) = 1.4597366666666667, 
+Wk_ex(7) = 0.0, Wk_ey(7) = 0.0, Wk_ez(7) = 1.0, Wk_hx(7) = 1.0, 
+Wk_hy(7) = 0.0, Wk_hz(7) = 0.0, Wk_equi_grid(7) = 0.66, 
+Wk_N_bin(7) = 10, Wk_ip_method(7) = 2, Wk_smooth(7) = 0.25, 
+Wk_sub(7) = 10, Wk_scaling(7) = 1.0
+Wk_Type(8) = "Taylor_Method_F", Wk_filename(8) = 'SzSx5um10mm.astra', 
+Wk_x(8) = 0.0, Wk_y(8) = 0.0, Wk_z(8) = 1.49307, Wk_ex(8) = 0.0, 
+Wk_ey(8) = 0.0, Wk_ez(8) = 1.0, Wk_hx(8) = 1.0, Wk_hy(8) = 0.0, 
+Wk_hz(8) = 0.0, Wk_equi_grid(8) = 0.66, Wk_N_bin(8) = 10, 
+Wk_ip_method(8) = 2, Wk_smooth(8) = 0.25, Wk_sub(8) = 10, 
+Wk_scaling(8) = 1.0
+Wk_Type(9) = "Taylor_Method_F", Wk_filename(9) = 'SzSx5um10mm.astra', 
+Wk_x(9) = 0.0, Wk_y(9) = 0.0, Wk_z(9) = 1.5264033333333331, 
+Wk_ex(9) = 0.0, Wk_ey(9) = 0.0, Wk_ez(9) = 1.0, Wk_hx(9) = 1.0, 
+Wk_hy(9) = 0.0, Wk_hz(9) = 0.0, Wk_equi_grid(9) = 0.66, 
+Wk_N_bin(9) = 10, Wk_ip_method(9) = 2, Wk_smooth(9) = 0.25, 
+Wk_sub(9) = 10, Wk_scaling(9) = 1.0
+Wk_Type(10) = "Taylor_Method_F", 
+Wk_filename(10) = 'SzSx5um10mm.astra', Wk_x(10) = 0.0, 
+Wk_y(10) = 0.0, Wk_z(10) = 1.5597366666666663, Wk_ex(10) = 0.0, 
+Wk_ey(10) = 0.0, Wk_ez(10) = 1.0, Wk_hx(10) = 1.0, Wk_hy(10) = 0.0, 
+Wk_hz(10) = 0.0, Wk_equi_grid(10) = 0.66, Wk_N_bin(10) = 10, 
+Wk_ip_method(10) = 2, Wk_smooth(10) = 0.25, Wk_sub(10) = 10, 
+Wk_scaling(10) = 1.0
+Wk_Type(11) = "Taylor_Method_F", 
+Wk_filename(11) = 'SzSx5um10mm.astra', Wk_x(11) = 0.0, 
+Wk_y(11) = 0.0, Wk_z(11) = 1.5930699999999998, Wk_ex(11) = 0.0, 
+Wk_ey(11) = 0.0, Wk_ez(11) = 1.0, Wk_hx(11) = 1.0, Wk_hy(11) = 0.0, 
+Wk_hz(11) = 0.0, Wk_equi_grid(11) = 0.66, Wk_N_bin(11) = 10, 
+Wk_ip_method(11) = 2, Wk_smooth(11) = 0.25, Wk_sub(11) = 10, 
+Wk_scaling(11) = 1.0
+Wk_Type(12) = "Taylor_Method_F", 
+Wk_filename(12) = 'SzSx5um10mm.astra', Wk_x(12) = 0.0, 
+Wk_y(12) = 0.0, Wk_z(12) = 1.626403333333333, Wk_ex(12) = 0.0, 
+Wk_ey(12) = 0.0, Wk_ez(12) = 1.0, Wk_hx(12) = 1.0, Wk_hy(12) = 0.0, 
+Wk_hz(12) = 0.0, Wk_equi_grid(12) = 0.66, Wk_N_bin(12) = 10, 
+Wk_ip_method(12) = 2, Wk_smooth(12) = 0.25, Wk_sub(12) = 10, 
+Wk_scaling(12) = 1.0
+Wk_Type(13) = "Taylor_Method_F", 
+Wk_filename(13) = 'SzSx5um10mm.astra', Wk_x(13) = 0.0, 
+Wk_y(13) = 0.0, Wk_z(13) = 1.6597366666666664, Wk_ex(13) = 0.0, 
+Wk_ey(13) = 0.0, Wk_ez(13) = 1.0, Wk_hx(13) = 1.0, Wk_hy(13) = 0.0, 
+Wk_hz(13) = 0.0, Wk_equi_grid(13) = 0.66, Wk_N_bin(13) = 10, 
+Wk_ip_method(13) = 2, Wk_smooth(13) = 0.25, Wk_sub(13) = 10, 
+Wk_scaling(13) = 1.0
+Wk_Type(14) = "Taylor_Method_F", 
+Wk_filename(14) = 'SzSx5um10mm.astra', Wk_x(14) = 0.0, 
+Wk_y(14) = 0.0, Wk_z(14) = 1.6930699999999996, Wk_ex(14) = 0.0, 
+Wk_ey(14) = 0.0, Wk_ez(14) = 1.0, Wk_hx(14) = 1.0, Wk_hy(14) = 0.0, 
+Wk_hz(14) = 0.0, Wk_equi_grid(14) = 0.66, Wk_N_bin(14) = 10, 
+Wk_ip_method(14) = 2, Wk_smooth(14) = 0.25, Wk_sub(14) = 10, 
+Wk_scaling(14) = 1.0
+Wk_Type(15) = "Taylor_Method_F", 
+Wk_filename(15) = 'SzSx5um10mm.astra', Wk_x(15) = 0.0, 
+Wk_y(15) = 0.0, Wk_z(15) = 1.7264033333333328, Wk_ex(15) = 0.0, 
+Wk_ey(15) = 0.0, Wk_ez(15) = 1.0, Wk_hx(15) = 1.0, Wk_hy(15) = 0.0, 
+Wk_hz(15) = 0.0, Wk_equi_grid(15) = 0.66, Wk_N_bin(15) = 10, 
+Wk_ip_method(15) = 2, Wk_smooth(15) = 0.25, Wk_sub(15) = 10, 
+Wk_scaling(15) = 1.0
+Wk_Type(16) = "Taylor_Method_F", 
+Wk_filename(16) = 'SzSx5um10mm.astra', Wk_x(16) = 0.0, 
+Wk_y(16) = 0.0, Wk_z(16) = 1.7597366666666663, Wk_ex(16) = 0.0, 
+Wk_ey(16) = 0.0, Wk_ez(16) = 1.0, Wk_hx(16) = 1.0, Wk_hy(16) = 0.0, 
+Wk_hz(16) = 0.0, Wk_equi_grid(16) = 0.66, Wk_N_bin(16) = 10, 
+Wk_ip_method(16) = 2, Wk_smooth(16) = 0.25, Wk_sub(16) = 10, 
+Wk_scaling(16) = 1.0
+Wk_Type(17) = "Taylor_Method_F", 
+Wk_filename(17) = 'SzSx5um10mm.astra', Wk_x(17) = 0.0, 
+Wk_y(17) = 0.0, Wk_z(17) = 1.7930699999999995, Wk_ex(17) = 0.0, 
+Wk_ey(17) = 0.0, Wk_ez(17) = 1.0, Wk_hx(17) = 1.0, Wk_hy(17) = 0.0, 
+Wk_hz(17) = 0.0, Wk_equi_grid(17) = 0.66, Wk_N_bin(17) = 10, 
+Wk_ip_method(17) = 2, Wk_smooth(17) = 0.25, Wk_sub(17) = 10, 
+Wk_scaling(17) = 1.0
+Wk_Type(18) = "Taylor_Method_F", 
+Wk_filename(18) = 'SzSx5um10mm.astra', Wk_x(18) = 0.0, 
+Wk_y(18) = 0.0, Wk_z(18) = 1.826403333333333, Wk_ex(18) = 0.0, 
+Wk_ey(18) = 0.0, Wk_ez(18) = 1.0, Wk_hx(18) = 1.0, Wk_hy(18) = 0.0, 
+Wk_hz(18) = 0.0, Wk_equi_grid(18) = 0.66, Wk_N_bin(18) = 10, 
+Wk_ip_method(18) = 2, Wk_smooth(18) = 0.25, Wk_sub(18) = 10, 
+Wk_scaling(18) = 1.0
+Wk_Type(19) = "Taylor_Method_F", 
+Wk_filename(19) = 'SzSx5um10mm.astra', Wk_x(19) = 0.0, 
+Wk_y(19) = 0.0, Wk_z(19) = 1.8597366666666661, Wk_ex(19) = 0.0, 
+Wk_ey(19) = 0.0, Wk_ez(19) = 1.0, Wk_hx(19) = 1.0, Wk_hy(19) = 0.0, 
+Wk_hz(19) = 0.0, Wk_equi_grid(19) = 0.66, Wk_N_bin(19) = 10, 
+Wk_ip_method(19) = 2, Wk_smooth(19) = 0.25, Wk_sub(19) = 10, 
+Wk_scaling(19) = 1.0
+Wk_Type(20) = "Taylor_Method_F", 
+Wk_filename(20) = 'SzSx5um10mm.astra', Wk_x(20) = 0.0, 
+Wk_y(20) = 0.0, Wk_z(20) = 1.8930699999999994, Wk_ex(20) = 0.0, 
+Wk_ey(20) = 0.0, Wk_ez(20) = 1.0, Wk_hx(20) = 1.0, Wk_hy(20) = 0.0, 
+Wk_hz(20) = 0.0, Wk_equi_grid(20) = 0.66, Wk_N_bin(20) = 10, 
+Wk_ip_method(20) = 2, Wk_smooth(20) = 0.25, Wk_sub(20) = 10, 
+Wk_scaling(20) = 1.0
+Wk_Type(21) = "Taylor_Method_F", 
+Wk_filename(21) = 'SzSx5um10mm.astra', Wk_x(21) = 0.0, 
+Wk_y(21) = 0.0, Wk_z(21) = 1.9264033333333326, Wk_ex(21) = 0.0, 
+Wk_ey(21) = 0.0, Wk_ez(21) = 1.0, Wk_hx(21) = 1.0, Wk_hy(21) = 0.0, 
+Wk_hz(21) = 0.0, Wk_equi_grid(21) = 0.66, Wk_N_bin(21) = 10, 
+Wk_ip_method(21) = 2, Wk_smooth(21) = 0.25, Wk_sub(21) = 10, 
+Wk_scaling(21) = 1.0
+Wk_Type(22) = "Taylor_Method_F", 
+Wk_filename(22) = 'SzSx5um10mm.astra', Wk_x(22) = 0.0, 
+Wk_y(22) = 0.0, Wk_z(22) = 1.959736666666666, Wk_ex(22) = 0.0, 
+Wk_ey(22) = 0.0, Wk_ez(22) = 1.0, Wk_hx(22) = 1.0, Wk_hy(22) = 0.0, 
+Wk_hz(22) = 0.0, Wk_equi_grid(22) = 0.66, Wk_N_bin(22) = 10, 
+Wk_ip_method(22) = 2, Wk_smooth(22) = 0.25, Wk_sub(22) = 10, 
+Wk_scaling(22) = 1.0
+Wk_Type(23) = "Taylor_Method_F", 
+Wk_filename(23) = 'SzSx5um10mm.astra', Wk_x(23) = 0.0, 
+Wk_y(23) = 0.0, Wk_z(23) = 1.9930699999999995, Wk_ex(23) = 0.0, 
+Wk_ey(23) = 0.0, Wk_ez(23) = 1.0, Wk_hx(23) = 1.0, Wk_hy(23) = 0.0, 
+Wk_hz(23) = 0.0, Wk_equi_grid(23) = 0.66, Wk_N_bin(23) = 10, 
+Wk_ip_method(23) = 2, Wk_smooth(23) = 0.25, Wk_sub(23) = 10, 
+Wk_scaling(23) = 1.0
+Wk_Type(24) = "Taylor_Method_F", 
+Wk_filename(24) = 'SzSx5um10mm.astra', Wk_x(24) = 0.0, 
+Wk_y(24) = 0.0, Wk_z(24) = 2.0264033333333327, Wk_ex(24) = 0.0, 
+Wk_ey(24) = 0.0, Wk_ez(24) = 1.0, Wk_hx(24) = 1.0, Wk_hy(24) = 0.0, 
+Wk_hz(24) = 0.0, Wk_equi_grid(24) = 0.66, Wk_N_bin(24) = 10, 
+Wk_ip_method(24) = 2, Wk_smooth(24) = 0.25, Wk_sub(24) = 10, 
+Wk_scaling(24) = 1.0
+Wk_Type(25) = "Taylor_Method_F", 
+Wk_filename(25) = 'SzSx5um10mm.astra', Wk_x(25) = 0.0, 
+Wk_y(25) = 0.0, Wk_z(25) = 2.059736666666666, Wk_ex(25) = 0.0, 
+Wk_ey(25) = 0.0, Wk_ez(25) = 1.0, Wk_hx(25) = 1.0, Wk_hy(25) = 0.0, 
+Wk_hz(25) = 0.0, Wk_equi_grid(25) = 0.66, Wk_N_bin(25) = 10, 
+Wk_ip_method(25) = 2, Wk_smooth(25) = 0.25, Wk_sub(25) = 10, 
+Wk_scaling(25) = 1.0
+Wk_Type(26) = "Taylor_Method_F", 
+Wk_filename(26) = 'SzSx5um10mm.astra', Wk_x(26) = 0.0, 
+Wk_y(26) = 0.0, Wk_z(26) = 2.093069999999999, Wk_ex(26) = 0.0, 
+Wk_ey(26) = 0.0, Wk_ez(26) = 1.0, Wk_hx(26) = 1.0, Wk_hy(26) = 0.0, 
+Wk_hz(26) = 0.0, Wk_equi_grid(26) = 0.66, Wk_N_bin(26) = 10, 
+Wk_ip_method(26) = 2, Wk_smooth(26) = 0.25, Wk_sub(26) = 10, 
+Wk_scaling(26) = 1.0
+Wk_Type(27) = "Taylor_Method_F", 
+Wk_filename(27) = 'SzSx5um10mm.astra', Wk_x(27) = 0.0, 
+Wk_y(27) = 0.0, Wk_z(27) = 2.1264033333333323, Wk_ex(27) = 0.0, 
+Wk_ey(27) = 0.0, Wk_ez(27) = 1.0, Wk_hx(27) = 1.0, Wk_hy(27) = 0.0, 
+Wk_hz(27) = 0.0, Wk_equi_grid(27) = 0.66, Wk_N_bin(27) = 10, 
+Wk_ip_method(27) = 2, Wk_smooth(27) = 0.25, Wk_sub(27) = 10, 
+Wk_scaling(27) = 1.0
+Wk_Type(28) = "Taylor_Method_F", 
+Wk_filename(28) = 'SzSx5um10mm.astra', Wk_x(28) = 0.0, 
+Wk_y(28) = 0.0, Wk_z(28) = 2.159736666666666, Wk_ex(28) = 0.0, 
+Wk_ey(28) = 0.0, Wk_ez(28) = 1.0, Wk_hx(28) = 1.0, Wk_hy(28) = 0.0, 
+Wk_hz(28) = 0.0, Wk_equi_grid(28) = 0.66, Wk_N_bin(28) = 10, 
+Wk_ip_method(28) = 2, Wk_smooth(28) = 0.25, Wk_sub(28) = 10, 
+Wk_scaling(28) = 1.0
+Wk_Type(29) = "Taylor_Method_F", 
+Wk_filename(29) = 'SzSx5um10mm.astra', Wk_x(29) = 0.0, 
+Wk_y(29) = 0.0, Wk_z(29) = 2.193069999999999, Wk_ex(29) = 0.0, 
+Wk_ey(29) = 0.0, Wk_ez(29) = 1.0, Wk_hx(29) = 1.0, Wk_hy(29) = 0.0, 
+Wk_hz(29) = 0.0, Wk_equi_grid(29) = 0.66, Wk_N_bin(29) = 10, 
+Wk_ip_method(29) = 2, Wk_smooth(29) = 0.25, Wk_sub(29) = 10, 
+Wk_scaling(29) = 1.0
+Wk_Type(30) = "Taylor_Method_F", 
+Wk_filename(30) = 'SzSx5um10mm.astra', Wk_x(30) = 0.0, 
+Wk_y(30) = 0.0, Wk_z(30) = 2.2264033333333324, Wk_ex(30) = 0.0, 
+Wk_ey(30) = 0.0, Wk_ez(30) = 1.0, Wk_hx(30) = 1.0, Wk_hy(30) = 0.0, 
+Wk_hz(30) = 0.0, Wk_equi_grid(30) = 0.66, Wk_N_bin(30) = 10, 
+Wk_ip_method(30) = 2, Wk_smooth(30) = 0.25, Wk_sub(30) = 10, 
+Wk_scaling(30) = 1.0
+Wk_Type(31) = "Taylor_Method_F", 
+Wk_filename(31) = 'SzSx5um10mm.astra', Wk_x(31) = 0.0, 
+Wk_y(31) = 0.0, Wk_z(31) = 2.2597366666666656, Wk_ex(31) = 0.0, 
+Wk_ey(31) = 0.0, Wk_ez(31) = 1.0, Wk_hx(31) = 1.0, Wk_hy(31) = 0.0, 
+Wk_hz(31) = 0.0, Wk_equi_grid(31) = 0.66, Wk_N_bin(31) = 10, 
+Wk_ip_method(31) = 2, Wk_smooth(31) = 0.25, Wk_sub(31) = 10, 
+Wk_scaling(31) = 1.0
+Wk_Type(32) = "Taylor_Method_F", 
+Wk_filename(32) = 'SzSx5um10mm.astra', Wk_x(32) = 0.0, 
+Wk_y(32) = 0.0, Wk_z(32) = 2.2930699999999993, Wk_ex(32) = 0.0, 
+Wk_ey(32) = 0.0, Wk_ez(32) = 1.0, Wk_hx(32) = 1.0, Wk_hy(32) = 0.0, 
+Wk_hz(32) = 0.0, Wk_equi_grid(32) = 0.66, Wk_N_bin(32) = 10, 
+Wk_ip_method(32) = 2, Wk_smooth(32) = 0.25, Wk_sub(32) = 10, 
+Wk_scaling(32) = 1.0
+Wk_Type(33) = "Taylor_Method_F", 
+Wk_filename(33) = 'SzSx5um10mm.astra', Wk_x(33) = 0.0, 
+Wk_y(33) = 0.0, Wk_z(33) = 2.3264033333333325, Wk_ex(33) = 0.0, 
+Wk_ey(33) = 0.0, Wk_ez(33) = 1.0, Wk_hx(33) = 1.0, Wk_hy(33) = 0.0, 
+Wk_hz(33) = 0.0, Wk_equi_grid(33) = 0.66, Wk_N_bin(33) = 10, 
+Wk_ip_method(33) = 2, Wk_smooth(33) = 0.25, Wk_sub(33) = 10, 
+Wk_scaling(33) = 1.0
+Wk_Type(34) = "Taylor_Method_F", 
+Wk_filename(34) = 'SzSx5um10mm.astra', Wk_x(34) = 0.0, 
+Wk_y(34) = 0.0, Wk_z(34) = 2.3597366666666657, Wk_ex(34) = 0.0, 
+Wk_ey(34) = 0.0, Wk_ez(34) = 1.0, Wk_hx(34) = 1.0, Wk_hy(34) = 0.0, 
+Wk_hz(34) = 0.0, Wk_equi_grid(34) = 0.66, Wk_N_bin(34) = 10, 
+Wk_ip_method(34) = 2, Wk_smooth(34) = 0.25, Wk_sub(34) = 10, 
+Wk_scaling(34) = 1.0
+Wk_Type(35) = "Taylor_Method_F", 
+Wk_filename(35) = 'SzSx5um10mm.astra', Wk_x(35) = 0.0, 
+Wk_y(35) = 0.0, Wk_z(35) = 2.393069999999999, Wk_ex(35) = 0.0, 
+Wk_ey(35) = 0.0, Wk_ez(35) = 1.0, Wk_hx(35) = 1.0, Wk_hy(35) = 0.0, 
+Wk_hz(35) = 0.0, Wk_equi_grid(35) = 0.66, Wk_N_bin(35) = 10, 
+Wk_ip_method(35) = 2, Wk_smooth(35) = 0.25, Wk_sub(35) = 10, 
+Wk_scaling(35) = 1.0
+Wk_Type(36) = "Taylor_Method_F", 
+Wk_filename(36) = 'SzSx5um10mm.astra', Wk_x(36) = 0.0, 
+Wk_y(36) = 0.0, Wk_z(36) = 2.426403333333332, Wk_ex(36) = 0.0, 
+Wk_ey(36) = 0.0, Wk_ez(36) = 1.0, Wk_hx(36) = 1.0, Wk_hy(36) = 0.0, 
+Wk_hz(36) = 0.0, Wk_equi_grid(36) = 0.66, Wk_N_bin(36) = 10, 
+Wk_ip_method(36) = 2, Wk_smooth(36) = 0.25, Wk_sub(36) = 10, 
+Wk_scaling(36) = 1.0
+Wk_Type(37) = "Taylor_Method_F", 
+Wk_filename(37) = 'SzSx5um10mm.astra', Wk_x(37) = 0.0, 
+Wk_y(37) = 0.0, Wk_z(37) = 2.4597366666666654, Wk_ex(37) = 0.0, 
+Wk_ey(37) = 0.0, Wk_ez(37) = 1.0, Wk_hx(37) = 1.0, Wk_hy(37) = 0.0, 
+Wk_hz(37) = 0.0, Wk_equi_grid(37) = 0.66, Wk_N_bin(37) = 10, 
+Wk_ip_method(37) = 2, Wk_smooth(37) = 0.25, Wk_sub(37) = 10, 
+Wk_scaling(37) = 1.0
+Wk_Type(38) = "Taylor_Method_F", 
+Wk_filename(38) = 'SzSx5um10mm.astra', Wk_x(38) = 0.0, 
+Wk_y(38) = 0.0, Wk_z(38) = 2.4930699999999986, Wk_ex(38) = 0.0, 
+Wk_ey(38) = 0.0, Wk_ez(38) = 1.0, Wk_hx(38) = 1.0, Wk_hy(38) = 0.0, 
+Wk_hz(38) = 0.0, Wk_equi_grid(38) = 0.66, Wk_N_bin(38) = 10, 
+Wk_ip_method(38) = 2, Wk_smooth(38) = 0.25, Wk_sub(38) = 10, 
+Wk_scaling(38) = 1.0
+Wk_Type(39) = "Taylor_Method_F", 
+Wk_filename(39) = 'SzSx5um10mm.astra', Wk_x(39) = 0.0, 
+Wk_y(39) = 0.0, Wk_z(39) = 2.526403333333332, Wk_ex(39) = 0.0, 
+Wk_ey(39) = 0.0, Wk_ez(39) = 1.0, Wk_hx(39) = 1.0, Wk_hy(39) = 0.0, 
+Wk_hz(39) = 0.0, Wk_equi_grid(39) = 0.66, Wk_N_bin(39) = 10, 
+Wk_ip_method(39) = 2, Wk_smooth(39) = 0.25, Wk_sub(39) = 10, 
+Wk_scaling(39) = 1.0
+Wk_Type(40) = "Taylor_Method_F", 
+Wk_filename(40) = 'SzSx5um10mm.astra', Wk_x(40) = 0.0, 
+Wk_y(40) = 0.0, Wk_z(40) = 2.5597366666666654, Wk_ex(40) = 0.0, 
+Wk_ey(40) = 0.0, Wk_ez(40) = 1.0, Wk_hx(40) = 1.0, Wk_hy(40) = 0.0, 
+Wk_hz(40) = 0.0, Wk_equi_grid(40) = 0.66, Wk_N_bin(40) = 10, 
+Wk_ip_method(40) = 2, Wk_smooth(40) = 0.25, Wk_sub(40) = 10, 
+Wk_scaling(40) = 1.0
+Wk_Type(41) = "Taylor_Method_F", 
+Wk_filename(41) = 'SzSx5um10mm.astra', Wk_x(41) = 0.0, 
+Wk_y(41) = 0.0, Wk_z(41) = 2.5930699999999987, Wk_ex(41) = 0.0, 
+Wk_ey(41) = 0.0, Wk_ez(41) = 1.0, Wk_hx(41) = 1.0, Wk_hy(41) = 0.0, 
+Wk_hz(41) = 0.0, Wk_equi_grid(41) = 0.66, Wk_N_bin(41) = 10, 
+Wk_ip_method(41) = 2, Wk_smooth(41) = 0.25, Wk_sub(41) = 10, 
+Wk_scaling(41) = 1.0
+Wk_Type(42) = "Taylor_Method_F", 
+Wk_filename(42) = 'SzSx5um10mm.astra', Wk_x(42) = 0.0, 
+Wk_y(42) = 0.0, Wk_z(42) = 2.6264033333333323, Wk_ex(42) = 0.0, 
+Wk_ey(42) = 0.0, Wk_ez(42) = 1.0, Wk_hx(42) = 1.0, Wk_hy(42) = 0.0, 
+Wk_hz(42) = 0.0, Wk_equi_grid(42) = 0.66, Wk_N_bin(42) = 10, 
+Wk_ip_method(42) = 2, Wk_smooth(42) = 0.25, Wk_sub(42) = 10, 
+Wk_scaling(42) = 1.0
+Wk_Type(43) = "Taylor_Method_F", 
+Wk_filename(43) = 'SzSx5um10mm.astra', Wk_x(43) = 0.0, 
+Wk_y(43) = 0.0, Wk_z(43) = 2.6597366666666655, Wk_ex(43) = 0.0, 
+Wk_ey(43) = 0.0, Wk_ez(43) = 1.0, Wk_hx(43) = 1.0, Wk_hy(43) = 0.0, 
+Wk_hz(43) = 0.0, Wk_equi_grid(43) = 0.66, Wk_N_bin(43) = 10, 
+Wk_ip_method(43) = 2, Wk_smooth(43) = 0.25, Wk_sub(43) = 10, 
+Wk_scaling(43) = 1.0
+Wk_Type(44) = "Taylor_Method_F", 
+Wk_filename(44) = 'SzSx5um10mm.astra', Wk_x(44) = 0.0, 
+Wk_y(44) = 0.0, Wk_z(44) = 2.6930699999999987, Wk_ex(44) = 0.0, 
+Wk_ey(44) = 0.0, Wk_ez(44) = 1.0, Wk_hx(44) = 1.0, Wk_hy(44) = 0.0, 
+Wk_hz(44) = 0.0, Wk_equi_grid(44) = 0.66, Wk_N_bin(44) = 10, 
+Wk_ip_method(44) = 2, Wk_smooth(44) = 0.25, Wk_sub(44) = 10, 
+Wk_scaling(44) = 1.0
+Wk_Type(45) = "Taylor_Method_F", 
+Wk_filename(45) = 'SzSx5um10mm.astra', Wk_x(45) = 0.0, 
+Wk_y(45) = 0.0, Wk_z(45) = 2.726403333333332, Wk_ex(45) = 0.0, 
+Wk_ey(45) = 0.0, Wk_ez(45) = 1.0, Wk_hx(45) = 1.0, Wk_hy(45) = 0.0, 
+Wk_hz(45) = 0.0, Wk_equi_grid(45) = 0.66, Wk_N_bin(45) = 10, 
+Wk_ip_method(45) = 2, Wk_smooth(45) = 0.25, Wk_sub(45) = 10, 
+Wk_scaling(45) = 1.0
+Wk_Type(46) = "Taylor_Method_F", 
+Wk_filename(46) = 'SzSx5um10mm.astra', Wk_x(46) = 0.0, 
+Wk_y(46) = 0.0, Wk_z(46) = 2.759736666666665, Wk_ex(46) = 0.0, 
+Wk_ey(46) = 0.0, Wk_ez(46) = 1.0, Wk_hx(46) = 1.0, Wk_hy(46) = 0.0, 
+Wk_hz(46) = 0.0, Wk_equi_grid(46) = 0.66, Wk_N_bin(46) = 10, 
+Wk_ip_method(46) = 2, Wk_smooth(46) = 0.25, Wk_sub(46) = 10, 
+Wk_scaling(46) = 1.0
+Wk_Type(47) = "Taylor_Method_F", 
+Wk_filename(47) = 'SzSx5um10mm.astra', Wk_x(47) = 0.0, 
+Wk_y(47) = 0.0, Wk_z(47) = 2.7930699999999984, Wk_ex(47) = 0.0, 
+Wk_ey(47) = 0.0, Wk_ez(47) = 1.0, Wk_hx(47) = 1.0, Wk_hy(47) = 0.0, 
+Wk_hz(47) = 0.0, Wk_equi_grid(47) = 0.66, Wk_N_bin(47) = 10, 
+Wk_ip_method(47) = 2, Wk_smooth(47) = 0.25, Wk_sub(47) = 10, 
+Wk_scaling(47) = 1.0
+Wk_Type(48) = "Taylor_Method_F", 
+Wk_filename(48) = 'SzSx5um10mm.astra', Wk_x(48) = 0.0, 
+Wk_y(48) = 0.0, Wk_z(48) = 2.8264033333333316, Wk_ex(48) = 0.0, 
+Wk_ey(48) = 0.0, Wk_ez(48) = 1.0, Wk_hx(48) = 1.0, Wk_hy(48) = 0.0, 
+Wk_hz(48) = 0.0, Wk_equi_grid(48) = 0.66, Wk_N_bin(48) = 10, 
+Wk_ip_method(48) = 2, Wk_smooth(48) = 0.25, Wk_sub(48) = 10, 
+Wk_scaling(48) = 1.0
+Wk_Type(49) = "Taylor_Method_F", 
+Wk_filename(49) = 'SzSx5um10mm.astra', Wk_x(49) = 0.0, 
+Wk_y(49) = 0.0, Wk_z(49) = 2.859736666666665, Wk_ex(49) = 0.0, 
+Wk_ey(49) = 0.0, Wk_ez(49) = 1.0, Wk_hx(49) = 1.0, Wk_hy(49) = 0.0, 
+Wk_hz(49) = 0.0, Wk_equi_grid(49) = 0.66, Wk_N_bin(49) = 10, 
+Wk_ip_method(49) = 2, Wk_smooth(49) = 0.25, Wk_sub(49) = 10, 
+Wk_scaling(49) = 1.0
+Wk_Type(50) = "Taylor_Method_F", 
+Wk_filename(50) = 'SzSx5um10mm.astra', Wk_x(50) = 0.0, 
+Wk_y(50) = 0.0, Wk_z(50) = 2.8930699999999985, Wk_ex(50) = 0.0, 
+Wk_ey(50) = 0.0, Wk_ez(50) = 1.0, Wk_hx(50) = 1.0, Wk_hy(50) = 0.0, 
+Wk_hz(50) = 0.0, Wk_equi_grid(50) = 0.66, Wk_N_bin(50) = 10, 
+Wk_ip_method(50) = 2, Wk_smooth(50) = 0.25, Wk_sub(50) = 10, 
+Wk_scaling(50) = 1.0
+Wk_Type(51) = "Taylor_Method_F", 
+Wk_filename(51) = 'SzSx5um10mm.astra', Wk_x(51) = 0.0, 
+Wk_y(51) = 0.0, Wk_z(51) = 2.9264033333333317, Wk_ex(51) = 0.0, 
+Wk_ey(51) = 0.0, Wk_ez(51) = 1.0, Wk_hx(51) = 1.0, Wk_hy(51) = 0.0, 
+Wk_hz(51) = 0.0, Wk_equi_grid(51) = 0.66, Wk_N_bin(51) = 10, 
+Wk_ip_method(51) = 2, Wk_smooth(51) = 0.25, Wk_sub(51) = 10, 
+Wk_scaling(51) = 1.0
+Wk_Type(52) = "Taylor_Method_F", 
+Wk_filename(52) = 'SzSx5um10mm.astra', Wk_x(52) = 0.0, 
+Wk_y(52) = 0.0, Wk_z(52) = 2.959736666666665, Wk_ex(52) = 0.0, 
+Wk_ey(52) = 0.0, Wk_ez(52) = 1.0, Wk_hx(52) = 1.0, Wk_hy(52) = 0.0, 
+Wk_hz(52) = 0.0, Wk_equi_grid(52) = 0.66, Wk_N_bin(52) = 10, 
+Wk_ip_method(52) = 2, Wk_smooth(52) = 0.25, Wk_sub(52) = 10, 
+Wk_scaling(52) = 1.0
+Wk_Type(53) = "Taylor_Method_F", 
+Wk_filename(53) = 'SzSx5um10mm.astra', Wk_x(53) = 0.0, 
+Wk_y(53) = 0.0, Wk_z(53) = 2.9930699999999986, Wk_ex(53) = 0.0, 
+Wk_ey(53) = 0.0, Wk_ez(53) = 1.0, Wk_hx(53) = 1.0, Wk_hy(53) = 0.0, 
+Wk_hz(53) = 0.0, Wk_equi_grid(53) = 0.66, Wk_N_bin(53) = 10, 
+Wk_ip_method(53) = 2, Wk_smooth(53) = 0.25, Wk_sub(53) = 10, 
+Wk_scaling(53) = 1.0
+Wk_Type(54) = "Taylor_Method_F", 
+Wk_filename(54) = 'SzSx5um10mm.astra', Wk_x(54) = 0.0, 
+Wk_y(54) = 0.0, Wk_z(54) = 3.026403333333332, Wk_ex(54) = 0.0, 
+Wk_ey(54) = 0.0, Wk_ez(54) = 1.0, Wk_hx(54) = 1.0, Wk_hy(54) = 0.0, 
+Wk_hz(54) = 0.0, Wk_equi_grid(54) = 0.66, Wk_N_bin(54) = 10, 
+Wk_ip_method(54) = 2, Wk_smooth(54) = 0.25, Wk_sub(54) = 10, 
+Wk_scaling(54) = 1.0
+Wk_Type(55) = "Taylor_Method_F", 
+Wk_filename(55) = 'SzSx5um10mm.astra', Wk_x(55) = 0.0, 
+Wk_y(55) = 0.0, Wk_z(55) = 3.059736666666665, Wk_ex(55) = 0.0, 
+Wk_ey(55) = 0.0, Wk_ez(55) = 1.0, Wk_hx(55) = 1.0, Wk_hy(55) = 0.0, 
+Wk_hz(55) = 0.0, Wk_equi_grid(55) = 0.66, Wk_N_bin(55) = 10, 
+Wk_ip_method(55) = 2, Wk_smooth(55) = 0.25, Wk_sub(55) = 10, 
+Wk_scaling(55) = 1.0
+Wk_Type(56) = "Taylor_Method_F", 
+Wk_filename(56) = 'SzSx5um10mm.astra', Wk_x(56) = 0.0, 
+Wk_y(56) = 0.0, Wk_z(56) = 3.093069999999998, Wk_ex(56) = 0.0, 
+Wk_ey(56) = 0.0, Wk_ez(56) = 1.0, Wk_hx(56) = 1.0, Wk_hy(56) = 0.0, 
+Wk_hz(56) = 0.0, Wk_equi_grid(56) = 0.66, Wk_N_bin(56) = 10, 
+Wk_ip_method(56) = 2, Wk_smooth(56) = 0.25, Wk_sub(56) = 10, 
+Wk_scaling(56) = 1.0
+Wk_Type(57) = "Taylor_Method_F", 
+Wk_filename(57) = 'SzSx5um10mm.astra', Wk_x(57) = 0.0, 
+Wk_y(57) = 0.0, Wk_z(57) = 3.1264033333333314, Wk_ex(57) = 0.0, 
+Wk_ey(57) = 0.0, Wk_ez(57) = 1.0, Wk_hx(57) = 1.0, Wk_hy(57) = 0.0, 
+Wk_hz(57) = 0.0, Wk_equi_grid(57) = 0.66, Wk_N_bin(57) = 10, 
+Wk_ip_method(57) = 2, Wk_smooth(57) = 0.25, Wk_sub(57) = 10, 
+Wk_scaling(57) = 1.0
+Wk_Type(58) = "Taylor_Method_F", 
+Wk_filename(58) = 'SzSx5um10mm.astra', Wk_x(58) = 0.0, 
+Wk_y(58) = 0.0, Wk_z(58) = 3.1597366666666646, Wk_ex(58) = 0.0, 
+Wk_ey(58) = 0.0, Wk_ez(58) = 1.0, Wk_hx(58) = 1.0, Wk_hy(58) = 0.0, 
+Wk_hz(58) = 0.0, Wk_equi_grid(58) = 0.66, Wk_N_bin(58) = 10, 
+Wk_ip_method(58) = 2, Wk_smooth(58) = 0.25, Wk_sub(58) = 10, 
+Wk_scaling(58) = 1.0
+Wk_Type(59) = "Taylor_Method_F", 
+Wk_filename(59) = 'SzSx5um10mm.astra', Wk_x(59) = 0.0, 
+Wk_y(59) = 0.0, Wk_z(59) = 3.193069999999998, Wk_ex(59) = 0.0, 
+Wk_ey(59) = 0.0, Wk_ez(59) = 1.0, Wk_hx(59) = 1.0, Wk_hy(59) = 0.0, 
+Wk_hz(59) = 0.0, Wk_equi_grid(59) = 0.66, Wk_N_bin(59) = 10, 
+Wk_ip_method(59) = 2, Wk_smooth(59) = 0.25, Wk_sub(59) = 10, 
+Wk_scaling(59) = 1.0
+Wk_Type(60) = "Taylor_Method_F", 
+Wk_filename(60) = 'SzSx5um10mm.astra', Wk_x(60) = 0.0, 
+Wk_y(60) = 0.0, Wk_z(60) = 3.226403333333331, Wk_ex(60) = 0.0, 
+Wk_ey(60) = 0.0, Wk_ez(60) = 1.0, Wk_hx(60) = 1.0, Wk_hy(60) = 0.0, 
+Wk_hz(60) = 0.0, Wk_equi_grid(60) = 0.66, Wk_N_bin(60) = 10, 
+Wk_ip_method(60) = 2, Wk_smooth(60) = 0.25, Wk_sub(60) = 10, 
+Wk_scaling(60) = 1.0
+
+
+
+/
+&SOLENOID
+LBField = True
+S_pos(1) = 0.0024099999999999955, 
+FILE_BFieLD(1) = 'HRRG_combined_sols_100mm_onaxis.astra', 
+MaxB(1) = 0.345, S_smooth(1) = 10.0, S_xoff(1) = 0.0, 
+S_yoff(1) = 0.0, S_xrot(1) = 0.0, S_yrot(1) = 0.0
+S_pos(2) = 1.7, FILE_BFieLD(2) = 'SwissFEL_linac_sols.astra', 
+MaxB(2) = 0.05, S_smooth(2) = 10.0, S_xoff(2) = 0.0, S_yoff(2) = 0.0, 
+S_xrot(2) = 0.0, S_yrot(2) = 0.0
+S_pos(3) = 2.7, FILE_BFieLD(3) = 'SwissFEL_linac_sols.astra', 
+MaxB(3) = -0.05, S_smooth(3) = 10.0, S_xoff(3) = 0.0, 
+S_yoff(3) = 0.0, S_xrot(3) = 0.0, S_yrot(3) = 0.0
+
+/
+&QUADRUPOLE
+LQuad = False
+
+/
+&DIPOLE
+LDipole = True
+
+/
+&APERTURE
+LApert = True
+File_Aperture(1) = Col_X, Ap_R(1) = 17.0, Ap_Z1(1) = 0.0, 
+Ap_Z2(1) = 0.001
+File_Aperture(2) = Col_Y, Ap_R(2) = 17.0, Ap_Z1(2) = 0.0, 
+Ap_Z2(2) = 0.001
+File_Aperture(3) = Col_X, Ap_R(3) = 17.0, Ap_Z1(3) = 0.32, 
+Ap_Z2(3) = 0.321
+File_Aperture(4) = Col_Y, Ap_R(4) = 17.0, Ap_Z1(4) = 0.32, 
+Ap_Z2(4) = 0.321
+File_Aperture(5) = Col_X, Ap_R(5) = 10.0, Ap_Z1(5) = 1.0577, 
+Ap_Z2(5) = 1.0587
+File_Aperture(6) = Col_Y, Ap_R(6) = 10.0, Ap_Z1(6) = 1.0577, 
+Ap_Z2(6) = 1.0587
+File_Aperture(7) = Col_X, Ap_R(7) = 17.0, Ap_Z1(7) = 3.29693, 
+Ap_Z2(7) = 3.29793
+File_Aperture(8) = Col_Y, Ap_R(8) = 17.0, Ap_Z1(8) = 3.29693, 
+Ap_Z2(8) = 3.29793
+
+/

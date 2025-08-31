@@ -1,0 +1,73 @@
+START: charge, total = 2.500000000000001e-10;
+CLA-S06-SIM-MARK-01: watch, filename = CLA-S06-SIM-MARK-01.sdds;
+CLA-S06-SIM-APER-01: maxamp, x_max = 0.017, y_max = 0.017;
+S06_DRIFT_01: lscdrift, l = 0.315, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-MAG-HVCOR-01: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S06_DRIFT_02: lscdrift, l = 0.025188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-BPM-01-drift-01: lscdrift, l = 0.01, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-BPM-01: watch, filename = CLA-S06-DIA-BPM-01.sdds;
+CLA-S06-DIA-BPM-01-drift-02: lscdrift, l = 0.01, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+S06_DRIFT_03: lscdrift, l = 0.1, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-MAG-QUAD-01: kquad, l = 0.15, n_slices = 4, k1 = 1.0505;
+S06_DRIFT_04: lscdrift, l = 0.136, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-BAM-01: moni, l = 0.08;
+S06_DRIFT_05: lscdrift, l = 0.105312, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-EOM-01: moni, l = 0.2885;
+S06_DRIFT_06: lscdrift, l = 0.100188, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-MAG-QUAD-02: kquad, l = 0.15, n_slices = 4, k1 = -0.4108386666666667;
+S06_DRIFT_07: lscdrift, l = 0.137246, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-SCR-01: watch, filename = CLA-S06-DIA-SCR-01.sdds;
+S06_DRIFT_08: lscdrift, l = 0.892766, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-MAG-HVCOR-02: kicker, l = 0.05, hkick = 0.0, vkick = 0.0;
+S06_DRIFT_09: lscdrift, l = 0.048978, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-BPM-02-drift-01: lscdrift, l = 0.0125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-BPM-02: watch, filename = CLA-S06-DIA-BPM-02.sdds;
+CLA-S06-DIA-BPM-02-drift-02: lscdrift, l = 0.0125, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+S06_DRIFT_10: lscdrift, l = 0.0433, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-DIA-SCR-02: watch, filename = CLA-S06-DIA-SCR-02.sdds;
+S06_DRIFT_11: lscdrift, l = 0.132722, lsc = 1, bins = 20,&
+high_frequency_cutoff0 = -1.0, high_frequency_cutoff1 = -1.0,&
+low_frequency_cutoff0 = -1.0, low_frequency_cutoff1 = -1.0;
+CLA-S06-SIM-MARK-02: watch, filename = CLA-S06-SIM-MARK-02.sdds;
+CLA-L04-SIM-APER-01: maxamp, x_max = 0.01, y_max = 0.01;
+end: watch, filename = CLA-L04-SIM-APER-01.sdds;
+S06: Line=(START, CLA-S06-SIM-MARK-01, CLA-S06-SIM-APER-01, &
+S06_DRIFT_01, CLA-S06-MAG-HVCOR-01, S06_DRIFT_02, &
+CLA-S06-DIA-BPM-01-drift-01, CLA-S06-DIA-BPM-01, &
+CLA-S06-DIA-BPM-01-drift-02, S06_DRIFT_03, &
+CLA-S06-MAG-QUAD-01, S06_DRIFT_04, CLA-S06-DIA-BAM-01, &
+S06_DRIFT_05, CLA-S06-DIA-EOM-01, S06_DRIFT_06, &
+CLA-S06-MAG-QUAD-02, S06_DRIFT_07, CLA-S06-DIA-SCR-01, &
+S06_DRIFT_08, CLA-S06-MAG-HVCOR-02, S06_DRIFT_09, &
+CLA-S06-DIA-BPM-02-drift-01, CLA-S06-DIA-BPM-02, &
+CLA-S06-DIA-BPM-02-drift-02, S06_DRIFT_10, &
+CLA-S06-DIA-SCR-02, S06_DRIFT_11, CLA-S06-SIM-MARK-02, &
+CLA-L04-SIM-APER-01, END )

@@ -12,7 +12,7 @@
 	sigma = %s.sig
 	losses = %s.loss
 	default_order = 3
-	p_central = 1956.9512910396993
+	p_central = 1956.951163258668
 	always_change_p0 = 1
 	s_start = 0.0
 &end
@@ -26,11 +26,11 @@
 	output_at_each_step = 0
 	statistics = 1
 	radiation_integrals = 1
-	beta_x = 9314.598094979578
-	alpha_x = -0.015740253061419032
-	eta_x = 2.1144301170082254e-05
-	beta_y = 9883.193060889553
-	alpha_y = -0.0582418527119771
+	beta_x = 9621.452129743673
+	alpha_x = -0.04823190963500804
+	eta_x = 8.293451563396989e-06
+	beta_y = 9746.64780228082
+	alpha_y = -0.01640986543333533
 &end
 &floor_coordinates
 	filename = %s.flr

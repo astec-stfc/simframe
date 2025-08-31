@@ -641,7 +641,7 @@ class Framework(BaseModel):
         if "code" not in lattice:
             raise KeyError(f"code must be provided for {lattice}")
         code = lattice["code"]
-        if code not in supported_codes:
+        if code.lower() not in supported_codes:
             raise NotImplementedError(f"code {code} is not supported")
         self.latticeObjects[name] = getattr(
             frameworkLattices, code.lower() + "Lattice"
@@ -1030,7 +1030,7 @@ class Framework(BaseModel):
                 latticename == exclude
                 or (isinstance(exclude, (list, tuple)) and latticename in exclude)
             ):
-                if code not in supported_codes:
+                if code.lower() not in supported_codes:
                     raise NotImplementedError(f"code {code} is not supported")
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[latticename]

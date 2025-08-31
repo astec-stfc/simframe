@@ -3,7 +3,7 @@
                Astra - A space charge tracking algorithm 
                              Version 3.2              
                          DESY,  Hamburg 2011          
-                         31. 8.2025   7:57
+                         31. 8.2025  15: 6
 
      Parameter file is:  FODO.in                                           
      trial                                                                           
@@ -40,29 +40,29 @@
 
      Particles taken into account      N =       1000
      total charge                      Q =     0.1000     nC
-     horizontal beam position          x =     0.7591     mm
-     vertical beam position            y =     0.1883     mm
-     longitudinal beam position        z =    -2.9757E-05 m
-     horizontal beam size          sig x =      9.801     mm
-     vertical beam size            sig y =      9.973     mm
-     longitudinal beam size        sig z =     0.9934     mm
+     horizontal beam position          x =    -0.2726     mm
+     vertical beam position            y =    -0.6647     mm
+     longitudinal beam position        z =     2.8715E-05 m
+     horizontal beam size          sig x =      10.03     mm
+     vertical beam size            sig y =      10.42     mm
+     longitudinal beam size        sig z =     0.9789     mm
      average kinetic energy            E =      999.5     MeV
-     energy spread                    dE =     0.9609     keV
+     energy spread                    dE =      1.003     keV
      average momentum                  P =      1000.     MeV/c
-     transverse beam emittance     eps x =      18.82     pi mrad mm
-     correlated divergence         cor x =    -2.0316E-06 mrad 
-     transverse beam emittance     eps y =      20.29     pi mrad mm
-     correlated divergence         cor y =     2.8611E-05 mrad
-     longitudinal beam emittance   eps z =     0.9543     pi keV mm
-     correlated energy spread      cor z =     2.1955E-02 keV
-     emittance ratio eps y/eps x         =     0.9277    
+     transverse beam emittance     eps x =      20.20     pi mrad mm
+     correlated divergence         cor x =     1.2936E-05 mrad 
+     transverse beam emittance     eps y =      20.34     pi mrad mm
+     correlated divergence         cor y =     2.2960E-05 mrad
+     longitudinal beam emittance   eps z =     0.9813     pi keV mm
+     correlated energy spread      cor z =    -3.2242E-02 keV
+     emittance ratio eps y/eps x         =     0.9930    
      Reduced emittances: 
-     hor. emittance minus z correlation:         =      18.82     pi mrad mm
-     hor. emittance minus z & E correlation:     =      18.79     pi mrad mm
-     ver. emittance minus z correlation:         =      20.28     pi mrad mm
-     ver. emittance minus z & E correlation:     =      20.25     pi mrad mm
-     long. emitance minus 2nd order corr.:       =     0.9523     pi keV mm
-     long. emitance minus 2nd & 3rd order corr.: =     0.9518     pi keV mm
+     hor. emittance minus z correlation:         =      20.20     pi mrad mm
+     hor. emittance minus z & E correlation:     =      20.19     pi mrad mm
+     ver. emittance minus z correlation:         =      20.25     pi mrad mm
+     ver. emittance minus z & E correlation:     =      20.22     pi mrad mm
+     long. emitance minus 2nd order corr.:       =     0.9811     pi keV mm
+     long. emitance minus 2nd & 3rd order corr.: =     0.9809     pi keV mm
  --------------------------------------------------------------------------
      Start auto phasing: 
 
@@ -70,9 +70,9 @@
      Cavity number   Energy gain [MeV]  at  Phase [deg]
  --------------------------------------------------------------------------
  on axis tracking of the reference particle:
-     initial position                  z =  -1.1846E-04 m
-                                       x =   -2.691     mm
-                                       y =  -0.1074     mm
+     initial position                  z =   2.6385E-04 m
+                                       x =   0.8744     mm
+                                       y =  -0.1762     mm
      initial momentum                  p =   1000.0     MeV/c
      global phase shift              phi =    0.000     deg
      time step for integration        dt =    70.00     ps
@@ -85,19 +85,19 @@
  --------------------------------------------------------------------------
 
      particle reaches position         z =   0.4000     m
-     time of flight is                 t =    1.335     ns
+     time of flight is                 t =    1.333     ns
      final momentum                    p =   1000.0     MeV/c
      final phase (cavity 1)      phi_end =    0.000     deg
  --------------------------------------------------------------------------
  off axis tracking of the reference particle: 
-     initial position                  z =  -1.1846E-04 m
-                                       x =    7.109     mm
-                                       y =    9.866     mm
+     initial position                  z =   2.6385E-04 m
+                                       x =    10.91     mm
+                                       y =    10.24     mm
 
-     final position                    x =    6.805     mm
-                                       y =    7.472     mm
-     divergence                    px/pz =    3.462     mrad
-                                   py/pz =   -19.92     mrad
+     final position                    x =    10.46     mm
+                                       y =    7.721     mm
+     divergence                    px/pz =    5.368     mrad
+                                   py/pz =   -20.81     mrad
  --------------------------------------------------------------------------
  tracking of     1000 particles :
      tracking will stop at             z =   0.4000     m
@@ -113,29 +113,29 @@
 
      Particles taken into account      N =       1000
      total charge                      Q =     0.1000     nC
-     horizontal beam position          x =     0.7296     mm
-     vertical beam position            y =     0.1440     mm
+     horizontal beam position          x =    -0.2654     mm
+     vertical beam position            y =    -0.5027     mm
      longitudinal beam position        z =     0.4000     m
-     horizontal beam size          sig x =      9.384     mm
-     vertical beam size            sig y =      7.535     mm
-     longitudinal beam size        sig z =     0.9985     mm
+     horizontal beam size          sig x =      9.607     mm
+     vertical beam size            sig y =      7.867     mm
+     longitudinal beam size        sig z =     0.9818     mm
      average kinetic energy            E =      999.5     MeV
-     energy spread                    dE =     0.9610     keV
+     energy spread                    dE =      1.003     keV
      average momentum                  P =      1000.     MeV/c
-     transverse beam emittance     eps x =      4651.     pi mrad mm
-     correlated divergence         cor x =      4.778     mrad 
-     transverse beam emittance     eps y =      4397.     pi mrad mm
-     correlated divergence         cor y =     -20.21     mrad
-     longitudinal beam emittance   eps z =     0.9593     pi keV mm
-     correlated energy spread      cor z =     1.8323E-02 keV
-     emittance ratio eps y/eps x         =      1.058    
+     transverse beam emittance     eps x =      5711.     pi mrad mm
+     correlated divergence         cor x =      4.888     mrad 
+     transverse beam emittance     eps y =      5811.     pi mrad mm
+     correlated divergence         cor y =     -21.12     mrad
+     longitudinal beam emittance   eps z =     0.9841     pi keV mm
+     correlated energy spread      cor z =    -3.3906E-02 keV
+     emittance ratio eps y/eps x         =     0.9829    
      Reduced emittances: 
-     hor. emittance minus z correlation:         =      4438.     pi mrad mm
-     hor. emittance minus z & E correlation:     =      4433.     pi mrad mm
-     ver. emittance minus z correlation:         =      3959.     pi mrad mm
-     ver. emittance minus z & E correlation:     =      3954.     pi mrad mm
-     long. emitance minus 2nd order corr.:       =     0.9574     pi keV mm
-     long. emitance minus 2nd & 3rd order corr.: =     0.9571     pi keV mm
+     hor. emittance minus z correlation:         =      5609.     pi mrad mm
+     hor. emittance minus z & E correlation:     =      5575.     pi mrad mm
+     ver. emittance minus z correlation:         =      5236.     pi mrad mm
+     ver. emittance minus z & E correlation:     =      5203.     pi mrad mm
+     long. emitance minus 2nd order corr.:       =     0.9838     pi keV mm
+     long. emitance minus 2nd & 3rd order corr.: =     0.9837     pi keV mm
 
      Particle Statistics: 
 
@@ -169,7 +169,7 @@
 
      Error results saved to file            : FODO.Error.001                
 
-     finished simulation  31. 8.2025      7:57
-     execution time:  0.03 sec                         
+     finished simulation  31. 8.2025     15:06
+     execution time:  0.06 sec                         
      Goodbye.
  --------------------------------------------------------------------------

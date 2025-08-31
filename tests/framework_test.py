@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
 
-sys.path.append(r"C:\Users\jkj62\Documents\GitHub\SimFrame")
+# sys.path.append(r"C:\Users\jkj62\Documents\GitHub\SimFrame")
 import SimulationFramework.Framework as fw  # noqa E402
 from SimulationFramework.Framework import load_directory  # noqa E402
 import SimulationFramework.Modules.Beams as rbf  # noqa E402
@@ -12,7 +12,7 @@ import SimulationFramework.Modules.Twiss as rtf  # noqa E402
 
 
 def sub_element_test(startfile="generator", endfile="S02", scaling=3, sampling=1):
-    framework = fw.Framework("subelement_test", clean=False, verbose=True)
+    framework = fw.Framework(directory="subelement_test", clean=False, verbose=True)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.change_Lattice_Code("All", "ASTRA", exclude=[])
     framework.change_Lattice_Code("VBC", "Elegant")
@@ -24,15 +24,11 @@ def sub_element_test(startfile="generator", endfile="S02", scaling=3, sampling=1
             print(name, ":", elem)
 
 
-sub_element_test()
-exit()
-
-
 def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
     # Define a new framework instance, in directory 'example_ASTRA'.
     #       "clean" will empty (delete everything!) the directory if true
     #       "verbose" will print a progressbar if true
-    framework = fw.Framework("example_ASTRA", clean=False, verbose=True)
+    framework = fw.Framework(directory="example_ASTRA", clean=False, verbose=True)
     # Load a lattice definition file. These can be found in Masterlattice/Lattices by default.
     framework.loadSettings("Lattices/clara400_v13.def")
     # Change all lattice codes to ASTRA/Elegant/GPT with exclusions (injector can not be done in Elegant)
@@ -57,10 +53,9 @@ def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
     print("###########   Performing ASTRA Track   ###########")
     framework.track(startfile=startfile, endfile=endfile)
 
-
-def astra_csrtrack_track():
+def astra_csrtrack_track(scaling=3, sampling=1):
     # This time we will use CSRTrack for the VBC
-    framework = fw.Framework("example_ASTRA_CSRTrack", clean=False, verbose=True)
+    framework = fw.Framework(directory="example_ASTRA_CSRTrack", clean=False, verbose=True)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.generator.number_of_particles = 2 ** (3 * scaling)
     framework.change_Lattice_Code("All", "ASTRA", exclude=["injector400", "VBC"])
@@ -73,7 +68,7 @@ def astra_csrtrack_track():
     # framework.track(startfile='VBC',endfile='S07')
 
     # This time we will use Elegant for everything except the injector
-    framework = fw.Framework("example_Elegant", clean=False, verbose=True)
+    framework = fw.Framework(directory="example_Elegant", clean=False, verbose=True)
     framework.loadSettings("Lattices/clara400_v13.def")
     framework.generator.number_of_particles = 2 ** (3 * scaling)
     framework.change_Lattice_Code("All", "elegant", exclude=["injector400"])
@@ -83,6 +78,10 @@ def astra_csrtrack_track():
     print("###########   Performing Elegant Track   ###########")
     framework.track(startfile="S02", endfile="S07")
 
+sub_element_test()
+astra_track()
+astra_csrtrack_track()
+exit()
 
 def set_crests(framework, crests):
     for cavity, crestdict in crests.items():
@@ -325,7 +324,6 @@ RFcrests = {
         "amplitude": 25e6,
     },
 }
-
 
 if __name__ == "__main__":
     global scaling

@@ -1,0 +1,110 @@
+SDDS1
+!# little-endian
+&description text="Twiss parameters--input: VBC.ele  lattice: VBC.lte", contents="Twiss parameters", &end
+&parameter name=Step, description="Simulation step", type=long, &end
+&parameter name=SVNVersion, description="SVN version number", type=string, fixed_value=30188M, &end
+&parameter name=nux, symbol="$gn$r$bx$n", units="1/(2$gp$r)", description="Horizontal tune", type=double, &end
+&parameter name=dnux/dp, symbol="$gx$r$bx$n", units="1/(2$gp$r)", description="Horizontal chromaticity", type=double, &end
+&parameter name=dnux/dp2, symbol="$gx$r$bx2$n", units="1/(2$gp$r)", description="Horizontal 2nd-order chromaticity", type=double, &end
+&parameter name=dnux/dp3, symbol="$gx$r$bx3$n", units="1/(2$gp$r)", description="Horizontal 3rd-order chromaticity", type=double, &end
+&parameter name=Ax, symbol="A$bx$n", units=m, description="Horizontal acceptance", type=double, &end
+&parameter name=AxLocation, units=m, description="Location of horizontal acceptance limit", type=double, &end
+&parameter name=AxElementName, description="Name of element that limits horizontal acceptance", type=string, &end
+&parameter name=nuy, symbol="$gn$r$by$n", units="1/(2$gp$r)", description="Vertical tune", type=double, &end
+&parameter name=dnuy/dp, symbol="$gx$r$by$n", units="1/(2$gp$r)", description="Vertical chromaticity", type=double, &end
+&parameter name=dnuy/dp2, symbol="$gx$r$by2$n", units="1/(2$gp$r)", description="Vertical 2nd-order chromaticity", type=double, &end
+&parameter name=dnuy/dp3, symbol="$gx$r$by3$n", units="1/(2$gp$r)", description="Vertical 3rd-order chromaticity", type=double, &end
+&parameter name=Ay, symbol="A$by$n", units=m, description="Vertical acceptance", type=double, &end
+&parameter name=AyLocation, units=m, description="Location of vertical acceptance limit", type=double, &end
+&parameter name=AyElementName, description="Name of element that limits vertical acceptance", type=string, &end
+&parameter name=deltaHalfRange, symbol="$gDd$r/2", description="Half range of momentum offset for chromatic tune spread evaluation", type=double, &end
+&parameter name=nuxChromUpper, symbol="$gx$r$bu$n", description="Upper limit of x tune due to chromaticity and deltaRange", type=double, &end
+&parameter name=nuxChromLower, symbol="$gx$r$bu$n", description="Lower limit of x tune due to chromaticity and deltaRange", type=double, &end
+&parameter name=nuyChromUpper, symbol="$gy$r$bu$n", description="Upper limit of y tune due to chromaticity and deltaRange", type=double, &end
+&parameter name=nuyChromLower, symbol="$gy$r$bu$n", description="Lower limit of y tune due to chromaticity and deltaRange", type=double, &end
+&parameter name=Stage, description="Stage of computation", type=string, &end
+&parameter name=pCentral, units="m$be$nc", description="Central momentum", type=double, &end
+&parameter name=dbetax/dp, units=m, description="Derivative of betax with momentum offset", type=double, &end
+&parameter name=dbetay/dp, units=m, description="Derivative of betay with momentum offset", type=double, &end
+&parameter name=dalphax/dp, description="Derivative of alphax with momentum offset", type=double, &end
+&parameter name=dalphay/dp, description="Derivative of alphay with momentum offset", type=double, &end
+&parameter name=etax2, symbol="$gc$r$bx2$n", units=m, description="Second-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etay2, symbol="$gc$r$by2$n", units=m, description="Second-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etax3, symbol="$gc$r$bx3$n", units=m, description="Third-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etay3, symbol="$gc$r$by3$n", units=m, description="Third-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etaxp2, symbol="$gc$r$bx2$n$a'$n", units=m, description="Second-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etayp2, symbol="$gc$r$by2$n$a'$n", units=m, description="Second-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etaxp3, symbol="$gc$r$bx3$n$a'$n", units=m, description="Third-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=etayp3, symbol="$gc$r$by3$n$a'$n", units=m, description="Third-order dispersion (for matched or periodic case only)", type=double, &end
+&parameter name=betaxMin, units=m, description="Minimum betax", type=double, &end
+&parameter name=betaxAve, units=m, description="Average betax", type=double, &end
+&parameter name=betaxMax, units=m, description="Maximum betax", type=double, &end
+&parameter name=betayMin, units=m, description="Minimum betay", type=double, &end
+&parameter name=betayAve, units=m, description="Average betay", type=double, &end
+&parameter name=betayMax, units=m, description="Maximum betay", type=double, &end
+&parameter name=etaxMax, units=m, description="Maximum absolute value of etax", type=double, &end
+&parameter name=etayMax, units=m, description="Maximum absolute value of etay", type=double, &end
+&parameter name=waistsx, description="Number of changes in the sign of alphax", type=long, &end
+&parameter name=waistsy, description="Number of changes in the sign of alphay", type=long, &end
+&parameter name=dnux/dAx, units=1/m, description="Horizontal tune shift with horizontal amplitude", type=double, &end
+&parameter name=dnux/dAy, units=1/m, description="Horizontal tune shift with vertical amplitude", type=double, &end
+&parameter name=dnuy/dAx, units=1/m, description="Vertical tune shift with horizontal amplitude", type=double, &end
+&parameter name=dnuy/dAy, units=1/m, description="Vertical tune shift with vertical amplitude", type=double, &end
+&parameter name=dnux/dAx2, units="1/m$a2$n", description="Horizontal tune shift with horizontal amplitude", type=double, &end
+&parameter name=dnux/dAy2, units="1/m$a2$n", description="Horizontal tune shift with vertical amplitude", type=double, &end
+&parameter name=dnux/dAxAy, units="1/m$a2$n", description="Horizontal tune shift with horizontal and vertical amplitude", type=double, &end
+&parameter name=dnuy/dAx2, units="1/m$a2$n", description="Vertical tune shift with horizontal amplitude", type=double, &end
+&parameter name=dnuy/dAy2, units="1/m$a2$n", description="Vertical tune shift with vertical amplitude", type=double, &end
+&parameter name=dnuy/dAxAy, units="1/m$a2$n", description="Vertical tune shift with horizontal and vertical amplitude", type=double, &end
+&parameter name=nuxTswaLower, description="Minimum horizontal tune from tune-shift-with-amplitude calculations", type=double, &end
+&parameter name=nuxTswaUpper, description="Maximum horizontal tune from tune-shift-with-amplitude calculations", type=double, &end
+&parameter name=nuyTswaLower, description="Minimum vertical tune from tune-shift-with-amplitude calculations", type=double, &end
+&parameter name=nuyTswaUpper, description="Maximum vertical tune from tune-shift-with-amplitude calculations", type=double, &end
+&parameter name=couplingIntegral, description="Coupling integral for difference resonance", type=double, &end
+&parameter name=couplingDelta, description="Distance from difference resonance", type=double, &end
+&parameter name=emittanceRatio, description="Emittance ratio from coupling integral", type=double, &end
+&parameter name=alphac3, symbol="$ga$r$bc3$n", description="3rd-order momentum compaction factor", type=double, &end
+&parameter name=alphac2, symbol="$ga$r$bc2$n", description="2nd-order momentum compaction factor", type=double, &end
+&parameter name=alphac, symbol="$ga$r$bc$n", description="Momentum compaction factor", type=double, &end
+&parameter name=I1, units=m, description="Radiation integral 1", type=double, &end
+&parameter name=I2, units=1/m, description="Radiation integral 2", type=double, &end
+&parameter name=I3, units="1/m$a2$n", description="Radiation integral 3", type=double, &end
+&parameter name=I4, units=1/m, description="Radiation integral 4", type=double, &end
+&parameter name=I5, units=1/m, description="Radiation integral 5", type=double, &end
+&parameter name=ex0, units="$gp$rm", description="Damped horizontal emittance", type=double, &end
+&parameter name=enx0, units="m$be$nc $gp$rm", description="Damped normalized horizontal emittance", type=double, &end
+&parameter name=taux, units=s, description="Horizontal damping time", type=double, &end
+&parameter name=Jx, description="Horizontal damping partition number", type=double, &end
+&parameter name=tauy, units=s, description="Vertical damping time", type=double, &end
+&parameter name=Jy, description="Vertical damping partition number", type=double, &end
+&parameter name=Sdelta0, description="RMS fractional energy spread", type=double, &end
+&parameter name=taudelta, units=s, description="Longitudinal damping time", type=double, &end
+&parameter name=Jdelta, description="Longitudinal damping partition number", type=double, &end
+&parameter name=U0, units=MeV, description="Energy loss per turn", type=double, &end
+&column name=s, units=m, description=Distance, type=double,  &end
+&column name=betax, symbol="$gb$r$bx$n", units=m, description="Horizontal beta-function", type=double,  &end
+&column name=alphax, symbol="$ga$r$bx$n", description="Horizontal alpha-function", type=double,  &end
+&column name=psix, symbol="$gy$r$bx$n", units=rad, description="Horizontal phase advance", type=double,  &end
+&column name=etax, symbol="$gc$r$bx$n", units=m, description="Horizontal dispersion", type=double,  &end
+&column name=etaxp, symbol="$gc$r$bx$n$a'$n", description="Slope of horizontal dispersion", type=double,  &end
+&column name=xAperture, symbol="a$bx,eff$n", units=m, description="Effective horizontal aperture", type=double,  &end
+&column name=betay, symbol="$gb$r$by$n", units=m, description="Vertical beta-function", type=double,  &end
+&column name=alphay, symbol="$ga$r$by$n", description="Vertical alpha-function", type=double,  &end
+&column name=psiy, symbol="$gy$r$by$n", units=rad, description="Vertical phase advance", type=double,  &end
+&column name=etay, symbol="$gc$r$by$n", units=m, description="Vertical dispersion", type=double,  &end
+&column name=etayp, symbol="$gc$r$by$n$a'$n", description="Slope of vertical dispersion", type=double,  &end
+&column name=yAperture, symbol="a$by,eff$n", units=m, description="Effective vertical aperture", type=double,  &end
+&column name=pCentral0, symbol="p$bcent$n", units="m$be$nc", description="Initial central momentum", type=double,  &end
+&column name=ElementName, description="Element name", format_string=%10s, type=string,  &end
+&column name=ElementOccurence, description="Occurence of element", format_string=%6ld, type=long,  &end
+&column name=ElementType, description="Element-type name", format_string=%10s, type=string,  &end
+&column name=ChamberShape, type=string,  &end
+&column name=dI1, units=m, description="Contribution to radiation integral 1", type=double,  &end
+&column name=dI2, units=1/m, description="Contribution to radiation integral 2", type=double,  &end
+&column name=dI3, units="1/m$a2$n", description="Contribution to radiation integral 3", type=double,  &end
+&column name=dI4, units=1/m, description="Contribution to radiation integral 4", type=double,  &end
+&column name=dI5, units=1/m, description="Contribution to radiation integral 5", type=double,  &end
+&data mode=binary, &end
+       çhªî›?·îe9 dø                ˇÇQ˙´Æ?¢Ãôdh<@   VBC_DRIFT_05˝Ù∏ë?Tô&≠ÚÅø                c¥ﬁ`Fí?·¥‡E„<@   CLA-VBC-DIA-RCOL-01        çhªî›?çhªî›?˝Ù∏ë?˝Ù∏ë?   tunes uncorrectedo.rÛv@[˝∑\∆Ìø?jt±.V@¢ÓÕgTêøÕPQ≥ì·™ø                                                                §kªîÄ@^≈6äÃ@/¡ÊX@Ç	Îå@@uú>®"@˘à~,òõM@∏£G©rÈƒ?                                                                                                                                      -ÕØŸ:y‹?        _ ˜dvø°QÚ˝ËÄ?`ÄµœÇXvøB}H€'Äûø”¥¡˝∆?ÑÍ6§,ºµ?N/U5=≈AøE°FóÑè?'Õ[)Ìö1>IÉ#V∏>¯˜ém@v˙?Â]?1“^&ì|@      ?c
+1?{cbıÑÛ?ä¿¢Ûˇ?kûu≥√Æ∆>àc]‹F”9@/¡ÊX@ß€¡µ&≠5@        #JrÄ€ö≤Ω              $@Ç	Îå@@¨^ãøF¥¿                              $@o.rÛv@   _BEG_      MARK                                            àc]‹F”9@/¡ÊX@ß€¡µ&≠5@        #JrÄ€ö≤Ω              $@Ç	Îå@@¨^ãøF¥¿                              $@o.rÛv@   START      CHARGE   ?                                        àc]‹F”9@/¡ÊX@ß€¡µ&≠5@        #JrÄ€ö≤Ω              $@Ç	Îå@@¨^ãøF¥¿                              $@o.rÛv@   CLA-S05-SIM-MARK-01      WATCH   ?                                        Oqxµ:@4bœ{TåU@¡·⁄¯—Ä4@/Mè`ìe?#JrÄ€ö≤Ω              $@ﬂ∞—A@NBÔñÇ¿€w:∏û|?                      $@o.rÛv@   VBC_DRIFT_01      LSCDRIFT   ?                                        [è¬ı(D:@◊Lo®[S@†«ÚZÜÑ3@∞ﬁˆ@üŸt?≠ﬁAgâÉøB?aÆ∑d∏ø      $@(ƒ£ ÎB@€Lâõ H¿∆£›$„Ñâ?                      $@o.rÛv@   CLA-VBC-MAG-DIP-01   	   CSRCSBEND   ?<‘®'ùÕ3?”¥¡˝¶?ÑÍ6§,ºï?T/U5=≈!økoÔ%¥u?*ÿF<Ÿ≈;@HI´œ=@|À[,≠+(@Y#Ö∂n™¢?éàÙç∏ò√øB?aÆ∑d∏ø      $@qê L¸LI@!7vb+<¿˛Ü˜&”®?                      $@o.rÛv@   VBC_DRIFT_02      LSCDRIFT   ?                                        6ˆÏπL˘;@UÖwÁg9@9óã3&@Òà?f¶?∏£G©rÈƒø              $@û¨<ÇO≈I@jÉ*¶Í-¿gØÑzß™?                      $@o.rÛv@   CLA-VBC-MAG-DIP-02   	   CSRCSBEND   ?„√Öƒîèø”¥¡˝¶?ÑÍ6§,ºï?P/U5=≈!ø∏7ú<FÍÄ?ä5òÜE<@ H/kÆ:3@6óæÈ≈I#@§ú=	L≠?∏£G©rÈƒø              $@D6 ä}J@/úÊ¿}¿:¬ÉÒ¨?                      $@o.rÛv@   VBC_DRIFT_03      LSCDRIFT   ?                                        W‚eSR<@óK¿ËÎF2@Õ¯òwûÃ"@∆|OΩù©Æ?∏£G©rÈƒø              $@ÓÑÜ≈úJ@$¯©(ã¿V}<Ìl≠?                      $@o.rÛv@   CLA-VBC-MAG-VCOR-01      KICKER   ?                                        ßqo~√X<@Õ≈tnØŒ1@IEPË´ç"@“±˙US`Ø?∏£G©rÈƒø              $@3V`Ç¨J@A‚òÊë¿ûÈwÀ»™≠?                      $@o.rÛv@   VBC_DRIFT_04      LSCDRIFT   ?                                        ıB€¡\<@ˇhPÂÑ1@‹±ôüf"@~ü/D‘Ø?∏£G©rÈƒø              $@±ç´H∂J@’§Õﬂñ¿‹ä3Œ—≠?                      $@o.rÛv@   CLA-VBC-DIA-BPM-01-DRIFT-01      LSCDRIFT   ?                                        ıB€¡\<@ˇhPÂÑ1@‹±ôüf"@~ü/D‘Ø?∏£G©rÈƒø              $@±ç´H∂J@’§Õﬂñ¿‹ä3Œ—≠?                      $@o.rÛv@   CLA-VBC-DIA-BPM-01      WATCH   ?                                        Cì7¿`<@ﬂïlΩ∂;1@o‚Kì?"@0ã	f‚$∞?∏£G©rÈƒø              $@cï{¿J@ig†Cö¿pçŒT˜≠?                      $@o.rÛv@   CLA-VBC-DIA-BPM-01-DRIFT-02      LSCDRIFT   ?                                        ¢Ãôdh<@§‰é_±0@≤gdv⁄Ù!@PØ&;ò∞?∏£G©rÈƒø              ?≤0Ñ≤Õ“J@Ÿ»PöD¢¿.«÷–]@Æ?                      ?o.rÛv@   VBC_DRIFT_05      LSCDRIFT   ?                                        ·¥‡E„<@∆Ì-1zf"@‚Ì\êøÜ@ÏyLgAÉ∫?∏£G©rÈƒø              ?9,è=L@¢
+»ˆ"¿’‘	Ú]±?                      ?o.rÛv@   CLA-VBC-DIA-RCOL-01      ECOL   round                                        gÌ∂ÕÈ<@p7‹∫!@MÃ@T@pE8PM<ª?∏£G©rÈƒø              $@à{àÃÆL@*Õ)¿;eiº{±?                      $@o.rÛv@   VBC_DRIFT_06      LSCDRIFT   round                                        gÌ∂ÕÈ<@p7‹∫!@MÃ@T@pE8PM<ª?∏£G©rÈƒø              $@à{àÃÆL@*Õ)¿;eiº{±?                      $@o.rÛv@   CLA-VBC-DIA-SCR-01      WATCH   round                                        0&˝ΩF=@pü"M≤<@(iì?Ü˙@léıG∞ƒ?∏£G©rÈƒø              $@“qu°qˇL@ù|Mﬂrä¿›6¨≥?                      $@o.rÛv@   VBC_DRIFT_07      LSCDRIFT   round                                        <D£;ày=@õÖû-èâ@HÊèØ@yå˛`À?ïàÙç∏ò√øB?aÆ∑d∏?      $@¶±‰ÍÜM@$¸=Ë§øvÇ8fΩ˙≥?                      $@o.rÛv@   CLA-VBC-MAG-DIP-03   	   CSRCSBEND   roundÓ√Öƒîèø”¥¡˝¶?ÑÍ6§,ºï?@/U5=≈!ø£‡pÒπ‹Y?ç'Ç8˚>@§kªîÄ@∫AñŒb¿ _·7£@p≠ﬁAgâÉøB?aÆ∑d∏?      $@˘à~,òõM@ß2J(»˛∞øY⁄üföÄ∫?                      $@o.rÛv@   VBC_DRIFT_08      LSCDRIFT   round                                        ´Õˇ´.?@%*£åì@`Ô¿¬ï¢¿ûó™ºâ@   Ä‹ö≤Ω              $@n”N,9M@ëΩ!€¿@ã·˚r˘`ª?                      $@o.rÛv@   CLA-VBC-MAG-DIP-04   	   CSRCSBEND   roundÜ’®'ùÕ3?”¥¡˝¶?ÑÍ6§,ºï?T/U5=≈!ølÿ‡∑ñ0?s]¯¡˘H?@vî4øú@Hæöˆ§¿ó√ú;@   Ä‹ö≤Ω              $@a5îpÿL@æ§˛1ß@9(‰/’ª?                      $@o.rÛv@   VBC_DRIFT_09      LSCDRIFT   round                                        s]¯¡˘H?@vî4øú@Hæöˆ§¿ó√ú;@   Ä‹ö≤Ω              $@a5îpÿL@æ§˛1ß@9(‰/’ª?                      $@o.rÛv@   CLA-VBC-SIM-MARK-01      WATCH   round                                        s]¯¡˘H?@vî4øú@Hæöˆ§¿ó√ú;@   Ä‹ö≤Ω              $@a5îpÿL@æ§˛1ß@9(‰/’ª?                      $@o.rÛv@   CLA-S06-SIM-MARK-01      WATCH   round                                        

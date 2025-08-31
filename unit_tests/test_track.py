@@ -12,7 +12,13 @@ from SimulationFramework.Modules.Beams.plot import (
 )
 import SimulationFramework.Modules.Twiss as rtf
 import SimulationFramework.Codes.Executables as exes
-from SimulationFramework.Framework_lattices import elegantLattice, astraLattice, ocelotLattice, gptLattice
+from SimulationFramework.Framework_lattices import (
+    elegantLattice,
+    astraLattice,
+    ocelotLattice,
+    gptLattice,
+    csrtrackLattice,
+)
 from SimulationFramework.FrameworkHelperFunctions import convert_numpy_types
 from SimulationFramework.Modules.Beams import Particles
 from SimulationFramework.Modules.Beams.Particles.emittance import emittance as emittanceobject
@@ -192,6 +198,7 @@ def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class)
     ("astra", astraLattice),
     ("ocelot", ocelotLattice),
     ("gpt", gptLattice),
+    ("csrtrack", csrtrackLattice)
 ])
 def test_track(simple_beam, test_fodo_elements, code, lattice_class):
     lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)

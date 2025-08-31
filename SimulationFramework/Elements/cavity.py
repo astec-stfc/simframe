@@ -182,7 +182,7 @@ class cavity(frameworkElement):
         )
         efield_def = [
             "FILE_EFieLD",
-            {"value": "'" + field_file_name + "field_file_name'", "default": ""},
+            {"value": "'" + field_file_name + "'", "default": ""},
         ]
         for attr in ["frequency", "field_amplitude"]:
             if getattr(self, attr) is None:

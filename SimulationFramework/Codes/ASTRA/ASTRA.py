@@ -567,7 +567,7 @@ class astraLattice(frameworkLattice):
             if "run_no" in self.global_parameters
             else 1
         )
-        if not self.starting_offset == [0, 0, 0]:
+        if not self.starting_offset == (0, 0, 0):
             zstart = self.elementObjects[self.start].start
         else:
             zstart = [0, 0, 0]

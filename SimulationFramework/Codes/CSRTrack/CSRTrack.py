@@ -75,10 +75,9 @@ class csrtrackLattice(frameworkLattice):
         :class:`~SimulationFramework.Elements.screen.screen`
         """
         return screen(
-            name="end",
-            type="screen",
-            position_start=self.endObject.position_start,
-            position_end=self.endObject.position_start,
+            objectname="end",
+            objecttype="screen",
+            centre=self.endObject.centre,
             global_rotation=self.endObject.global_rotation,
             global_parameters=self.global_parameters,
             **kwargs,
@@ -92,8 +91,8 @@ class csrtrackLattice(frameworkLattice):
         self.CSRTrackelementObjects["particles"] = csrtrack_particles(
             particle_definition=self.particle_definition,
             global_parameters=self.global_parameters,
+            format="astra",
         )
-        self.CSRTrackelementObjects["particles"].format = "astra"
         if self.particle_definition == "initial_distribution":
             self.CSRTrackelementObjects["particles"].particle_definition = "laser.astra"
             self.CSRTrackelementObjects["particles"].add_default(
@@ -103,12 +102,11 @@ class csrtrackLattice(frameworkLattice):
             self.CSRTrackelementObjects["particles"].particle_definition = (
                 self.elementObjects[self.start].objectname
             )
-            self.CSRTrackelementObjects["particles"].add_default(
-                "array",
+            self.CSRTrackelementObjects["particles"].array = (
                 "#file{name="
                 + self.elementObjects[self.start].objectname
                 + ".astra"
-                + "}",
+                + "}"
             )
 
     @property
@@ -181,7 +179,7 @@ class csrtrackLattice(frameworkLattice):
             name=self.end + ".fmt2", global_parameters=self.global_parameters
         )
         for c in self.CSRTrackelementObjects:
-            fulltext += self.CSRTrackelementObjects[c].write_CSRTrack()
+            fulltext += self.CSRTrackelementObjects[c].write_CSRTrack(n=0)
         return fulltext
 
     def write(self) -> str:
@@ -216,12 +214,13 @@ class csrtrack_element(frameworkElement):
     Base class for CSRTrack elements, including namelists for the lattice file.
     """
 
-    def __init__(self, objectname=None, objecttype=None, **kwargs):
-        super(csrtrack_element, self).__init__(objectname, objecttype, **kwargs)
-        self.header = ""
-        if objectname in csrtrack_defaults:
-            for k, v in list(csrtrack_defaults[objectname].items()):
-                self.add_default(k, v)
+    header: str = ""
+    """Header for CSRtrack file types"""
+
+    def model_post_init(self, __context):
+        if self.objectname in csrtrack_defaults:
+            for k, v in list(csrtrack_defaults[self.objectname].items()):
+                setattr(self, k, v)
 
     def CSRTrack_str(self, s: bool) -> str:
         """
@@ -244,7 +243,7 @@ class csrtrack_element(frameworkElement):
         else:
             return str(s)
 
-    def _write_CSRTrack(self) -> str:
+    def _write_CSRTrack(self, n: int = 0, **kwargs) -> str:
         """
         Create the string for the header object in CSRTrack format.
 
@@ -279,9 +278,14 @@ class csrtrack_forces(csrtrack_element):
     Class for CSRTrack forces.
     """
 
-    def __init__(self, **kwargs):
-        super(csrtrack_forces, self).__init__("forces", "csrtrack_forces", **kwargs)
-        self.header = "forces"
+    header: str = "forces"
+    """Header for CSRtrack element"""
+
+    objectname: str = "forces"
+    """Name of object"""
+
+    objecttype: str = "csrtrack_forces"
+    """Type of object"""
 
 
 class csrtrack_track_step(csrtrack_element):
@@ -289,11 +293,14 @@ class csrtrack_track_step(csrtrack_element):
     Class for defining CSRTrack the tracking step.
     """
 
-    def __init__(self, **kwargs):
-        super(csrtrack_track_step, self).__init__(
-            "track_step", "csrtrack_track_step", **kwargs
-        )
-        self.header = "track_step"
+    header: str = "track_step"
+    """Header for CSRtrack element"""
+
+    objectname: str = "track_step"
+    """Name of object"""
+
+    objecttype: str = "csrtrack_track_step"
+    """Type of object"""
 
 
 class csrtrack_tracker(csrtrack_element):
@@ -301,10 +308,20 @@ class csrtrack_tracker(csrtrack_element):
     Class for defining the CSRTrack tracker.
     """
 
-    def __init__(self, end_time_marker="", **kwargs):
-        super(csrtrack_tracker, self).__init__("tracker", "csrtrack_tracker", **kwargs)
-        self.header = "tracker"
-        self.end_time_marker = end_time_marker
+    header: str = "tracker"
+    """Header for CSRtrack element"""
+
+    objectname: str = "tracker"
+    """Name of object"""
+
+    objecttype: str = "csrtrack_tracker"
+    """Type of object"""
+
+    end_time_marker: str = ""
+    """Name of end marker"""
+
+    end_time_shift_c0: str | float = 0.0
+    """Time shift for end"""
 
 
 class csrtrack_monitor(csrtrack_element):
@@ -312,11 +329,17 @@ class csrtrack_monitor(csrtrack_element):
     Class for defining CSRTrack monitors.
     """
 
-    def __init__(self, **kwargs):
-        super(csrtrack_monitor, self).__init__(
-            objectname="monitor", objecttype="csrtrack_monitor", **kwargs
-        )
-        self.header = "monitor"
+    header: str = "monitor"
+    """Header for CSRtrack element"""
+
+    objectname: str = "monitor"
+    """Name of object"""
+
+    objecttype: str = "csrtrack_monitor"
+    """Type of object"""
+
+    name: str = ""
+    """File name for monitor"""
 
     def csrtrack_to_hdf5(self) -> None:
         """
@@ -348,11 +371,20 @@ class csrtrack_particles(csrtrack_element):
     Class for defining CSRTrack particles.
     """
 
-    def __init__(self, **kwargs):
-        super(csrtrack_particles, self).__init__(
-            "particles", "csrtrack_particles", **kwargs
-        )
-        self.header = "particles"
+    header: str = "particles"
+    """Header for CSRtrack element"""
+
+    objectname: str = "particles"
+    """Name of object"""
+
+    objecttype: str = "csrtrack_particles"
+    """Type of object"""
+
+    particle_definition: str = "laser.astra"
+    """Particle definition file"""
+
+    array: str = "#file{name=laser.astra}"
+    """File name array"""
 
     def hdf5_to_astra(self, prefix: str = "") -> None:
         """
