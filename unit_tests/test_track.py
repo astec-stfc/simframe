@@ -110,7 +110,6 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
         "simcodes_location": SimCodesLocation,
         "master_subdir": f'./fodo/{code}',
         "master_lattice_location": f'./fodo/{code}',
-        "GPTLICENSE": "1115315511",
         "delete_tracking_files": False,
     }
     executables = exes.Executables(global_parameters)
