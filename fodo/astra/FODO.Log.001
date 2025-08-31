@@ -4991,10 +4991,10 @@
  STAT    = 188*F, T, F, T, F, T, F, T, F, T, F, T, F, T, F, T, F, 198*T
  /
  End of Input deck
- Random Seed =   1145297167
-FODO_input.astra                0.1236D-04  0.0000D+00  F
+ Random Seed =           12
+FODO_input.astra               -0.2976D-04  0.0000D+00  F
 FODO.0040.001                   4.0000D-01  0.0000D+00  F
 
-     execution started:   30. 8.2025     17:38
-     execution finished:  30. 8.2025     17:38
-     execution time:  0.02 sec                         
+     execution started:   31. 8.2025      7:57
+     execution finished:  31. 8.2025      7:57
+     execution time:  0.03 sec                         

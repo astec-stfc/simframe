@@ -91,6 +91,45 @@ class sigmas(BaseModel):
 
     @computed_field
     @property
+    def sigma_px(self) -> UnitValue:
+        """
+        Horizontal momentum signa <px^2>
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-px
+        """
+        return np.sqrt(self.beam.covariance(self.beam.px, self.beam.px))
+
+    @computed_field
+    @property
+    def sigma_py(self) -> UnitValue:
+        """
+        Vertical momentum signa <px^2>
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-py
+        """
+        return np.sqrt(self.beam.covariance(self.beam.py, self.beam.py))
+
+    @computed_field
+    @property
+    def sigma_pz(self) -> UnitValue:
+        """
+        Longitudinal momentum signa <py^2>
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            sigma-pz
+        """
+        return np.sqrt(self.beam.covariance(self.beam.pz, self.beam.pz))
+
+    @computed_field
+    @property
     def sigma_cp(self) -> UnitValue:
         """
         Beam momentum spread.

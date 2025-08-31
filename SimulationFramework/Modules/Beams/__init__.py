@@ -738,17 +738,19 @@ class beam(BaseModel):
         """
         postbeam = self.kde.resample(npart, **kwargs)
         newbeam = beam()
-        newbeam.x = postbeam[0]
-        newbeam.y = postbeam[1]
-        newbeam.z = postbeam[2]
-        newbeam.px = postbeam[3]
-        newbeam.py = postbeam[4]
-        newbeam.pz = postbeam[5]
-        newbeam.t = newbeam.z / (-1 * newbeam.Bz * constants.speed_of_light)
-        newbeam.total_charge = self.total_charge
-        single_charge = newbeam.total_charge / (len(newbeam.x))
-        newbeam.charge = np.full(len(newbeam.x), single_charge)
-        newbeam.nmacro = np.full(len(newbeam.x), 1)
+        E0 = UnitValue(self.beam.particle_mass[0] * constants.speed_of_light ** 2, "J")
+        newbeam.Particles.particle_rest_energy_eV = UnitValue(E0 / constants.elementary_charge, "eV/c")
+        newbeam.Particles.x = UnitValue(postbeam[0], "m")
+        newbeam.Particles.y = UnitValue(postbeam[1], "m")
+        newbeam.Particles.z = UnitValue(postbeam[2], "m")
+        newbeam.Particles.px = UnitValue(postbeam[3], "kg*m/s")
+        newbeam.Particles.py = UnitValue(postbeam[4], "kg*m/s")
+        newbeam.Particles.pz = UnitValue(postbeam[5], "kg*m/s")
+        newbeam.Particles.total_charge = self.total_charge
+        single_charge = newbeam.Particles.total_charge / (len(newbeam.x))
+        newbeam.Particles.charge = UnitValue(np.full(len(newbeam.Particles.x), single_charge), "C")
+        newbeam.Particles.nmacro = UnitValue(np.full(len(newbeam.Particles.x), 1), "")
+        newbeam.t = UnitValue(newbeam.Particles.z / (-1 * newbeam.Particles.Bz * constants.speed_of_light), "s")
         newbeam.code = "KDE"
         newbeam.longitudinal_reference = "z"
 

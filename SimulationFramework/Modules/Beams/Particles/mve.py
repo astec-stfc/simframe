@@ -5,12 +5,13 @@ import numpy as np
 from scipy.stats import gaussian_kde
 from functools import partial
 from scipy.spatial import ConvexHull
-
+from ...units import UnitValue
 
 class MVE:
 
     def __init__(self, beam):
         self.beam = beam
+        self.sliceProperties = dict()
 
     def kde_bw_func(self, bandwidth, x, *args, **kwargs):
         return bandwidth / x.std(ddof=1)
@@ -79,10 +80,10 @@ class MVE:
         (center, radii, rotation, hullP) = getMinVolEllipse(list(zip(x, xp)), 0.01)
         emittance = radii[0] * radii[1]
         if p is None:
-            return emittance
+            return UnitValue(emittance, "m-rad")
         else:
-            gamma = np.mean(p) / self.E0_eV
-            return gamma * emittance
+            gamma = np.mean(p) / self.beam.E0_eV
+            return UnitValue(gamma * emittance, "m-rad")
 
     @property
     def normalized_mve_horizontal_emittance(self):
@@ -103,47 +104,49 @@ class MVE:
     @property
     def slice_6D_Volume(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
-            self.bin_time()
-        xbins = self.slice_data(self.beam.x)
-        ybins = self.slice_data(self.beam.y)
-        zbins = self.slice_data(self.beam.z - np.mean(self.beam.z))
-        pxbins = self.slice_data(self.beam.cpx / self.beam.cpz)
-        pybins = self.slice_data(self.beam.cpy / self.beam.cpz)
-        pzbins = self.slice_data(((self.beam.cpz / np.mean(self.beam.cp)) - 1))
+            self.beam.slice.bin_time()
+        xbins = self.beam.slice.slice_data(self.beam.x)
+        ybins = self.beam.slice.slice_data(self.beam.y)
+        zbins = self.beam.slice.slice_data(self.beam.z - np.mean(self.beam.z))
+        pxbins = self.beam.slice.slice_data(self.beam.cpx / self.beam.cpz)
+        pybins = self.beam.slice.slice_data(self.beam.cpy / self.beam.cpz)
+        pzbins = self.beam.slice.slice_data(((self.beam.cpz / np.mean(self.beam.cp)) - 1))
         emitbins = list(zip(xbins, ybins, zbins, pxbins, pybins, pzbins))
         self.sliceProperties["6D_Volume"] = np.array(
             [self.volume6D(*a) for a in emitbins]
         )
+        return self.sliceProperties["6D_Volume"]
 
     @property
     def slice_density(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
-            self.bin_time()
-        xbins = self.slice_data(self.beam.x)
+            self.beam.slice.bin_time()
+        xbins = self.beam.slice.slice_data(self.beam.x)
         volume = self.slice_6D_Volume
         self.sliceProperties["Density"] = np.array(
             [len(x) / v for x, v in zip(xbins, volume)]
         )
+        return self.sliceProperties["Density"]
 
     def mvesliceAnalysis(self):
         self.slice = {}
         self.bin_time()
-        peakIPosition = self.slice_max_peak_current_slice
+        peakIPosition = self.beam.slice.slice_max_peak_current_slice
         return (
-            self.slice_peak_current[peakIPosition],
-            np.std(self.slice_peak_current),
-            self.slice_relative_momentum_spread[peakIPosition],
-            self.slice_normalized_mve_horizontal_emittance[peakIPosition],
-            self.slice_normalized_mve_vertical_emittance[peakIPosition],
-            self.slice_momentum[peakIPosition],
-            self.slice_density[peakIPosition],
+            self.beam.slice.slice_peak_current[peakIPosition],
+            np.std(self.beam.slice.slice_peak_current),
+            self.beam.slice.slice_relative_momentum_spread[peakIPosition],
+            self.beam.slice.slice_normalized_mve_horizontal_emittance[peakIPosition],
+            self.beam.slice.slice_normalized_mve_vertical_emittance[peakIPosition],
+            self.beam.slice.slice_momentum[peakIPosition],
+            self.beam.slice.slice_density[peakIPosition],
         )
 
     @property
     def slice_normalized_mve_horizontal_emittance(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
-            self.bin_time()
-        emitbins = self.emitbins(self.beam.x, self.beam.xp)
+            self.beam.slice.bin_time()
+        emitbins = self.beam.slice.emitbins(self.beam.x, self.beam.xp)
         self.sliceProperties["Normalized_mve_Horizontal_Emittance"] = np.array(
             [
                 self.mve_emittance(xbin, xpbin, cpbin) if len(cpbin) > 0 else 0
@@ -155,11 +158,12 @@ class MVE:
     @property
     def slice_normalized_mve_vertical_emittance(self):
         if not hasattr(self, "_tbins") or not hasattr(self, "_cpbins"):
-            self.bin_time()
-        emitbins = self.emitbins(self.beam.y, self.beam.yp)
+            self.beam.slice.bin_time()
+        emitbins = self.beam.slice.emitbins(self.beam.y, self.beam.yp)
         self.sliceProperties["Normalized_mve_Vertical_Emittance"] = np.array(
             [
                 self.mve_emittance(ybin, ypbin, cpbin) if len(cpbin) > 0 else 0
                 for ybin, ypbin, cpbin in emitbins
             ]
         )
+        return self.sliceProperties["Normalized_mve_Vertical_Emittance"]

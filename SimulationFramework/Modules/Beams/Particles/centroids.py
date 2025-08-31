@@ -131,6 +131,45 @@ class centroids(BaseModel):
 
     @computed_field
     @property
+    def mean_px(self) -> UnitValue:
+        """
+        Mean of horizontal momentum in kg*m/s
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Mean of px
+        """
+        return np.mean(self.beam.px)
+
+    @computed_field
+    @property
+    def mean_py(self) -> UnitValue:
+        """
+        Mean of vertical momentum in kg*m/s
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Mean of py
+        """
+        return np.mean(self.beam.py)
+
+    @computed_field
+    @property
+    def mean_pz(self) -> UnitValue:
+        """
+        Mean of longitudinal momentum in kg*m/s
+
+        Returns
+        -------
+        :class:`~SimulationFramework.Modules.units.UnitValue`
+            Mean of pz
+        """
+        return np.mean(self.beam.pz)
+
+    @computed_field
+    @property
     def mean_energy(self) -> UnitValue:
         """
         Mean of beam energy in eV

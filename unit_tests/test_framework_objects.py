@@ -6,6 +6,7 @@ import SimulationFramework.Modules.Beams as rbf  # noqa E402
 from test_field import simple_field
 import pytest
 import warnings
+import numpy as np
 
 def all_subclasses(cls):
     subclasses = cls.__subclasses__()
@@ -68,8 +69,21 @@ def test_framework_elements(simple_field):
                 objecttype=elem.__name__,
                 global_parameters={"master_subdir": ".", "master_lattice_location": "."}
             )
-            if elem.__name__ in ["quadrupole", "dipole"]:
+            if elem.__name__ == "quadrupole":
                 element.length = 1.0
+            if elem.__name__ == "dipole":
+                element.length = 1.0
+                element.angle = 1.0
+                for param in [
+                    "arc_middle",
+                    "line_middle",
+                    "TD_middle",
+                    "intersection",
+                    "position_start",
+                    "position_end",
+                    "astra_end",
+                ]:
+                    assert isinstance(getattr(element, param), np.ndarray)
             element.write_Elegant()
             element.write_Ocelot()
             if elem.__name__ in ["cavity", "solenoid", "rf_deflecting_cavity"]:
@@ -81,7 +95,9 @@ def test_framework_elements(simple_field):
             if elem.__name__ == "wakefield":
                 element.field_definition = simple_field
             if elem.__name__ in ["aperture", "collimator", "scraper", "rcollimator"]:
-                element.shape = "circular"
-                element.horizontal_size = element.vertical_size = 1.0
+                for typ in ["circular", "planar", "rectangular"]:
+                    element.shape = typ
+                    element.horizontal_size = element.vertical_size = 1.0
+                    element.write_ASTRA(1)
             element.write_ASTRA(1)
             assert element.x == element.y == element.z == element.dx == element.dy == element.dz == 0

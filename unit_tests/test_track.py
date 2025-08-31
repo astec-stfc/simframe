@@ -186,16 +186,19 @@ def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class)
     for name, file in fwdir.beams.getScreens().items():
         assert name in scrnames
         assert os.path.isfile(file)
+    shutil.rmtree(f"./fodo/{code}")
 
 @pytest.mark.parametrize("code,lattice_class", [
     ("astra", astraLattice),
     ("ocelot", ocelotLattice),
-    # ("gpt", gptLattice),
+    ("gpt", gptLattice),
 ])
 def test_track(simple_beam, test_fodo_elements, code, lattice_class):
     lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
     lattice.preProcess()
     lattice.write()
-    lattice.run()
-    lattice.postProcess()
+    if code != "gpt":
+        lattice.run()
+        lattice.postProcess()
+    shutil.rmtree(f"./fodo/{code}")
 

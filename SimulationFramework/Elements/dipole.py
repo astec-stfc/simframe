@@ -171,8 +171,8 @@ class dipole(frameworkElement):
         """
         angle = -self.get_angle()
         leng = self.length
-        r = leng / angle
         if abs(angle) > 0:
+            r = leng / angle
             cx = 0.5 * r * (np.cos(angle) - 1)
             cy = 0
             cz = 0.5 * r * np.sin(angle)

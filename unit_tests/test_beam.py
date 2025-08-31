@@ -92,6 +92,13 @@ def test_beam_matching(simple_beam):
         )
     )
     # initial_beam.write_HDF5_beam_file('./fodo/BEGIN.hdf5')
+    assert isinstance(simple_beam.mve.slice_6D_Volume, np.ndarray)
+    assert isinstance(simple_beam.mve.slice_density, np.ndarray)
+    assert isinstance(simple_beam.mve.normalized_mve_horizontal_emittance, UnitValue)
+    assert isinstance(simple_beam.mve.normalized_mve_vertical_emittance, UnitValue)
+    assert isinstance(simple_beam.mve.horizontal_mve_emittance, UnitValue)
+    assert isinstance(simple_beam.mve.vertical_mve_emittance, UnitValue)
+    assert isinstance(simple_beam.mve.volume, float)
 
 def test_beam_species(simple_beam):
 
@@ -508,3 +515,9 @@ def test_sfhdf_beam(simple_beam):
         )
     )
     os.remove("test.hdf5")
+
+def test_resample(simple_beam):
+    newlen = 10000
+    newbeam = simple_beam.resample(newlen)
+    for param in ["x", "y", "z", "px", "py", "pz"]:
+        assert len(getattr(newbeam.Particles, param)) == newlen

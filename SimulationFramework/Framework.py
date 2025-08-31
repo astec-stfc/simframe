@@ -31,6 +31,9 @@ from typing import Any, Dict
 from pprint import pprint
 import numpy as np
 from copy import deepcopy
+
+from picmistandard import supported_codes
+
 from .Modules.merge_two_dicts import merge_two_dicts
 from .Modules import Beams as rbf
 from .Modules import Twiss as rtf
@@ -127,6 +130,7 @@ disallowed_changes = [
     "wakefield_definition",
 ]
 
+supported_codes = [code.split("Lattice")[0] for code in dir(frameworkLattices) if "lattice" in code.lower()]
 
 class Framework(BaseModel):
     """
@@ -607,10 +611,10 @@ class Framework(BaseModel):
         elements: dict or None
             Dictionary of :class:`~SimulationFramework.Framework_objects.frameworkElement` objects to save
         """
-        if filename is None:
-            pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
-        else:
-            pre, ext = os.path.splitext(os.path.basename(filename))
+        # if filename is None:
+        #     pre, ext = os.path.splitext(os.path.basename(self.settingsFilename))
+        # else:
+        #     pre, ext = os.path.splitext(os.path.basename(filename))
         if filename is None:
             filename = "settings.def"
         settings = self.settings.copy()
@@ -634,7 +638,11 @@ class Framework(BaseModel):
         lattice: dict
             Dictionary containing settings for the lattice line
         """
-        code = lattice["code"] if "code" in lattice else "astra"
+        if "code" not in lattice:
+            raise KeyError(f"code must be provided for {lattice}")
+        code = lattice["code"]
+        if code not in supported_codes:
+            raise NotImplementedError(f"code {code} is not supported")
         self.latticeObjects[name] = getattr(
             frameworkLattices, code.lower() + "Lattice"
         )(
@@ -1022,6 +1030,8 @@ class Framework(BaseModel):
                 latticename == exclude
                 or (isinstance(exclude, (list, tuple)) and latticename in exclude)
             ):
+                if code not in supported_codes:
+                    raise NotImplementedError(f"code {code} is not supported")
                 # print('Changing lattice ', name, ' to ', code.lower())
                 currentLattice = self.latticeObjects[latticename]
                 self.latticeObjects[latticename] = getattr(
@@ -1193,11 +1203,15 @@ class Framework(BaseModel):
         if self.__getitem__(element) is not None:
             if param is not None:
                 param = param.lower()
-                return getattr(self.__getitem__(element), param)
+                try:
+                    return getattr(self.__getitem__(element), param)
+                except AttributeError:
+                    warn(f"WARNING: Element {element} does not have parameter {param}; returning full element")
+                    return self.__getitem__(element)
             else:
                 return self.__getitem__(element)
         else:
-            print(("WARNING: Element ", element, " does not exist"))
+            warn(f"WARNING: Element {element} does not exist")
             return {}
 
     def getElementType(
@@ -1289,13 +1303,15 @@ class Framework(BaseModel):
                 self.modifyElement(elementName, p, v)
         elif isinstance(parameter, list) and isinstance(value, list):
             if len(parameter) != len(value):
-                raise ValueError("parameter and value must be of the same length")
+                warn("parameter and value must be of the same length")
             for p, v in zip(parameter, value):
                 self.modifyElement(elementName, p, v)
         elif elementName in self.groupObjects:
             self.groupObjects[elementName].change_Parameter(parameter, value)
         elif elementName in self.elementObjects:
             setattr(self.elementObjects[elementName], parameter, value)
+        else:
+            warn("incorrect parameters passed to modifyElement")
 
     def modifyElements(
         self,
@@ -1315,8 +1331,11 @@ class Framework(BaseModel):
         value:
             Value to set on those elements
         """
-        if isinstance(elementNames, str) and elementNames.lower() == "all":
-            elementNames = self.elementObjects.keys()
+        if isinstance(elementNames, str):
+            if elementNames.lower() == "all":
+                elementNames = self.elementObjects.keys()
+            else:
+                elementNames = [elementNames]
         for elem in elementNames:
             self.modifyElement(elem, parameter, value)
 
@@ -1387,8 +1406,11 @@ class Framework(BaseModel):
         value: Any
             Value to update
         """
-        if isinstance(latticeNames, str) and latticeNames.lower() == "all":
-            latticeNames = self.latticeObjects.keys()
+        if isinstance(latticeNames, str):
+            if latticeNames.lower() == "all":
+                latticeNames = self.latticeObjects.keys()
+            else:
+                latticeNames = [latticeNames]
         for latt in latticeNames:
             self.modifyLattice(latt, parameter, value)
 
@@ -1443,6 +1465,8 @@ class Framework(BaseModel):
                 self.executables, self.global_parameters, **old_kwargs
             )
         else:
+            if generator.lower() != "astra":
+                warn(f"generator {generator} not supported; defaulting to ASTRA")
             generator = ASTRAGenerator(
                 self.executables, self.global_parameters, **old_kwargs
             )
@@ -1964,12 +1988,12 @@ class Framework(BaseModel):
             ):
                 self.latticeObjects[latt].file_block["output"]["zstart"] += z
         for elem in self.elements:
-            self.elementObjects[elem].position_start = self._addLists(
-                self.elementObjects[elem].position_start, offset
+            self.elementObjects[elem].centre = self._addLists(
+                self.elementObjects[elem].centre, offset
             )
-            self.elementObjects[elem].position_end = self._addLists(
-                self.elementObjects[elem].position_end, offset
-            )
+            # self.elementObjects[elem].centre = self._addLists(
+            #     self.elementObjects[elem].centre, offset
+            # )
 
 
 class frameworkDirectory(BaseModel):
