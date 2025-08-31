@@ -2,7 +2,7 @@ import re
 import sys
 from scipy.optimize import curve_fit
 import numpy as np
-import matplotlib.pyplot as plt
+import shutil
 
 # sys.path.append(r"C:\Users\jkj62\Documents\GitHub\SimFrame")
 import SimulationFramework.Framework as fw  # noqa E402
@@ -22,6 +22,7 @@ def sub_element_test(startfile="generator", endfile="S02", scaling=3, sampling=1
     for name, elem in framework.elementObjects.items():
         if hasattr(elem, "subelement") and elem.subelement:
             print(name, ":", elem)
+    shutil.rmtree("subelement_test")
 
 
 def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
@@ -52,6 +53,8 @@ def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
     # Track the whole lattice
     print("###########   Performing ASTRA Track   ###########")
     framework.track(startfile=startfile, endfile=endfile)
+    shutil.rmtree("example_ASTRA")
+
 
 def astra_csrtrack_track(scaling=3, sampling=1):
     # This time we will use CSRTrack for the VBC
@@ -77,6 +80,7 @@ def astra_csrtrack_track(scaling=3, sampling=1):
     # Run from S02 onwards
     print("###########   Performing Elegant Track   ###########")
     framework.track(startfile="S02", endfile="S07")
+    shutil.rmtree("example_ASTRA_CSRTrack")
 
 sub_element_test()
 astra_track()
