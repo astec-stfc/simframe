@@ -16,7 +16,7 @@ def read_ocelot_twiss_files(self, filename, reset=True):
     elif os.path.isfile(filename):
         lattice_name = os.path.basename(filename).split(".")[0]
         fdat = {}
-        print("loading ocelot twiss file", filename)
+        # print("loading ocelot twiss file", filename)
         with np.load(filename, allow_pickle=True) as data:
             for key, value in data.items():
                 try:
@@ -78,6 +78,7 @@ def interpret_ocelot_data(self, lattice_name, fdat):
     self.sigma_cp.val = np.append(
         self.sigma_cp.val, np.sqrt(fdat["pp"]) * cp / constants.elementary_charge
     )
+    self.mean_cp.val = np.append(self.mean_cp.val, cp)
     # print('elegant = ', (elegantData['Sdelta'] * cp / constants.elementary_charge)[-1)
     self.sigma_p.val = np.append(self.sigma_p.val, np.sqrt(fdat["pp"]))
     self.mux.val = np.append(self.mux.val, fdat["mux"])

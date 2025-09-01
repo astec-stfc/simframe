@@ -22,3 +22,5 @@ sphinx>=8.1.0
 sphinx-rtd-theme
 myst-nb
 sphinx_autodoc_typehints>=3.0.0
+numba
+pyfftw
