@@ -29,6 +29,8 @@ class screen(frameworkElement):
         """
         Writes the screen element string for ASTRA.
 
+        Note that in astra `Scr_xrot` means a rotation about the y-axis and vice versa.
+
         Parameters
         ----------
         n: int
@@ -43,8 +45,8 @@ class screen(frameworkElement):
             dict(
                 [
                     ["Screen", {"value": self.middle[2], "default": 0}],
-                    ["Scr_xrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
-                    ["Scr_yrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
+                    ["Scr_xrot", {"value": self.y_rot + self.dy_rot, "default": 0}],
+                    ["Scr_yrot", {"value": self.x_rot + self.dx_rot, "default": 0}],
                 ]
             ),
             n,

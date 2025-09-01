@@ -100,6 +100,8 @@ class quadrupole(frameworkElement):
         """
         Writes the quadrupole element string for ASTRA.
 
+        Note that in astra `Q_xrot` means a rotation about the y-axis and vice versa.
+
         Parameters
         ----------
         n: int
@@ -129,7 +131,7 @@ class quadrupole(frameworkElement):
                 [
                     "Q_xrot",
                     {
-                        "value": -1 * self.x_rot + self.dx_rot,
+                        "value": -1 * self.y_rot + self.dy_rot,
                         "default": None,
                         "type": "not_zero",
                     },
@@ -137,7 +139,7 @@ class quadrupole(frameworkElement):
                 [
                     "Q_yrot",
                     {
-                        "value": -1 * self.y_rot + self.dy_rot,
+                        "value": -1 * self.x_rot + self.dx_rot,
                         "default": None,
                         "type": "not_zero",
                     },
