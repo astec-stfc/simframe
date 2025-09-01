@@ -50,6 +50,24 @@ classifiers = [
 #    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
 ]
 
+[project.optional-dependencies]
+
+test = [
+    "pytest",
+    "pytest-cov",
+    "MasterLattice",
+    "SimCodes",
+]
+
+docs = [
+    "sphinx>8.2",
+    "sphinx-rtd-theme",
+    "myst-nb",
+    "sphinx_autodoc_typehints>=3.2.0",
+    "MasterLattice",
+    "SimCodes",
+]
+
 [project.urls]
 Homepage = "https://github.com/astec-stfc/simframe"
 Repository = "https://github.com/astec-stfc/simframe.git"
