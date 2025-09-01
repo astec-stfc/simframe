@@ -2219,7 +2219,6 @@ class frameworkLattice(BaseModel):
                     np.isclose(self.elementObjects[e].position_start[2],
                     self.file_block["output"]["zstart"], atol=1e-2)
                 ):
-                    print(self.elementObjects[e].position_start[2])
                     return e
             return self.elementObjects[list(self.elementObjects.keys())[0]]
         else:

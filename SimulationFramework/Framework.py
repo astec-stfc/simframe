@@ -81,7 +81,6 @@ except ImportError as e:
     print("Import error - plotting disabled. Missing package:", e)
     use_matplotlib = False
 from tqdm import tqdm
-from munch import Munch, unmunchify
 
 _mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
 
@@ -2035,7 +2034,6 @@ class frameworkDirectory(BaseModel):
             directory = (
                 "." if self.directory is None else os.path.abspath(self.directory)
             )
-            print(kwargs)
             self.framework = Framework(**kwargs)
             self.framework.loadSettings(directory + "/" + self.settings)
         else:

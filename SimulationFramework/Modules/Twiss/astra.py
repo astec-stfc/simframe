@@ -56,6 +56,7 @@ def interpret_astra_data(self, lattice_name, xemit, yemit, zemit) -> None:
     self.gamma.val = np.append(self.gamma.val, gamma)
     cp = np.sqrt(e_kin * (2 * self.E0_eV + e_kin))
     self.cp.val = np.append(self.cp.val, cp)
+    self.mean_cp.val = np.append(self.mean_cp.val, cp)
     p = cp * constants.elementary_charge * self.q_over_c
     self.p.val = np.append(self.p.val, p)
     self.enx.val = np.append(self.enx.val, exn)

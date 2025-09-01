@@ -592,7 +592,7 @@ class twiss(BaseModel):
         """
         flat = np.array(getattr(self, key).val).flatten()
         index = flat.argsort()
-        for k in twiss.model_fields:
+        for k in self.model_fields:
             if isinstance(getattr(self, k), twissParameter):
                 if len(getattr(self, k).val) > 0:
                     try:
@@ -937,6 +937,7 @@ class twiss(BaseModel):
         """
         if verbose:
             print("Directory:", directory)
+        self.reset_dicts()
         for code, string in types.items():
             twiss_files = glob.glob(directory + "/" + preglob + string)
             if verbose:
