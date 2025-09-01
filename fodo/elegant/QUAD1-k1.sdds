@@ -1,0 +1,16 @@
+SDDS1
+&parameter name=name, type=string, &end
+&parameter name=item, type=string, &end
+&parameter name=multiplicative, type=double, &end
+&parameter name=nominal, type=double, &end
+&column name=values, type=double,  &end
+&data mode=ascii, &end
+! page number 1
+QUAD1
+k1
+ 0.000000000000000e+00
+-2.000000000000000e+01
+                   3
+ 0.000000000000000e+00 
+ 1.000000000000000e+00 
+ 3.000000000000000e+00 

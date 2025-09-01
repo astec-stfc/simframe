@@ -120,7 +120,14 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
             "output": {
                 "start_element": "BEGIN",
                 "end_element": "END",
-            }
+            },
+            "charge": {
+                "space_charge_mode": "3d",
+            },
+            "csr": {
+                "start": "BEGIN",
+                "end": "END",
+            },
         }
     }
     for name, elem in test_fodo_elements.items():
@@ -138,6 +145,10 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
         "csrDrifts": False,
     }
     lattice = lattice_class(**latattrs)
+    assert isinstance(lattice.getElement(element="QUAD1"), quadrupole)
+    assert lattice.getElement(element="QUAD1", param="k1l") == -2
+    with pytest.warns(UserWarning):
+        assert lattice.getElement(element="test") == {}
     if remove:
         shutil.rmtree(f'./fodo/{code}')
     return lattice
@@ -170,6 +181,13 @@ def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class)
         ykeys2=['sigma_z'],
     )
     plt1.close()
+    plt2, fig2, ax2 = fwdir.general_plot(
+        include_layout=True,
+        include_particles=True,
+        ykeys=['sigma_x', 'sigma_y'],
+        ykeys2=['sigma_z'],
+    )
+    plt2.close()
     b1 = fwdir.beams[0]
     plotScreenImage(b1, keys=["z", "cpz"], subtract_mean=[True, False])
     density_plot(b1, key="x", bins=20)
@@ -201,10 +219,47 @@ def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class)
 ])
 def test_track(simple_beam, test_fodo_elements, code, lattice_class):
     lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+    if code == "ocelot":
+        lattice.mbi.update({"set_mbi": True})
     lattice.preProcess()
     lattice.write()
+    lattice.writeElements()
     if code != "gpt":
         lattice.run()
         lattice.postProcess()
     shutil.rmtree(f"./fodo/{code}")
 
+@pytest.mark.parametrize("code,lattice_class", [
+    ("elegant", elegantLattice),
+    # ("gpt", gptLattice),
+])
+def test_run_setup_errors(simple_beam, test_fodo_elements, code, lattice_class):
+    lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+    errors = {
+        "elements": {
+            "QUAD*": {"k1": [0.1]}
+        }
+    }
+    lattice.runSettings.loadElementErrors(errors)
+    lattice.preProcess()
+    lattice.write()
+    lattice.run()
+    lattice.postProcess()
+    shutil.rmtree(f"./fodo/{code}")
+
+@pytest.mark.parametrize("code,lattice_class", [
+    ("elegant", elegantLattice),
+    # ("gpt", gptLattice),
+])
+def test_run_setup_scan(simple_beam, test_fodo_elements, code, lattice_class):
+    lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+    lattice.runSettings.setElementScan(
+        name="QUAD1",
+        item="k1",
+        scanrange=(1, 3)
+    )
+    lattice.runSettings.setNRuns(nruns=3)
+    lattice.preProcess()
+    lattice.write()
+    lattice.run()
+    lattice.postProcess()

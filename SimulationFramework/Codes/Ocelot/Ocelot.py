@@ -32,8 +32,7 @@ from ocelot.cpbd.transformations.kick import KickTM
 from ocelot.cpbd.transformations.runge_kutta import RungeKuttaTM
 from ocelot.cpbd.elements import Octupole, Undulator
 from copy import deepcopy
-from typing import Dict
-from numpy import array, where, mean, savez_compressed, linspace, save
+from numpy import array, mean, savez_compressed, linspace, save
 import os
 from yaml import safe_load
 
@@ -459,8 +458,8 @@ class ocelotLattice(frameworkLattice):
             end = self.file_block["csr"]["end"]
             en = [end] if isinstance(end, str) else end
             for i in range(len(st)):
-                stelem = self.lat_obj.sequence[where(self.names == st[i])[0][0]]
-                enelem = self.lat_obj.sequence[where(self.names == en[i])[0][0]]
+                stelem = self.lat_obj.sequence[self.names.index(st[i])]
+                enelem = self.lat_obj.sequence[self.names.index(en[i])]
                 csr = CSR()
                 csr.n_bin = self.nbin_csr
                 csr.m_bin = self.mbin_csr

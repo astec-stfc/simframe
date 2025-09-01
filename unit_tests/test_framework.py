@@ -84,6 +84,16 @@ def test_framework_functionality(test_init_framework, test_fodo_settings, simple
     assert isinstance(test_init_framework["FODO"].getElems(as_dict=True), dict)
     assert isinstance(test_init_framework["FODO"].getSNamesElems(), tuple)
     assert isinstance(test_init_framework["FODO"].getZNamesElems(), tuple)
+    test_init_framework["FODO"].file_block.update(
+        {
+            "output": {
+                "zstart": 0.15,
+                "zstop": 0.35,
+            }
+        }
+    )
+    assert test_init_framework["FODO"].start == "QUAD2"
+    assert test_init_framework["FODO"].end == "QUAD3"
     test_init_framework.modifyElements(
         elementNames="all",
         parameter="centre",

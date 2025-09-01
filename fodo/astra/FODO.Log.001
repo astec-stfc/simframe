@@ -975,7 +975,7 @@
  /
  &CHARGE
  LOOP    = F,
- LSPCH   = F,
+ LSPCH   = T,
  LSPCH3D = F,
  LSPCH3DMG       = F,
  L2D_3D  = F,
@@ -4992,9 +4992,9 @@
  /
  End of Input deck
  Random Seed =           12
-FODO_input.astra               -0.7601D-06  0.0000D+00  F
+FODO_input.astra                0.6258D-04  0.0000D+00  F
 FODO.0040.001                   4.0000D-01  0.0000D+00  F
 
-     execution started:   31. 8.2025     15:28
-     execution finished:  31. 8.2025     15:28
-     execution time:  0.06 sec                         
+     execution started:    1. 9.2025      5:29
+     execution finished:   1. 9.2025      5:29
+     execution time:  0.24 sec                         

@@ -583,7 +583,7 @@ def general_plot(
     framework_object,
     ykeys=[],
     ykeys2=[],
-    xkey=[],
+    xkey="z",
     limits=None,
     nice=True,
     include_layout=False,
@@ -624,9 +624,9 @@ def general_plot(
         ax_plot.append(ax_plot[0].twinx())
 
     # Ensure we are using numpy arrays
-    xdata = getattrsplit(framework_object, xkey)
-    ydata = [getattrsplit(framework_object, y) for y in ykeys]
-    ydata2 = [getattrsplit(framework_object, y) for y in ykeys2]
+    xdata = getattrsplit(framework_object.twiss, xkey)
+    ydata = [getattrsplit(framework_object.twiss, y) for y in ykeys]
+    ydata2 = [getattrsplit(framework_object.twiss, y) for y in ykeys2]
 
     # Split keys
     xkey = xkey.split(".")[-1]
@@ -658,9 +658,9 @@ def general_plot(
         good = slice(None, None, None)  # everything
 
     # X axis scaling
-    units_x = xdata.units
+    units_x = xdata.unit
     if nice:
-        X, factor_x, prefix_x = nice_array(X)
+        X, factor_x, prefix_x = nice_array(X.val)
         units_x = prefix_x + units_x
     else:
         factor_x = 1
@@ -682,7 +682,7 @@ def general_plot(
         linestyle = linestyles[ix]
 
         # Check that units are compatible
-        ulist = [dat.units for dat in d]
+        ulist = [dat.unit for dat in d]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"
@@ -690,7 +690,7 @@ def general_plot(
         unit = str(ulist[0])
 
         # Data
-        data = [key[good] for key in d]
+        data = [key.val[good] for key in d]
 
         if nice:
             factor, prefix = nice_scale_prefix(np.ptp(data))
@@ -742,5 +742,6 @@ def general_plot(
             bounds=limits,
             include_labels=include_labels,
             fields=fields,
-            magnets=magnets,
+            # magnets=magnets,
         )
+    return plt, fig, all_axis

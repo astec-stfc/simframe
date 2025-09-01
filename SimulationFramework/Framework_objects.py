@@ -1935,11 +1935,11 @@ class frameworkLattice(BaseModel):
         dict | :class:`SimulationFramework.Framework_objects.frameworkElement`
             The element object or the specified parameter of the element.
         """
-        if element in self.allElements:
+        if element in self.elements:
             if param is not None:
                 return getattr(self.elementObjects[element], param.lower())
             else:
-                return self.allElements[element]
+                return self.elementObjects[element]
         elif element in list(self.groupObjects.keys()):
             if param is not None:
                 return getattr(self.groupObjects[element], param.lower())
@@ -2216,13 +2216,14 @@ class frameworkLattice(BaseModel):
         elif "zstart" in self.file_block["output"]:
             for e in list(self.elementObjects.keys()):
                 if (
-                    self.elementObjects[e].position_start[2]
-                    == self.file_block["output"]["zstart"]
+                    np.isclose(self.elementObjects[e].position_start[2],
+                    self.file_block["output"]["zstart"], atol=1e-2)
                 ):
+                    print(self.elementObjects[e].position_start[2])
                     return e
-                return self.elementObjects[0]
+            return self.elementObjects[list(self.elementObjects.keys())[0]]
         else:
-            return self.elementObjects[0]
+            return self.elementObjects[list(self.elementObjects.keys())[0]]
 
     @property
     def startObject(self) -> frameworkElement:
@@ -2259,19 +2260,19 @@ class frameworkLattice(BaseModel):
             endelems = []
             for e in list(self.elementObjects.keys()):
                 if (
-                    self.elementObjects[e]["position_end"]
-                    == self.file_block["output"]["zstop"]
+                    np.isclose(self.elementObjects[e].position_end[2],
+                    self.file_block["output"]["zstop"], atol=1e-2)
                 ):
                     endelems.append(e)
                 elif (
-                    self.elementObjects[e]["position_end"]
+                    self.elementObjects[e].position_end[2]
                     > self.file_block["output"]["zstop"]
                     and len(endelems) == 0
                 ):
                     endelems.append(e)
             return endelems[-1]
         else:
-            return self.elementObjects[0]
+            return self.elementObjects[self.elements[0]]
 
     @property
     def endObject(self) -> frameworkElement:

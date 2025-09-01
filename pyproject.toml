@@ -54,3 +54,11 @@ classifiers = [
 Homepage = "https://github.com/astec-stfc/simframe"
 Repository = "https://github.com/astec-stfc/simframe.git"
 Issues = "https://github.com/astec-stfc/simframe/-/issues/"
+
+[tool.coverage.run]
+omit = [
+    # omit this single file
+    "_version.py",
+    "SimulationFramework/Codes/MAD8/MAD8.py",
+    "SimulationFramework/Modules/Beams/mad8.py",
+    ]

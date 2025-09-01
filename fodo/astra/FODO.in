@@ -37,7 +37,7 @@ max_scale = 0.1,
 nrad = 8,
 nlong_in = 8,
 Lmirror = False,
-LSPCH = False,
+LSPCH = True,
 LSPCH3D = False
 /
 

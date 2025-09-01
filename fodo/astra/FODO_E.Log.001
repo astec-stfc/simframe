@@ -975,7 +975,7 @@
  /
  &CHARGE
  LOOP    = F,
- LSPCH   = F,
+ LSPCH   = T,
  LSPCH3D = F,
  LSPCH3DMG       = F,
  L2D_3D  = F,

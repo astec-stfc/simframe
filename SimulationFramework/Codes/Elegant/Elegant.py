@@ -378,7 +378,7 @@ class elegantLattice(frameworkLattice):
             scanSDDS.add_parameter("name", [ele], type=sdds.SDDS(0).SDDS_STRING)
             scanSDDS.add_parameter("item", [keyword], type=sdds.SDDS(0).SDDS_STRING)
             scanSDDS.add_parameter("multiplicative", [int(multiplicative)])
-            scanSDDS.add_parameter("nominal", [self.elements[ele][param]])
+            scanSDDS.add_parameter("nominal", [getattr(self.elements[ele], param)])
             scanSDDS.add_column("values", scan_values)
             scanSDDS.save(self.global_parameters["master_subdir"] + "/" + scan_fname)
 
@@ -463,6 +463,7 @@ class elegantLattice(frameworkLattice):
                     for item in elementErrors[e]:
                         self.commandFiles["error_element_" + e + "_" + item] = (
                             elegantCommandFile(
+                                objectname="error_element",
                                 objecttype="error_element",
                                 name=e,
                                 item=item,
@@ -481,7 +482,13 @@ class elegantLattice(frameworkLattice):
                     first_is_fiducial=1,
                 )
                 self.commandFiles["scan_elements"] = elegant_scan_elements_command(
-                    lattice=self, elementScan=elementScan, nruns=nruns
+                    lattice=self,
+                    name=elementScan["name"],
+                    item=elementScan["item"],
+                    enumeration_file=elementScan["enumeration_file"],
+                    enumeration_column=elementScan["enumeration_column"],
+                    multiplicative=int(elementScan["multiplicative"]),
+                    nruns=nruns,
                 )
             else:
                 # print('run_control for standard runs with no jitter')
@@ -849,8 +856,20 @@ class elegant_scan_elements_command(elegantCommandFile):
     .. _Elegant vary element: https://ops.aps.anl.gov/manuals/elegant_latest/elegantsu85.html#x93-920007.76
     """
 
-    elementScan: Dict = None
-    "Element names and parameters to scan"
+    name: str
+    """Element name to scan"""
+
+    item: str
+    """Parameter to scan"""
+
+    enumeration_file: str
+    """Name of SDDS file containing element to scan"""
+
+    enumeration_column: str
+    """Parameter to scan in enumeration_file"""
+
+    multiplicative: int = 0
+    """Whether to multiply the original value by the values in the scan range"""
 
     nruns: int = 1
     """Number of runs to perform"""
@@ -866,16 +885,6 @@ class elegant_scan_elements_command(elegantCommandFile):
 
     objecttype: str = "vary_element"
     """Name of frameworkObject objecttype"""
-
-    @field_validator("elementScan", mode="after")
-    @classmethod
-    def validate_element_scan(cls, value):
-        value.update(
-            {
-                "objecttype": cls.objecttype,
-                "index_number": cls.index_number,
-            }
-        )
 
 
 class elegant_run_control_command(elegantCommandFile):
