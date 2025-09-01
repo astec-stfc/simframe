@@ -60,7 +60,7 @@ test = [
 ]
 
 docs = [
-    "sphinx>8.2",
+    "sphinx>8",
     "sphinx-rtd-theme",
     "myst-nb",
     "sphinx_autodoc_typehints>=3.2.0",
