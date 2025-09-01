@@ -41,7 +41,7 @@ dependencies = [
     "sphinx>8",
     "sphinx-rtd-theme",
     "myst-nb",
-    "sphinx_autodoc_typehints>=3.2.0",
+    "sphinx_autodoc_typehints>3",
 ]
 
 requires-python = ">= 3.10"
@@ -63,7 +63,7 @@ docs = [
     "sphinx>8",
     "sphinx-rtd-theme",
     "myst-nb",
-    "sphinx_autodoc_typehints>=3.2.0",
+    "sphinx_autodoc_typehints>=3",
     "MasterLattice",
     "SimCodes",
 ]
