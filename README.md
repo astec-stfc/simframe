@@ -50,7 +50,7 @@ The following dependencies are optional, but are generally required for running 
 Participation
 -------------
 
-We welcome contributions and suggestions from the community! :mod:`SimFrame` is 
+We welcome contributions and suggestions from the community! ``SimFrame`` is 
 currently under active development, and as such certain features may be missing 
 or not working as expected. If you find any issues, please raise it 
 [here](https://github.com/astec-stfc/simframe/issues) or contact 
