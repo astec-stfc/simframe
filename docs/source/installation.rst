@@ -17,11 +17,11 @@ Clone :mod:`SimFrame` from Github:
 Install via pip
 -------------------
 
-Install :mod:`SimFrame` from the ``apclara1.dl.ac.uk`` pypi server (requires STFC user ID):
+Install :mod:`SimFrame` from ``pypi``:
 
 .. code-block:: bash
 
-    pip install --extra-index-url http://apclara1.dl.ac.uk:8090/simple/ --trusted-host apclara1.dl.ac.uk AcceleratorSimFrame
+    pip install AcceleratorSimFrame
 
 
 Required Dependencies

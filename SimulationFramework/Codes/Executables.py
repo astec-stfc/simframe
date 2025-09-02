@@ -4,8 +4,8 @@ import yaml
 
 
 def which(program):
-    def is_exe(fpath):
-        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    def is_exe(filepath):
+        return os.path.isfile(filepath) and os.access(filepath, os.X_OK)
 
     fpath, fname = os.path.split(program)
     if fpath:
@@ -22,7 +22,14 @@ def which(program):
 
 class executable:
 
-    def __init__(self, name, settings={}, location=None, ncpu=1, default=""):
+    def __init__(
+            self,
+            name: str,
+            settings: dict={},
+            location: str | None = None,
+            ncpu: int = 1,
+            default: str | list = ""
+    ):
         self.name = name
         self.settings = settings
         self.location = location
@@ -65,6 +72,15 @@ class executable:
 
 
 class Executables(object):
+    """
+    Class for interpreting the accelerator code executables defined in
+    :download:`Executables <../Executables.yaml>` for a given computer architecture and linking
+    to the `SimCodes` directory. This enables the simulation code with the lattice input file
+    to be called from within the `Framework` instance.
+
+    Executables for Windows and POSIX architectures are defined, as are executables for
+    specific clusters based at Daresbury Laboratory. Others can be added by the user.
+    """
 
     def __init__(self, global_parameters):
         super(Executables, self).__init__()
@@ -91,6 +107,11 @@ class Executables(object):
             self.settings = yaml.load(file, Loader=yaml.Loader)
         # except:
         #     self.settings = {}
+        self.ASTRAgenerator = None
+        self.astra = None
+        self.elegant = None
+        self.gpt = None
+        self.csrtrack = None
         self.settings["sim_codes_location"] = self.sim_codes_location
         self.define_ASTRAgenerator_command()
         self.define_astra_command()
@@ -101,36 +122,99 @@ class Executables(object):
     def __getitem__(self, item):
         return getattr(self, item)
 
-    def getNCPU(self, ncpu, scaling):
+    def getNCPU(
+            self,
+            ncpu: int,
+            scaling: int,
+    ) -> int:
+        """
+        Get the number of CPUs for tracking.
+        Parameters
+        ----------
+        ncpu: int
+            Number of CPUs for multi-threaded runs
+        scaling: int
+            Scaling factor for the number of particles
+
+        Returns
+        -------
+        int:
+            Number of CPUs to run
+        """
         if scaling is not None and ncpu == 1:
             return 3 * scaling
         else:
             return ncpu
 
-    def define_ASTRAgenerator_command(self, location=None):
-        self.ASTRAgeneratorExecutable = executable(
+    def define_ASTRAgenerator_command(
+            self,
+            location: str | None = None
+    ) -> None:
+        """
+        Define the ASTRA generator :class:`~executable` object and sets :attr:`~ASTRAgenerator`
+
+        Parameters
+        ----------
+        location: str, optional
+            Location of ASTRA generator executable; overrides `default`.
+        """
+        ASTRAgeneratorExecutable = executable(
             "astragenerator",
             settings=self.settings,
             location=location,
             default=[self.sim_codes_location + "ASTRA/generator"],
         )
-        self.ASTRAgenerator = self.ASTRAgeneratorExecutable.executable
+        self.ASTRAgenerator = ASTRAgeneratorExecutable.executable
 
-    def define_astra_command(self, location=None, ncpu=1, scaling=None):
+    def define_astra_command(
+            self,
+            location: str | None = None,
+            ncpu: int = 1,
+            scaling: int | None = None
+    ) -> None:
+        """
+        Define the ASTRA :class:`~executable` object and sets :attr:`~astra`
+
+        Parameters
+        ----------
+        location: str
+            Location of ASTRA executable; overrides `default`.
+        ncpu: int
+            Number of CPUs to run
+        scaling: int, optional
+            Scaling parameter for number of CPUs.
+        """
         ncpu = self.getNCPU(ncpu, scaling)
-        self.astraExecutable = executable(
+        astraExecutable = executable(
             "astra",
             settings=self.settings,
             location=location,
             ncpu=ncpu,
             default=[self.sim_codes_location + "ASTRA/astra"],
         )
-        self.astra = self.astraExecutable.executable
+        self.astra = astraExecutable.executable
 
-    def define_elegant_command(self, location=None, ncpu=1, scaling=None):
+    def define_elegant_command(
+            self,
+            location: str | None = None,
+            ncpu: int = 1,
+            scaling: int | None = None,
+    ) -> None:
+        """
+        Define the ELEGANT :class:`~executable` object and sets :attr:`~elegant`
+
+        Parameters
+        ----------
+        location: str
+            Location of ELEGANT executable; overrides `default`.
+        ncpu: int
+            Number of CPUs to run
+        scaling: int, optional
+            Scaling parameter for number of CPUs.
+        """
         ncpu = self.getNCPU(ncpu, scaling)
         if ncpu > 1:
-            self.elegantExecutable = executable(
+            elegantExecutable = executable(
                 "Pelegant",
                 settings=self.settings,
                 location=location,
@@ -143,33 +227,67 @@ class Executables(object):
                 ],
             )
         else:
-            self.elegantExecutable = executable(
+            elegantExecutable = executable(
                 "elegant",
                 settings=self.settings,
                 location=location,
                 ncpu=ncpu,
                 default=[self.sim_codes_location + "Elegant/elegant"],
             )
-        self.elegant = self.elegantExecutable.executable
+        self.elegant = elegantExecutable.executable
 
-    def define_csrtrack_command(self, location=None, ncpu=1, scaling=None):
+    def define_csrtrack_command(
+            self,
+            location: str | None = None,
+            ncpu: int = 1,
+            scaling: int | None = None,
+    ) -> None:
+        """
+        Define the CSRTrack :class:`~executable` object and sets :attr:`~csrtrack`
+
+        Parameters
+        ----------
+        location: str
+            Location of CSRTrack executable; overrides `default`.
+        ncpu: int
+            Number of CPUs to run
+        scaling: int, optional
+            Scaling parameter for number of CPUs.
+        """
         ncpu = self.getNCPU(ncpu, scaling)
-        self.csrtrackExecutable = executable(
+        csrtrackExecutable = executable(
             "csrtrack",
             settings=self.settings,
             location=location,
             ncpu=ncpu,
             default=[self.sim_codes_location + "CSRTrack/csrtrack"],
         )
-        self.csrtrack = self.csrtrackExecutable.executable
+        self.csrtrack = csrtrackExecutable.executable
 
-    def define_gpt_command(self, location=None, ncpu=1, scaling=None):
+    def define_gpt_command(
+            self,
+            location: str | None = None,
+            ncpu: int = 1,
+            scaling: int | None = None,
+    ) -> None:
+        """
+        Define the GPT :class:`~executable` object and sets :attr:`~gpt`
+
+        Parameters
+        ----------
+        location: str
+            Location of GPT executable; overrides `default`.
+        ncpu: int
+            Number of CPUs to run
+        scaling: int, optional
+            Scaling parameter for number of CPUs.
+        """
         ncpu = self.getNCPU(ncpu, scaling)
-        self.gptExecutable = executable(
+        gptExecutable = executable(
             "gpt",
             settings=self.settings,
             location=location,
             ncpu=ncpu,
             default=[self.sim_codes_location + "GPT/gpt.exe", "-j", str(ncpu)],
         )
-        self.gpt = self.gptExecutable.executable
+        self.gpt = gptExecutable.executable

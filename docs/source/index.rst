@@ -30,6 +30,26 @@ Setup
    installation
    getting-started
    MasterLattice
+   SimCodes
+   
+
+.. Examples
+   --------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples
+
+   examples/notebooks/getting_started
+   examples/notebooks/beams_example
+   examples/notebooks/utility_functions
+   
+Participation
+-------------
+
+We welcome contributions and suggestions from the community! :mod:`SimFrame` is currently under active development, and as such certain features may be missing or not working as expected. If you find any issues, please raise it `here <https://github.com/astec-stfc/simframe/issues>`_ or contact `Alex Brynes <alexander.brynes@stfc.ac.uk>_` or `James Jones <james.jones@stfc.ac.uk>_`.
+
+We are also happy to help with installation and setting up your accelerator lattice. 
    
 .. API
    ---
@@ -43,16 +63,6 @@ Setup
    SimulationFramework.Codes
    SimulationFramework.Modules
    
-.. Examples
-   --------
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples
-
-   examples/notebooks/getting_started
-   examples/notebooks/beams_example
-   examples/notebooks/utility_functions
 
 
 

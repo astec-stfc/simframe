@@ -1312,7 +1312,7 @@ class frameworkElement(frameworkObject):
         Parameters
         ----------
         param: field
-            The :class:`SimulationFramework.Modules.Fields.field` object for which the field file is being generated.
+            The :class:`~SimulationFramework.Modules.Fields.field` object for which the field file is being generated.
         code: str
             The tracking code for which the field file is being generated (e.g., 'elegant', 'ocelot').
 
@@ -1725,7 +1725,7 @@ class frameworkLattice(BaseModel):
 
     executables: exes.Executables
     """Executable commands for running simulations, defined in the Executables class.
-    See :class:`SimulationFramework.Framework.Codes.Executables.Executables` for more details."""
+    See :class:`~SimulationFramework.Framework.Codes.Executables.Executables` for more details."""
 
     global_parameters: Dict
     """Global parameters for the lattice, including master subdirectory and other configuration settings."""
@@ -1934,7 +1934,7 @@ class frameworkLattice(BaseModel):
 
         Returns
         -------
-        dict | :class:`SimulationFramework.Framework_objects.frameworkElement`
+        dict | :class:`~SimulationFramework.Framework_objects.frameworkElement`
             The element object or the specified parameter of the element.
         """
         if element in self.elements:
