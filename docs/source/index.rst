@@ -49,8 +49,7 @@ Participation
 
 We welcome contributions and suggestions from the community! :mod:`SimFrame` is currently under active development,
 and as such certain features may be missing or not working as expected. If you find any issues, please
-raise it `here <https://github.com/astec-stfc/simframe/issues>`_ or contact
-`Alex Brynes <mailto:alexander.brynes@stfc.ac.uk>`_ or `James Jones <mailto:james.jones@stfc.ac.uk>`_.
+raise it `here <https://github.com/astec-stfc/simframe/issues>`_.
 
 We are also happy to help with installation and setting up your accelerator lattice. 
    
