@@ -6,24 +6,24 @@ Various objects and functions to handle ASTRA lattices and commands. See `ASTRA 
     .. _ASTRA manual: https://www.desy.de/~mpyflo/Astra_manual/Astra-Manual_V3.2.pdf
 
 Classes:
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astraLattice`: The ASTRA lattice object, used for\
-    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
-    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astraLattice`: The ASTRA lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
     the lattice suitable for an ASTRA input file.
 
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_header`: Class for defining the &HEADER portion\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_header`: Class for defining the &HEADER portion
     of the ASTRA input file.
 
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun`: Class for defining the &NEWRUN portion\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_newrun`: Class for defining the &NEWRUN portion
     of the ASTRA input file.
 
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_charge`: Class for defining the &CHARGE portion\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_charge`: Class for defining the &CHARGE portion
     of the ASTRA input file.
 
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_output`: Class for defining the &OUTPUT portion\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_output`: Class for defining the &OUTPUT portion
     of the ASTRA input file.
 
-    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_errors`: Class for defining the &ERRORS portion\
+    - :class:`~SimulationFramework.Codes.ASTRA.ASTRA.astra_errors`: Class for defining the &ERRORS portion
     of the ASTRA input file.
 """
 

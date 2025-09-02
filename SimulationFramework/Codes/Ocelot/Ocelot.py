@@ -6,8 +6,8 @@ Various objects and functions to handle OCELOT lattices and commands. See `Ocelo
     .. _Ocelot github: https://github.com/ocelot-collab/ocelot
 
 Classes:
-    - :class:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice`: The Ocelot lattice object, used for\
-    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
+    - :class:`~SimulationFramework.Codes.Ocelot.Ocelot.ocelotLattice`: The Ocelot lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the
     :class:`~SimulationFramework.Framework_elements.frameworkLattice` into an Ocelot lattice object,
     and for tracking through it.
 
@@ -311,12 +311,12 @@ class ocelotLattice(frameworkLattice):
         """
         Set up the physics processes for Ocelot (i.e. space charge, CSR, wakes etc).
 
+        .. _Navigator: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/navi.py
+
         Returns
         -------
         Navigator
             An Ocelot `Navigator`_ object
-
-        .. _Navigator: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/navi.py
         """
         navi_processes = []
         navi_locations_start = []
@@ -403,12 +403,12 @@ class ocelotLattice(frameworkLattice):
         """
         Get an Ocelot `LSC`_ physics process
 
+        .. LSC: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
+
         Returns
         -------
         LSC
             The Ocelot LSC PhysProc
-
-        .. LSC: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
         """
         lsc = LSC()
         lsc.smooth_param = self.smooth_param
@@ -417,6 +417,8 @@ class ocelotLattice(frameworkLattice):
     def physproc_sc(self, grids: List[int]) -> SpaceCharge:
         """
         Get an Ocelot `SpaceCharge`_ physics process
+
+        .. _SpaceCharge: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
 
         Parameters
         ----------
@@ -427,8 +429,6 @@ class ocelotLattice(frameworkLattice):
         -------
         SpaceCharge
             The Ocelot SpaceCharge PhysProc
-
-        .. _SpaceCharge: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/sc.py
         """
         sc = SpaceCharge(step=1)
         sc.nmesh_xyz = grids
@@ -440,12 +440,12 @@ class ocelotLattice(frameworkLattice):
         Get Ocelot `CSR`_ physics processes based on the start and end positions provided in `file_block`.
         If these are not provided, just include CSR for the entire lattice.
 
+        .. _CSR: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/csr.py
+
         Returns
         -------
         tuple
             A list of CSR PhysProcs, and their start and end positions
-
-        .. _CSR: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/csr.py
         """
         csrlist = []
         stlist = []
@@ -485,6 +485,8 @@ class ocelotLattice(frameworkLattice):
         """
         Get an Ocelot `Wake`_ physics process based on the wakefield provided.
 
+        .. _Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
+
         Parameters
         ----------
         name: str
@@ -498,8 +500,6 @@ class ocelotLattice(frameworkLattice):
         -------
         tuple
             A Wake PhysProc, and its index in the lattice
-
-        .. _Wake: https://github.com/ocelot-collab/ocelot/blob/master/ocelot/cpbd/wake.py
         """
         if isinstance(loc, field):
             loc = loc.write_field_file(code="astra")

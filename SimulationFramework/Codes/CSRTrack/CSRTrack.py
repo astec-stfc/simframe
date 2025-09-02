@@ -6,21 +6,21 @@ Various objects and functions to handle CSRTrack lattices and commands. See `CSR
     .. _CSRTrack manual: https://www.desy.de/xfel-beam/csrtrack/files/CSRtrack_User_Guide_(actual).pdf
 
 Classes:
-    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrackLattice`: The ASTRA lattice object, used for\
-    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
-    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrackLattice`: The CSRTrack lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
     the lattice suitable for a CSRTrack input file.
 
-    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_element`: Class for defining the a\
+    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_element`: Class for defining the a
     CSRTrack instance of a :class:`~SimulationFramework.Framework_objects.frameworkElement`.
 
-    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_forces`: Class for defining the CSR\
+    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_forces`: Class for defining the CSR
     calculation type.
 
-    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_track_step`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_track_step`: Class for defining the
     tracking step.
 
-    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_particles`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_particles`: Class for defining the
      particle distribution and format.
 
     - :class:`~SimulationFramework.Codes.CSRTrack.CSRTrack.csrtrack_monitor`: Class for defining monitors.

@@ -15,10 +15,10 @@ sequentially, and output beam distributions are generated and converted to the s
 Summary files containing Twiss parameters, and a summary of the beam files, are generated after tracking.
 
 Classes:
-    - :class:`~SimulationFramework.Framework.Framework`: Top-level class for loading and modifying lattice\
+    - :class:`~SimulationFramework.Framework.Framework`: Top-level class for loading and modifying lattice
     settings and tracking through them
 
-    - :class:`~SimulationFramework.Framework.frameworkDirectory`: Class to load a tracking run from a directory \
+    - :class:`~SimulationFramework.Framework.frameworkDirectory`: Class to load a tracking run from a directory
     and reading the Beam and Twiss files and making them available.
 """
 

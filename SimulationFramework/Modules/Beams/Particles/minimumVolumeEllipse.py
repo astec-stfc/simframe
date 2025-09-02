@@ -13,12 +13,12 @@ def getMinVolEllipse(P=None, tolerance=0.01):
          [x,y,z,...],
          [x,y,z,...]]
 
+    .. _Nima Moshtagh: http://www.mathworks.com/matlabcentral/fileexchange/9542
+
     Returns
     -------
     tuple
         (center, radii, rotation)
-
-    .. _Nima Moshtagh: http://www.mathworks.com/matlabcentral/fileexchange/9542
 
     """
 

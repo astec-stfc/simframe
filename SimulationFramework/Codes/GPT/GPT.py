@@ -4,48 +4,48 @@ Simframe GPT Module
 Various objects and functions to handle GPT lattices and commands.
 
 Classes:
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gptLattice`: The GPT lattice object, used for\
-    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
-    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gptLattice`: The GPT lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
     the lattice suitable for GPT input and lattice files.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_element`: Base class for defining\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_element`: Base class for defining
     commands in a GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setfile`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setfile`: Class for defining the
     input files for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_charge`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_charge`: Class for defining the
     bunch charge for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setreduce`: Class for reducing the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_setreduce`: Class for reducing the
     number of particles for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_accuracy`: Class for setting the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_accuracy`: Class for setting the
     accuracy for GPT tracking.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_spacecharge`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_spacecharge`: Class for defining the
     space charge setup for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_tout`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_tout`: Class for defining the
     number of steps for particle distribution output for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_csr1d`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_csr1d`: Class for defining the
     CSR calculations for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_writefloorplan`: Class for setting up the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_writefloorplan`: Class for setting up the
     writing of the lattice floor plan for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_Zminmax`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_Zminmax`: Class for defining the
     minimum and maximum z-positions for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_forwardscatter`: Class for defining\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_forwardscatter`: Class for defining
     scattering parameters for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_scatterplate`: Class for defining a\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_scatterplate`: Class for defining a
     scattering object for the GPT input file.
 
-    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_dtmaxt`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.GPT.GPT.gpt_dtmaxt`: Class for defining the
     step size(s) for the GPT input file.
 """
 

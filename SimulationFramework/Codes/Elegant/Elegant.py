@@ -6,54 +6,54 @@ Various objects and functions to handle ELEGANT lattices and commands. See `Eleg
     .. _Elegant manual: https://ops.aps.anl.gov/manuals/elegant_latest/elegant.html
 
 Classes:
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantLattice`: The ELEGANT lattice object, used for\
-    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the\
-    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantLattice`: The ELEGANT lattice object, used for
+    converting the :class:`~SimulationFramework.Framework_elements.frameworkObject` s defined in the
+    :class:`~SimulationFramework.Framework_elements.frameworkLattice` into a string representation of
     the lattice suitable for ELEGANT input and lattice files.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantCommandFile`: Base class for defining\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantCommandFile`: Base class for defining
     commands in an ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_global_settings_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_global_settings_command`: Class for defining the
     &global_settings portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_run_setup_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_run_setup_command`: Class for defining the
     &run_setup portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_error_elements_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_error_elements_command`: Class for defining the
     &error_elements portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_error_elements_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_error_elements_command`: Class for defining the
     &error_elements portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_scan_elements_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_scan_elements_command`: Class for defining the
     &scan_elements portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_run_control_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_run_control_command`: Class for defining the
     &run_control portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_twiss_output_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_twiss_output_command`: Class for defining the
     &twiss_output portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_floor_coordinates_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_floor_coordinates_command`: Class for defining the
     &floor_coordinates portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_matrix_output_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_matrix_output_command`: Class for defining the
     &matrix_output portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_sdds_beam_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_sdds_beam_command`: Class for defining the
     &sdds_beam portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_track_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_track_command`: Class for defining the
     &track portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_track_command`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegant_track_command`: Class for defining the
     &track portion of the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantOptimisation`: Class for defining the\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.elegantOptimisation`: Class for defining the
     commands for optimization in the ELEGANT input file.
 
-    - :class:`~SimulationFramework.Codes.Elegant.Elegant.sddsFile`: Class for creating, modifying and\
+    - :class:`~SimulationFramework.Codes.Elegant.Elegant.sddsFile`: Class for creating, modifying and
     saving SDDS files.
 """
 

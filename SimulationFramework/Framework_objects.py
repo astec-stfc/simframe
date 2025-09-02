@@ -4,13 +4,13 @@ Simframe Objects Module
 Various objects and functions to handle simulation lattices, commands, and elements.
 
 Classes:
-    - :class:`~SimulationFramework.Framework_objects.runSetup`: Defines simulation run settings, allowing\
+    - :class:`~SimulationFramework.Framework_objects.runSetup`: Defines simulation run settings, allowing
     for single runs, element scans or jitter/error studies.
 
-    - :class:`~SimulationFramework.Framework_objects.frameworkObject`: Base class for generic objects in SimFrame,\
+    - :class:`~SimulationFramework.Framework_objects.frameworkObject`: Base class for generic objects in SimFrame,
     including lattice elements and simulation code commands.
 
-    - :class:`~SimulationFramework.Framework_objects.frameworkElement`: Base class for generic\
+    - :class:`~SimulationFramework.Framework_objects.frameworkElement`: Base class for generic
      lattice elements in SimFrame, including lattice elements and simulation code commands.
 
     - :class:`~SimulationFramework.Framework_objects.csrdrift`: Drift element including CSR effects.
@@ -19,27 +19,27 @@ Classes:
 
     - :class:`~SimulationFramework.Framework_objects.edrift`: Basic drift element.
 
-    - :class:`~SimulationFramework.Framework_objects.frameworkLattice`: Base class for simulation lattices,\
+    - :class:`~SimulationFramework.Framework_objects.frameworkLattice`: Base class for simulation lattices,
     consisting of a line of :class:`~SimulationFramework.Framework_objects.frameworkObject` s.
 
-    - :class:`~SimulationFramework.Framework_objects.frameworkCounter`: Used for counting elements of the same\
+    - :class:`~SimulationFramework.Framework_objects.frameworkCounter`: Used for counting elements of the same
     type in ASTRA and CSRTrack
 
-    - :class:`~SimulationFramework.Framework_objects.frameworkGroup`: Used for grouping together\
+    - :class:`~SimulationFramework.Framework_objects.frameworkGroup`: Used for grouping together
     :class:`~SimulationFramework.Framework_objects.frameworkObject` s and controlling them all simultaneously.
 
-    - :class:`~SimulationFramework.Framework_objects.element_group`: Subclass of\
-    :class:`~SimulationFramework.Framework_objects.frameworkGroup` for grouping elements.\
+    - :class:`~SimulationFramework.Framework_objects.element_group`: Subclass of
+    :class:`~SimulationFramework.Framework_objects.frameworkGroup` for grouping elements.
     # TODO is this ever used?
 
-    - :class:`~SimulationFramework.Framework_objects.r56_group`: Subclass of\
-    :class:`~SimulationFramework.Framework_objects.frameworkGroup` for grouping elements with an R56.\
+    - :class:`~SimulationFramework.Framework_objects.r56_group`: Subclass of
+    :class:`~SimulationFramework.Framework_objects.frameworkGroup` for grouping elements with an R56.
     # TODO is this ever used?
 
     - :class:`~SimulationFramework.Framework_objects.chicane`: Subclass of\
     :class:`~SimulationFramework.Framework_objects.frameworkGroup` for a 4-dipole bunch compressor chicane.
 
-    - :class:`~SimulationFramework.Framework_objects.getGrids`: Used for determining the appropriate number\
+    - :class:`~SimulationFramework.Framework_objects.getGrids`: Used for determining the appropriate number
     of space charge grids given a number of particles.
 """
 
