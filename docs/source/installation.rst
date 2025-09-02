@@ -52,10 +52,10 @@ Required Dependencies
 * `numexpr>=2.11.0`
 * `numba>=0.61.2`
 * `pyFFTW==0.15.0`
-* `sphinx>8.2`
+* `sphinx>8.1`
 * `sphinx-rtd-theme`
 * `myst-nb`
-* `sphinx_autodoc_typehints>=3.2.0`
+* `sphinx_autodoc_typehints>3`
 
 
 You can also install via the ``requirements.txt`` file from the git repo:
@@ -72,8 +72,8 @@ The following dependencies are optional, but are generally required for running 
 * `MasterLattice <https://github.com/astec-stfc/masterlattice.git>`__
 * `SimCodes <https://github.com/astec-stfc/simcodes.git>`__
 
-The can all be installed from the ``apclara1.dl.ac.uk`` pypi server:
+These can be installed via `pip`:
 
 .. code-block:: bash
 
-    pip install --extra-index-url http://apclara1.dl.ac.uk:8090/simple/ --trusted-host apclara1.dl.ac.uk MasterLattice SimCodes
+    pip install MasterLattice SimCodes

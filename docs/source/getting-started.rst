@@ -17,7 +17,6 @@ The following is part of the ``CLARA`` Injector, in a file  called ``YAML/CLA_Gu
     elements:
         CLA-HRG1-SIM-APER-01:
             centre: [0, 0, 0]
-            datum: [0, 0, 0]
             global_rotation: [0, 0, 0]
             horizontal_size: 0.017
             shape: rectangular
@@ -27,30 +26,24 @@ The following is part of the ``CLARA`` Injector, in a file  called ``YAML/CLA_Gu
             Structure_Type: StandingWave
             centre: [0.0, 0.0, 0.16]
             crest: 145.789
-            datum: [0.0, 0.0, 0.32]
             field_amplitude: 120000000.0
-            field_definition: $master_lattice_location$Data_Files/HRRG_1D_RF.dat
-            field_definition_gdf: $master_lattice_location$Data_Files/HRRG_1D_RF.gdf
+            field_definition: $master_lattice_location$Data_Files/HRRG_1D_RF.hdf5
             frequency: 2998500000.0
             global_rotation: [0, 0, 0]
             length: 0.32
-            lsc_cutoff_high: [0, 0]
             n_cells: 1.5
             phase: 9
             type: cavity
             sub_elements:
                 EBT-HRG1-MAG-SOL-01:
                     centre: [0.0, 0.0, 0.16241]
-                    datum: [0.0, 0.0, 0.32]
                     field_amplitude: 0.345
-                    field_definition: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.dat
-                    field_definition_gdf: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.gdf
+                    field_definition: $master_lattice_location$Data_Files/HRRG_combined_sols_100mm_onaxis.hdf5
                     global_rotation: [0, 0, 0]
                     length: 0.32
                     type: solenoid
         CLA-S01-SIM-APER-01:
             centre: [0.0, 0.0, 0.32]
-            datum: [0.0, 0.0, 0.32]
             global_rotation: [0, 0, 0]
             horizontal_size: 0.017
             shape: rectangular
@@ -132,3 +125,5 @@ Running SimFrame
     # This is a scaling parameter
     # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
     framework.generator.number_of_particles = 2 ** (3 * scaling)
+    # Track the lattice
+    framework.track()
