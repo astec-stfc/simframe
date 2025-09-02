@@ -12,15 +12,6 @@ class rf_deflecting_cavity(cavity):
     n_cells: int | float | None = 1
     """Number of cells"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(rf_deflecting_cavity, self).__init__(
-            *args,
-            **kwargs,
-        )
 
     def _write_Elegant(self) -> str:
         """

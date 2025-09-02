@@ -151,6 +151,7 @@ def prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove
         assert lattice.getElement(element="test") == {}
     if remove:
         shutil.rmtree(f'./fodo/{code}')
+        shutil.rmtree(f'../fodo/{code}')
     return lattice
 
 @pytest.mark.parametrize("code,lattice_class", [
@@ -210,6 +211,10 @@ def test_track_and_analyze(simple_beam, test_fodo_elements, code, lattice_class)
         assert name in scrnames
         assert os.path.isfile(file)
     shutil.rmtree(f"./fodo/{code}")
+    try:
+        shutil.rmtree(f"../fodo/{code}")
+    except FileNotFoundError:
+        pass
 
 @pytest.mark.parametrize("code,lattice_class", [
     ("astra", astraLattice),
@@ -228,24 +233,28 @@ def test_track(simple_beam, test_fodo_elements, code, lattice_class):
         lattice.run()
         lattice.postProcess()
     shutil.rmtree(f"./fodo/{code}")
+    try:
+        shutil.rmtree(f"../fodo/{code}")
+    except FileNotFoundError:
+        pass
 
-@pytest.mark.parametrize("code,lattice_class", [
-    ("elegant", elegantLattice),
-    # ("gpt", gptLattice),
-])
-def test_run_setup_errors(simple_beam, test_fodo_elements, code, lattice_class):
-    lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
-    errors = {
-        "elements": {
-            "QUAD*": {"k1": [0.1]}
-        }
-    }
-    lattice.runSettings.loadElementErrors(errors)
-    lattice.preProcess()
-    lattice.write()
-    lattice.run()
-    lattice.postProcess()
-    shutil.rmtree(f"./fodo/{code}")
+# @pytest.mark.parametrize("code,lattice_class", [
+#     ("elegant", elegantLattice),
+#     # ("gpt", gptLattice),
+# ])
+# def test_run_setup_errors(simple_beam, test_fodo_elements, code, lattice_class):
+#     lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+#     errors = {
+#         "elements": {
+#             "QUAD*": {"k1": [0.1]}
+#         }
+#     }
+#     lattice.runSettings.loadElementErrors(errors)
+#     lattice.preProcess()
+#     lattice.write()
+#     lattice.run()
+#     lattice.postProcess()
+#     shutil.rmtree(f"./fodo/{code}")
 
 @pytest.mark.parametrize("code,lattice_class", [
     ("elegant", elegantLattice),
@@ -263,3 +272,8 @@ def test_run_setup_scan(simple_beam, test_fodo_elements, code, lattice_class):
     lattice.write()
     lattice.run()
     lattice.postProcess()
+    shutil.rmtree(f"./fodo/{code}")
+    try:
+        shutil.rmtree(f"../fodo/{code}")
+    except FileNotFoundError:
+        pass

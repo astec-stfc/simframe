@@ -84,11 +84,6 @@ class dipole(frameworkElement):
     edge_field_integral: float = 0.5
     """Edge field integral for fringes"""
 
-    def __init__(self, *args, **kwargs):
-        super(dipole, self).__init__(
-            *args,
-            **kwargs,
-        )
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally

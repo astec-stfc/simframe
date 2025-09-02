@@ -25,29 +25,29 @@ Required and default parameters
 
 The definition of each `frameworkElement` defines the following fields (default values are specified below):
 
-* `objectname`: `str` -- Name of the element
+* :mod:`objectname`: `str` -- Name of the element
 
-* `objecttype`: `str` -- Type of element; must be a subclass of :ref:`frameworkElement <framework-elements>`
+* :mod:`objecttype`: `str` -- Type of element; must be a subclass of :ref:`frameworkElement <framework-elements>`
 
-* `length`: `float = 0` -- Length of the element in the simulation [m]
+* :mod:`length`: `float = 0` -- Length of the element in the simulation [m]
 
-* `centre`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Centre of the element [x,y,z] in Cartesian coordinates
+* :mod:`centre`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Centre of the element [x,y,z] in Cartesian coordinates
 
-* `position_errors:` Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Position errors of the element [x,y,z]
+* :mod:`position_errors:` Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Position errors of the element [x,y,z]
 
-* `rotation_errors`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Rotation errors of the element in the simulation [x,y,z]
+* :mod:`rotation_errors`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Rotation errors of the element in the simulation [x,y,z]
 
-* `global_rotation`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Global rotation of the element in the simulation [x,y,z]
+* :mod:`global_rotation`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Global rotation of the element in the simulation [x,y,z]
 
-* `rotation`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Local rotation of the element in the simulation [x,y,z]
+* :mod:`rotation`: `Tuple[float, float, float] = (0.0, 0.0, 0.0)` -- Local rotation of the element in the simulation [x,y,z]
 
-* `subelement`: `bool = False` -- Flag indicating whether the element is a sub-element of a larger structure
+* :mod:`subelement`: `bool = False` -- Flag indicating whether the element is a sub-element of a larger structure
 
-* `field_definition`: `[field | str | None] = None` -- Field definition for the element, can be a field object or a string representing a file
+* :mod:`field_definition`: `[field | str | None] = None` -- Field definition for the element, can be a field object or a string representing a file
 
-* `wakefield_definition`: `[field | str | None] = None` -- Wakefield definition for the element, can be a field object or a string representing a file
+* :mod:`wakefield_definition`: `[field | str | None] = None` -- Wakefield definition for the element, can be a field object or a string representing a file
 
-Certain elements have additional requirements: magnets such as :py:class:`dipole <SimulationFramework.Elements.dipole.dipole>` and :py:class:`quadrupole <SimulationFramework.Elements.quadrupole.quadruoole` must have non-zero length, an :py:class:`aperture <SimulationFramework.Elements.aperture.aperture>` must define a shape. Additional properties can also provided to given elements; see the element-specific documentation :ref:`here <framework-elements>` to see those which can be interpreted by :mod:`SimFrame`, although note that other arbitrary attributes can be specified. 
+Certain elements have additional requirements: magnets such as :py:class:`dipole <SimulationFramework.Elements.dipole.dipole>` and :py:class:`quadrupole <SimulationFramework.Elements.quadrupole.quadrupole` must have non-zero length, an :py:class:`aperture <SimulationFramework.Elements.aperture.aperture>` must define a shape. Additional properties can also provided to given elements; see the element-specific documentation :ref:`here <framework-elements>` to see those which can be interpreted by :mod:`SimFrame`, although note that other arbitrary attributes can be specified. 
 
 Note also that while it is not necessary to include :py:class:`marker <SimulationFramework.Elements.marker.marker>` or :py:class:`screen <SimulationFramework.Elements.screen.screen>` type elements at the beginning and end of a line, it is generally good practice. This enables :mod:`SimFrame` to have reliable reference points for the lattice.
 

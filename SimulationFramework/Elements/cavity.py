@@ -121,14 +121,12 @@ class cavity(frameworkElement):
     smooth: int | None = None
     """Smoothing parameter"""
 
-    def __init__(self, *args, **kwargs):
-        super(cavity, self).__init__(*args, **kwargs)
 
-    @field_validator("n_kicks", mode="before")
-    @classmethod
-    def validate_n_kicks(cls, v: int) -> int:
-        cls.n_cells = int(v)
-        return int(v)
+    # @field_validator("n_kicks", mode="before")
+    # @classmethod
+    # def validate_n_kicks(cls, v: int) -> int:
+    #     cls.n_cells = int(v)
+    #     return int(v)
 
     @field_validator("frequency", mode="before")
     @classmethod

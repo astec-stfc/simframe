@@ -62,8 +62,8 @@ class csrtrackLattice(frameworkLattice):
     CSRTrackelementObjects: Dict = {}
     """Dictionary representing all CSRTrack object namelists"""
 
-    def __init__(self, *args, **kwargs):
-        super(csrtrackLattice, self).__init__(*args, **kwargs)
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
         self.set_particles_filename()
 
     def endScreen(self, **kwargs) -> screen:

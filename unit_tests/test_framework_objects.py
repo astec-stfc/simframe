@@ -65,14 +65,12 @@ def test_framework_elements(simple_field):
     for elem in all_subclasses(frameworkElement):
         if not any(x in elem.__name__ for x in exclude):
             element = elem(
-                objectname="ELEMENT",
-                objecttype=elem.__name__,
-                global_parameters={"master_subdir": ".", "master_lattice_location": "."}
+                name="ELEMENT",
+                type=elem.__name__,
+                global_parameters={"master_subdir": ".", "master_lattice_location": "."},
+                length=1.0,
             )
-            if elem.__name__ == "quadrupole":
-                element.length = 1.0
             if elem.__name__ == "dipole":
-                element.length = 1.0
                 element.angle = 1.0
                 for param in [
                     "arc_middle",

@@ -31,8 +31,6 @@ class solenoid(frameworkElement):
     field_amplitude: float = 0.0
     """Solenoid peak field amplitude"""
 
-    def __init__(self, *args, **kwargs):
-        super(solenoid, self).__init__(*args, **kwargs)
 
     def _write_ASTRA(self, n, **kwargs) -> str:
         """

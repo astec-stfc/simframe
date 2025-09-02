@@ -67,6 +67,7 @@ from pydantic import (
     SerializeAsAny,
     computed_field,
     ConfigDict,
+    Field,
 )
 from typing import (
     Dict,
@@ -284,12 +285,13 @@ class frameworkObject(BaseModel):
         extra="allow",
         arbitrary_types_allowed=True,
         validate_assignment=True,
+        populate_by_name=True,
     )
 
-    objectname: str
+    objectname: str = Field(alias="name")
     """Name of the object, used as a unique identifier in the simulation."""
 
-    objecttype: str
+    objecttype: str = Field(alias="type")
     """Type of the object, which determines its behavior and properties in the simulation."""
 
     objectdefaults: Dict = {}

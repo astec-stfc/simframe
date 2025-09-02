@@ -156,17 +156,28 @@ class screen(frameworkElement):
         """
         for i in [0, -0.001, 0.001]:
             tempfilename = (
-                lattice
-                + "."
-                + str(int(round((self.middle[2] + i - self.zstart[2]) * mult))).zfill(4)
-                + "."
-                + str(master_run_no).zfill(3)
+                    lattice
+                    + "."
+                    + str(int(round((self.middle[2] + i - self.zstart[2]) * mult))).zfill(4)
+                    + "."
+                    + str(master_run_no).zfill(3)
+            )
+            tempfilenamenozstart = (
+                    lattice
+                    + "."
+                    + str(int(round((self.middle[2] + i) * mult))).zfill(4)
+                    + "."
+                    + str(master_run_no).zfill(3)
             )
             # print(self.middle[2]+i-self.zstart[2], tempfilename, os.path.isfile(self.global_parameters['master_subdir'] + '/' + tempfilename))
             if os.path.isfile(
-                self.global_parameters["master_subdir"] + "/" + tempfilename
+                    self.global_parameters["master_subdir"] + "/" + tempfilename
             ):
                 return tempfilename
+            elif os.path.isfile(
+                self.global_parameters["master_subdir"] + "/" + tempfilenamenozstart
+            ):
+                return tempfilenamenozstart
         return None
 
     def astra_to_hdf5(

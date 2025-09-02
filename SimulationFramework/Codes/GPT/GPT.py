@@ -113,8 +113,8 @@ class gptLattice(frameworkLattice):
 
     Brho: UnitValue | None = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
         if (
             "input" in self.file_block
             and "particle_definition" in self.file_block["input"]
@@ -214,7 +214,7 @@ class gptLattice(frameworkLattice):
         """
         ccs = gpt_ccs("wcs", [0, 0, 0], [0, 0, 0])
         fulltext = ""
-        self.headers["accuracy"] = gpt_accuracy(self.accuracy)
+        self.headers["accuracy"] = gpt_accuracy(accuracy=self.accuracy)
         if "charge" not in self.file_block:
             self.file_block["charge"] = {}
         if "charge" not in self.globalSettings:
@@ -596,9 +596,11 @@ class gptLattice(frameworkLattice):
                 starttime=0, endpos=self.override_tout, step=str(self.time_step_size)
             )
         else:
+            endpos = (self.findS(self.endObject.objectname)[0][1] -
+                      self.findS(self.startObject.objectname)[0][1])
             self.headers["tout"] = gpt_tout(
                 starttime=0,
-                endpos=(self.findS(self.end)[0][1] - self.findS(self.start)[0][1])
+                endpos=endpos
                 / meanBz
                 / 2.998e8,
                 step=str(self.time_step_size),
@@ -624,16 +626,6 @@ class gpt_element(frameworkElement):
     """
     Generic class for generating headers for GPT.
     """
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_element, self).__init__(
-            *args,
-            **kwargs,
-        )
 
     def write_GPT(self, *args, **kwargs) -> str:
         """
@@ -665,17 +657,11 @@ class gpt_setfile(gpt_element):
     Class for setting filenames in GPT via `setfile`.
     """
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_setfile, self).__init__(
-            objectname="setfile",
-            objecttype="gpt_setfile",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "setfile"
+    """Name of object"""
+
+    objecttype: str = "gpt_setfile"
+    """Type of object"""
 
 
 class gpt_charge(gpt_element):
@@ -689,14 +675,12 @@ class gpt_charge(gpt_element):
     charge: float = 0.0
     """Bunch charge"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_charge, self).__init__(
-            objectname="settotalcharge", objecttype="gpt_charge", *args, **kwargs
-        )
+    objectname: str = "settotalcharge"
+    """Name of object"""
+
+    objecttype: str = "gpt_charge"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "("
@@ -717,10 +701,12 @@ class gpt_setreduce(gpt_element):
     setreduce: int = 1
     """Factor by which to reduce the number of particles"""
 
-    def __init__(self, **kwargs):
-        super(gpt_setreduce, self).__init__(
-            objectname="setreduce", objecttype="gpt_setreduce", **kwargs
-        )
+    objectname: str = "setreduce"
+    """Name of object"""
+
+    objecttype: str = "gpt_setreduce"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "("
@@ -734,19 +720,14 @@ class gpt_accuracy(gpt_element):
     Class for setting the accuracy of tracking via `accuracy` in GPT.
     """
 
-    def __init__(
-        self,
-        accuracy,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_accuracy, self).__init__(
-            accuracy=accuracy,
-            objectname="accuracy",
-            objecttype="gpt_accuracy",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "accuracy"
+    """Name of object"""
+
+    objecttype: str = "gpt_accuracy"
+    """Type of object"""
+
+    accuracy: int = 6
+    """Accuracy for GPT tracking"""
 
     def _write_GPT(self, *args, **kwargs):
         output = (
@@ -772,17 +753,14 @@ class gpt_spacecharge(gpt_element):
     cathode: bool = False
     """Flag indicating whether the bunch was emitted from a cathode"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_spacecharge, self).__init__(
-            objectname="spacecharge",
-            objecttype="gpt_spacecharge",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "spacecharge"
+    """Name of object"""
+
+    objecttype: str = "gpt_spacecharge"
+    """Type of object"""
+
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
         self.grids = getGrids()
 
     def _write_GPT(self, *args, **kwargs):
@@ -819,23 +797,18 @@ class gpt_tout(gpt_element):
     endpos: float = 0.0
     """End position"""
 
-    starttime: float | None = None
+    starttime: float = 0.0
     """Start time for dumping"""
 
     step: str = "0.1/c"
     """Dump step as a string [distance / c]"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_tout, self).__init__(
-            objectname="tout",
-            objecttype="gpt_tout",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "tout"
+    """Name of object"""
+
+    objecttype: str = "gpt_tout"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         self.starttime = 0 if self.starttime < 0 else self.starttime
@@ -854,17 +827,11 @@ class gpt_csr1d(gpt_element):
     Class for preparing CSR calculations via `csr1d`.
     """
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_csr1d, self).__init__(
-            objectname="csr1d",
-            objecttype="gpt_csr1d",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "csr1d"
+    """Name of object"""
+
+    objecttype: str = "gpt_csr1d"
+    """Type of object"""
 
     def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "();\n"
@@ -879,17 +846,12 @@ class gpt_writefloorplan(gpt_element):
     filename: str = ""
     """Floor plan filename"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_writefloorplan, self).__init__(
-            objectname="writefloorplan",
-            objecttype="gpt_writefloorplan",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "writefloorplan"
+    """Name of object"""
+
+    objecttype: str = "gpt_writefloorplan"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = str(self.objectname) + "(" + self.filename + ");\n"
@@ -910,17 +872,12 @@ class gpt_Zminmax(gpt_element):
     ECS: str = '"wcs", "I"'
     """Element coordinate system as a string"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_Zminmax, self).__init__(
-            objectname="Zminmax",
-            objecttype="gpt_Zminmax",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "Zminmax"
+    """Name of object"""
+
+    objecttype: str = "gpt_Zminmax"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = (
@@ -953,17 +910,12 @@ class gpt_forwardscatter(gpt_element):
     probability: float = 0.0
     """Scattering probability"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_forwardscatter, self).__init__(
-            objectname="forwardscatter",
-            objecttype="gpt_forwardscatter",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "forwardscatter"
+    """Name of object"""
+
+    objecttype: str = "gpt_forwardscatter"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = (
@@ -1002,13 +954,12 @@ class gpt_scatterplate(gpt_element):
     model: str = "cathode"
     """Scattering model to be used ['cathode', 'remove']"""
 
-    def __init__(self, *args, **kwargs):
-        super(gpt_scatterplate, self).__init__(
-            objectname="scatterplate",
-            objecttype="gpt_scatterplate",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "scatterplate"
+    """Name of object"""
+
+    objecttype: str = "gpt_scatterplate"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = (
@@ -1040,17 +991,12 @@ class gpt_dtmaxt(gpt_element):
     dtmax: float = 0.0
     """Maximum temporal step size"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(gpt_dtmaxt, self).__init__(
-            objectname="dtmaxt",
-            objecttype="gpt_dtmaxt",
-            *args,
-            **kwargs,
-        )
+    objectname: str = "dtmaxt"
+    """Name of object"""
+
+    objecttype: str = "gpt_dtmaxt"
+    """Type of object"""
+
 
     def _write_GPT(self, *args, **kwargs):
         output = (

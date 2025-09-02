@@ -20,8 +20,6 @@ class kicker(dipole):
     Vertical_PV: str | None = None
     """EPICS process variable name for the vertical corrector"""
 
-    def __init__(self, *args, **kwargs):
-        super(kicker, self).__init__(*args, **kwargs)
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally

@@ -8,6 +8,3 @@ class charge(frameworkElement):
 
     total: float | None = None
     """Bunch charge [C]"""
-
-    def __init__(self, *args, **kwargs):
-        super(charge, self).__init__(*args, **kwargs)

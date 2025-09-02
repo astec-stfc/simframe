@@ -1,11 +1,14 @@
 from SimulationFramework.Framework_objects import frameworkElement
 from typing import List
-from pydantic import computed_field
+from pydantic import computed_field, Field
 
 class quadrupole(frameworkElement):
     """
     Class defining a quadrupole magnet
     """
+
+    length: float = Field(gt=0.0)
+    """Length of magnet -- must be greater than zero"""
 
     k1l: float = 0.0
     """Quadrupole strength"""
@@ -37,15 +40,6 @@ class quadrupole(frameworkElement):
     bore: float | None = None
     """Bore radius of the quadrupole"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(quadrupole, self).__init__(
-            *args,
-            **kwargs,
-        )
 
     @computed_field
     @property

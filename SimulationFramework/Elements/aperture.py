@@ -28,9 +28,6 @@ class aperture(frameworkElement):
     positive_extent: float | None = None
     """Longitudinal end position of an aperture"""
 
-    def __init__(self, *args, **kwargs):
-        super(aperture, self).__init__(*args, **kwargs)
-
     def _write_GPT(self, Brho: float, ccs: str = "wcs", *args, **kwargs) -> str:
         """
         Writes the element string for GPT [currently not in use]

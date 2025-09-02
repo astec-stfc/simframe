@@ -1,10 +1,13 @@
 from SimulationFramework.Framework_objects import frameworkElement
-
+from pydantic import computed_field, Field
 
 class octupole(frameworkElement):
     """
     Class defining an octupole element.
     """
+
+    length: float = Field(gt=0.0)
+    """Length of magnet -- must be greater than zero"""
 
     k3l: float = 0.0
     """Octupole strength"""
@@ -15,16 +18,8 @@ class octupole(frameworkElement):
     strength_errors: list = [0]
     """Strength errors"""
 
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        super(octupole, self).__init__(
-            *args,
-            **kwargs,
-        )
 
+    @computed_field
     @property
     def k3(self) -> float:
         """
