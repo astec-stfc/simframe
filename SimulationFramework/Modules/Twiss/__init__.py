@@ -592,7 +592,8 @@ class twiss(BaseModel):
         """
         flat = np.array(getattr(self, key).val).flatten()
         index = flat.argsort()
-        for k in self.model_fields:
+        cls = self.__class__
+        for k in cls.model_fields:
             if isinstance(getattr(self, k), twissParameter):
                 if len(getattr(self, k).val) > 0:
                     try:

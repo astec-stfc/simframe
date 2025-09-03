@@ -434,7 +434,8 @@ class frameworkObject(BaseModel):
         frameworkObject
             The object itself, allowing for method chaining.
         """
-        return {key: getattr(self, key) for key in self.model_fields}
+        cls = self.__class__
+        return {key: getattr(self, key) for key in cls.model_fields}
 
     # def __getitem__(self, key):
     #     lkey = key.lower()
@@ -1354,7 +1355,8 @@ class frameworkElement(frameworkObject):
         # setattr(self, "k1", self.k1 if self.k1 is not None else 0)
         # setattr(self, "k2", self.k2 if self.k2 is not None else 0)
         # setattr(self, "k3", self.k3 if self.k3 is not None else 0)
-        for key in {**self.model_fields, **self.model_computed_fields}:
+        cls = self.__class__
+        for key in {**cls.model_fields, **cls.model_computed_fields}:
             if (
                 not key == "name"
                 and not key == "type"

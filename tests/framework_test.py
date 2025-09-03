@@ -44,6 +44,8 @@ def astra_track(startfile="generator", endfile="S02", scaling=3, sampling=1):
         framework.generator.number_of_particles = 2 ** (3 * scaling)
     else:
         framework[startfile].sample_interval = 2 ** (3 * sampling)
+
+    framework["bunch_compressor"].set_angle(0.12)
     # framework['CLA-L02-CAV'].crest = 100
     # framework["L02"].headers["newrun"].auto_phase = True
     # Track the whole lattice
@@ -63,6 +65,7 @@ def astra_csrtrack_track(scaling=3, sampling=1):
     framework.set_lattice_prefix("VBC", "../example_ASTRA/")
     # Here we ony run from the VBC
     print("###########   Performing ASTRA + CSRTrack Track   ###########")
+    framework["bunch_compressor"].set_angle(0.12)
     framework.track(startfile='VBC',endfile='S07')
 
 def elegant_track(scaling=3, sampling=1):
@@ -75,6 +78,7 @@ def elegant_track(scaling=3, sampling=1):
     framework.set_lattice_prefix("S02", "../example_ASTRA/")
     # Run from S02 onwards
     print("###########   Performing Elegant Track   ###########")
+    framework["bunch_compressor"].set_angle(0.12)
     framework.track(startfile="S02", endfile="S07")
 
 def ocelot_track(scaling=3, sampling=1):
@@ -87,6 +91,7 @@ def ocelot_track(scaling=3, sampling=1):
     framework.set_lattice_prefix("S02", "../example_ASTRA/")
     # Run from S02 onwards
     print("###########   Performing Ocelot Track   ###########")
+    framework["bunch_compressor"].set_angle(0.12)
     framework.track(startfile="S02", endfile="S07")
 
 

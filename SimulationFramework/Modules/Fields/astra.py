@@ -33,7 +33,15 @@ def generate_astra_field_data(self) -> np.ndarray:
     zdata = self.z_values
     if self.field_type == "LongitudinalWake":
         wzdata = self.Wz.value.val
-        data = np.concatenate([np.array([[length, ""]]), np.transpose([zdata, wzdata])])
+        preamble = np.array(
+            [
+                [1, 0],
+                [length, 0],
+                [0, 0],
+                [0, 0],
+            ]
+        )
+        data = np.concatenate([preamble, np.transpose([zdata, wzdata])])
     elif self.field_type == "TransverseWake":
         wxdata = self.Wx.value.val
         wydata = self.Wy.value.val

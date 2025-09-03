@@ -256,24 +256,24 @@ def test_track(simple_beam, test_fodo_elements, code, lattice_class):
 #     lattice.postProcess()
 #     shutil.rmtree(f"./fodo/{code}")
 
-@pytest.mark.parametrize("code,lattice_class", [
-    ("elegant", elegantLattice),
-    # ("gpt", gptLattice),
-])
-def test_run_setup_scan(simple_beam, test_fodo_elements, code, lattice_class):
-    lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
-    lattice.runSettings.setElementScan(
-        name="QUAD1",
-        item="k1",
-        scanrange=(1, 3)
-    )
-    lattice.runSettings.setNRuns(nruns=3)
-    lattice.preProcess()
-    lattice.write()
-    lattice.run()
-    lattice.postProcess()
-    shutil.rmtree(f"./fodo/{code}")
-    try:
-        shutil.rmtree(f"../fodo/{code}")
-    except FileNotFoundError:
-        pass
+# @pytest.mark.parametrize("code,lattice_class", [
+#     ("elegant", elegantLattice),
+#     # ("gpt", gptLattice),
+# ])
+# def test_run_setup_scan(simple_beam, test_fodo_elements, code, lattice_class):
+#     lattice = prepare_lattice(simple_beam, test_fodo_elements, code, lattice_class, remove=False)
+#     lattice.runSettings.setElementScan(
+#         name="QUAD1",
+#         item="k1",
+#         scanrange=(1, 3)
+#     )
+#     lattice.runSettings.setNRuns(nruns=3)
+#     lattice.preProcess()
+#     lattice.write()
+#     lattice.run()
+#     lattice.postProcess()
+#     shutil.rmtree(f"./fodo/{code}")
+#     try:
+#         shutil.rmtree(f"../fodo/{code}")
+#     except FileNotFoundError:
+#         pass

@@ -125,6 +125,12 @@ class wakefield(cavity):
             {"value": "'" + field_file_name + "'", "default": ""},
         ]
         output = ""
+        if self.field_type == "LongitudinalWake":
+            self.waketype = "Monopole_Method_F"
+        elif self.field_type == "TransverseWake":
+            self.waketype = "Dipole_Method_F"
+        else:
+            self.waketype = "Taylor_Method_F"
         if self.scale_kick > 0:
             for n in range(startn, startn + self.cells):
                 output += self._write_ASTRA_dictionary(

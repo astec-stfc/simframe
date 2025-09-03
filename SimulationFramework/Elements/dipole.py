@@ -87,7 +87,8 @@ class dipole(frameworkElement):
 
     def __setattr__(self, name, value):
         # Let Pydantic set known fields normally
-        if name in self.model_fields:
+        cls = self.__class__
+        if name in cls.model_fields:
             super().__setattr__(name, value)
         else:
             # Store extras in __dict__ (allowed by Config.extra = 'allow')

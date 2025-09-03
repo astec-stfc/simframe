@@ -140,7 +140,8 @@ class ocelotLattice(frameworkLattice):
             if "OCELOTsettings" in list(self.settings["global"].keys())
             else oceglobal
         )
-        for f in self.model_fields:
+        cls = self.__class__
+        for f in cls.model_fields:
             if f in list(self.oceglobal.keys()):
                 setattr(self, f, self.oceglobal[f])
 
