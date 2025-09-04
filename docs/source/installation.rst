@@ -23,22 +23,25 @@ Install via pip
 
 The package and its dependencies can be installed using the following command in the ``SimFrame`` directory:
 
-```bash
-pip install .
-```
+.. code-block:: bash
+
+    pip install .
+
 
 To install the ``MasterLattice`` and ``SimCodes`` packages along with ``SimFrame``, use this command from
 the ``SimFrame`` directory:
 
-```bash
-pip install .[test]
-```
+.. code-block:: bash
+
+    pip install .[test]
+
 
 To check that the install was completed successfully, run this command from the top level:
 
-```bash
-pytest --cov
-```
+.. code-block:: bash
+
+    pytest --cov
+
 
 
 Install from pypi / conda-force
