@@ -1,3 +1,5 @@
+.. _masterlattice:
+
 MasterLattice
 =============
 
@@ -47,7 +49,7 @@ The definition of each `frameworkElement` defines the following fields (default 
 
 * :mod:`wakefield_definition`: `[field | str | None] = None` -- Wakefield definition for the element, can be a field object or a string representing a file
 
-Certain elements have additional requirements: magnets such as :py:class:`dipole <SimulationFramework.Elements.dipole.dipole>` and :py:class:`quadrupole <SimulationFramework.Elements.quadrupole.quadrupole` must have non-zero length, an :py:class:`aperture <SimulationFramework.Elements.aperture.aperture>` must define a shape. Additional properties can also provided to given elements; see the element-specific documentation :ref:`here <framework-elements>` to see those which can be interpreted by :mod:`SimFrame`, although note that other arbitrary attributes can be specified. 
+Certain elements have additional requirements: magnets such as :py:class:`dipole <SimulationFramework.Elements.dipole.dipole>` and :py:class:`quadrupole <SimulationFramework.Elements.quadrupole.quadrupole>` must have non-zero length, an :py:class:`aperture <SimulationFramework.Elements.aperture.aperture>` must define a shape. Additional properties can also provided to given elements; see the element-specific documentation :ref:`here <framework-elements>` to see those which can be interpreted by :mod:`SimFrame`, although note that other arbitrary attributes can be specified.
 
 Note also that while it is not necessary to include :py:class:`marker <SimulationFramework.Elements.marker.marker>` or :py:class:`screen <SimulationFramework.Elements.screen.screen>` type elements at the beginning and end of a line, it is generally good practice. This enables :mod:`SimFrame` to have reliable reference points for the lattice.
 

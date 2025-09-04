@@ -8,7 +8,7 @@ Getting started with SimFrame
 Creating the Lattice Elements
 -----------------------------
 
-The first step in starting a new :mod:`SimFrame` simulation is to define the lattice, using the :ref:`MasterLattice`.
+The first step in starting a new ``SimFrame`` simulation is to define the lattice, using the :ref:`MasterLattice <masterlattice>`.
 
 The following is part of the ``CLARA`` Injector, in a file  called ``YAML/CLA_Gun400.yaml`` for example:
 
@@ -101,6 +101,8 @@ from the previous ``file`` block.
 Running SimFrame
 ----------------
 
+The following example assumes that :ref:`MasterLattice <masterlattice>` and :ref:`SimCodes <simcodes>` have already been installed; see :ref:`Installation <installation>`
+
 .. code-block:: python
 
     import SimulationFramework.Framework as fw
@@ -109,7 +111,7 @@ Running SimFrame
     # Define a new framework instance, in directory 'example'.
     #       "clean" will empty (delete everything!) in the directory if true
     #       "verbose" will print a progressbar if true
-    framework = fw.Framework("example", clean=True, verbose=True)
+    framework = fw.Framework(directory="./example", clean=True, verbose=True)
     # Load a lattice definition file. These can be found in Masterlattice/Lattices by default.
     framework.loadSettings("Lattices/clara400_v13.def")
     # Change all lattice codes to ASTRA/Elegant/GPT with exclusions (injector can not be done in Elegant)

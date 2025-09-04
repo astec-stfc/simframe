@@ -1,14 +1,16 @@
+.. _installation:
+
 Installation
 ============
 
 .. note::
-   | **SimFrame** is compatible only with python `3.10` and above.
-   | Installing the package may require authentication with an STFC Federal ID or valid SSH key.
+   | **SimFrame** is compatible only with python `3.12` and above.
+   | Contact `Alex Brynes <mailto:alexander.brynes@stfc.ac.uk>`_ in case of any issues during installation / testing / etc.
 
 Cloning from Github
 -------------------
 
-Clone :mod:`SimFrame` from Github:
+Clone ``SimFrame`` from Github:
 
 .. code-block:: bash
 
@@ -17,52 +19,37 @@ Clone :mod:`SimFrame` from Github:
 Install via pip
 -------------------
 
-Install :mod:`SimFrame` from ``pypi``:
+(It is recommended to activate a ``python3.12`` virtual environment to run ``SimFrame``.)
 
-.. code-block:: bash
+The package and its dependencies can be installed using the following command in the ``SimFrame`` directory:
 
-    pip install AcceleratorSimFrame
+```bash
+pip install .
+```
 
+To install the ``MasterLattice`` and ``SimCodes`` packages along with ``SimFrame``, use this command from
+the ``SimFrame`` directory:
+
+```bash
+pip install .[test]
+```
+
+To check that the install was completed successfully, run this command from the top level:
+
+```bash
+pytest --cov
+```
+
+
+Install from pypi / conda-force
+-------------------
+
+WIP.....
 
 Required Dependencies
 ---------------------
 
-:mod:`SimFrame` has the following required dependencies:
-
-* `fastKDE>=2.1.5`
-* `h5py>=3.4.0`
-* `matplotlib>=3.4.3`
-* `mpl_axes_aligner>=1.3`
-* `munch>=2.5.0`
-* `numpy>=2.2.6`
-* `progressbar2==4.0.0`
-* `pyyaml==6.0`
-* `pyzmq==22.3.0`
-* `scipy>=1.7.1`
-* `deepdiff>=5`
-* `tqdm>=4`
-* `PyQt5>=5.15`
-* `PyYAML>=5.3`
-* `lox>=0.11`
-* `pydantic>=2.5.3`
-* `attrs>=23.2.0`
-* `ocelot-desy>=25.06.0`
-* `easygdf>=2.1.1`
-* `soliday.sdds`
-* `numexpr>=2.11.0`
-* `numba>=0.61.2`
-* `pyFFTW==0.15.0`
-* `sphinx>8.1`
-* `sphinx-rtd-theme`
-* `myst-nb`
-* `sphinx_autodoc_typehints>3`
-
-
-You can also install via the ``requirements.txt`` file from the git repo:
-
-.. code-block:: bash
-
-    pip install -r requirements.txt
+Check out the ``pyproject.toml`` file for a full list of dependencies for ``SimFrame``.
 
 Optional Dependencies
 ---------------------

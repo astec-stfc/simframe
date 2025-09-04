@@ -33,7 +33,7 @@ Clone `SimFrame` from Github:
 git clone https://github.com/astec-stfc/simframe.git
 ```
 
-The package and its dependencies can be installed using the following command in the `simframe` directory:
+The package and its dependencies can be installed using the following command in the ``Simframe`` directory:
 
 ```bash
 pip install .
@@ -46,6 +46,12 @@ The following dependencies are optional, but are generally required for running 
 
 * [MasterLattice](https://github.com/astec-stfc/masterlattice.git)
 * [SimCodes](https://github.com/astec-stfc/simcodes.git)
+
+To install these packages along with ``SimFrame``, they can be installed from the ``SimFrame`` directory:
+
+```bash
+pip install .[test]
+```
 
 Participation
 -------------
