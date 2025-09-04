@@ -23,7 +23,7 @@ dependencies = [
     "deepdiff>=5",
     "h5py>=2.10",
     "munch>=2.5",
-    "numpy>=1.19,<2",
+    "numpy>=2",
     "tqdm>=4",
     "PyQt5>=5.1",
     "PyYAML>=5.3",
@@ -33,7 +33,7 @@ dependencies = [
     "pydantic>=2.5.3",
     "attrs>=23.2.0",
     "ocelot-desy==25.06.0",
-    "scipy>=1.5, <1.14",
+    "scipy>=1.5",
     "soliday.sdds",
     "easygdf>=2.1.1",
     "deap",
@@ -45,6 +45,7 @@ dependencies = [
     "numba",
     "pyfftw",
     "numexpr",
+	"ruamel.yaml",
 ]
 
 requires-python = ">= 3.10"
