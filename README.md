@@ -171,12 +171,20 @@ Running SimFrame
 
 ```python
 import SimulationFramework.Framework as fw
-
+import os
 
 # Define a new framework instance, in directory 'example'.
 #       "clean" will empty (delete everything!) in the directory if true
 #       "verbose" will print a progressbar if true
-framework = fw.Framework("example", clean=True, verbose=True)
+# Note that we assume the SimCodes directory location has been set as an
+# environment variable, and that the MasterLattice package for CLARA has been installed.
+# Please refer to the documentation for installation instructions.
+framework = fw.Framework(
+    directory="example",
+    simcodes=os.environ["SIMCODES"],
+    clean=True, 
+    verbose=True,
+)
 # Load a lattice definition file. These can be found in Masterlattice/Lattices by default.
 framework.loadSettings("Lattices/clara400_v13.def")
 # Change all lattice codes to ASTRA/Elegant/GPT with exclusions (injector can not be done in Elegant)
@@ -191,6 +199,7 @@ framework.generator.load_defaults("clara_400_2ps_Gaussian")
 framework.generator.thermal_emittance = 0.0005
 # This is a scaling parameter
 # This defines the number of particles to create at the gun (this is "ASTRA generator" which creates distributions)
+scaling = 4
 framework.generator.number_of_particles = 2 ** (3 * scaling)
 # Track the lattice
 framework.track()

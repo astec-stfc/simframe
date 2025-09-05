@@ -63,6 +63,7 @@ docs = [
     "myst-nb",
     "sphinx_autodoc_typehints>=3",
     "MasterLattice",
+    "sphinxcontrib-bibtex",
 ]
 
 [project.urls]
