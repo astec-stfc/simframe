@@ -4,6 +4,7 @@ from copy import copy
 import numpy as np
 from ..units import nice_array, nice_scale_prefix
 from mpl_axes_aligner import align
+from ..Twiss import twissParameter, twiss_defaults
 
 # from units import nice_array, nice_scale_prefix
 
@@ -411,6 +412,11 @@ def plot(
         include_legend = False
 
     X = twiss.stat(xkey)
+    if not isinstance(X, twissParameter):
+        if xkey in list(twiss_defaults.keys()):
+            X = twissParameter(val=X, **twiss_defaults[xkey])
+        else:
+            X = twissParameter(val=X, name=xkey, unit="")
 
     # Only get the data we need
     if limits:
@@ -474,8 +480,18 @@ def plot(
         ax.ticklabel_format(useOffset=False)
         linestyle = linestyles[ix]
 
+        ulist = [0]
+        for key in keys:
+            Y = twiss.stat(key)
+            if not isinstance(Y, twissParameter):
+                if xkey in list(twiss_defaults.keys()):
+                    Y = twissParameter(val=Y, **twiss_defaults[key])
+                else:
+                    Y = twissParameter(val=Y, name=key, unit="")
+            ulist.append(Y.unit)
+
         # Check that units are compatible
-        ulist = [twiss.stat(key).unit for key in keys]
+        # ulist = [twiss.stat(key).unit for key in keys]
         if len(ulist) > 1:
             for u2 in ulist[1:]:
                 assert ulist[0] == u2, f"Incompatible units: {ulist[0]} and {u2}"

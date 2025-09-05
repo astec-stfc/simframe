@@ -10,13 +10,14 @@ The **Accelerator Simulation Framework** otherwise known as **SimFrame** is a ``
 
 It provides a wrapper for several well-known particle tracking codes:
 
-* `ASTRA <https://www.desy.de/~mpyflo/>`_
-* `GPT <https://www.pulsar.nl/gpt/>`_
-* `Elegant <https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#elegant>`_
-* `CSRTrack <https://www.desy.de/xfel-beam/csrtrack/>`_
-* `Ocelot <https://github.com/ocelot-collab/ocelot>`_
+* `ASTRA <https://www.desy.de/~mpyflo/>`_ :cite:`ASTRA`
+* `GPT <https://www.pulsar.nl/gpt/>`_ :cite:`GPT`
+* `Elegant <https://www.aps.anl.gov/Accelerator-Operations-Physics/Software#elegant>`_ :cite:`Elegant`
+* `CSRTrack <https://www.desy.de/xfel-beam/csrtrack/>`_ :cite:`CSRTrack`
+* `Ocelot <https://github.com/ocelot-collab/ocelot>`_ :cite:`OCELOT`
 
-The primary use for SimFrame has been for simulating the `CLARA <https://www.astec.stfc.ac.uk/Pages/CLARA.aspx>`_ particle accelerator.
+The primary use for SimFrame has been for simulating the `CLARA <https://www.astec.stfc.ac.uk/Pages/CLARA.aspx>`_
+particle accelerator :cite:`PhysRevAccelBeams.23.044801` :cite:`PhysRevAccelBeams.27.041602`.
 
 Setup
 -----
@@ -65,12 +66,15 @@ We are also happy to help with installation and setting up your accelerator latt
    SimulationFramework.Codes
    SimulationFramework.Modules
    
-
-
-
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+References
+----------
+
+.. bibliography::
+   :style: unsrt

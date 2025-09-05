@@ -28,13 +28,15 @@ The package and its dependencies can be installed using the following command in
     pip install .
 
 
-To install the ``MasterLattice`` and ``SimCodes`` packages along with ``SimFrame``, use this command from
+To install the ``MasterLattice`` package along with ``SimFrame``, use this command from
 the ``SimFrame`` directory:
 
 .. code-block:: bash
 
     pip install .[test]
 
+In order to enable ``SimFrame`` to access the simulation codes, refer to the instructions
+:ref:`here <simcodes>` -- this step is necessary to perform the tests.
 
 To check that the install was completed successfully, run this command from the top level:
 
@@ -57,13 +59,15 @@ Check out the ``pyproject.toml`` file for a full list of dependencies for ``SimF
 Optional Dependencies
 ---------------------
 
-The following dependencies are optional, but are generally required for running ``CLARA`` simulations:
+The following dependency is optional, but is generally required for running ``CLARA`` simulations:
 
 * `MasterLattice <https://github.com/astec-stfc/masterlattice.git>`__
-* `SimCodes <https://github.com/astec-stfc/simcodes.git>`__
 
-These can be installed via `pip`:
+This can be installed via `pip`:
 
 .. code-block:: bash
 
-    pip install MasterLattice SimCodes
+    pip install MasterLattice
+
+Finally, in order to set up the ``SimCodes`` required for running simulations, refer to
+:ref:`SimCodes <simcodes>`

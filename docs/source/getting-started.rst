@@ -101,7 +101,9 @@ from the previous ``file`` block.
 Running SimFrame
 ----------------
 
-The following example assumes that :ref:`MasterLattice <masterlattice>` and :ref:`SimCodes <simcodes>` have already been installed; see :ref:`Installation <installation>`
+The following example assumes that :ref:`MasterLattice <masterlattice>` has already been installed
+(see :ref:`Installation <installation>`) and that the :ref:`SimCodes <simcodes>` directory has
+been prepared.
 
 .. code-block:: python
 
@@ -111,7 +113,13 @@ The following example assumes that :ref:`MasterLattice <masterlattice>` and :ref
     # Define a new framework instance, in directory 'example'.
     #       "clean" will empty (delete everything!) in the directory if true
     #       "verbose" will print a progressbar if true
-    framework = fw.Framework(directory="./example", clean=True, verbose=True)
+    simcodes_location = "/path/to/simcodes/directory"
+    framework = fw.Framework(
+        directory="./example",
+        simcodes_location=simcodes_location,
+        clean=True,
+        verbose=True,
+        )
     # Load a lattice definition file. These can be found in Masterlattice/Lattices by default.
     framework.loadSettings("Lattices/clara400_v13.def")
     # Change all lattice codes to ASTRA/Elegant/GPT with exclusions (injector can not be done in Elegant)

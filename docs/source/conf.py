@@ -68,6 +68,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
     "myst_nb",
+    "sphinxcontrib.bibtex",
 ]
 
 
@@ -79,6 +80,7 @@ templates_path = ["_templates"]  # list of paths that contain extra templates
 add_function_parentheses = True  # display function and method names with parentheses
 add_module_names = False  # don't include module names before object names
 pygments_style = "sphinx"  # style for highlighting of source code
+bibtex_bibfiles = ["references.bib"]
 
 # set automodapi options
 automodapi_toctreedirnm = (
@@ -148,7 +150,7 @@ autodoc_pydantic_settings_show_config_summary = (
 autodoc_pydantic_field_list_validators = False
 autodoc_pydantic_model_show_validator_members = False
 
-nb_execution_mode = "auto"  # options: "off", "auto", "force"
+nb_execution_mode = "off"  # options: "off", "auto", "force"
 
 
 # mapping to other projects' documentation pages

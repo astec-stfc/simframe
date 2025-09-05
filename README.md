@@ -42,16 +42,18 @@ pip install .
 Optional Dependencies
 ---------------------
 
-The following dependencies are optional, but are generally required for running ``CLARA`` simulations and for testing the code:
+The following dependency is optional, but are generally required for running ``CLARA`` simulations and for testing the code:
 
 * [MasterLattice](https://github.com/astec-stfc/masterlattice.git)
-* [SimCodes](https://github.com/astec-stfc/simcodes.git)
 
-To install these packages along with ``SimFrame``, they can be installed from the ``SimFrame`` directory:
+This package can be installed along with ``SimFrame`` using the following command:
 
 ```bash
 pip install .[test]
 ```
+
+In order to access the accelerator code executables, they must also inform ``SimFrame`` of their
+locations. See the entry on [SimCodes](https://acceleratorsimframe.readthedocs.io/en/latest/SimCodes.html).
 
 Participation
 -------------
@@ -60,8 +62,7 @@ We welcome contributions and suggestions from the community! ``SimFrame`` is
 currently under active development, and as such certain features may be missing 
 or not working as expected. If you find any issues, please raise it 
 [here](https://github.com/astec-stfc/simframe/issues) or contact 
-[Alex Brynes](mailto:alexander.brynes@stfc.ac.uk) or 
-[James Jones](james.jones@stfc.ac.uk).
+[Alex Brynes](mailto:alexander.brynes@stfc.ac.uk).
 
 We are also happy to help with installation and setting up your accelerator lattice. 
 
@@ -203,3 +204,10 @@ Some further examples on `SimFrame` usage can be found in the following notebook
 * [getting_started.ipynb](./examples/notebooks/getting_started.ipynb)
 * [beams_example.ipynb](./examples/notebooks/beams_example.ipynb)
 * [utility_functions.ipynb](./examples/notebooks/utility_functions.ipynb)
+
+Authors
+-------
+
+* [James Jones](mailto:james.jones@stfc.ac.uk)
+* [Alex Brynes](mailto:alexander.brynes@stfc.ac.uk)
+* [Mark Johnson](mailto:mark.johnson@stfc.ac.uk)

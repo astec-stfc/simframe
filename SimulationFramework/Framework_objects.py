@@ -1602,7 +1602,7 @@ class csrdrift(frameworkElement):
 
     lsc_interpolate: int = 1
     """Flag to allow for interpolation of computed longitudinal space charge wake.
-    See `Elegant manual`_"""
+    See `Elegant manual LSC drift`_"""
 
     csr_enable: bool = True
     """Enable CSR drift calculations"""
@@ -1611,7 +1611,7 @@ class csrdrift(frameworkElement):
     """Enable LSC drift calculations"""
 
     use_stupakov: int = 1
-    """Use Stupakov formula; see `Elegant manual`_"""
+    """Use Stupakov formula; see `Elegant manual LSC drift`_"""
 
     csrdz: float = 0.01
     """Step size for CSR calculations"""

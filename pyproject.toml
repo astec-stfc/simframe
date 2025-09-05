@@ -55,7 +55,6 @@ test = [
     "pytest",
     "pytest-cov",
     "MasterLattice",
-    "SimCodes",
 ]
 
 docs = [
@@ -64,7 +63,6 @@ docs = [
     "myst-nb",
     "sphinx_autodoc_typehints>=3",
     "MasterLattice",
-    "SimCodes",
 ]
 
 [project.urls]
